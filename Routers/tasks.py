@@ -1,13 +1,28 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from sqlalchemy.orm import Session
 from Schemas.tasks import TaskRead, SubTaskRead, SubTaskCreate
 from Crud import tasks as task_crud
 from dependencies import get_db
-
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+from Models import Task
 
 task_router  = APIRouter(prefix="/tasks", tags=["tasks"])
 subtask_router  = APIRouter(prefix="/subtasks", tags=["subtasks"])
+task_js_router = APIRouter(prefix="/js", tags=["js"])
+task_ji_router = APIRouter(prefix="/html", tags=["js"])
+templates = Jinja2Templates(directory="templates")
 
+'''Подключаем html файл с JavaScript'''
+@task_js_router.get("/", response_class=HTMLResponse)
+def list_tasks_js(request: Request):
+    return templates.TemplateResponse("tasks_js.html", {"request": request})
+
+'''Подключаем html файл с Jinja2'''
+@task_ji_router.get("/", response_class=HTMLResponse)
+def list_tasks_html(request: Request, db: Session = Depends(get_db)):
+    tasks = db.query(Task).all() # передаю модель Task в запрос
+    return templates.TemplateResponse("tasks_jinja.html", {"request": request, "tasks": tasks})
 
 ''' Эндпоинт: Получить список задач (/tasks/)'''
 @task_router.get("/", response_model=list[TaskRead],summary="Получить список задач")

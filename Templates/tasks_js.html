@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Список задач (JS)</title>
+    <link rel="stylesheet" type="text/css" href="/static/styles.css"> <!-- Подключаем внешний файл CSS -->
+</head>
+<body>
+    <h1>Список задач (через JS)</h1>
+    <ul id="task-list"></ul>
+
+    <script>
+        // Загрузка данных с API
+        async function loadTasks() {
+            try {
+                const response = await fetch("/tasks/");
+                const tasks = await response.json();
+
+                const list = document.getElementById("task-list");
+                list.innerHTML = "";
+
+                tasks.forEach(task => {
+                    const li = document.createElement("li");
+                    li.textContent = `${task.TaskNumber}: ${task.TaskTitle}`;
+                    list.appendChild(li);
+                });
+            } catch (error) {
+                console.error("Ошибка при загрузке задач:", error);
+            }
+        }
+
+        loadTasks();
+    </script>
+</body>
+</html>

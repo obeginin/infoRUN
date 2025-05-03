@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Список задач</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="/static/styles.css"> <!-- Подключаем внешний файл CSS -->
+</head>
+<body>
+    <h1>Список задач</h1>
+    <ul>
+        {% for task in tasks %} # из модели Task перебираю все объекты
+            <li>{{ task.TaskNumber}} {{ task.TaskTitle}}</li>
+
+        {% endfor %}
+    </ul>
+</body>
+</html>
