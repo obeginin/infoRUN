@@ -1,0 +1,43 @@
+from sqlalchemy.orm import Session
+from sqlalchemy import text
+from Models import Student
+
+''' Получение всех студентов'''
+def get_all_students(db: Session):
+    return db.query(Student).all()
+
+''' Получения студента по ID'''
+def get_student_id(db: Session, Student_id: int):
+    query = text(f"SELECT * FROM Students where ID={Student_id}")
+    result = db.execute(query).fetchall()
+    return result
+
+''' Получения всех задач всех студентов '''
+def get_all_students_tasks(db: Session):
+    query = text("SELECT * FROM StudentTasks")
+    result = db.execute(query).fetchall()
+    student_tasks = [
+        {"StudentTaskID": row.StudentTaskID,
+        "StudentID": row.StudentID,
+         "SubTaskID": row.SubTaskID,
+         "CompletionStatus": row.CompletionStatus,
+         "Score": row.Score,
+         "CompletionDate": row.CompletionDate,
+         "StudentAnswer": row.StudentAnswer}
+        for row in result]
+    return student_tasks
+
+''' Получения всех задач студента по ID'''
+def get_student_all_tasks(db: Session, student_id: int):
+    query = text(f"SELECT * FROM StudentTasks where studentID={student_id}")
+    result = db.execute(query).fetchall()
+    student_tasks = [
+        {"StudentTaskID": row.StudentTaskID,
+        "StudentID": row.StudentID,
+         "SubTaskID": row.SubTaskID,
+         "CompletionStatus": row.CompletionStatus,
+         "Score": row.Score,
+         "CompletionDate": row.CompletionDate,
+         "StudentAnswer": row.StudentAnswer}
+        for row in result]
+    return student_tasks
