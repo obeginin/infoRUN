@@ -57,17 +57,17 @@ def create_new_subtask(subtask: SubTaskCreate, db: Session = Depends(get_db)):
 '''Подключаем html файл с JavaScript'''
 @task_js_router.get("/", response_class=HTMLResponse)
 def list_tasks_js(request: Request):
-    return templates.TemplateResponse("tasks_js.html", {"request": request})
+    return templates.TemplateResponse("Tasks/tasks_js.html", {"request": request})
 
 # /subtasks по task_id
 @task_js_router.get("/{task_id}", response_class=HTMLResponse)
 def read_subtasks_TaskID(request: Request, task_id: int):
-    return templates.TemplateResponse("subtask.html", {"request": request, "task_id": task_id})
+    return templates.TemplateResponse("Tasks/subtask.html", {"request": request, "task_id": task_id})
 
 # /task по subtask_id
 @task_js_router.get("/TaskID/{subtask_id}", response_class=HTMLResponse)
 def read_subtasks_subtask_id(request: Request, subtask_id: int):
-    return templates.TemplateResponse("task.html", {"request": request, "subtask_id": subtask_id})
+    return templates.TemplateResponse("Tasks/task.html", {"request": request, "subtask_id": subtask_id})
 
 
 
@@ -76,5 +76,5 @@ def read_subtasks_subtask_id(request: Request, subtask_id: int):
 @task_ji_router.get("/", response_class=HTMLResponse)
 def list_tasks_html(request: Request, db: Session = Depends(get_db)):
     tasks = db.query(Task).all() # передаю модель Task в запрос
-    return templates.TemplateResponse("tasks_jinja.html", {"request": request, "tasks": tasks})
+    return templates.TemplateResponse("Tasks/tasks_jinja.html", {"request": request, "tasks": tasks})
 

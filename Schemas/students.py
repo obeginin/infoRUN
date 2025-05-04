@@ -20,6 +20,7 @@ class StudentsRead(BaseModel):
 class StudentTaskRead(BaseModel):
     StudentTaskID: int
     StudentID: int
+    Login: str
     SubTaskID: int
     StudentAnswer: Optional[str] = None
     CompletionStatus: str

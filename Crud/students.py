@@ -29,11 +29,12 @@ def get_all_students_tasks(db: Session):
 
 ''' Получения всех задач студента по ID'''
 def get_student_all_tasks(db: Session, student_id: int):
-    query = text(f"SELECT * FROM StudentTasks where studentID={student_id}")
+    query = text(f"SELECT StudentTaskID,StudentID, Login, SubTaskID,CompletionStatus,Score,CompletionDate,StudentAnswer FROM StudentTasks join Students on ID=StudentID where studentID={student_id}")
     result = db.execute(query).fetchall()
     student_tasks = [
         {"StudentTaskID": row.StudentTaskID,
         "StudentID": row.StudentID,
+         "Login": row.Login,
          "SubTaskID": row.SubTaskID,
          "CompletionStatus": row.CompletionStatus,
          "Score": row.Score,
