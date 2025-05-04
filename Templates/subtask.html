@@ -10,7 +10,7 @@
     <ul id="subtask-list"></ul>
 
     <script>
-        // Получаем task_id из URL (например, /tasks/js/3)
+        // Получаем task_id из URL (например, /tasks/js/3 - берется тройка)
         const urlParts = window.location.pathname.split("/");
         const taskId = urlParts[urlParts.length - 1];
 
@@ -19,12 +19,15 @@
                 // Загружаем данные самой задачи
                 const taskRes = await fetch(`/tasks/api/${taskId}`);
                 const task = await taskRes.json();
+
                 document.getElementById("task-title").textContent = `Задача: ${task.TaskNumber} - ${task.TaskTitle}`;
+
             } catch (err) {
                 console.error("Ошибка при загрузке задачи", err);
             }
         }
 
+        // загружаем подзадачи
         async function loadSubTasks() {
             try {
                 const response = await fetch(`/subtasks/api/TaskID/${taskId}`);
@@ -34,7 +37,9 @@
                 subtasks.forEach(subtask => {
                     const li = document.createElement("li");
                     li.innerHTML = `
-                    <strong>${subtask.SubTaskNumber}</strong>: ${subtask.Description}`;
+
+                        <strong>${subtask.SubTaskNumber}</strong>: <a href="/js/TaskID/${subtask.SubTaskID}">${subtask.Description}</a>`;
+
                     list.appendChild(li);
                 });
             } catch (err) {
