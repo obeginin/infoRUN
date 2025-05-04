@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Подзадачи</title>
+    <link rel="stylesheet" type="text/css" href="/static/styles.css">
+</head>
+<body>
+    <h1 id="task-title">Загрузка задачи...</h1>
+    <ul id="subtask-list"></ul>
+
+    <script>
+        // Получаем task_id из URL (например, /tasks/js/3)
+        const urlParts = window.location.pathname.split("/");
+        const taskId = urlParts[urlParts.length - 1];
+
+        async function loadTaskDetails() {
+            try {
+                // Загружаем данные самой задачи
+                const taskRes = await fetch(`/tasks/api/${taskId}`);
+                const task = await taskRes.json();
+                document.getElementById("task-title").textContent = `Задача: ${task.TaskNumber} - ${task.TaskTitle}`;
+            } catch (err) {
+                console.error("Ошибка при загрузке задачи", err);
+            }
+        }
+
+        async function loadSubTasks() {
+            try {
+                const response = await fetch(`/subtasks/api/TaskID/${taskId}`);
+                const subtasks = await response.json();
+
+                const list = document.getElementById("subtask-list");
+                subtasks.forEach(subtask => {
+                    const li = document.createElement("li");
+                    li.innerHTML = `
+                    <strong>${subtask.SubTaskNumber}</strong>: ${subtask.Description}`;
+                    list.appendChild(li);
+                });
+            } catch (err) {
+                console.error("Ошибка при загрузке подзадач", err);
+            }
+        }
+
+        loadTaskDetails();
+        loadSubTasks();
+    </script>
+</body>
+</html>

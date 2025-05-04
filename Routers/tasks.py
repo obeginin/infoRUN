@@ -40,7 +40,7 @@ def read_all_subtasks(db: Session = Depends(get_db)):
 def read_subtasks_id(subtask_id: int, db: Session = Depends(get_db)):
     return task_crud.get_subtasks_id(db, subtask_id)
 
-''' Эндпоинт: Получить подзадачу по TaskID (/subtasks/api/{task_id})'''
+''' Эндпоинт: Получить подзадачу по TaskID (/subtasks/api/TaskID/{task_id})'''
 @subtask_router.get("/api/TaskID/{task_id}", response_model=list[SubTaskRead],summary="Получить подзадачу по TaskID")
 def read_subtasks_TaskID(task_id: int, db: Session = Depends(get_db)):
     return task_crud.get_subtasks_TaskID(db, task_id)
@@ -60,9 +60,9 @@ def list_tasks_js(request: Request):
     return templates.TemplateResponse("tasks_js.html", {"request": request})
 
 # /subtasks по task_id
-'''@subtask_router.get("/{task_id}", response_model=list[SubTaskRead],summary="Получить подзадачу по TaskID")
-def read_subtasks_TaskID(task_id: int, db: Session = Depends(get_db)):
-    return task_crud.get_subtasks_TaskID(db, task_id)'''
+@task_js_router.get("/{task_id}", response_class=HTMLResponse)
+def read_subtasks_TaskID(request: Request, task_id: int):
+    return templates.TemplateResponse("subtask.html", {"request": request, "task_id": task_id})
 
 # /html
 '''Подключаем html файл с Jinja2'''
