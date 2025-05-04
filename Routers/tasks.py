@@ -35,6 +35,7 @@ def get_task_columns(db: Session = Depends(get_db)):
 def read_all_subtasks(db: Session = Depends(get_db)):
     return task_crud.get_all_subtasks(db)
 
+# /subtasks/api/{subtask_id}
 ''' Эндпоинт: Получить подзадачу по subtask_id (/subtasks/api/{subtask_id})'''
 @subtask_router.get("/api/{subtask_id}", response_model=list[SubTaskRead],summary="Получить подзадачу по id")
 def read_subtasks_subtask_id(subtask_id: int, db: Session = Depends(get_db)):

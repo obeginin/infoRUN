@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Подзадача пользователя</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <h1 id="subtask-title"></h1>
+    <div id="subtask-container">
+        <p>Загрузка данных...</p>
+    </div>
+
+    <script>
+        // Получаем ID задачи из URL
+        const urlParts = window.location.pathname.split("/");
+        const studentID = urlParts[urlParts.length - 2];
+        const subtaskID = parseInt(urlParts[urlParts.length - 1]);
+        console.log("StudentID:", studentID);
+        console.log("SubTaskID:", subtaskID);
+        async function loadSubtask() {
+            try {
+                const response = await fetch(`/students_subtasks/api/${studentID}/${subtaskID}`);
+                const subtask = await response.json();
+                console.log("subtask:", subtask);
+                console.log("Тип данных:", Array.isArray(subtask) ? "Массив" : "Объект");
+
+                const task = Array.isArray(subtask) ? subtask[0] : subtask;
+                document.getElementById("subtask-title").innerHTML = `Детали подзадачи: <strong>${task.Login}</strong>`;
+
+
+                const container = document.getElementById("subtask-container");
+                container.innerHTML = `
+                    <p><strong>Задача №:</strong> ${subtaskID}</p>
+                    <p><strong>ID подзадачи:</strong> ${task.StudentTaskID}</p>
+                    <p><strong>Статус:</strong> ${task.CompletionStatus}</p>
+                    <p><strong>Оценка:</strong> ${task.Score}</p>
+                    <p><strong>Дата выполнения:</strong> ${task.CompletionDate ?? "—"}</p>
+                    <p><strong>Ответ:</strong> ${task.StudentAnswer ?? "—"}</p>
+                `;
+            } catch (error) {
+                console.error("Ошибка при загрузке подзадачи", error);
+                document.getElementById("subtask-container").innerHTML = "<p>Не удалось загрузить подзадачу.</p>";
+            }
+        }
+
+        loadSubtask();
+    </script>
+</body>
+</html>

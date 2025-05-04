@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import text
 from Models import Student
 
+from Schemas.students import StudentTaskRead
 ''' Получение всех студентов'''
 def get_all_students(db: Session):
     query = text(f"SELECT * FROM Students")
@@ -44,3 +45,20 @@ def get_student_all_tasks(db: Session, student_id: int):
          "StudentAnswer": row.StudentAnswer}
         for row in result]
     return student_tasks
+
+
+''' Получения задачи студента по SubTaskID'''
+def get_task_student(db: Session, student_id: int, SubTaskID: int) -> list[StudentTaskRead]:
+    query = text(f"select * from StudentTasks join Students on ID=StudentID where StudentID={student_id} and SubTaskID={SubTaskID}")
+    result = db.execute(query).fetchall()
+    task_student = [
+        {"StudentTaskID": row.StudentTaskID,
+        "StudentID": row.StudentID,
+         "Login": row.Login,
+         "SubTaskID": row.SubTaskID,
+         "CompletionStatus": row.CompletionStatus,
+         "Score": row.Score,
+         "CompletionDate": row.CompletionDate,
+         "StudentAnswer": row.StudentAnswer}
+        for row in result]
+    return task_student

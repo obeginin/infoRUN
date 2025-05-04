@@ -35,7 +35,7 @@
                 const ul = document.createElement("ul");
                 tasks.forEach(task => {
                     const li = document.createElement("li");
-                    li.innerHTML = `Задача: ${task.SubTaskID} - ${task.CompletionStatus}`;
+                    li.innerHTML = `Задача: <a href="/students_subtasks/StudentTask/${StudentID}/${task.SubTaskID}">${task.SubTaskID}</a> - ${task.CompletionStatus}`;
                     ul.appendChild(li);
                 });
 
