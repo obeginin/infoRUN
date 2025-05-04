@@ -7,25 +7,24 @@
 </head>
 <body>
     <h1 id="subtask-title">Задачи пользователя</h1>
-    <div id="user-tasks">
+    <div id="Student-tasks">
         <p>Загрузка задач...</p>
     </div>
 
     <script>
-        // Получаем user_id из URL (например, /tasks/user/1)
         const urlParts = window.location.pathname.split("/");
         const StudentID = urlParts[urlParts.length - 1]; // Берем последний элемент URL
 
-        async function loadUserTasks() {
+        async function loadStudentTasks() {
             try {
-                // Получаем задачи пользователя по user_id
+                // Получаем задачи пользователя по Student_id
                 const response = await fetch(`/students_subtasks/api/${StudentID}`);
                 const tasks = await response.json();
                 console.log(tasks); // логирование в консоль api
                 document.getElementById("subtask-title").innerHTML = `Задачи пользователя: <strong>${tasks[1].Login}</strong>`;
 
                 // Выводим список задач
-                const taskListContainer = document.getElementById("user-tasks");
+                const taskListContainer = document.getElementById("Student-tasks");
                 taskListContainer.innerHTML = ""; // Очищаем сообщение "Загрузка задач..."
 
                 if (tasks.length === 0) {
@@ -48,7 +47,7 @@
         }
 
         // Загружаем задачи пользователя
-        loadUserTasks();
+        loadStudentTasks();
     </script>
 </body>
 </html>

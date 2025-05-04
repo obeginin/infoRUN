@@ -4,7 +4,9 @@ from Models import Student
 
 ''' Получение всех студентов'''
 def get_all_students(db: Session):
-    return db.query(Student).all()
+    query = text(f"SELECT * FROM Students")
+    result = db.execute(query).fetchall()
+    return result
 
 ''' Получения студента по ID'''
 def get_student_id(db: Session, Student_id: int):
