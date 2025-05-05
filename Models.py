@@ -1,8 +1,11 @@
 from sqlalchemy import Column, BigInteger, Integer, String, DateTime, ForeignKey, DECIMAL
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
-Base = declarative_base()
 
+# Models.py
+'''В данном файле описываем все таблицы аналогично таблица из базы данных'''
+
+Base = declarative_base()
 # Модель для таблицы Students
 class Student(Base):
     __tablename__ = 'Students'

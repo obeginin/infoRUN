@@ -2,6 +2,12 @@ from sqlalchemy.orm import Session
 from sqlalchemy import text
 from Schemas.tasks import SubTaskCreate
 
+# Crud\tasks.py
+''' 
+CRUD - основная логика работы запроса
+описываем функции, которые выполняют SQL запросы к БД, результат возвращается в виде кортежа
+'''
+
 ''' функция-SQL запрос к БД для вывода всех задач'''
 def get_all_tasks(db: Session):
     query = text("SELECT TaskID, TaskNumber, TaskTitle FROM Tasks ORDER BY TaskNumber")

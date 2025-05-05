@@ -1,7 +1,11 @@
-# schemas/users.py
 from pydantic import BaseModel
 from datetime import datetime
 from typing import Optional
+
+# Schemas\students.py
+''' Данные схемы описывают структуру данных, которые мы получаем или отправляем через API
+сериализация (преобразование в JSON и обратно)
+'''
 
 class StudentsRead(BaseModel):
     ID: int

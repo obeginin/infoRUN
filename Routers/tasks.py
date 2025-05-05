@@ -7,65 +7,79 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from Models import Task
 
+# Routers\tasks.py
+''' Маршруты и Эндпоинты'''
+
+'''Маршруты добавляются к основному адресу сайта localhost:9000/'''
 task_router  = APIRouter(prefix="/tasks", tags=["tasks"])
 subtask_router  = APIRouter(prefix="/subtasks", tags=["subtasks"])
 task_js_router = APIRouter(prefix="/js", tags=["js"])
 task_ji_router = APIRouter(prefix="/html", tags=["html"])
 templates = Jinja2Templates(directory="templates")
 
-# /tasks
-''' Эндпоинт: Получить список задач (/tasks/api/)'''
-@task_router.get("/api/", response_model=list[TaskRead],summary="Получить список задач")
+# /tasks/api/   (GET)
+''' Эндпоинт: Получить список задач'''
+# через @ указываем какому маршруту принадлежит Эндпоинт
+@task_router.get(
+    "/api/",                    # добавляем префикс к адресу
+    response_model=list[TaskRead],   # указываем какой схеме должны соответсвовать данные
+    summary="Получить список задач",
+    description="Выводит список всех задач имеющихся в БД"
+)
 def read_all_tasks(db: Session = Depends(get_db)):
-    return task_crud.get_all_tasks(db)
+    return task_crud.get_all_tasks(db) # качестве результата запукаем функцию get_all_tasks из файла Crud\tasks.py
 
-''' Эндпоинт: Получить задачу по id (/tasks/api/{task_id})'''
+# /tasks/api/{task_id}  (GET)
+''' Эндпоинт: Получить задачу по id'''
 @task_router.get("/api/{task_id}", response_model=list[TaskRead],summary="Получить задачу по id")
 def read_tasks_id(task_id: int, db: Session = Depends(get_db)):
     return task_crud.get_task_id(db, task_id)
 
-# /subtasks
-''' Эндпоинт: Получить список всех столбцов таблицы (/subtasks/api/)'''
+# /subtasks/api/columns (GET)
+''' Эндпоинт: Получить список всех столбцов таблицы subtasks'''
 @subtask_router.get("/api/columns", response_model=list[str],summary="Получить список всех столбцов таблицы 'subtasks'")
 def get_task_columns(db: Session = Depends(get_db)):
     return task_crud.get_columns_of_table(db)
 
-''' Эндпоинт: Получить список всех подзадач (/subtasks/api/)'''
+# /subtasks/api/    (GET)
+''' Эндпоинт: Получить список всех подзадач'''
 @subtask_router.get("/api/", response_model=list[SubTaskRead],summary="Получить список всех подзадач")
 def read_all_subtasks(db: Session = Depends(get_db)):
     return task_crud.get_all_subtasks(db)
 
-# /subtasks/api/{subtask_id}
-''' Эндпоинт: Получить подзадачу по subtask_id (/subtasks/api/{subtask_id})'''
+# /subtasks/api/{subtask_id}    (GET)
+''' Эндпоинт: Получить подзадачу по subtask_id'''
 @subtask_router.get("/api/{subtask_id}", response_model=list[SubTaskRead],summary="Получить подзадачу по id")
 def read_subtasks_subtask_id(subtask_id: int, db: Session = Depends(get_db)):
     return task_crud.get_subtasks_id(db, subtask_id)
 
-''' Эндпоинт: Получить подзадачу по TaskID (/subtasks/api/TaskID/{task_id})'''
+# /subtasks/api/TaskID/{task_id}    (GET)
+''' Эндпоинт: Получить подзадачу по TaskID'''
 @subtask_router.get("/api/TaskID/{task_id}", response_model=list[SubTaskRead],summary="Получить подзадачу по TaskID")
 def read_subtasks_TaskID(task_id: int, db: Session = Depends(get_db)):
     return task_crud.get_subtasks_TaskID(db, task_id)
 
-# /subtasks (POST)
-''' Эндпоинт: Добавление подзадачи POST /tasks/api/'''
+# /subtasks/api/    (POST)
+''' Эндпоинт: Добавление подзадачи'''
 @subtask_router.post("/api/", status_code=201,summary="Добавление подзадачи")
 def create_new_subtask(subtask: SubTaskCreate, db: Session = Depends(get_db)):
     new_id = task_crud.create_subtask(db, subtask)
     return {"message": "Подзадача успешно добавлена", "SubTaskID": new_id}
 
 
-# /tasks
+# /js   (GET)
 '''Подключаем html файл с JavaScript'''
+'''В данном случае в return вызывает html страницу'''
 @task_js_router.get("/", response_class=HTMLResponse)
 def list_tasks_js(request: Request):
     return templates.TemplateResponse("Tasks/tasks_js.html", {"request": request})
 
-# /subtasks по task_id
+# /js/{task_id} (GET)
 @task_js_router.get("/{task_id}", response_class=HTMLResponse)
 def read_subtasks_TaskID(request: Request, task_id: int):
     return templates.TemplateResponse("Tasks/subtask.html", {"request": request, "task_id": task_id})
 
-# /task по subtask_id
+# /js/TaskID/{subtask_id}   (GET)
 @task_js_router.get("/TaskID/{subtask_id}", response_class=HTMLResponse)
 def read_subtasks_subtask_id(request: Request, subtask_id: int):
     return templates.TemplateResponse("Tasks/task.html", {"request": request, "subtask_id": subtask_id})

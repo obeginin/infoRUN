@@ -1,8 +1,13 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 from Models import Student
-
 from Schemas.students import StudentTaskRead
+# Crud\Students.py
+''' 
+CRUD - основная логика работы запроса
+описываем функции, которые выполняют SQL запросы к БД, результат возвращается в виде кортежа
+'''
+
 ''' Получение всех студентов'''
 def get_all_students(db: Session):
     query = text(f"SELECT * FROM Students")

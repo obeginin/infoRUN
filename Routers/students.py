@@ -6,12 +6,15 @@ from dependencies import get_db  # Зависимость для подключ�
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
+# Routers\Students.py
+''' Маршруты и Эндпоинты'''
+
 students_router = APIRouter(prefix="/students", tags=["students"])
 students_subtasks_router = APIRouter(prefix="/students_subtasks", tags=["students_subtasks"])
 templates = Jinja2Templates(directory="templates")
 
-# /students//api/
-''' Эндпоинт: Получить список пользователей (/students/)'''
+# /students/api/
+''' Эндпоинт: Получить список пользователей'''
 @students_router.get(
     "/api/",
     response_model=list[StudentsRead],
