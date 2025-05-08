@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Depends
 from Routers import tasks,students  # Импортируем роутер задач
 from fastapi.staticfiles import StaticFiles
+import uvicorn
 
 app = FastAPI()
 # Регистрируем роутер
@@ -13,8 +14,13 @@ app.include_router(students.students_subtasks_router) # Регистрируем
 
 app.mount("/static", StaticFiles(directory="Templates/Static"), name="static") # для файлов
 
-'''Эндпоинт: Корень сайта (/)'''
+
+
+'''Эндпоинт: Корень сайта (/) Проверка подключения к базе'''
 @app.get("/")
 def read_root():
     return {"message": "Connected to DB successfully!✅"}
 
+"""запуск сервера"""
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="localhost", port=9000, reload=True)

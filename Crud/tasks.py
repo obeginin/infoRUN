@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 from Schemas.tasks import SubTaskCreate
-
+from fastapi import HTTPException
 # Crud\tasks.py
 ''' 
 CRUD - основная логика работы запроса
@@ -19,7 +19,10 @@ def get_all_tasks(db: Session):
 def get_task_id(db: Session, task_id: int):
     query = text(f"SELECT TaskID, TaskNumber, TaskTitle FROM Tasks where TaskID={task_id}")
     result = db.execute(query).fetchall()
+    if not result:
+        raise HTTPException(status_code=404, detail=f"Категория с ID {task_id} не найдена")
     return result
+
 
 ''' Вывод всех заголовков столбцов таблицы SubTasks'''
 def get_columns_of_table(db: Session, table_name: str = 'SubTasks'):
@@ -43,8 +46,8 @@ def get_all_subtasks(db: Session):
     return subtasks
 
 ''' функция-SQL для вывода подзадачи по id'''
-def get_subtasks_id(db: Session, task_id: int):
-    query = text(f"SELECT * FROM SubTasks where SubTaskID={task_id}")
+def get_subtasks_id(db: Session, subtasks_id: int):
+    query = text(f"SELECT * FROM SubTasks where SubTaskID={subtasks_id}")
     result = db.execute(query).fetchall()
     subtasks = [
         {"SubTaskID": row.SubTaskID,
@@ -55,6 +58,8 @@ def get_subtasks_id(db: Session, task_id: int):
          "Answer": row.Answer,
          "SolutionPath": row.SolutionPath}
         for row in result]
+    if not result:
+        raise HTTPException(status_code=404, detail=f"Задача с ID {subtasks_id} не найдена")
     return subtasks
 
 ''' функция-SQL для вывода подзадач по типу номеру ЕГЭ'''
@@ -70,10 +75,19 @@ def get_subtasks_TaskID(db: Session, task_id: int):
          "Answer": row.Answer,
          "SolutionPath": row.SolutionPath}
         for row in result]
+    if not result:
+        raise HTTPException(status_code=404, detail=f"Задача с Категорией {task_id} не найдена")
     return subtasks
 
 ''' Добавление новой подзадачи '''
 def create_subtask(db: Session, subtask_data: SubTaskCreate):
+# Запрос на проверку наличия категории
+    check_query = text("SELECT 1 FROM Tasks WHERE TaskID = :task_id")
+    result = db.execute(check_query, {"task_id": subtask_data.TaskID}).fetchone()
+    if not result:
+        raise HTTPException(status_code=404, detail=f"Категория с ID {subtask_data.TaskID} не найдена")
+
+#Запрос на добавление задач
     query = text("""
         INSERT INTO SubTasks (TaskID, SubTaskNumber, ImagePath, Description, Answer, SolutionPath)
         OUTPUT INSERTED.SubTaskID

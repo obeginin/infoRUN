@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import text
 from Models import Student
 from Schemas.students import StudentTaskRead
+from fastapi import HTTPException
 # Crud\Students.py
 ''' 
 CRUD - основная логика работы запроса
@@ -18,6 +19,8 @@ def get_all_students(db: Session):
 def get_student_id(db: Session, Student_id: int):
     query = text(f"SELECT * FROM Students where ID={Student_id}")
     result = db.execute(query).fetchall()
+    if not result:
+        raise HTTPException(status_code=404, detail=f"Студент с ID {Student_id} не найден")
     return result
 
 ''' Получения всех задач всех студентов '''
@@ -49,13 +52,32 @@ def get_student_all_tasks(db: Session, student_id: int):
          "CompletionDate": row.CompletionDate,
          "StudentAnswer": row.StudentAnswer}
         for row in result]
+    if not result:
+        raise HTTPException (status_code=404, detail=f"Студент с ID {student_id} не найден")
     return student_tasks
 
 
 ''' Получения задачи студента по SubTaskID'''
 def get_task_student(db: Session, student_id: int, SubTaskID: int) -> list[StudentTaskRead]:
+# Проверка существования студента (запрос с параметром лучше чем f-строка
+    query = text("SELECT 1 FROM Students WHERE ID = :student_id")
+    params = {"student_id": student_id}
+    student_check = db.execute(query, params).fetchone()
+    #student_check = db.execute(text("SELECT 1 FROM Students WHERE ID = :student_id"),{"student_id": student_id}).fetchone()
+    if not student_check:
+        raise HTTPException(status_code=404, detail=f"Студент с ID {student_id} не найден")
+
+# Проверка существования подзадачи
+    subtask_check = db.execute(text("SELECT 1 FROM SubTasks WHERE SubTaskID = :subtask_id"),{"subtask_id": SubTaskID}).fetchone()
+    if not subtask_check:
+        raise HTTPException(status_code=404, detail=f"Подзадача с ID {SubTaskID} не найдена")
+
+# Основной запрос
     query = text(f"select * from StudentTasks join Students on ID=StudentID where StudentID={student_id} and SubTaskID={SubTaskID}")
     result = db.execute(query).fetchall()
+    if not result:
+            raise HTTPException(status_code=404, detail=f"У студента с ID {student_id} нет подзадачи с ID {SubTaskID}")
+
     task_student = [
         {"StudentTaskID": row.StudentTaskID,
         "StudentID": row.StudentID,
