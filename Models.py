@@ -19,6 +19,7 @@ class Student(Base):
     Sex = Column(String(2))  # Пол
     BirthDate = Column(DateTime)  # Дата рождения
     Comment = Column(String)  # Комментарий
+    Password = Column(String) # пароль
 
 # Модель для таблицы Tasks
 class Task(Base):

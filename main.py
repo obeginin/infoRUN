@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Depends
-from Routers import tasks,students  # Импортируем роутер задач
+from Routers import tasks,students,auth  # Импортируем роутер задач
 from fastapi.staticfiles import StaticFiles
 import uvicorn
 
@@ -11,7 +11,7 @@ app.include_router(tasks.task_js_router) # Регистрируем роутер
 app.include_router(tasks.task_ji_router) # Регистрируем роутер для html файлов с jinja2
 app.include_router(students.students_router)  # Регистрируем роутер для студентов
 app.include_router(students.students_subtasks_router) # Регистрируем роутер для задач студентов
-
+app.include_router(auth.auth_router) # Регистрируем роутер Аутентификации
 app.mount("/static", StaticFiles(directory="Templates/Static"), name="static") # для файлов
 
 
