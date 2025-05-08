@@ -1,15 +1,17 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from Models import Student
-from Schemas.auth import StudentLogin
+from Schemas.auth import StudentLogin, StudentOut
 from Security.token import create_access_token
 from Security.password import verify_password
 from dependencies import get_db
+from Crud.auth import get_current_student
 
 auth_router = APIRouter(prefix="/login", tags=["login"])
+#students_router = APIRouter(prefix="/auth", tags=["students"])
 
-
-# Маршрут для аутентификации
+# /login/
+'''Маршрут для аутентификации, запрос токена для пользователя'''
 @auth_router.post("/",  summary="Аутентификация",)
 def login(student_login: StudentLogin, db: Session = Depends(get_db)):
     # Поиск студента по логину
@@ -25,3 +27,13 @@ def login(student_login: StudentLogin, db: Session = Depends(get_db)):
     # Создаём токен
     access_token = create_access_token(data={"sub": student.Login})
     return {"access_token": access_token, "token_type": "bearer"}
+
+# /login/me
+'''Доступ только для пользователей'''
+@auth_router.get("/me", summary="Получить информацию о текущем студенте")
+def read_students_me(current_student: Student = Depends(get_current_student)):
+    return {
+        "id": current_student.ID,
+        "login": current_student.Login,
+        "email": current_student.Email if hasattr(current_student, "Email") else None
+    }

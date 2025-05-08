@@ -3,6 +3,8 @@ from sqlalchemy import text
 from Models import Student
 from Schemas.students import StudentTaskRead
 from fastapi import HTTPException
+
+
 # Crud\Students.py
 ''' 
 CRUD - основная логика работы запроса
@@ -89,3 +91,8 @@ def get_task_student(db: Session, student_id: int, SubTaskID: int) -> list[Stude
          "StudentAnswer": row.StudentAnswer}
         for row in result]
     return task_student
+
+# Функция для получения студента по логину
+def get_student_by_login(db: Session, login: str):
+    return db.query(Student).filter(Student.Login == login).first()
+
