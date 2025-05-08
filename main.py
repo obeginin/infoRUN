@@ -12,6 +12,7 @@ app.include_router(tasks.task_ji_router) # Регистрируем роутер
 app.include_router(students.students_router)  # Регистрируем роутер для студентов
 app.include_router(students.students_subtasks_router) # Регистрируем роутер для задач студентов
 app.include_router(auth.auth_router) # Регистрируем роутер Аутентификации
+app.include_router(auth.admin_router)
 app.mount("/static", StaticFiles(directory="Templates/Static"), name="static") # для файлов
 
 

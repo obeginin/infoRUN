@@ -5,10 +5,10 @@ from Schemas.auth import StudentLogin, StudentOut
 from Security.token import create_access_token
 from Security.password import verify_password
 from dependencies import get_db
-from Crud.auth import get_current_student
+from Crud.auth import get_current_student, admin_required
 
-auth_router = APIRouter(prefix="/login", tags=["login"])
-#students_router = APIRouter(prefix="/auth", tags=["students"])
+auth_router = APIRouter(prefix="/login", tags=["login"]) # страница для пользователей
+admin_router = APIRouter(prefix="/admin", tags=["admin"]) # страница для админа
 
 # /login/
 '''Маршрут для аутентификации, запрос токена для пользователя'''
@@ -37,3 +37,9 @@ def read_students_me(current_student: Student = Depends(get_current_student)):
         "login": current_student.Login,
         "email": current_student.Email if hasattr(current_student, "Email") else None
     }
+
+# /admin/dashboard
+'''Роут, доступный только администраторам'''
+@admin_router.get("/dashboard/")
+def admin_dashboard(current_student=Depends(admin_required)):
+    return {"message": f"Welcome, {current_student.Login}. You are an admin."}

@@ -48,3 +48,15 @@ def authenticate_student(db: Session, login: str, password: str):
             detail="Неверный пароль"
         )
     return student  # Возвращаем студента, если логин и пароль верны
+
+
+# Проверка на роль "admin"
+def admin_required(
+    current_student=Depends(get_current_student),
+):
+    if current_student.Role != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Недостаточно прав"
+        )
+    return current_student
