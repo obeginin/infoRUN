@@ -16,7 +16,20 @@
             <li><a href="/tasks">Категории</a></li>
             <li><a href="/subtasks">Задачи</a></li>
             <li><a href="/my-tasks">Мои задачи</a></li>
-            <li><a href="/logout">Выход</a></li>
+            <button onclick="logout()">Выйти</button>
+            <script>
+              function logout() {
+                // Удаляем токен из cookies
+                document.cookie = "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+
+                // Или из localStorage / sessionStorage
+                // localStorage.removeItem("access_token");
+                // sessionStorage.removeItem("access_token");
+
+                // Перенаправляем пользователя на страницу входа
+                window.location.href = "/home/login_in";
+              }
+            </script>
         </ul>
     </nav>
 
