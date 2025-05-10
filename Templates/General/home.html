@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Главная</title>
+    <link rel="stylesheet" type="text/css" href="/static/styles.css">
+</head>
+<body>
+
+    <h1>Добро пожаловать!</h1>
+
+    <p>Добро пожаловать в учебный кабинет. Здесь вы можете просматривать доступные задания и следить за прогрессом.</p>
+
+    <nav>
+        <ul>
+            <li><a href="/tasks">Категории</a></li>
+            <li><a href="/subtasks">Задачи</a></li>
+            <li><a href="/my-tasks">Мои задачи</a></li>
+            <li><a href="/logout">Выход</a></li>
+        </ul>
+    </nav>
+
+    {% if is_admin %}
+    <nav>
+        <ul>
+            <li><a href="/admin">Админка</a></li>
+        </ul>
+    </nav>
+    {% endif %}
+
+</body>
+</html>

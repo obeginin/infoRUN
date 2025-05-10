@@ -2,6 +2,8 @@ from fastapi import FastAPI, Depends
 from Routers import tasks,students,auth  # Импортируем роутер задач
 from fastapi.staticfiles import StaticFiles
 import uvicorn
+from fastapi.templating import Jinja2Templates
+from fastapi.responses import RedirectResponse
 
 app = FastAPI()
 # Регистрируем роутер
@@ -13,14 +15,15 @@ app.include_router(students.students_router)  # Регистрируем роу�
 app.include_router(students.students_subtasks_router) # Регистрируем роутер для задач студентов
 app.include_router(auth.auth_router) # Регистрируем роутер Аутентификации
 app.include_router(auth.admin_router)
-app.mount("/static", StaticFiles(directory="Templates/Static"), name="static") # для файлов
+#app.include_router(auth.router) # подключаем home
+app.mount("/static", StaticFiles(directory="Templates/Static"), name="static") # для CSS файлов
+templates = Jinja2Templates(directory="templates") # для
 
 
-
-'''Эндпоинт: Корень сайта (/) Проверка подключения к базе'''
+# Перенаправление на страницу логина при открытии корня (Основной адрес сайта)
 @app.get("/")
-def read_root():
-    return {"message": "Connected to DB successfully!✅"}
+def read():
+    return RedirectResponse(url="/home/login_in")
 
 """запуск сервера"""
 if __name__ == "__main__":

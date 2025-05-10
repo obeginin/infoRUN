@@ -25,6 +25,7 @@ response2 = requests.post(url2, json=data2)
 #print("Response content:", response2.text)
 print(response2.json())  # Выведет ответ от сервера
 
+"""Авторизация пользователя"""
 # Запрос на получения инфмы по токену (все пользователи)
 url1 = "http://127.0.0.1:9000/login/me/"
 headers = {
@@ -33,6 +34,7 @@ headers = {
 response1 = requests.get(url1, headers=headers)
 print(response1.json())  # Выведет ответ от сервера
 
+"""Авторизация админа"""
 # Запрос на получения инфмы по токену (admin)
 url3 = "http://127.0.0.1:9000/admin/dashboard/"
 headers = {

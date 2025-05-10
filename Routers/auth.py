@@ -6,13 +6,25 @@ from Security.token import create_access_token
 from Security.password import verify_password
 from dependencies import get_db
 from Crud.auth import get_current_student, admin_required
+from fastapi import APIRouter, Depends, Request
+from fastapi.templating import Jinja2Templates
 
-auth_router = APIRouter(prefix="/login", tags=["login"]) # страница для пользователей
+auth_router = APIRouter(prefix="/home", tags=["login"]) # страница для пользователей
 admin_router = APIRouter(prefix="/admin", tags=["admin"]) # страница для админа
+templates = Jinja2Templates(directory="templates")
 
+# Страница входа
+@auth_router.get("/login_in")
+def login_form(request: Request):
+    return templates.TemplateResponse("General/login.html", {"request": request})
+
+# Домашняя страница (после входа)
+@auth_router.get("/")
+def home_page(request: Request):
+    return templates.TemplateResponse("General/home.html", {"request": request})
 # /login/
 '''Маршрут для аутентификации, запрос токена для пользователя'''
-@auth_router.post("/",  summary="Аутентификация",)
+@auth_router.post("/login",  summary="Аутентификация",)
 def login(student_login: StudentLogin, db: Session = Depends(get_db)):
     # Поиск студента по логину
     student = db.query(Student).filter(Student.Login == student_login.Login).first()
