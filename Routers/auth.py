@@ -9,6 +9,7 @@ from Crud.auth import get_current_student, admin_required
 from fastapi.templating import Jinja2Templates
 from passlib.context import CryptContext
 from fastapi.responses import RedirectResponse
+from fastapi.responses import HTMLResponse
 
 # Routers\auth.py
 auth_router = APIRouter(prefix="/home", tags=["login"]) # страница для пользователей
@@ -81,8 +82,14 @@ def read_students_me(current_student: Student = Depends(get_current_student)):
         "email": current_student.Email if hasattr(current_student, "Email") else None
     }
 
-# /admin/dashboard
+# /admin/
 '''Роут, доступный только администраторам'''
-@admin_router.get("/dashboard/")
-def admin_dashboard(current_student=Depends(admin_required)):
-    return {"message": f"Welcome, {current_student.Login}. You are an admin."}
+@admin_router.get("/", response_class=HTMLResponse)
+def admin_dashboard(
+    request: Request,
+    current_student=Depends(admin_required)
+):
+    return templates.TemplateResponse("Admin/dashboard.html", {
+        "request": request,
+        "admin": current_student
+    })
