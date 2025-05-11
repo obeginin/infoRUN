@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Главная</title>
     <link rel="stylesheet" type="text/css" href="/static/styles.css">
+    <script src="/static/scripts.js" defer></script>  <!-- Подключаем внешний JS файл -->
 </head>
 <body>
 
@@ -15,9 +16,16 @@
         <p>Ваша роль: {{ student.Role }}</p>
         <ul>
             {% if student.Role == "admin" %}
-                <a href="/admin/">Перейти в админку</a>
+            <li>
+                <a href="/admin/">Админка</a>
+            </li>
             {% endif %}
-            <li><a href="/tasks">Категории</a></li>
+            <li><a href="/js/">Категории</a></li>
+            <script>
+                // Загрузка категорий
+                loadData("/tasks/api/", "category-list");
+            </script>
+
             <li><a href="/subtasks">Задачи</a></li>
             <li><a href="/my-tasks">Мои задачи</a></li>
             <button onclick="window.location.href='/home/logout'">Выйти</button>
@@ -36,14 +44,5 @@
             </script>
         </ul>
     </nav>
-
-    {% if is_admin %}
-    <nav>
-        <ul>
-            <li><a href="/admin">Админка</a></li>
-        </ul>
-    </nav>
-    {% endif %}
-
 </body>
 </html>
