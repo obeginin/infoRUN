@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends,Form, Request, HTTPException
 from sqlalchemy.orm import Session
 from Models import Student
 from Schemas.auth import StudentLogin, StudentOut
@@ -6,22 +6,53 @@ from Security.token import create_access_token
 from Security.password import verify_password
 from dependencies import get_db
 from Crud.auth import get_current_student, admin_required
-from fastapi import APIRouter, Depends, Request
 from fastapi.templating import Jinja2Templates
+from passlib.context import CryptContext
+from fastapi.responses import RedirectResponse
 
+# Routers\auth.py
 auth_router = APIRouter(prefix="/home", tags=["login"]) # страница для пользователей
 admin_router = APIRouter(prefix="/admin", tags=["admin"]) # страница для админа
 templates = Jinja2Templates(directory="templates")
+pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
-# Страница входа
-@auth_router.get("/login_in")
+# /home/login_in (GET)
+'''Страница входа (вывод страницы)'''
+@auth_router.get("/login_in/")
 def login_form(request: Request):
     return templates.TemplateResponse("General/login.html", {"request": request})
 
-# Домашняя страница (после входа)
+# /home/
+'''Домашняя страница (после входа)'''
 @auth_router.get("/")
-def home_page(request: Request):
-    return templates.TemplateResponse("General/home.html", {"request": request})
+def home_page(request: Request, current_student: Student = Depends(get_current_student)):
+    return templates.TemplateResponse("General/home.html", {"request": request, "student": current_student})
+
+# /home/login_in/ (POST)
+'''Страница входа (отправка данных)'''
+@auth_router.post("/login_in/")
+async def login_in(
+        request: Request,
+        login: str = Form(...),
+        password: str = Form(...),
+        db: Session = Depends(get_db)):
+    student = db.query(Student).filter(Student.Login == login).first()
+    if not student or not pwd_context.verify(password, student.Password):
+        return RedirectResponse("/home/login_in?error=true", status_code=303)
+
+    access_token = create_access_token(data={"sub": student.Login})
+    response = RedirectResponse(url="/home", status_code=303)
+    response.set_cookie(key="access_token", value=f"Bearer {access_token}", httponly=True)
+    return response
+
+# /home/logout/
+'''Реализация выхода (удаления cookie с токеном)'''
+@auth_router.get("/logout")
+async def logout():
+    response = RedirectResponse(url="/home/login_in", status_code=303)
+    response.delete_cookie(key="access_token")
+    return response
+
 # /login/
 '''Маршрут для аутентификации, запрос токена для пользователя'''
 @auth_router.post("/login",  summary="Аутентификация",)
