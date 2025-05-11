@@ -54,7 +54,6 @@ def read_task_student(student_id: int, SubTasksID: int, db: Session = Depends(ge
 @students_router.get("/List/",  response_class=HTMLResponse)
 def read_all_students(request: Request, db: Session = Depends(get_db)):
     students_list = students.get_all_students(db)
-    print(students_list)
     return templates.TemplateResponse("Students/ListStudents.html", {"request": request, "students": students_list})
 
 # /students_subtasks/StudentTask/{StudentID}

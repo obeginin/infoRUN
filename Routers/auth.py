@@ -27,7 +27,7 @@ def login_form(request: Request):
 '''Домашняя страница (после входа)'''
 @auth_router.get("/")
 def home_page(request: Request, current_student: Student = Depends(get_current_student)):
-    return templates.TemplateResponse("General/home.html", {"request": request, "student": current_student})
+    return templates.TemplateResponse("home.html", {"request": request, "student": current_student})
 
 # /home/login_in/ (POST)
 '''Страница входа (отправка данных)'''
