@@ -2,7 +2,7 @@
 from sqlalchemy.orm import Session
 from Database import SessionLocal
 from Models import Student
-from Security.password import hash_password
+from Crud.auth import hash_password
 
 
 def add_passwords_to_students(db: Session):

@@ -5,10 +5,23 @@ from dependencies import get_db
 from Models import Student
 from Security.token import SECRET_KEY, ALGORITHM
 from fastapi import Depends, HTTPException, status, Request
-from Security.password import verify_password, get_student_by_login
-from fastapi import Cookie
+from Crud.students import get_student_by_login
+from passlib.context import CryptContext # объект, который помогает удобно хешировать и проверять пароли.
+
+
+# шифрование пароля
+pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
+# Функция для хеширования пароля (принимает обычный и возвращает хэшированный)
+def hash_password(password: str) -> str:
+    return pwd_context.hash(password)
+
+# Функция для проверки пароля (сравнивает введённый пользователем пароль и хеш из базы,)
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    return pwd_context.verify(plain_password, hashed_password)
+
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+
 # Функция для получения токена из заголовка Authorization
 def get_token_from_header(authorization: str = Depends(oauth2_scheme)) -> str:
     return authorization
@@ -59,6 +72,34 @@ def get_current_student(request: Request, db: Session = Depends(get_db)) -> Stud
 
     return student
 
+# Функция для аутентификации студента
+'''вроде сейчас используется только в swagger'''
+def authenticate_student(db: Session, login: str, password: str):
+    student = get_student_by_login(db, login)
+    if not student:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Студент с таким логином не найден"
+        )
+    if not verify_password(password, student.Password):  # Проверка пароля
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Неверный пароль"
+        )
+    return student  # Возвращаем студента, если логин и пароль верны
+
+
+# Проверка на роль "admin"
+def admin_required(
+    current_student=Depends(get_current_student),
+):
+    if current_student.Role != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Недостаточно прав"
+        )
+    return current_student
+
 '''def get_current_student(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> Student:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -104,29 +145,3 @@ def get_current_student_from_cookie(token: str = Cookie(None), db: Session = Dep
         raise credentials_exception
     return student'''
 
-# Функция для аутентификации студента
-def authenticate_student(db: Session, login: str, password: str):
-    student = get_student_by_login(db, login)
-    if not student:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Студент с таким логином не найден"
-        )
-    if not verify_password(password, student.Password):  # Проверка пароля
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Неверный пароль"
-        )
-    return student  # Возвращаем студента, если логин и пароль верны
-
-
-# Проверка на роль "admin"
-def admin_required(
-    current_student=Depends(get_current_student),
-):
-    if current_student.Role != "admin":
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Недостаточно прав"
-        )
-    return current_student

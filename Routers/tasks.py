@@ -75,11 +75,13 @@ def list_tasks_js(request: Request):
     return templates.TemplateResponse("Tasks/tasks_js.html", {"request": request})
 
 # /js/{task_id} (GET)
+'''Вывод страницы html с категориями'''
 @task_js_router.get("/{task_id}", response_class=HTMLResponse)
 def read_subtasks_TaskID(request: Request, task_id: int):
     return templates.TemplateResponse("Tasks/subtask.html", {"request": request, "task_id": task_id})
 
 # /js/TaskID/{subtask_id}   (GET)
+'''Вывод страницы html с задачей'''
 @task_js_router.get("/TaskID/{subtask_id}", response_class=HTMLResponse)
 def read_subtasks_subtask_id(request: Request, subtask_id: int):
     return templates.TemplateResponse("Tasks/task.html", {"request": request, "subtask_id": subtask_id})

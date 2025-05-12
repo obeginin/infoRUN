@@ -3,28 +3,27 @@ from sqlalchemy.orm import Session
 from Models import Student
 from Schemas.auth import StudentLogin, StudentOut
 from Security.token import create_access_token
-from Security.password import verify_password
 from dependencies import get_db
-from Crud.auth import get_current_student, admin_required
+from Crud.auth import get_current_student, admin_required, verify_password
 from fastapi.templating import Jinja2Templates
 from passlib.context import CryptContext
 from fastapi.responses import RedirectResponse
 from fastapi.responses import HTMLResponse
 
 # Routers\auth.py
-auth_router = APIRouter(prefix="/home", tags=["login"]) # страница для пользователей
+auth_router = APIRouter(prefix="/home", tags=["home"]) # страница для пользователей
 admin_router = APIRouter(prefix="/admin", tags=["admin"]) # страница для админа
 templates = Jinja2Templates(directory="templates")
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
 # /home/login_in (GET)
-'''Страница входа (вывод страницы)'''
+'''Страница входа (вывод страницы с ввдом логина)'''
 @auth_router.get("/login_in/")
 def login_form(request: Request):
     return templates.TemplateResponse("General/login.html", {"request": request})
 
 # /home/
-'''Домашняя страница (после входа)'''
+'''Домашняя страница (после авторизации)'''
 @auth_router.get("/")
 def home_page(request: Request, current_student: Student = Depends(get_current_student)):
     return templates.TemplateResponse("home.html", {"request": request, "student": current_student})

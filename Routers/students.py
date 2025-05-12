@@ -43,21 +43,21 @@ def read_student_all_subtasks(student_id: int, db: Session = Depends(get_db)):
     return students.get_student_all_tasks(db, student_id)
 
 #/students_subtasks/api/{StudentID}/{SubTasksID}
-'''Эндпоинт для получения подзадачи студента по его student_id и '''
+'''Эндпоинт для получения задачи студента по его student_id и номеру SubTasksID'''
 @students_subtasks_router.get("/api/{student_id}/{SubTasksID}", response_model=list[StudentTaskRead])
 def read_task_student(student_id: int, SubTasksID: int, db: Session = Depends(get_db)):
     return students.get_task_student(db, student_id, SubTasksID)
 
 
 # /students/List/
-'''Получаем всех пользователей'''
+'''Возвращем html страницу со списком всех пользователей'''
 @students_router.get("/List/",  response_class=HTMLResponse)
 def read_all_students(request: Request, db: Session = Depends(get_db)):
     students_list = students.get_all_students(db)
     return templates.TemplateResponse("Students/ListStudents.html", {"request": request, "students": students_list})
 
 # /students_subtasks/StudentTask/{StudentID}
-'''Получаем все задачи пользователя'''
+'''Возвращем страницу со всеми задачами пользователя'''
 @students_subtasks_router.get("/StudentTask/{StudentID}",  response_class=HTMLResponse)
 def read_student_all_subtasks(request: Request, StudentID: int, db: Session = Depends(get_db)):
     student = students.get_student_all_tasks(db, StudentID)
@@ -65,7 +65,7 @@ def read_student_all_subtasks(request: Request, StudentID: int, db: Session = De
     return templates.TemplateResponse("Students/StudentTask.html", {"request": request, "StudentID": StudentID, "tasks": student})
 
 # /students_subtasks/StudentTask/{StudentID}/{SubTasksID}
-'''Получаем задачу пользователя'''
+'''Возращаем страницу с задачей пользователя по его id и номеру задачи'''
 @students_subtasks_router.get("/StudentTask/{StudentID}/{SubTasksID}",  response_class=HTMLResponse)
 def read_student_all_subtasks(request: Request, StudentID: int, SubTasksID: int, db: Session = Depends(get_db)):
     Task = students.get_task_student(db, StudentID, SubTasksID)

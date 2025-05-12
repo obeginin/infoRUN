@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Depends
-from Routers import tasks,students,auth,web_auth  # Импортируем роутер задач
+from Routers import tasks,students,auth  # Импортируем роутер задач
 from fastapi.staticfiles import StaticFiles
 import uvicorn
 from fastapi.templating import Jinja2Templates
