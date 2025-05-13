@@ -69,7 +69,7 @@ def create_new_subtask(subtask: SubTaskCreate, db: Session = Depends(get_db)):
 
 # /js   (GET)
 '''Подключаем html файл с JavaScript'''
-'''В данном случае в return вызывает html страницу'''
+'''В данном случае в return вызывает html страницу со списком категорий'''
 @task_js_router.get("/", response_class=HTMLResponse)
 def list_tasks_js(request: Request):
     return templates.TemplateResponse("Tasks/tasks_js.html", {"request": request})

@@ -1,10 +1,13 @@
-from fastapi import APIRouter, Depends, Request
+from http.client import HTTPException
+
+from fastapi import APIRouter, Depends, Request, Query
 from sqlalchemy.orm import Session
 from Schemas.students import StudentsRead, StudentTaskRead
 from Crud import students
 from dependencies import get_db  # Зависимость для подключения к базе данных
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+from typing import Literal
 
 # Routers\Students.py
 ''' Маршруты и Эндпоинты'''
@@ -29,6 +32,18 @@ def read_all_students(db: Session = Depends(get_db)):
 @students_router.get("/api/{student_id}", response_model=list[StudentsRead],summary="Получить пользователя по ID")
 def read_student_id(student_id: int, db: Session = Depends(get_db)):
     return students.get_student_id(db, student_id)
+
+# /students/{value}
+''' Эндпоинт: Получить пользователей по параметру '''
+@students_router.get("/{value}", response_model=list[StudentsRead],summary="Получить пользователя по выбранному полю")
+def read_student_by_field(
+        value: str,
+        #by: str = 'id', # значение по умолчанию
+        by: Literal["id", "login"] = Query("id", description="Поле для поиска: 'id' или 'login'"),
+        db: Session = Depends(get_db)):
+    return students.get_student_by_field(db, value, by)
+
+
 
 # /students_subtasks/api
 '''Эндпоинт для получения всех подзадач всех студентов'''

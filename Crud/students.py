@@ -25,6 +25,24 @@ def get_student_id(db: Session, Student_id: int):
         raise HTTPException(status_code=404, detail=f"Студент с ID {Student_id} не найден")
     return result
 
+''' Получения студента по заданному полю(id, логин)'''
+def get_student_by_field(db: Session, value: str, by: str = "id"):
+    if by == "id":
+        try:
+            student_id = int(value)
+        except ValueError:
+            raise HTTPException(status_code=400, detail="ID должен быть числом")
+        student = db.query(Student).filter(Student.ID == student_id).all()
+    elif by == "login":
+        student = db.query(Student).filter(Student.Login == value).all()
+    else:
+        raise HTTPException(status_code=400, detail="Недопустимое поле поиска")
+
+    if not student:
+        raise HTTPException(status_code=404, detail="Студент не найден")
+
+    return student
+
 ''' Получения всех задач всех студентов '''
 def get_all_students_tasks(db: Session):
     query = text("SELECT * FROM StudentTasks")
