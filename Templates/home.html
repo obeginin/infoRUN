@@ -20,14 +20,15 @@
                 <a href="/admin/">Админка</a>
             </li>
             {% endif %}
-            <li><a href="/js/">Категории</a></li>
+            <li><a href="/tasks/">Категории</a></li>
             <script>
                 // Загрузка категорий
                 loadData("/tasks/api/", "category-list");
             </script>
 
-            <li><a href="/subtasks">Задачи</a></li>
-            <li><a href="/my-tasks">Мои задачи</a></li>
+            <li><a href="/subtasks/">Задачи</a></li>
+            <li><a href="/students_subtasks/StudentTask">Мои задачи</a></li>
+
             <button onclick="window.location.href='/home/logout'">Выйти</button>
             <script>
               function logout() {

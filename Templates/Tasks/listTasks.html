@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Список задач (JS)</title>
+    <link rel="stylesheet" type="text/css" href="/static/styles.css"> <!-- Подключаем внешний файл CSS -->
+</head>
+<body>
+    <h1>Список всех задач</h1>
+    <ul id="subtask-list"></ul>
+<!--Вывод списком (только категории)-->
+    <script>
+        // Загружаем список задач (данных с API)
+        async function loadTaskslist() {
+            try {
+                const response = await fetch("/subtasks/api/");
+                const subtasks = await response.json();
+
+                const list = document.getElementById("subtask-list");
+                for (const subtask of subtasks) {
+                    console.log("subtask", subtask); //Вывод в консоль браузера
+                    const li = document.createElement("li");
+                    li.innerHTML = `<a href="/subtasks/${subtask.SubTaskID}">Задача №${subtask.SubTaskID}</strong></a> Категория: <a href="/tasks/${subtask.TaskID}">${subtask.TaskID}</a>`;
+                    list.appendChild(li);
+
+                }
+            } catch (err) {
+                console.error("Ошибка при загрузке подзадач", err);
+            }
+        }
+
+
+        loadTaskslist();
+    </script>
+</body>
+</html>

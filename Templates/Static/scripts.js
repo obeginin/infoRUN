@@ -50,3 +50,4 @@ async function loadStudents() {
         document.getElementById("students-list").innerHTML = "<p>Ошибка при загрузке студентов.</p>";
     }
 }
+

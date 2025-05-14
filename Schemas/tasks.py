@@ -21,6 +21,7 @@ class TaskRead(BaseModel):
 # optional значит что поле может быть не заполнено
 class SubTaskRead(BaseModel):
     SubTaskID: int
+    TaskID: int
     SubTaskNumber: str
     ImagePath: Optional[str] = None
     Description: Optional[str] = None

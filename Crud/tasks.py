@@ -32,7 +32,7 @@ def get_columns_of_table(db: Session, table_name: str = 'SubTasks'):
 
 ''' функция-SQL запрос к БД для вывода всех подзадач'''
 def get_all_subtasks(db: Session):
-    query = text("SELECT SubTaskID, TaskID, SubTaskNumber, ImagePath, Description, Answer, SolutionPath FROM SubTasks ORDER BY SubTaskNumber")
+    query = text("SELECT SubTaskID, TaskID, SubTaskNumber, ImagePath, Description, Answer, SolutionPath FROM SubTasks ORDER BY TaskID")
     result = db.execute(query).fetchall()
     subtasks = [
         {"SubTaskID": row.SubTaskID,
@@ -47,17 +47,20 @@ def get_all_subtasks(db: Session):
 
 ''' функция-SQL для вывода подзадачи по id'''
 def get_subtasks_id(db: Session, subtasks_id: int):
-    query = text(f"SELECT * FROM SubTasks where SubTaskID={subtasks_id}")
-    result = db.execute(query).fetchall()
-    subtasks = [
-        {"SubTaskID": row.SubTaskID,
-        "TaskID": row.TaskID,
-         "SubTaskNumber": row.SubTaskNumber,
-         "ImagePath": row.ImagePath,
-         "Description": row.Description,
-         "Answer": row.Answer,
-         "SolutionPath": row.SolutionPath}
-        for row in result]
+    query = text("SELECT * FROM SubTasks WHERE SubTaskID = :id")
+    result = db.execute(query, {"id": subtasks_id}).fetchone()
+    if not result:
+        raise HTTPException(status_code=404, detail=f"Задача с ID {subtasks_id} не найдена")
+    subtasks = {
+        "SubTaskID": result.SubTaskID,
+        "TaskID": result.TaskID,
+         "SubTaskNumber": result.SubTaskNumber,
+         "ImagePath": result.ImagePath,
+         "Description": result.Description,
+         "Answer": result.Answer,
+         "SolutionPath": result.SolutionPath
+    }
+
     if not result:
         raise HTTPException(status_code=404, detail=f"Задача с ID {subtasks_id} не найдена")
     return subtasks

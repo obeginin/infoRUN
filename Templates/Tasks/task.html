@@ -19,8 +19,8 @@
                 const response = await fetch(`/subtasks/api/${subtaskId}`);
                 const subtask = await response.json();
                 console.log(subtask); // логирование в консоль api
-                document.getElementById("subtask-title").textContent = `${subtaskId}`;
-                document.getElementById("subtask-description").innerText = `${subtask.SubTaskNumber}`;
+                document.getElementById("subtask-title").textContent = `Задача№${subtaskId} ${subtask.SubTaskNumber}`;
+                document.getElementById("subtask-description").innerText = `${subtask.Description}`;
 
                 console.log(document.getElementById("subtask-title"));
 
