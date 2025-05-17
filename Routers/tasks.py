@@ -5,7 +5,8 @@ from Crud import tasks as task_crud
 from dependencies import get_db
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
-from Models import Task
+from Crud.auth import get_current_student
+from Models import Student
 
 # Routers\tasks.py
 ''' Маршруты и Эндпоинты'''
@@ -49,6 +50,12 @@ def list_tasks(request: Request):
 def read_subtasks_TaskID(request: Request):
     return templates.TemplateResponse("Tasks/tasks.html", {"request": request})
 
+# /tasks/(GET)
+'''Вывод страницы html с категориями'''
+'''@task_router.get("/", response_class=HTMLResponse)
+def read_subtasks_TaskID(request: Request, current_student: Student = Depends(get_current_student)):
+    return templates.TemplateResponse("Tasks/tasks.html", {"request": request, "student": current_student})
+'''
 
 # /subtasks/api/columns (GET)
 ''' Эндпоинт: Получить список всех столбцов таблицы subtasks'''

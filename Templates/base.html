@@ -1,32 +1,43 @@
+<!-- templates/base.html -->
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}Главная{% endblock %}</title>
+    <title>{% block title %}Учебный Кабинет{% endblock %}</title>
     <link rel="stylesheet" type="text/css" href="/static/styles.css">
-    <script src="/static/scripts.js" defer></script>  <!-- Подключаем общий JS файл -->
+    <script src="/static/scripts.js" defer></script>
 </head>
 <body>
+    <!-- Кнопка "Выйти" -->
+    <button class="logout-button" onclick="logout()">Выйти</button>
+    <script>
+        function logout() {
+            document.cookie = "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            window.location.href = "/home/login_in";
+        }
+    </script>
+    <p>Ваша роль: <strong>{{student.Role}}</strong></p>
+    <h1>Добро пожаловать в личный кабинет!</h1>
 
-    <header>
-        <h1>Добро пожаловать!</h1>
-    </header>
-
+    <!-- Общая навигация -->
     <nav>
         <ul>
-            <li><a href="/tasks">Категории</a></li>
-            <li><a href="/subtasks">Задачи</a></li>
-            <li><a href="/my-tasks">Мои задачи</a></li>
+            {% if student.Role == "admin" %}
+            <li><a href="/admin/">Админка</a></li>
+            {% endif %}
+            <li><a href="/home/">Home</a></li>
+            <li><a href="/tasks/">Категории</a></li>
+            <li><a href="/subtasks/">Задачи</a></li>
+            <li><a href="/students_subtasks/StudentTask">Мои задачи</a></li>
         </ul>
     </nav>
 
-    <main>
+    <!-- Контент страницы -->
+    <div class="content">
         {% block content %}{% endblock %}
-    </main>
+    </div>
 
-    <footer>
-        <button onclick="window.location.href='/home/logout'">Выйти</button>
-    </footer>
+
 
 </body>
 </html>

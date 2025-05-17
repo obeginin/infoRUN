@@ -90,5 +90,5 @@ def admin_dashboard(
 ):
     return templates.TemplateResponse("Admin/dashboard.html", {
         "request": request,
-        "admin": current_student
+        "student": current_student
     })

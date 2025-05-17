@@ -1,49 +1,8 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Главная</title>
-    <link rel="stylesheet" type="text/css" href="/static/styles.css">
-    <script src="/static/scripts.js" defer></script>  <!-- Подключаем внешний JS файл -->
-</head>
-<body>
+<!-- Templates/home.html -->
+{% extends "base.html" %}
 
-    <h1>Добро пожаловать!</h1>
+{% block title %}Главная{% endblock %}
 
-    <p>Добро пожаловать в учебный кабинет. Здесь вы можете просматривать доступные задания и следить за прогрессом.</p>
-
-    <nav>
-        <p>Ваша роль: {{ student.Role }}</p>
-        <ul>
-            {% if student.Role == "admin" %}
-            <li>
-                <a href="/admin/">Админка</a>
-            </li>
-            {% endif %}
-            <li><a href="/tasks/">Категории</a></li>
-            <script>
-                // Загрузка категорий
-                loadData("/tasks/api/", "category-list");
-            </script>
-
-            <li><a href="/subtasks/">Задачи</a></li>
-            <li><a href="/students_subtasks/StudentTask">Мои задачи</a></li>
-
-            <button onclick="window.location.href='/home/logout'">Выйти</button>
-            <script>
-              function logout() {
-                // Удаляем токен из cookies
-                document.cookie = "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-
-                // Или из localStorage / sessionStorage
-                // localStorage.removeItem("access_token");
-                // sessionStorage.removeItem("access_token");
-
-                // Перенаправляем пользователя на страницу входа
-                window.location.href = "/home/login_in";
-              }
-            </script>
-        </ul>
-    </nav>
-</body>
-</html>
+{% block content %}
+    <p>Это домашняя страница, здесь вы можете просматривать задания и следить за прогрессом.</p>
+{% endblock %}

@@ -1,19 +1,12 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Админ-панель</title>
-    <link rel="stylesheet" type="text/css" href="/static/styles.css">
-</head>
-<body>
+{# Templates/Admin/dashboard.html #}
+{% extends "base.html" %}
 
-    <h1>Админ-панель</h1>
+{% block title %}Админ-панель{% endblock %}
 
-    <div class="button-container">
+{% block content %}
+<div class="button-container">
         <button class="admin-button" onclick="location.href='/students/List/'">Список учеников</button>
         <button class="admin-button" onclick="location.href='/admin/tasks'">Список задач</button>
         <button class="admin-button" onclick="location.href='/admin/stats'">Статистика</button>
     </div>
-
-</body>
-</html>
+{% endblock %}
