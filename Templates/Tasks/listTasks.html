@@ -1,12 +1,9 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Список задач (JS)</title>
-    <link rel="stylesheet" type="text/css" href="/static/styles.css"> <!-- Подключаем внешний файл CSS -->
-</head>
-<body>
-    <h1>Список всех задач</h1>
+{# Templates/Tasks/listTasks.html #}
+{% extends "base.html" %}
+
+{% block title %}Список Задач{% endblock %}
+{% block title_1 %}Список Задач!{% endblock %}
+{% block content %}
     <ul id="subtask-list"></ul>
 <!--Вывод списком (только категории)-->
     <script>
@@ -32,5 +29,4 @@
 
         loadTaskslist();
     </script>
-</body>
-</html>
+{% endblock %}

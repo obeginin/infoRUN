@@ -51,16 +51,7 @@ def list_tasks(request: Request):
 def read_subtasks_TaskID(request: Request, current_student = Depends(get_current_student_or_redirect)):
     if isinstance(current_student, RedirectResponse):
         return current_student
-    response = templates.TemplateResponse("Tasks/tasks.html", {
-        "request": request,
-        "student": current_student
-    })
-
-    response.headers["Cache-Control"] = "no-store"
-    response.headers["Pragma"] = "no-cache"
-    response.headers["Expires"] = "0"
-    return response
-
+    return templates.TemplateResponse("Tasks/tasks.html", {"request": request, "student": current_student})
 # /tasks/(GET)
 '''Вывод страницы html с категориями'''
 '''@task_router.get("/", response_class=HTMLResponse)
@@ -83,8 +74,10 @@ def read_all_subtasks(db: Session = Depends(get_db)):
 # /subtasks/
 '''Вызываем html страницу с задачами'''
 @subtask_router.get("/", response_class=HTMLResponse)
-def list_tasks(request: Request):
-    return templates.TemplateResponse("Tasks/listTasks.html", {"request": request})
+def list_tasks(request: Request, current_student = Depends(get_current_student_or_redirect)):
+    if isinstance(current_student, RedirectResponse):
+        return current_student
+    return templates.TemplateResponse("Tasks/listTasks.html", {"request": request, "student": current_student})
 
 
 # /subtasks/api/{subtask_id}    (GET)
