@@ -23,7 +23,7 @@ templates = Jinja2Templates(directory="templates") # для
 # Перенаправление на страницу логина при открытии корня (Основной адрес сайта)
 @app.get("/")
 def read():
-    return RedirectResponse(url="/home/login_in")
+    return RedirectResponse(url="/home/login_in/")
 
 """запуск сервера"""
 if __name__ == "__main__":

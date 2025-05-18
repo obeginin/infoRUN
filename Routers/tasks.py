@@ -51,7 +51,15 @@ def list_tasks(request: Request):
 def read_subtasks_TaskID(request: Request, current_student = Depends(get_current_student_or_redirect)):
     if isinstance(current_student, RedirectResponse):
         return current_student
-    return templates.TemplateResponse("Tasks/tasks.html", {"request": request, "student": current_student})
+    response = templates.TemplateResponse("Tasks/tasks.html", {
+        "request": request,
+        "student": current_student
+    })
+
+    response.headers["Cache-Control"] = "no-store"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
 
 # /tasks/(GET)
 '''Вывод страницы html с категориями'''

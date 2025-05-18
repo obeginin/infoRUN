@@ -42,19 +42,20 @@ async def login_in(
         db: Session = Depends(get_db)):
     student = db.query(Student).filter(Student.Login == login).first()
     if not student or not pwd_context.verify(password, student.Password):
-        return RedirectResponse("/home/login_in?error=true", status_code=303)
+        return RedirectResponse("/home/login_in/?error=true", status_code=303)
 
     access_token = create_access_token(data={"sub": student.Login})
     response = RedirectResponse(url=next, status_code=303)
-    response.set_cookie(key="access_token", value=f"Bearer {access_token}", httponly=True)
+    response.set_cookie(key="access_token", value=f"Bearer {access_token}", httponly=True, path="/")
     return response
 
 # /home/logout/
 '''Реализация выхода (удаления cookie с токеном)'''
-@auth_router.get("/logout")
+@auth_router.get("/logout/")
 async def logout():
-    response = RedirectResponse(url="/home/login_in", status_code=303)
-    response.delete_cookie(key="access_token")
+    print("LOGOUT!!!")
+    response = RedirectResponse(url="/home/login_in/", status_code=303)
+    response.delete_cookie(key="access_token", path="/")
     return response
 
 # /login/

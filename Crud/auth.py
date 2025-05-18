@@ -30,7 +30,7 @@ async def get_current_student_or_redirect(
         return get_current_student(request, db)
     except HTTPException as e:
         if e.status_code == HTTP_401_UNAUTHORIZED:
-            return RedirectResponse(url=f"/home/login_in?next={request.url.path}", status_code=302)
+            return RedirectResponse(url=f"/home/login_in/?next={request.url.path}", status_code=302)
             #return RedirectResponse(url="/home/login_in")
         raise e
 
@@ -43,6 +43,7 @@ def get_token_from_header(authorization: str = Depends(oauth2_scheme)) -> str:
 # функция получения студента по токену
 def get_current_student(request: Request, db: Session = Depends(get_db)) -> Student:
     token = request.cookies.get("access_token")
+    print("ACCESS TOKEN >>>", token)
     if not token:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

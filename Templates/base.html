@@ -13,7 +13,8 @@
     <script>
         function logout() {
             document.cookie = "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-            window.location.href = "/home/login_in";
+            //window.location.href = "/home/login_in/"
+            window.location.href = "/home/logout/";
         }
     </script>
     <p>Ваша роль: <strong>{{student.Role}}</strong></p>
@@ -28,7 +29,7 @@
             <li><a href="/home/">Home</a></li>
             <li><a href="/tasks/">Категории</a></li>
             <li><a href="/subtasks/">Задачи</a></li>
-            <li><a href="/students_subtasks/StudentTask">Мои задачи</a></li>
+            <li><a href="/students_subtasks/StudentTask/">Мои задачи</a></li>
         </ul>
     </nav>
 
