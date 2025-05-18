@@ -1,0 +1,11 @@
+2025-05-18 20:19:41,384 - INFO - root - Логирование инициализировано.
+2025-05-18 20:22:18,065 - INFO - root - Логирование инициализировано.
+2025-05-18 20:22:22,878 - INFO - requests - Запрос: GET /students_subtasks/StudentTask/1
+2025-05-18 20:22:22,879 - WARNING - root - Авторизован студент: Student.Login
+2025-05-18 20:22:22,990 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-18 20:22:22,990 - WARNING - root - Результатов найдено: 6
+2025-05-18 20:22:22,994 - INFO - requests - Ответ: GET /students_subtasks/StudentTask/1 - статус 200
+2025-05-18 20:22:23,002 - INFO - requests - Запрос: GET /static/styles.css
+2025-05-18 20:22:23,022 - INFO - requests - Ответ: GET /static/styles.css - статус 304
+2025-05-18 20:22:23,488 - INFO - requests - Запрос: GET /admin/
+2025-05-18 20:22:23,500 - INFO - requests - Ответ: GET /admin/ - статус 200

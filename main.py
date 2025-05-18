@@ -4,6 +4,11 @@ from fastapi.staticfiles import StaticFiles
 import uvicorn
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse
+from log import setup_logging
+from middlewares import LoggingMiddleware
+
+# Настроим логирование при запуске приложения
+setup_logging()
 
 app = FastAPI()
 # Регистрируем роутер
@@ -15,6 +20,7 @@ app.include_router(students.students_router)  # Регистрируем роу�
 app.include_router(students.students_subtasks_router) # Регистрируем роутер для задач студентов
 app.include_router(auth.auth_router) # Регистрируем роутер Аутентификации
 app.include_router(auth.admin_router)
+app.add_middleware(LoggingMiddleware) # Middleware для логов всех запросов
 #app.include_router(web_auth.router) # подключаем home
 app.mount("/static", StaticFiles(directory="Templates/Static"), name="static") # для CSS файлов
 templates = Jinja2Templates(directory="templates") # для

@@ -9,6 +9,7 @@ from fastapi.templating import Jinja2Templates
 from passlib.context import CryptContext
 from fastapi.responses import RedirectResponse
 from fastapi.responses import HTMLResponse
+import logging
 
 # Routers\auth.py
 auth_router = APIRouter(prefix="/home", tags=["home"]) # страница для пользователей
