@@ -9,3 +9,425 @@
 2025-05-18 20:22:23,022 - INFO - requests - Ответ: GET /static/styles.css - статус 304
 2025-05-18 20:22:23,488 - INFO - requests - Запрос: GET /admin/
 2025-05-18 20:22:23,500 - INFO - requests - Ответ: GET /admin/ - статус 200
+2025-05-18 20:23:20,337 - INFO - requests - Запрос: GET /students/List/
+2025-05-18 20:23:20,345 - INFO - requests - Ответ: GET /students/List/ - статус 200
+2025-05-18 20:23:20,359 - INFO - requests - Запрос: GET /students/api/
+2025-05-18 20:23:20,363 - INFO - requests - Ответ: GET /students/api/ - статус 200
+2025-05-18 20:23:26,609 - INFO - requests - Запрос: GET /students_subtasks/StudentTask/1
+2025-05-18 20:23:26,610 - WARNING - root - Авторизован студент: Student.Login
+2025-05-18 20:23:26,610 - WARNING - root - Редирект, так как студент не авторизован
+2025-05-18 20:23:26,611 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-18 20:23:26,611 - WARNING - root - Результатов найдено: 6
+2025-05-18 20:23:26,615 - INFO - requests - Ответ: GET /students_subtasks/StudentTask/1 - статус 200
+2025-05-18 20:31:50,958 - INFO - root - Логирование инициализировано.
+2025-05-18 20:31:56,282 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:31:56,282 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:31:57,942 - INFO - requests - Запрос: GET /students_subtasks/StudentTask/1
+2025-05-18 20:31:58,071 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-18 20:31:58,071 - WARNING - root - Результатов найдено: 6
+2025-05-18 20:31:58,076 - INFO - requests - Ответ: GET /students_subtasks/StudentTask/1 - статус 200
+2025-05-18 20:31:58,089 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:31:58,090 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:32:05,177 - INFO - root - Логирование инициализировано.
+2025-05-18 20:32:05,971 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:32:05,971 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:32:05,977 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:32:05,977 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:32:06,910 - INFO - requests - Запрос: GET /students_subtasks/StudentTask/1
+2025-05-18 20:32:07,015 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-18 20:32:07,015 - WARNING - root - Результатов найдено: 6
+2025-05-18 20:32:07,020 - INFO - requests - Ответ: GET /students_subtasks/StudentTask/1 - статус 200
+2025-05-18 20:32:07,032 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:32:07,033 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:32:10,197 - INFO - requests - Запрос: GET /home/logout/
+2025-05-18 20:32:10,198 - INFO - requests - Ответ: GET /home/logout/ - статус 303
+2025-05-18 20:32:10,203 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 20:32:10,206 - INFO - requests - Ответ: GET /home/login_in/ - статус 200
+2025-05-18 20:32:10,221 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:32:10,221 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:32:10,950 - INFO - requests - Запрос: POST /home/login_in/
+2025-05-18 20:32:10,976 - INFO - requests - Ответ: POST /home/login_in/ - статус 303
+2025-05-18 20:32:10,979 - INFO - requests - Запрос: GET /
+2025-05-18 20:32:10,980 - INFO - requests - Ответ: GET / - статус 307
+2025-05-18 20:32:10,981 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 20:32:10,982 - INFO - requests - Ответ: GET /home/login_in/ - статус 200
+2025-05-18 20:32:10,992 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:32:10,993 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:32:14,088 - INFO - requests - Запрос: GET /home/
+2025-05-18 20:32:14,096 - INFO - requests - Ответ: GET /home/ - статус 200
+2025-05-18 20:32:14,115 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:32:14,116 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:32:15,805 - INFO - requests - Запрос: GET /home/
+2025-05-18 20:32:15,811 - INFO - requests - Ответ: GET /home/ - статус 200
+2025-05-18 20:32:15,824 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:32:15,824 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:32:18,060 - INFO - requests - Запрос: GET /home/logout/
+2025-05-18 20:32:18,060 - INFO - requests - Ответ: GET /home/logout/ - статус 303
+2025-05-18 20:32:18,063 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 20:32:18,063 - INFO - requests - Ответ: GET /home/login_in/ - статус 200
+2025-05-18 20:32:18,080 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:32:18,080 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:32:20,338 - INFO - requests - Запрос: POST /home/login_in/
+2025-05-18 20:32:20,356 - INFO - requests - Ответ: POST /home/login_in/ - статус 303
+2025-05-18 20:32:20,359 - INFO - requests - Запрос: GET /
+2025-05-18 20:32:20,360 - INFO - requests - Ответ: GET / - статус 307
+2025-05-18 20:32:20,362 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 20:32:20,363 - INFO - requests - Ответ: GET /home/login_in/ - статус 200
+2025-05-18 20:32:20,371 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:32:20,372 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:32:23,881 - INFO - requests - Запрос: GET /home/
+2025-05-18 20:32:23,885 - INFO - requests - Ответ: GET /home/ - статус 200
+2025-05-18 20:32:23,905 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:32:23,906 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:32:25,239 - INFO - requests - Запрос: GET /admin/
+2025-05-18 20:32:25,248 - INFO - requests - Ответ: GET /admin/ - статус 200
+2025-05-18 20:32:25,262 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:32:25,262 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:32:26,131 - INFO - requests - Запрос: GET /students/List/
+2025-05-18 20:32:26,135 - INFO - requests - Ответ: GET /students/List/ - статус 200
+2025-05-18 20:32:26,155 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:32:26,155 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:32:26,175 - INFO - requests - Запрос: GET /students/api/
+2025-05-18 20:32:26,178 - INFO - requests - Ответ: GET /students/api/ - статус 200
+2025-05-18 20:32:27,049 - INFO - requests - Запрос: GET /students_subtasks/StudentTask/1
+2025-05-18 20:32:27,056 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-18 20:32:27,056 - WARNING - root - Результатов найдено: 6
+2025-05-18 20:32:27,057 - INFO - requests - Ответ: GET /students_subtasks/StudentTask/1 - статус 200
+2025-05-18 20:32:27,076 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:32:27,076 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:34:53,194 - INFO - root - Логирование инициализировано.
+2025-05-18 20:34:54,598 - INFO - requests - Запрос: GET /students_subtasks/StudentTask/1
+2025-05-18 20:34:54,721 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-18 20:34:54,721 - WARNING - root - Результатов найдено: 6
+2025-05-18 20:34:54,775 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:34:54,776 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:34:55,981 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:34:55,981 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:34:55,998 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:34:55,999 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:34:56,874 - INFO - requests - Запрос: GET /students_subtasks/StudentTask/1
+2025-05-18 20:34:56,880 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-18 20:34:56,880 - WARNING - root - Результатов найдено: 6
+2025-05-18 20:34:56,897 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:34:56,897 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:37:34,865 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:37:34,866 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:37:36,029 - INFO - requests - Запрос: GET /students_subtasks/StudentTask/1
+2025-05-18 20:37:36,035 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-18 20:37:36,035 - WARNING - root - Результатов найдено: 6
+2025-05-18 20:37:36,053 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:37:36,054 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:38:00,969 - INFO - root - Логирование инициализировано.
+2025-05-18 20:38:01,536 - INFO - requests - Запрос: GET /students_subtasks/StudentTask/1
+2025-05-18 20:38:01,646 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-18 20:38:01,646 - WARNING - root - Результатов найдено: 6
+2025-05-18 20:38:01,665 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:38:01,665 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:38:02,241 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:38:02,242 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:38:02,288 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:38:02,289 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:38:02,999 - INFO - requests - Запрос: GET /students_subtasks/StudentTask/1
+2025-05-18 20:38:03,003 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-18 20:38:03,003 - WARNING - root - Результатов найдено: 6
+2025-05-18 20:38:03,021 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:38:03,022 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:38:17,918 - INFO - root - Логирование инициализировано.
+2025-05-18 20:38:18,301 - INFO - requests - Запрос: GET /students_subtasks/StudentTask/1
+2025-05-18 20:38:18,393 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-18 20:38:18,393 - WARNING - root - Результатов найдено: 6
+2025-05-18 20:38:18,397 - INFO - requests - Ответ: GET /students_subtasks/StudentTask/1 - статус 200
+2025-05-18 20:38:18,407 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:38:18,408 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:38:21,936 - INFO - requests - Запрос: GET /admin/
+2025-05-18 20:38:21,949 - INFO - requests - Ответ: GET /admin/ - статус 200
+2025-05-18 20:38:21,963 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:38:21,964 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:38:22,482 - INFO - requests - Запрос: GET /students/List/
+2025-05-18 20:38:22,489 - INFO - requests - Ответ: GET /students/List/ - статус 200
+2025-05-18 20:38:22,505 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:38:22,505 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:38:22,518 - INFO - requests - Запрос: GET /students/api/
+2025-05-18 20:38:22,521 - INFO - requests - Ответ: GET /students/api/ - статус 200
+2025-05-18 20:38:23,343 - INFO - requests - Запрос: GET /students_subtasks/StudentTask/1
+2025-05-18 20:38:23,347 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-18 20:38:23,347 - WARNING - root - Результатов найдено: 6
+2025-05-18 20:38:23,348 - INFO - requests - Ответ: GET /students_subtasks/StudentTask/1 - статус 200
+2025-05-18 20:38:23,367 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:38:23,368 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:38:38,081 - INFO - root - Логирование инициализировано.
+2025-05-18 20:38:38,180 - INFO - requests - Запрос: GET /students_subtasks/StudentTask/1
+2025-05-18 20:38:38,285 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-18 20:38:38,285 - WARNING - root - Результатов найдено: 6
+2025-05-18 20:38:38,290 - INFO - requests - Ответ: GET /students_subtasks/StudentTask/1 - статус 200
+2025-05-18 20:38:38,298 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:38:38,299 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:38:39,453 - INFO - requests - Запрос: GET /admin/
+2025-05-18 20:38:39,463 - INFO - requests - Ответ: GET /admin/ - статус 200
+2025-05-18 20:38:39,480 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:38:39,480 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:38:40,197 - INFO - requests - Запрос: GET /students/List/
+2025-05-18 20:38:40,202 - INFO - requests - Ответ: GET /students/List/ - статус 200
+2025-05-18 20:38:40,222 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:38:40,222 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:38:40,233 - INFO - requests - Запрос: GET /students/api/
+2025-05-18 20:38:40,237 - INFO - requests - Ответ: GET /students/api/ - статус 200
+2025-05-18 20:38:40,923 - INFO - requests - Запрос: GET /students_subtasks/StudentTask/1
+2025-05-18 20:38:40,927 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-18 20:38:40,927 - WARNING - root - Результатов найдено: 6
+2025-05-18 20:38:40,929 - INFO - requests - Ответ: GET /students_subtasks/StudentTask/1 - статус 200
+2025-05-18 20:38:40,950 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:38:40,951 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:39:25,064 - INFO - root - Логирование инициализировано.
+2025-05-18 20:39:25,724 - INFO - requests - Запрос: GET /students_subtasks/StudentTask/1
+2025-05-18 20:39:25,832 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-18 20:39:25,833 - WARNING - root - Результатов найдено: 6
+2025-05-18 20:39:25,839 - INFO - requests - Ответ: GET /students_subtasks/StudentTask/1 - статус 200
+2025-05-18 20:39:25,851 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:39:25,851 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:39:28,387 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:39:28,387 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:39:28,970 - INFO - requests - Запрос: GET /students_subtasks/StudentTask/2
+2025-05-18 20:39:28,976 - WARNING - root - Получаем задачи для студента с ID = 2
+2025-05-18 20:39:28,977 - WARNING - root - Результатов найдено: 6
+2025-05-18 20:39:28,980 - INFO - requests - Ответ: GET /students_subtasks/StudentTask/2 - статус 200
+2025-05-18 20:39:28,999 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:39:28,999 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:39:30,631 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:39:30,632 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:39:30,647 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:39:30,648 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:39:31,374 - INFO - requests - Запрос: GET /students_subtasks/StudentTask/3
+2025-05-18 20:39:31,377 - WARNING - root - Получаем задачи для студента с ID = 3
+2025-05-18 20:39:31,377 - WARNING - root - Результатов найдено: 6
+2025-05-18 20:39:31,379 - INFO - requests - Ответ: GET /students_subtasks/StudentTask/3 - статус 200
+2025-05-18 20:39:31,398 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:39:31,398 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:39:33,180 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:39:33,180 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:39:33,197 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:39:33,198 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:39:34,063 - INFO - requests - Запрос: GET /students_subtasks/StudentTask/5
+2025-05-18 20:39:34,093 - WARNING - root - Получаем задачи для студента с ID = 5
+2025-05-18 20:39:34,094 - WARNING - root - Результатов найдено: 6
+2025-05-18 20:39:34,095 - INFO - requests - Ответ: GET /students_subtasks/StudentTask/5 - статус 200
+2025-05-18 20:39:34,113 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:39:34,113 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:39:41,936 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:39:41,937 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:39:41,939 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:39:41,939 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:39:45,403 - INFO - requests - Запрос: GET /students_subtasks/StudentTask/1
+2025-05-18 20:39:45,408 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-18 20:39:45,408 - WARNING - root - Результатов найдено: 6
+2025-05-18 20:39:45,409 - INFO - requests - Ответ: GET /students_subtasks/StudentTask/1 - статус 200
+2025-05-18 20:39:45,432 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:39:45,433 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:39:46,735 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:39:46,735 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:39:46,744 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:39:46,745 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:39:47,378 - INFO - requests - Запрос: GET /students_subtasks/StudentTask/2
+2025-05-18 20:39:47,380 - WARNING - root - Получаем задачи для студента с ID = 2
+2025-05-18 20:39:47,381 - WARNING - root - Результатов найдено: 6
+2025-05-18 20:39:47,382 - INFO - requests - Ответ: GET /students_subtasks/StudentTask/2 - статус 200
+2025-05-18 20:39:47,395 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:39:47,396 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:39:48,379 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:39:48,379 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:39:48,386 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:39:48,387 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:49:56,681 - INFO - root - Логирование инициализировано.
+2025-05-18 20:50:01,952 - INFO - requests - Запрос: GET /students/List/
+2025-05-18 20:50:02,067 - INFO - Routers.students - Получен запрос на список студентов
+2025-05-18 20:50:02,069 - INFO - requests - Ответ: GET /students/List/ - статус 200
+2025-05-18 20:50:02,084 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:50:02,084 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:50:02,095 - INFO - requests - Запрос: GET /students/api/
+2025-05-18 20:50:02,099 - INFO - requests - Ответ: GET /students/api/ - статус 200
+2025-05-18 20:50:12,057 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:50:12,058 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:50:13,683 - INFO - requests - Запрос: GET /students/List/
+2025-05-18 20:50:13,686 - INFO - Routers.students - Получен запрос на список студентов
+2025-05-18 20:50:13,687 - INFO - requests - Ответ: GET /students/List/ - статус 200
+2025-05-18 20:50:13,703 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:50:13,703 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:50:13,709 - INFO - requests - Запрос: GET /students/api/
+2025-05-18 20:50:13,714 - INFO - requests - Ответ: GET /students/api/ - статус 200
+2025-05-18 20:50:39,208 - INFO - root - Логирование инициализировано.
+2025-05-18 20:50:40,396 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:50:40,397 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:50:40,399 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:50:40,400 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:50:41,499 - INFO - requests - Запрос: GET /students/List/
+2025-05-18 20:50:41,628 - INFO - requests - Ответ: GET /students/List/ - статус 200
+2025-05-18 20:50:41,639 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:50:41,640 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:50:41,649 - INFO - requests - Запрос: GET /students/api/
+2025-05-18 20:50:41,654 - INFO - requests - Ответ: GET /students/api/ - статус 200
+2025-05-18 20:50:51,177 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:50:51,178 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:50:51,183 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:50:51,183 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:50:52,052 - INFO - requests - Запрос: GET /admin/
+2025-05-18 20:50:52,071 - INFO - requests - Ответ: GET /admin/ - статус 200
+2025-05-18 20:50:52,086 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:50:52,087 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:50:52,818 - INFO - requests - Запрос: GET /students/List/
+2025-05-18 20:50:52,825 - INFO - requests - Ответ: GET /students/List/ - статус 200
+2025-05-18 20:50:52,845 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:50:52,845 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:50:52,855 - INFO - requests - Запрос: GET /students/api/
+2025-05-18 20:50:52,858 - INFO - requests - Ответ: GET /students/api/ - статус 200
+2025-05-18 20:52:48,924 - INFO - root - Логирование инициализировано.
+2025-05-18 20:52:52,978 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:52:52,978 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:52:52,981 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:52:52,982 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:52:54,359 - INFO - requests - Запрос: GET /students/List/
+2025-05-18 20:52:54,476 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:52:54,477 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:53:23,455 - INFO - root - Логирование инициализировано.
+2025-05-18 20:53:29,225 - INFO - root - Логирование инициализировано.
+2025-05-18 20:53:29,470 - INFO - requests - Запрос: GET /students/List/
+2025-05-18 20:53:29,561 - INFO - Routers.students - Получен запрос на список студентов
+2025-05-18 20:53:29,563 - INFO - requests - Ответ: GET /students/List/ - статус 200
+2025-05-18 20:53:29,574 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:53:29,574 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:53:29,587 - INFO - requests - Запрос: GET /students/api/
+2025-05-18 20:53:29,591 - INFO - requests - Ответ: GET /students/api/ - статус 200
+2025-05-18 20:54:07,257 - INFO - root - Логирование инициализировано.
+2025-05-18 20:54:08,818 - INFO - requests - Запрос: GET /students/List/
+2025-05-18 20:54:09,719 - INFO - root - Логирование инициализировано.
+2025-05-18 20:54:09,731 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:54:09,732 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:54:16,390 - INFO - root - Логирование инициализировано.
+2025-05-18 20:54:20,145 - INFO - requests - Запрос: GET /students/List/
+2025-05-18 20:54:20,280 - INFO - Routers.students - Получен запрос на список студентов
+2025-05-18 20:54:20,283 - INFO - requests - Ответ: GET /students/List/ - статус 200
+2025-05-18 20:54:20,293 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:54:20,293 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:54:20,306 - INFO - requests - Запрос: GET /students/api/
+2025-05-18 20:54:20,310 - INFO - requests - Ответ: GET /students/api/ - статус 200
+2025-05-18 20:55:17,166 - INFO - root - Логирование инициализировано.
+2025-05-18 20:55:17,614 - INFO - requests - Запрос: GET /students/List/
+2025-05-18 20:55:17,731 - INFO - Routers.students - Получен запрос на список студентов
+2025-05-18 20:55:17,734 - INFO - requests - Ответ: GET /students/List/ - статус 200
+2025-05-18 20:55:17,745 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:55:17,746 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 20:55:17,767 - INFO - requests - Запрос: GET /students/api/
+2025-05-18 20:55:17,773 - INFO - requests - Ответ: GET /students/api/ - статус 200
+2025-05-18 20:55:44,950 - INFO - requests - Запрос: GET /students_subtasks/StudentTask/1
+2025-05-18 20:55:44,965 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-18 20:55:44,965 - WARNING - root - Результатов найдено: 6
+2025-05-18 20:55:44,970 - INFO - requests - Ответ: GET /students_subtasks/StudentTask/1 - статус 200
+2025-05-18 20:55:44,985 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 20:55:44,986 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 21:01:02,114 - INFO - root - Логирование инициализировано.
+2025-05-18 21:01:05,050 - INFO - requests - Запрос: GET /students_subtasks/StudentTask/1
+2025-05-18 21:01:05,203 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-18 21:01:05,204 - WARNING - root - Результатов найдено: 6
+2025-05-18 21:01:05,209 - INFO - requests - Ответ: GET /students_subtasks/StudentTask/1 - статус 200
+2025-05-18 21:01:05,233 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 21:01:05,234 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 21:01:05,577 - INFO - requests - Запрос: GET /admin/
+2025-05-18 21:01:05,588 - INFO - requests - Ответ: GET /admin/ - статус 200
+2025-05-18 21:01:05,607 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 21:01:05,607 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 21:01:06,179 - INFO - requests - Запрос: GET /students/List/
+2025-05-18 21:01:06,182 - INFO - Routers.students - Получен запрос на список студентов
+2025-05-18 21:01:06,184 - INFO - requests - Ответ: GET /students/List/ - статус 200
+2025-05-18 21:01:06,200 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 21:01:06,200 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 21:01:06,212 - INFO - requests - Запрос: GET /students/api/
+2025-05-18 21:01:06,220 - INFO - requests - Ответ: GET /students/api/ - статус 200
+2025-05-18 21:01:06,880 - INFO - requests - Запрос: GET /students_subtasks/StudentTask/undefined
+2025-05-18 21:01:06,898 - INFO - requests - Ответ: GET /students_subtasks/StudentTask/undefined - статус 422
+2025-05-18 21:01:06,914 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 21:01:06,915 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 21:01:29,224 - INFO - root - Логирование инициализировано.
+2025-05-18 21:01:29,734 - INFO - requests - Запрос: GET /students_subtasks/StudentTask/undefined
+2025-05-18 21:01:29,847 - INFO - requests - Ответ: GET /students_subtasks/StudentTask/undefined - статус 422
+2025-05-18 21:01:29,862 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 21:01:29,863 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 21:01:31,497 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 21:01:31,498 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 21:01:31,517 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 21:01:31,518 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 21:01:32,140 - INFO - requests - Запрос: GET /students_subtasks/StudentTask/undefined
+2025-05-18 21:01:32,144 - INFO - requests - Ответ: GET /students_subtasks/StudentTask/undefined - статус 422
+2025-05-18 21:01:32,168 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 21:01:32,168 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 21:01:35,606 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 21:01:35,607 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 21:01:35,621 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 21:01:35,621 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 21:01:43,278 - INFO - root - Логирование инициализировано.
+2025-05-18 21:01:44,901 - INFO - requests - Запрос: GET /students/List/
+2025-05-18 21:01:45,027 - INFO - Routers.students - Получен запрос на список студентов
+2025-05-18 21:01:45,029 - INFO - requests - Ответ: GET /students/List/ - статус 200
+2025-05-18 21:01:45,042 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 21:01:45,042 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 21:01:45,055 - INFO - requests - Запрос: GET /students/api/
+2025-05-18 21:01:45,060 - INFO - requests - Ответ: GET /students/api/ - статус 200
+2025-05-18 21:01:47,772 - INFO - requests - Запрос: GET /students_subtasks/StudentTask/1
+2025-05-18 21:01:47,790 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-18 21:01:47,790 - WARNING - root - Результатов найдено: 6
+2025-05-18 21:01:47,794 - INFO - requests - Ответ: GET /students_subtasks/StudentTask/1 - статус 200
+2025-05-18 21:01:47,820 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 21:01:47,821 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 21:03:42,477 - INFO - root - Логирование инициализировано.
+2025-05-18 21:03:47,355 - INFO - requests - Запрос: GET /students_subtasks/StudentTask/1
+2025-05-18 21:03:47,477 - INFO - Routers.students - Вызван роут read_student_all_subtasks с StudentID=1
+2025-05-18 21:03:47,480 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-18 21:03:47,480 - WARNING - root - Результатов найдено: 6
+2025-05-18 21:03:47,485 - INFO - requests - Ответ: GET /students_subtasks/StudentTask/1 - статус 200
+2025-05-18 21:03:47,515 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 21:03:47,516 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 21:03:48,350 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 21:03:48,351 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 21:03:49,521 - INFO - requests - Запрос: GET /students_subtasks/StudentTask/1
+2025-05-18 21:03:49,525 - INFO - Routers.students - Вызван роут read_student_all_subtasks с StudentID=1
+2025-05-18 21:03:49,526 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-18 21:03:49,526 - WARNING - root - Результатов найдено: 6
+2025-05-18 21:03:49,527 - INFO - requests - Ответ: GET /students_subtasks/StudentTask/1 - статус 200
+2025-05-18 21:03:49,545 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 21:03:49,545 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 21:05:54,785 - INFO - root - Логирование инициализировано.
+2025-05-18 21:05:58,155 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 21:05:58,155 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 21:05:58,170 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 21:05:58,170 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 21:05:58,322 - INFO - requests - Запрос: GET /students/List/
+2025-05-18 21:05:58,446 - INFO - Routers.students - Получен запрос на список студентов
+2025-05-18 21:05:58,449 - INFO - requests - Ответ: GET /students/List/ - статус 200
+2025-05-18 21:05:58,461 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 21:05:58,461 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 21:05:58,474 - INFO - requests - Запрос: GET /students/api/
+2025-05-18 21:05:58,480 - INFO - requests - Ответ: GET /students/api/ - статус 200
+2025-05-18 21:05:59,629 - INFO - requests - Запрос: GET /students_subtasks/StudentTask/1
+2025-05-18 21:05:59,638 - INFO - Routers.students - Вызван роут read_student_all_subtasks с StudentID=1
+2025-05-18 21:05:59,663 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-18 21:05:59,663 - WARNING - root - Результатов найдено: 6
+2025-05-18 21:05:59,667 - INFO - requests - Ответ: GET /students_subtasks/StudentTask/1 - статус 200
+2025-05-18 21:05:59,680 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 21:05:59,681 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 21:07:04,085 - INFO - root - Логирование инициализировано.
+2025-05-18 21:07:05,737 - INFO - requests - Запрос: GET /students_subtasks/StudentTask/1
+2025-05-18 21:07:05,852 - INFO - Routers.students - Вызван роут read_student_all_subtasks с StudentID=1
+2025-05-18 21:07:05,854 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-18 21:07:05,855 - WARNING - root - Результатов найдено: 6
+2025-05-18 21:07:05,860 - INFO - requests - Ответ: GET /students_subtasks/StudentTask/1 - статус 200
+2025-05-18 21:07:05,884 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 21:07:05,885 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 21:07:11,886 - INFO - requests - Запрос: GET /students_subtasks/StudentTask/1/1
+2025-05-18 21:07:11,916 - WARNING - root - Вызываем роут read_student_all_subtasks с параметрами: student_id=1 SubTasksID=1
+2025-05-18 21:07:11,923 - INFO - requests - Ответ: GET /students_subtasks/StudentTask/1/1 - статус 200
+2025-05-18 21:07:11,947 - INFO - requests - Запрос: GET /students_subtasks/api/1/1
+2025-05-18 21:07:11,948 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 21:07:11,949 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 21:07:11,956 - INFO - requests - Ответ: GET /students_subtasks/api/1/1 - статус 200
+2025-05-18 21:07:15,580 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 21:07:15,581 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-18 21:07:15,608 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-18 21:07:15,608 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404

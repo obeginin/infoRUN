@@ -29,11 +29,11 @@ async def get_current_student_or_redirect(
     db: Session = Depends(get_db)
 ) -> Optional[Student]:
     try:
-        logging.warning(f"Авторизован студент: {Student.Login}")
+        #logging.warning(f"Авторизован студент: {Student.Login}")
         return get_current_student(request, db)
     except HTTPException as e:
         if e.status_code == HTTP_401_UNAUTHORIZED:
-            logging.warning("Редирект, так как студент не авторизован")
+            #logging.warning("Редирект, так как студент не авторизован")
             return RedirectResponse(url=f"/home/login_in/?next={request.url.path}", status_code=302)
             #return RedirectResponse(url="/home/login_in")
         raise e

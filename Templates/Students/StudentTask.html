@@ -6,14 +6,17 @@
 {% block content %}
     <ul id="task-list"></ul>
     <script>
-        const StudentID = {{ student_id }};
-        const tasks = {{ tasks | tojson }};
 
+        const StudentID = {{ StudentID }};
+        const tasks = {{ tasks | tojson }};
+        console.log('StudentID:', StudentID);
+        console.log('tasks:', tasks);
         const ul = document.getElementById("task-list");
 
         tasks.forEach(task => {
             const li = document.createElement("li");
             li.innerHTML = `Задача: <a href="/students_subtasks/StudentTask/${StudentID}/${task.SubTaskID}">${task.SubTaskID}</a> - ${task.CompletionStatus}`;
+
             ul.appendChild(li);
         });
     </script>

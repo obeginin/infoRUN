@@ -27,11 +27,11 @@
                     studentsListContainer.innerHTML = "<p>Студенты не найдены.</p>";
                     return;
                 }
-
+                console.log(students);
                 const ul = document.createElement("ul");
                 students.forEach(student => {
                     const li = document.createElement("li");
-                    console.log(students);
+
 
                     li.innerHTML = `Студент: <a href="/students_subtasks/StudentTask/${student.ID}">${student.Login}</a> - ${student.First_Name} ${student.Last_Name}`;
                     ul.appendChild(li);

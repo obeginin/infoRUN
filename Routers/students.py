@@ -12,6 +12,7 @@ import logging
 from Crud.auth import get_current_student, admin_required, verify_password, get_current_student_or_redirect
 from fastapi.responses import RedirectResponse
 
+logger = logging.getLogger(__name__)
 # Routers\Students.py
 ''' Маршруты и Эндпоинты'''
 
@@ -72,6 +73,7 @@ def read_task_student(student_id: int, SubTasksID: int, db: Session = Depends(ge
 @students_router.get("/List/",  response_class=HTMLResponse)
 def read_all_students(request: Request, db: Session = Depends(get_db)):
     students_list = students.get_all_students(db)
+    logger.info("Получен запрос на список студентов")
     return templates.TemplateResponse("Students/ListStudents.html", {"request": request, "students": students_list})
 
 # /students_subtasks/StudentTask/{StudentID}
@@ -82,6 +84,7 @@ def read_student_all_subtasks(
         StudentID: int,
         current_student=Depends(get_current_student_or_redirect),
         db: Session = Depends(get_db)):
+    logger.info(f"Вызван роут read_student_all_subtasks с StudentID={StudentID}")
     student_tasks = students.get_student_all_tasks(db, StudentID)
     print(student_tasks)
     return templates.TemplateResponse("Students/StudentTask.html", {"request": request, "StudentID": StudentID, "tasks": student_tasks, "student": current_student})
