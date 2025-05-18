@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Задачи пользователя</title>
+    <link rel="stylesheet" type="text/css" href="/static/styles.css"> <!-- Подключаем CSS -->
+</head>
+<body>
+    <h1 id="subtask-title">Задачи пользователя</h1>
+    <div id="Student-tasks">
+        <p>Загрузка задач...</p>
+    </div>
+
+    <script>
+        const urlParts = window.location.pathname.split("/");
+        const StudentID = urlParts[urlParts.length - 1]; // Берем последний элемент URL
+
+        async function loadStudentTasks() {
+            try {
+                // Получаем задачи пользователя по Student_id
+                const response = await fetch(`/students_subtasks/api/${StudentID}`);
+                const tasks = await response.json();
+                console.log(tasks); // логирование в консоль api
+                document.getElementById("subtask-title").innerHTML = `Задачи пользователя: <strong>${tasks[1].Login}</strong>`;
+
+                // Выводим список задач
+                const taskListContainer = document.getElementById("Student-tasks");
+                taskListContainer.innerHTML = ""; // Очищаем сообщение "Загрузка задач..."
+
+                if (tasks.length === 0) {
+                    taskListContainer.innerHTML = "<p>У пользователя нет задач.</p>";
+                    return;
+                }
+
+                const ul = document.createElement("ul");
+                tasks.forEach(task => {
+                    const li = document.createElement("li");
+                    li.innerHTML = `Задача: <a href="/students_subtasks/StudentTask/${StudentID}/${task.SubTaskID}">${task.SubTaskID}</a> - ${task.CompletionStatus}`;
+                    ul.appendChild(li);
+                });
+
+                taskListContainer.appendChild(ul);
+            } catch (error) {
+                console.error("Ошибка при загрузке задач", error);
+                document.getElementById("user-tasks").innerHTML = "<p>Ошибка при загрузке задач.</p>";
+            }
+        }
+
+        // Загружаем задачи пользователя
+        loadStudentTasks();
+    </script>
+</body>
+</html>

@@ -3,7 +3,7 @@ from sqlalchemy import text
 from Models import Student
 from Schemas.students import StudentTaskRead
 from fastapi import HTTPException
-
+import logging
 
 # Crud\Students.py
 ''' 
@@ -60,8 +60,10 @@ def get_all_students_tasks(db: Session):
 
 ''' Получения всех задач студента по ID'''
 def get_student_all_tasks(db: Session, student_id: int):
-    query = text(f"SELECT StudentTaskID,StudentID, Login, SubTaskID,CompletionStatus,Score,CompletionDate,StudentAnswer FROM StudentTasks join Students on ID=StudentID where studentID={student_id}")
-    result = db.execute(query).fetchall()
+    query = text(f"SELECT StudentTaskID,StudentID, Login, SubTaskID,CompletionStatus,Score,CompletionDate,StudentAnswer FROM StudentTasks JOIN Students ON Students.ID = StudentTasks.StudentID WHERE StudentTasks.StudentID = :student_id")
+    result = db.execute(query, {"student_id": student_id}).fetchall()
+    logging.warning(f"Получаем задачи для студента с ID = {student_id}")
+    logging.warning(f"Результатов найдено: {len(result)}")
     student_tasks = [
         {"StudentTaskID": row.StudentTaskID,
         "StudentID": row.StudentID,

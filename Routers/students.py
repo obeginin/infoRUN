@@ -8,6 +8,9 @@ from dependencies import get_db  # Зависимость для подключ�
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from typing import Literal
+import logging
+from Crud.auth import get_current_student, admin_required, verify_password, get_current_student_or_redirect
+from fastapi.responses import RedirectResponse
 
 # Routers\Students.py
 ''' Маршруты и Эндпоинты'''
@@ -78,6 +81,35 @@ def read_student_all_subtasks(request: Request, StudentID: int, db: Session = De
     student = students.get_student_all_tasks(db, StudentID)
     print(student)
     return templates.TemplateResponse("Students/StudentTask.html", {"request": request, "StudentID": StudentID, "tasks": student})
+
+# /students_subtasks/StudentTasksByLogin
+''''''
+@students_subtasks_router.get("/StudentTasksByLogin/", response_class=HTMLResponse)
+def read_student_all_subtasks_by_login(
+    request: Request,
+    current_student=Depends(get_current_student_or_redirect),
+    db: Session = Depends(get_db)
+):
+    if isinstance(current_student, RedirectResponse):
+        return current_student
+    student_id = current_student.ID
+    tasks = students.get_student_all_tasks(db, student_id)
+
+    logging.warning(f"ПАРАМЕТРЫ: student_id={student_id}") # логирование
+
+    if not current_student:
+        return templates.TemplateResponse("Students/StudentTask.html", {
+            "request": request,
+            "error": "Студент не найден"
+        })
+    student_id = current_student.ID
+
+    return templates.TemplateResponse("Students/StudentTask.html", {
+        "request": request,
+        "student_id": student_id,
+        "tasks": tasks,
+        "student": current_student,
+    })
 
 # /students_subtasks/StudentTask/{StudentID}/{SubTasksID}
 '''Возращаем страницу с задачей пользователя по его id и номеру задачи'''
