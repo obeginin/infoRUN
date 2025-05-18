@@ -77,13 +77,17 @@ def read_all_students(request: Request, db: Session = Depends(get_db)):
 # /students_subtasks/StudentTask/{StudentID}
 '''Возвращем страницу со всеми задачами пользователя'''
 @students_subtasks_router.get("/StudentTask/{StudentID}",  response_class=HTMLResponse)
-def read_student_all_subtasks(request: Request, StudentID: int, db: Session = Depends(get_db)):
-    student = students.get_student_all_tasks(db, StudentID)
-    print(student)
-    return templates.TemplateResponse("Students/StudentTask.html", {"request": request, "StudentID": StudentID, "tasks": student})
+def read_student_all_subtasks(
+        request: Request,
+        StudentID: int,
+        current_student=Depends(get_current_student_or_redirect),
+        db: Session = Depends(get_db)):
+    student_tasks = students.get_student_all_tasks(db, StudentID)
+    print(student_tasks)
+    return templates.TemplateResponse("Students/StudentTask.html", {"request": request, "StudentID": StudentID, "tasks": student_tasks, "student": current_student})
 
 # /students_subtasks/StudentTasksByLogin
-''''''
+'''возвращаем страницу со всеми задачами пользователя в личном кабинете по логину из авторизации'''
 @students_subtasks_router.get("/StudentTasksByLogin/", response_class=HTMLResponse)
 def read_student_all_subtasks_by_login(
     request: Request,
@@ -114,7 +118,15 @@ def read_student_all_subtasks_by_login(
 # /students_subtasks/StudentTask/{StudentID}/{SubTasksID}
 '''Возращаем страницу с задачей пользователя по его id и номеру задачи'''
 @students_subtasks_router.get("/StudentTask/{StudentID}/{SubTasksID}",  response_class=HTMLResponse)
-def read_student_all_subtasks(request: Request, StudentID: int, SubTasksID: int, db: Session = Depends(get_db)):
+def read_student_all_subtasks(
+        request: Request,
+        StudentID: int,
+        SubTasksID: int,
+        current_student=Depends(get_current_student_or_redirect),
+        db: Session = Depends(get_db)):
+    logging.warning(f"Вызываем роут read_student_all_subtasks с параметрами: student_id={StudentID} SubTasksID={SubTasksID}")  # логирование
     Task = students.get_task_student(db, StudentID, SubTasksID)
     print(Task)
-    return templates.TemplateResponse("Students/Task.html", {"request": request, "StudentID": StudentID, "Task": Task})
+
+    return templates.TemplateResponse("Students/Task.html", {"request": request, "StudentID": StudentID, "Task": Task, "student": current_student})
+
