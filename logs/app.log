@@ -1421,3 +1421,255 @@
 2025-05-18 22:04:19,840 - INFO - requests - Ответ: GET /students_subtasks/StudentTask/1/1 - статус 200
 2025-05-18 22:04:23,785 - INFO - requests - Запрос: GET /admin/
 2025-05-18 22:04:23,791 - INFO - requests - Ответ: GET /admin/ - статус 200
+2025-05-18 22:05:42,243 - INFO - requests - Запрос: GET /students/List/
+2025-05-18 22:05:42,250 - INFO - Routers.students - Получен запрос на список студентов
+2025-05-18 22:05:42,251 - INFO - requests - Ответ: GET /students/List/ - статус 200
+2025-05-18 22:05:42,268 - INFO - requests - Запрос: GET /students/api/
+2025-05-18 22:05:42,275 - INFO - requests - Ответ: GET /students/api/ - статус 200
+2025-05-18 22:05:47,752 - INFO - requests - Запрос: GET /students/List/
+2025-05-18 22:05:47,758 - INFO - Routers.students - Получен запрос на список студентов
+2025-05-18 22:05:47,759 - INFO - requests - Ответ: GET /students/List/ - статус 200
+2025-05-18 22:05:47,772 - INFO - requests - Запрос: GET /students/api/
+2025-05-18 22:05:47,776 - INFO - requests - Ответ: GET /students/api/ - статус 200
+2025-05-18 22:05:58,439 - INFO - requests - Запрос: GET /students/List/
+2025-05-18 22:05:58,444 - INFO - Routers.students - Получен запрос на список студентов
+2025-05-18 22:05:58,445 - INFO - requests - Ответ: GET /students/List/ - статус 200
+2025-05-18 22:05:58,455 - INFO - requests - Запрос: GET /students/api/
+2025-05-18 22:05:58,458 - INFO - requests - Ответ: GET /students/api/ - статус 200
+2025-05-18 22:05:59,356 - INFO - requests - Запрос: GET /students_subtasks/StudentTask/1
+2025-05-18 22:05:59,359 - INFO - Routers.students - Вызван роут read_student_all_subtasks с StudentID=1
+2025-05-18 22:05:59,361 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-18 22:05:59,361 - WARNING - root - Результатов найдено: 6
+2025-05-18 22:05:59,363 - INFO - requests - Ответ: GET /students_subtasks/StudentTask/1 - статус 200
+2025-05-18 22:08:18,478 - INFO - requests - Запрос: GET /home/logout/
+2025-05-18 22:08:18,478 - INFO - requests - Ответ: GET /home/logout/ - статус 303
+2025-05-18 22:08:18,480 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:08:18,481 - INFO - requests - Ответ: GET /home/login_in/ - статус 200
+2025-05-18 22:08:20,609 - INFO - requests - Запрос: POST /home/login_in/
+2025-05-18 22:08:20,630 - INFO - requests - Ответ: POST /home/login_in/ - статус 303
+2025-05-18 22:08:20,633 - INFO - requests - Запрос: GET /
+2025-05-18 22:08:20,634 - INFO - requests - Ответ: GET / - статус 307
+2025-05-18 22:08:20,636 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:08:20,636 - INFO - requests - Ответ: GET /home/login_in/ - статус 200
+2025-05-18 22:08:21,859 - INFO - requests - Запрос: POST /home/login_in/
+2025-05-18 22:08:21,880 - INFO - requests - Ответ: POST /home/login_in/ - статус 303
+2025-05-18 22:08:21,884 - INFO - requests - Запрос: GET /
+2025-05-18 22:08:21,884 - INFO - requests - Ответ: GET / - статус 307
+2025-05-18 22:08:21,886 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:08:21,887 - INFO - requests - Ответ: GET /home/login_in/ - статус 200
+2025-05-18 22:08:24,853 - INFO - requests - Запрос: GET /home/
+2025-05-18 22:08:24,857 - INFO - requests - Ответ: GET /home/ - статус 200
+2025-05-18 22:08:45,899 - INFO - requests - Запрос: GET /home/logout/
+2025-05-18 22:08:45,899 - INFO - requests - Ответ: GET /home/logout/ - статус 303
+2025-05-18 22:08:45,901 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:08:45,902 - INFO - requests - Ответ: GET /home/login_in/ - статус 200
+2025-05-18 22:08:48,181 - INFO - requests - Запрос: POST /home/login_in/
+2025-05-18 22:08:48,200 - INFO - requests - Ответ: POST /home/login_in/ - статус 303
+2025-05-18 22:08:48,202 - INFO - requests - Запрос: GET /
+2025-05-18 22:08:48,202 - INFO - requests - Ответ: GET / - статус 307
+2025-05-18 22:08:48,204 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:08:48,204 - INFO - requests - Ответ: GET /home/login_in/ - статус 200
+2025-05-18 22:08:50,390 - INFO - requests - Запрос: GET /home/
+2025-05-18 22:08:50,396 - INFO - requests - Ответ: GET /home/ - статус 200
+2025-05-18 22:11:02,197 - INFO - root - Логирование инициализировано.
+2025-05-18 22:11:05,646 - INFO - requests - Запрос: GET /home/
+2025-05-18 22:11:05,776 - INFO - requests - Ответ: GET /home/ - статус 200
+2025-05-18 22:11:06,715 - INFO - requests - Запрос: GET /home/logout/
+2025-05-18 22:11:06,715 - INFO - requests - Ответ: GET /home/logout/ - статус 303
+2025-05-18 22:11:06,720 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:11:06,722 - INFO - requests - Ответ: GET /home/login_in/ - статус 200
+2025-05-18 22:11:07,430 - INFO - requests - Запрос: POST /home/login_in/
+2025-05-18 22:11:07,456 - INFO - requests - Ответ: POST /home/login_in/ - статус 303
+2025-05-18 22:11:07,460 - INFO - requests - Запрос: GET /
+2025-05-18 22:11:07,461 - INFO - requests - Ответ: GET / - статус 307
+2025-05-18 22:11:07,463 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:11:07,464 - INFO - requests - Ответ: GET /home/login_in/ - статус 200
+2025-05-18 22:13:26,805 - INFO - root - Логирование инициализировано.
+2025-05-18 22:13:47,624 - INFO - root - Логирование инициализировано.
+2025-05-18 22:13:50,581 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:13:50,690 - INFO - requests - Ответ: GET /home/login_in/ - статус 200
+2025-05-18 22:13:51,055 - INFO - requests - Запрос: POST /home/login_in/
+2025-05-18 22:13:51,077 - INFO - requests - Ответ: POST /home/login_in/ - статус 303
+2025-05-18 22:13:51,080 - INFO - requests - Запрос: GET /
+2025-05-18 22:13:51,081 - INFO - requests - Ответ: GET / - статус 307
+2025-05-18 22:13:51,082 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:13:51,085 - INFO - requests - Ответ: GET /home/login_in/ - статус 200
+2025-05-18 22:13:51,912 - INFO - requests - Запрос: POST /home/login_in/
+2025-05-18 22:13:51,931 - INFO - requests - Ответ: POST /home/login_in/ - статус 303
+2025-05-18 22:13:51,934 - INFO - requests - Запрос: GET /
+2025-05-18 22:13:51,935 - INFO - requests - Ответ: GET / - статус 307
+2025-05-18 22:13:51,938 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:13:51,941 - INFO - requests - Ответ: GET /home/login_in/ - статус 200
+2025-05-18 22:13:52,094 - INFO - requests - Запрос: POST /home/login_in/
+2025-05-18 22:13:52,112 - INFO - requests - Ответ: POST /home/login_in/ - статус 303
+2025-05-18 22:13:52,115 - INFO - requests - Запрос: GET /
+2025-05-18 22:13:52,116 - INFO - requests - Ответ: GET / - статус 307
+2025-05-18 22:13:52,118 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:13:52,121 - INFO - requests - Ответ: GET /home/login_in/ - статус 200
+2025-05-18 22:13:52,244 - INFO - requests - Запрос: POST /home/login_in/
+2025-05-18 22:13:52,258 - INFO - requests - Ответ: POST /home/login_in/ - статус 303
+2025-05-18 22:13:52,260 - INFO - requests - Запрос: GET /
+2025-05-18 22:13:52,260 - INFO - requests - Ответ: GET / - статус 307
+2025-05-18 22:13:52,262 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:13:52,263 - INFO - requests - Ответ: GET /home/login_in/ - статус 200
+2025-05-18 22:13:55,063 - INFO - requests - Запрос: GET /home/
+2025-05-18 22:13:55,070 - INFO - requests - Ответ: GET /home/ - статус 200
+2025-05-18 22:13:57,531 - INFO - requests - Запрос: GET /home/logout/
+2025-05-18 22:13:57,532 - INFO - requests - Ответ: GET /home/logout/ - статус 303
+2025-05-18 22:13:57,534 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:13:57,535 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:13:57,537 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:13:57,538 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:13:57,539 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:13:57,540 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:13:57,542 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:13:57,543 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:13:57,544 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:13:57,545 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:13:57,546 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:13:57,547 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:13:57,549 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:13:57,549 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:13:57,551 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:13:57,552 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:13:57,554 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:13:57,555 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:13:57,556 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:13:57,557 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:13:57,558 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:13:57,559 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:13:57,560 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:13:57,561 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:13:57,562 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:13:57,563 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:13:57,565 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:13:57,565 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:13:57,567 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:13:57,568 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:13:57,569 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:13:57,570 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:13:57,572 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:13:57,573 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:13:57,574 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:13:57,575 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:13:57,576 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:13:57,577 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:13:58,607 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:13:58,609 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:13:58,612 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:13:58,613 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:13:58,615 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:13:58,616 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:13:58,618 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:13:58,619 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:13:58,621 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:13:58,622 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:13:58,623 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:13:58,624 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:13:58,625 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:13:58,626 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:13:58,628 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:13:58,629 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:13:58,631 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:13:58,632 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:13:58,633 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:13:58,634 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:13:58,636 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:13:58,637 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:13:58,639 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:13:58,639 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:13:58,641 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:13:58,641 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:13:58,643 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:13:58,644 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:13:58,645 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:13:58,646 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:13:58,647 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:13:58,648 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:13:58,649 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:13:58,650 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:13:58,652 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:13:58,653 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:13:58,654 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:13:58,655 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:13:58,656 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:13:58,657 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:14:03,698 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:14:03,721 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:14:03,729 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:14:03,732 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:14:03,741 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:14:03,745 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:14:03,757 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:14:03,765 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:14:03,773 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:14:03,775 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:14:03,779 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:14:03,782 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:14:03,797 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:14:03,800 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:14:03,810 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:14:03,813 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:14:03,819 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:14:03,830 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:14:03,840 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:14:03,842 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:14:03,846 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:14:03,848 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:14:03,853 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:14:03,855 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:14:03,862 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:14:03,864 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:14:03,870 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:14:03,872 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:14:03,883 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:14:03,884 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:14:03,887 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:14:03,888 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:14:03,890 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:14:03,891 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:14:03,893 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:14:03,894 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:14:03,896 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:14:03,897 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:14:03,899 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:14:03,901 - INFO - requests - Ответ: GET /home/login_in/ - статус 302
+2025-05-18 22:14:07,028 - INFO - root - Логирование инициализировано.
+2025-05-18 22:14:07,251 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:14:07,272 - INFO - requests - Ответ: GET /home/login_in/ - статус 200
+2025-05-18 22:14:08,538 - INFO - requests - Запрос: POST /home/login_in/
+2025-05-18 22:14:08,638 - INFO - requests - Ответ: POST /home/login_in/ - статус 303
+2025-05-18 22:14:08,640 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:14:08,641 - INFO - requests - Ответ: GET /home/login_in/ - статус 200
+2025-05-18 22:14:13,781 - INFO - requests - Запрос: GET /home/
+2025-05-18 22:14:13,791 - INFO - requests - Ответ: GET /home/ - статус 200
+2025-05-18 22:16:13,522 - INFO - root - Логирование инициализировано.
+2025-05-18 22:16:19,541 - INFO - requests - Запрос: GET /home/
+2025-05-18 22:16:19,637 - INFO - requests - Ответ: GET /home/ - статус 200
+2025-05-18 22:16:20,427 - INFO - root - Логирование инициализировано.
+2025-05-18 22:16:20,566 - INFO - requests - Запрос: GET /home/logout/
+2025-05-18 22:16:20,566 - INFO - requests - Ответ: GET /home/logout/ - статус 303
+2025-05-18 22:16:20,569 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:16:20,574 - INFO - requests - Ответ: GET /home/login_in/ - статус 200
+2025-05-18 22:16:21,266 - INFO - requests - Запрос: POST /home/login_in/
+2025-05-18 22:16:21,411 - INFO - requests - Ответ: POST /home/login_in/ - статус 303
+2025-05-18 22:16:21,414 - INFO - requests - Запрос: GET /
+2025-05-18 22:16:21,462 - INFO - requests - Ответ: GET / - статус 200
+2025-05-18 22:16:24,216 - INFO - requests - Запрос: GET /home/
+2025-05-18 22:16:24,222 - INFO - requests - Ответ: GET /home/ - статус 200
+2025-05-18 22:16:25,707 - INFO - requests - Запрос: GET /home/logout/
+2025-05-18 22:16:25,707 - INFO - requests - Ответ: GET /home/logout/ - статус 303
+2025-05-18 22:16:25,715 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:16:25,716 - INFO - requests - Ответ: GET /home/login_in/ - статус 200
+2025-05-18 22:16:26,812 - INFO - requests - Запрос: POST /home/login_in/
+2025-05-18 22:16:26,831 - INFO - requests - Ответ: POST /home/login_in/ - статус 303
+2025-05-18 22:16:26,833 - INFO - requests - Запрос: GET /
+2025-05-18 22:16:26,835 - INFO - requests - Ответ: GET / - статус 200
+2025-05-18 22:16:28,626 - INFO - requests - Запрос: GET /home/logout/
+2025-05-18 22:16:28,626 - INFO - requests - Ответ: GET /home/logout/ - статус 303
+2025-05-18 22:16:28,629 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-18 22:16:28,630 - INFO - requests - Ответ: GET /home/login_in/ - статус 200
+2025-05-18 22:16:30,751 - INFO - requests - Запрос: POST /home/login_in/
+2025-05-18 22:16:30,772 - INFO - requests - Ответ: POST /home/login_in/ - статус 303
+2025-05-18 22:16:30,775 - INFO - requests - Запрос: GET /
+2025-05-18 22:16:30,778 - INFO - requests - Ответ: GET / - статус 200

@@ -12,15 +12,25 @@ from fastapi.responses import HTMLResponse
 import logging
 
 # Routers\auth.py
+home_router = APIRouter() # страница для пользователей
 auth_router = APIRouter(prefix="/home", tags=["home"]) # страница для пользователей
 admin_router = APIRouter(prefix="/admin", tags=["admin"]) # страница для админа
 templates = Jinja2Templates(directory="templates")
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
+# /
+'''страница home без префикса'''
+@home_router.get("/")
+def home_page(request: Request, current_student = Depends(get_current_student_or_redirect)):
+    if isinstance(current_student, RedirectResponse):
+        return current_student
+    return templates.TemplateResponse("home.html", {"request": request, "student": current_student})
+
 # /home/login_in (GET)
 '''Страница входа (вывод страницы с ввдом логина)'''
 @auth_router.get("/login_in/")
 def login_form(request: Request):
+
     return templates.TemplateResponse("General/login.html", {"request": request})
 
 # /home/
