@@ -1,10 +1,10 @@
 {# Templates/Admin/dashboard.html #}
 {% extends "base.html" %}
 
-{% block title %}Админ-панель{% endblock %}
-
+{% block title %}Админка{% endblock %}
+{% block title_1 %}Админка!{% endblock %}
 {% block content %}
-<div class="button-container">
+    <div class="button-container">
         <button class="admin-button" onclick="location.href='/students/List/'">Список учеников</button>
         <button class="admin-button" onclick="location.href='/admin/tasks'">Список задач</button>
         <button class="admin-button" onclick="location.href='/admin/stats'">Статистика</button>
