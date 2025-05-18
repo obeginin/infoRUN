@@ -7,7 +7,8 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from Crud.auth import get_current_student
 from Models import Student
-
+from Crud.auth import get_current_student, admin_required, verify_password, get_current_student_or_redirect
+from fastapi.responses import RedirectResponse
 # Routers\tasks.py
 ''' Маршруты и Эндпоинты'''
 
@@ -47,8 +48,10 @@ def list_tasks(request: Request):
 # /tasks/(GET)
 '''Вывод страницы html с категориями'''
 @task_router.get("/", response_class=HTMLResponse)
-def read_subtasks_TaskID(request: Request):
-    return templates.TemplateResponse("Tasks/tasks.html", {"request": request})
+def read_subtasks_TaskID(request: Request, current_student = Depends(get_current_student_or_redirect)):
+    if isinstance(current_student, RedirectResponse):
+        return current_student
+    return templates.TemplateResponse("Tasks/tasks.html", {"request": request, "student": current_student})
 
 # /tasks/(GET)
 '''Вывод страницы html с категориями'''

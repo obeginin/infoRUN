@@ -38,13 +38,14 @@ async def login_in(
         request: Request,
         login: str = Form(...),
         password: str = Form(...),
+        next: str = Form("/"),
         db: Session = Depends(get_db)):
     student = db.query(Student).filter(Student.Login == login).first()
     if not student or not pwd_context.verify(password, student.Password):
         return RedirectResponse("/home/login_in?error=true", status_code=303)
 
     access_token = create_access_token(data={"sub": student.Login})
-    response = RedirectResponse(url="/home", status_code=303)
+    response = RedirectResponse(url=next, status_code=303)
     response.set_cookie(key="access_token", value=f"Bearer {access_token}", httponly=True)
     return response
 

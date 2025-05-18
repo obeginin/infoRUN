@@ -21,6 +21,8 @@
     <form method="post" action="/home/login_in/">
         <input type="text" name="login" placeholder="Логин" required>
         <input type="password" name="password" placeholder="Пароль" required>
+        <!-- это скрытое поле, в него добавляем адрес с которого пользователь попал на страницу логирования-->
+        <input type="hidden" name="next" value="{{ request.query_params.get('next', '/') }}">
         <button type="submit">Войти</button>
     </form>
 </body>
