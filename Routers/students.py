@@ -71,10 +71,15 @@ def read_task_student(student_id: int, SubTasksID: int, db: Session = Depends(ge
 # /students/List/
 '''Возвращем html страницу со списком всех пользователей'''
 @students_router.get("/List/",  response_class=HTMLResponse)
-def read_all_students(request: Request, db: Session = Depends(get_db)):
+def read_all_students(
+        request: Request,
+        current_student=Depends(get_current_student_or_redirect),
+        db: Session = Depends(get_db)):
     students_list = students.get_all_students(db)
     logger.info("Получен запрос на список студентов")
-    return templates.TemplateResponse("Students/ListStudents.html", {"request": request, "students": students_list})
+    if isinstance(current_student, RedirectResponse):
+        return current_student
+    return templates.TemplateResponse("Students/ListStudents.html", {"request": request, "students": students_list, "student": current_student})
 
 # /students_subtasks/StudentTask/{StudentID}
 '''Возвращем страницу со всеми задачами пользователя'''
@@ -131,5 +136,5 @@ def read_student_all_subtasks(
     Task = students.get_task_student(db, StudentID, SubTasksID)
     print(Task)
 
-    return templates.TemplateResponse("Students/Task.html", {"request": request, "StudentID": StudentID, "SubTasksID": SubTasksID, "Task": Task, "student": current_student})
+    return templates.TemplateResponse("Students/Task.html", {"request": request, "StudentID": StudentID, "SubTaskID": SubTasksID, "subtask": Task, "student": current_student})
 

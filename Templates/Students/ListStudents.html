@@ -1,16 +1,13 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Список учеников</title>
-    <link rel="stylesheet" type="text/css" href="/static/styles.css"> <!-- Подключаем CSS -->
-</head>
-<body>
-    <h1 id="students-title">Список студентов</h1>
+
+<!-- Templates/Tasks/tasks.html -->
+{% extends "base.html" %}
+
+{% block title %}Список учеников{% endblock %}
+{% block title_1 %}Список учеников{% endblock %}
+{% block content %}
     <div id="students-list">
         <p>Загрузка студентов...</p>
     </div>
-
     <script>
         async function loadStudents() {
             try {
@@ -27,7 +24,7 @@
                     studentsListContainer.innerHTML = "<p>Студенты не найдены.</p>";
                     return;
                 }
-                console.log(students);
+
                 const ul = document.createElement("ul");
                 students.forEach(student => {
                     const li = document.createElement("li");
@@ -47,5 +44,4 @@
         // Загружаем список студентов
         loadStudents();
     </script>
-</body>
-</html>
+{% endblock %}
