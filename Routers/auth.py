@@ -4,7 +4,7 @@ from Models import Student
 from Schemas.auth import StudentLogin, StudentOut
 from Security.token import create_access_token
 from dependencies import get_db
-from Crud.auth import get_current_student, admin_required, verify_password
+from Crud.auth import get_current_student, admin_required, verify_password, get_current_student_or_redirect
 from fastapi.templating import Jinja2Templates
 from passlib.context import CryptContext
 from fastapi.responses import RedirectResponse
@@ -25,7 +25,10 @@ def login_form(request: Request):
 # /home/
 '''Домашняя страница (после авторизации)'''
 @auth_router.get("/")
-def home_page(request: Request, current_student: Student = Depends(get_current_student)):
+def home_page(request: Request, current_student = Depends(get_current_student_or_redirect)):
+    # Проверим: если редирект, то возвращаем его
+    if isinstance(current_student, RedirectResponse):
+        return current_student
     return templates.TemplateResponse("home.html", {"request": request, "student": current_student})
 
 # /home/login_in/ (POST)

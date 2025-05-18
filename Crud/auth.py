@@ -7,7 +7,8 @@ from Security.token import SECRET_KEY, ALGORITHM
 from fastapi import Depends, HTTPException, status, Request
 from Crud.students import get_student_by_login
 from passlib.context import CryptContext # объект, который помогает удобно хешировать и проверять пароли.
-
+from fastapi.responses import RedirectResponse
+from starlette.status import HTTP_401_UNAUTHORIZED
 
 # шифрование пароля
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
@@ -19,6 +20,18 @@ def hash_password(password: str) -> str:
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
 
+
+# редирект на страницу логина при неавторизованном доступе
+async def get_current_student_or_redirect(
+    request: Request,
+    db: Session = Depends(get_db)
+):
+    try:
+        return get_current_student(request, db)
+    except HTTPException as e:
+        if e.status_code == HTTP_401_UNAUTHORIZED:
+            return RedirectResponse(url="/home/login_in")
+        raise e
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
