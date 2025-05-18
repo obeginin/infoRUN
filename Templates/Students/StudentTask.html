@@ -2,7 +2,7 @@
 {% extends "base.html" %}
 
 {% block title %}Список категорий{% endblock %}
-{% block title_1 %}Задачи студента: {{ student.Login }}{% endblock %}
+{% block title_1 %}Задачи студента: {{ tasks[0].Login }}{% endblock %}
 {% block content %}
     <ul id="task-list"></ul>
     <script>

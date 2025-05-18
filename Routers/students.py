@@ -99,21 +99,21 @@ def read_student_all_subtasks_by_login(
 ):
     if isinstance(current_student, RedirectResponse):
         return current_student
-    student_id = current_student.ID
-    tasks = students.get_student_all_tasks(db, student_id)
+    StudentID = current_student.ID
+    tasks = students.get_student_all_tasks(db, StudentID)
 
-    logging.warning(f"ПАРАМЕТРЫ: student_id={student_id}") # логирование
+    logging.warning(f"ПАРАМЕТРЫ: StudentID={StudentID}") # логирование
 
     if not current_student:
         return templates.TemplateResponse("Students/StudentTask.html", {
             "request": request,
             "error": "Студент не найден"
         })
-    student_id = current_student.ID
+    StudentID = current_student.ID
 
     return templates.TemplateResponse("Students/StudentTask.html", {
         "request": request,
-        "student_id": student_id,
+        "StudentID": StudentID,
         "tasks": tasks,
         "student": current_student,
     })
@@ -131,5 +131,5 @@ def read_student_all_subtasks(
     Task = students.get_task_student(db, StudentID, SubTasksID)
     print(Task)
 
-    return templates.TemplateResponse("Students/Task.html", {"request": request, "StudentID": StudentID, "Task": Task, "student": current_student})
+    return templates.TemplateResponse("Students/Task.html", {"request": request, "StudentID": StudentID, "SubTasksID": SubTasksID, "Task": Task, "student": current_student})
 

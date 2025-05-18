@@ -4,27 +4,29 @@
 {% block title %}Список категорий{% endblock %}
 {% block title_1 %}Список категорий!{% endblock %}
 {% block content %}
+    <div id="subtask-container"></div>
+
     <script>
         // Получаем ID задачи из URL
         const urlParts = window.location.pathname.split("/");
-        const studentID = urlParts[urlParts.length - 2];
-        const subtaskID = parseInt(urlParts[urlParts.length - 1]);
-        console.log("StudentID:", studentID);
-        console.log("SubTaskID:", subtaskID);
+        const StudentID = urlParts[urlParts.length - 2];
+        const SubtaskID = parseInt(urlParts[urlParts.length - 1]);
+        console.log("StudentID:", StudentID);
+        console.log("SubtaskID:", SubtaskID);
         async function loadSubtask() {
             try {
-                const response = await fetch(`/students_subtasks/api/${studentID}/${subtaskID}`);
+                const response = await fetch(`/students_subtasks/api/${StudentID}/${SubtaskID}`);
                 const subtask = await response.json();
                 console.log("subtask:", subtask);
                 console.log("Тип данных:", Array.isArray(subtask) ? "Массив" : "Объект");
 
                 const task = Array.isArray(subtask) ? subtask[0] : subtask;
-                document.getElementById("subtask-title").innerHTML = `Детали подзадачи: <strong>${task.Login}</strong>`;
+                document.getElementById("subtask-title").innerHTML = `Детали подзадачи: <strong>${tasks.Login}</strong>`;
 
 
                 const container = document.getElementById("subtask-container");
                 container.innerHTML = `
-                    <p><strong>Задача №:</strong> ${subtaskID}</p>
+                    <p><strong>Задача №:</strong> ${SubtaskID}</p>
                     <p><strong>ID подзадачи:</strong> ${task.StudentTaskID}</p>
                     <p><strong>Статус:</strong> ${task.CompletionStatus}</p>
                     <p><strong>Оценка:</strong> ${task.Score}</p>
