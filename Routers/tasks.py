@@ -39,11 +39,6 @@ def read_all_tasks(db: Session = Depends(get_db)):
 def read_tasks_id(task_id: int, db: Session = Depends(get_db)):
     return task_crud.get_task_id(db, task_id)
 
-# /tasks/{task_id}  (GET)
-'''Подключаем html с конкретной категорией'''
-@task_router.get("/{task_id}", response_class=HTMLResponse)
-def list_tasks(request: Request):
-    return templates.TemplateResponse("Tasks/tasks.html", {"request": request})
 
 # /tasks/(GET)
 '''Вывод страницы html с категориями'''
@@ -53,6 +48,16 @@ def read_subtasks_TaskID(request: Request, current_student = Depends(get_current
         return current_student
     return templates.TemplateResponse("Tasks/tasks.html", {"request": request, "student": current_student})
 # /tasks/(GET)
+
+# /tasks/{task_id}  (GET)
+'''Подключаем html с конкретной категорией'''
+@task_router.get("/{task_id}", response_class=HTMLResponse)
+def list_tasks(request: Request, current_student = Depends(get_current_student_or_redirect)):
+    if isinstance(current_student, RedirectResponse):
+        return current_student
+    return templates.TemplateResponse("Tasks/subtask.html", {"request": request, "student": current_student})
+
+
 '''Вывод страницы html с категориями'''
 '''@task_router.get("/", response_class=HTMLResponse)
 def read_subtasks_TaskID(request: Request, current_student: Student = Depends(get_current_student)):
