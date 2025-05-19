@@ -11,6 +11,7 @@ from fastapi.responses import RedirectResponse
 from starlette.status import HTTP_401_UNAUTHORIZED
 from typing import Optional
 import logging
+logger = logging.getLogger(__name__)
 
 # шифрование пароля
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")

@@ -8,10 +8,9 @@ from dependencies import get_db  # Зависимость для подключ�
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from typing import Literal
-import logging
 from Crud.auth import get_current_student, admin_required, verify_password, get_current_student_or_redirect
 from fastapi.responses import RedirectResponse
-
+import logging
 logger = logging.getLogger(__name__)
 # Routers\Students.py
 ''' Маршруты и Эндпоинты'''

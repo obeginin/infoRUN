@@ -2,7 +2,11 @@ from sqlalchemy.orm import Session
 from sqlalchemy import text
 from Schemas.tasks import SubTaskCreate
 from fastapi import HTTPException
+import logging
+
 # Crud\tasks.py
+
+logger = logging.getLogger(__name__)
 ''' 
 CRUD - основная логика работы запроса
 описываем функции, которые выполняют SQL запросы к БД, результат возвращается в виде кортежа

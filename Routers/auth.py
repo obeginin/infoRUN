@@ -10,6 +10,7 @@ from passlib.context import CryptContext
 from fastapi.responses import RedirectResponse
 from fastapi.responses import HTMLResponse
 import logging
+logger = logging.getLogger(__name__)
 
 # Routers\auth.py
 home_router = APIRouter() # страница для пользователей
@@ -22,15 +23,19 @@ pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 '''страница home без префикса'''
 @home_router.get("/")
 def home_page(request: Request, current_student = Depends(get_current_student_or_redirect)):
+    client_ip = request.client.host
+    path = request.url.path
     if isinstance(current_student, RedirectResponse):
+        logger.info(f"[{client_ip}] Неавторизованный доступ к {path} — выполняется редирект на страницу входа")
         return current_student
+    logger.info(f"[{client_ip}] Студент {current_student.Login} открыл корневую страницу")
     return templates.TemplateResponse("home.html", {"request": request, "student": current_student})
 
 # /home/login_in (GET)
 '''Страница входа (вывод страницы с ввдом логина)'''
 @auth_router.get("/login_in/")
 def login_form(request: Request):
-
+    logger.info("Выводим страницу с логином")
     return templates.TemplateResponse("General/login.html", {"request": request})
 
 # /home/
@@ -38,8 +43,12 @@ def login_form(request: Request):
 @auth_router.get("/")
 def home_page(request: Request, current_student = Depends(get_current_student_or_redirect)):
     # Проверим: если редирект, то возвращаем его
+    client_ip = request.client.host
+    path = request.url.path
     if isinstance(current_student, RedirectResponse):
+        logger.info(f"[{client_ip}] Неавторизованный доступ к {path} — выполняется редирект на страницу входа")
         return current_student
+    logger.info(f"[{client_ip}] Студент {current_student.Login} открыл главную страницу")
     return templates.TemplateResponse("home.html", {"request": request, "student": current_student})
 
 # /home/login_in/ (POST)

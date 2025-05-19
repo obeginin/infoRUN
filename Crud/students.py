@@ -4,7 +4,7 @@ from Models import Student
 from Schemas.students import StudentTaskRead
 from fastapi import HTTPException
 import logging
-
+logger = logging.getLogger(__name__)
 # Crud\Students.py
 ''' 
 CRUD - основная логика работы запроса

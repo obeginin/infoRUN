@@ -9,6 +9,8 @@ from Crud.auth import get_current_student
 from Models import Student
 from Crud.auth import get_current_student, admin_required, verify_password, get_current_student_or_redirect
 from fastapi.responses import RedirectResponse
+import logging
+logger = logging.getLogger(__name__)
 # Routers\tasks.py
 ''' Маршруты и Эндпоинты'''
 
