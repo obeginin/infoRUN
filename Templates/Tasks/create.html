@@ -1,24 +1,22 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Добавить подзадачу</title>
-</head>
-<body>
-    <h1>Добавить подзадачу</h1>
+<!-- Templates/Tasks/create.html -->
+{% extends "base.html" %}
+
+{% block title %}Добавление задачи{% endblock %}
+{% block title_1 %}Добавление задачи!{% endblock %}
+{% block content %}
     <form action="/subtasks/create_form" method="post" enctype="multipart/form-data">
-        <label>Категория (TaskID):</label>
+        <label for="TaskID">Категория (TaskID):</label>
         <input type="number" name="TaskID" required><br>
 
-        <label>Описание:</label>
+        <label for="Description">Описание:</label>
         <textarea name="Description"></textarea><br>
 
-        <label>Ответ:</label>
+        <label for="Answer">Ответ:</label>
         <input type="text" name="Answer"><br>
 
-        <label>Изображение (файл):</label>
+        <label for="ImagePath">Файл (изображение):</label>
         <input type="file" name="ImageFile"><br>
 
-        <input type="submit" value="Добавить">
+        <input type="submit" value="Добавить подзадачу">
     </form>
-</body>
-</html>
+{% endblock %}
