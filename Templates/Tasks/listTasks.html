@@ -4,9 +4,11 @@
 {% block title %}Список Задач{% endblock %}
 {% block title_1 %}Список Задач!{% endblock %}
 {% block content %}
-    <a href="/subtasks/new/">
-    <button class="btn btn-primary">Создать задачу</button>
-    </a>
+    {% if student.Role == "admin" %}
+        <a href="/subtasks/new/">
+        <button class="btn btn-primary">Создать задачу</button>
+        </a>
+    {% endif %}
     <ul id="subtask-list"></ul>
 <!--Вывод списком (только категории)-->
     <script>

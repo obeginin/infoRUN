@@ -11,7 +11,7 @@ from pathlib import Path
 from sqlalchemy import text
 from Crud.auth import get_current_student, admin_required, verify_password, get_current_student_or_redirect
 from fastapi.responses import RedirectResponse
-import shutil
+
 import logging
 logger = logging.getLogger(__name__)
 # Routers\tasks.py
@@ -94,14 +94,14 @@ def create_new_subtask(subtask: SubTaskCreate, db: Session = Depends(get_db)):
 # /subtasks/new/  (GET)
 '''Вызов страницы с добавлением задачи'''
 @subtask_router.get("/new", response_class=HTMLResponse)
-def get_subtask_form(request: Request, current_student = Depends(get_current_student_or_redirect)):
+def get_subtask_form(request: Request, current_student = Depends(admin_required), db: Session = Depends(get_db)):
     logger.info("Открываем страницу с созданием задачи")
+    tasks = task_crud.get_all_tasks(db)
     if isinstance(current_student, RedirectResponse):
         return current_student
-    return templates.TemplateResponse("Tasks/create.html", {"request": request, "student": current_student})
+    return templates.TemplateResponse("Tasks/create.html", {"request": request, "student": current_student,"tasks": tasks})
 
-UPLOAD_DIR = Path("uploads")
-UPLOAD_DIR.mkdir(exist_ok=True)
+
 
 # /subtasks/create_form/    (POST)
 '''Отправка данных из формы с html страницы'''
@@ -114,39 +114,15 @@ def post_subtask_form(
     db: Session = Depends(get_db)
 ):
     logger.info("Отправляем форму на добавление задачи")
-    # Генерация SubTaskNumber — последний + 1
-    result = db.execute(
-        text("SELECT MAX(taskid) FROM SubTasks WHERE TaskID = :task_id"),  # изменить SubTaskNumber
-        {"task_id": TaskID}
-    ).scalar()
-    subtask_number = (int(result) if result is not None else 0) + 1
-
-# Сохраняем файл, если есть
-    image_path = None
-    if ImageFile:
-        ext = ImageFile.filename.split('.')[-1]
-        filename = f"task_{TaskID}_sub_{subtask_number}.{ext}"
-        filepath = UPLOAD_DIR / filename
-        with filepath.open("wb") as buffer:
-            shutil.copyfileobj(ImageFile.file, buffer)
-        image_path = str(filepath)
-
-    # Вставка подзадачи в БД
-    insert_query = (
-        text("""
-        INSERT INTO SubTasks (TaskID, SubTaskNumber, ImagePath, Description, Answer)
-        VALUES (:task_id, :subtask_number, :image_path, :description, :answer)
-    """))
-    db.execute(insert_query, {
-            "task_id": TaskID,
-            "subtask_number": subtask_number,
-            "image_path": image_path,
-            "description": Description,
-            "answer": Answer,
-        }
+    task_crud.create_subtask_from_form(
+        TaskID=TaskID,
+        Description=Description,
+        Answer=Answer,
+        ImageFile=ImageFile,
+        db=db
     )
-    db.commit()
     return RedirectResponse("/subtasks/new", status_code=303)
+
 
 # /subtasks/
 '''Вызываем html страницу с задачами'''

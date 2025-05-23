@@ -5,8 +5,12 @@
 {% block title_1 %}Добавление задачи!{% endblock %}
 {% block content %}
     <form action="/subtasks/create_form" method="post" enctype="multipart/form-data">
-        <label for="TaskID">Категория (TaskID):</label>
-        <input type="number" name="TaskID" required><br>
+        <label for="TaskID">Категория:</label>
+         <select name="TaskID" required>
+            {% for task in tasks %}
+              <option value="{{ task.TaskID }}">{{ task.TaskTitle }}</option>
+            {% endfor %}
+        </select>
 
         <label for="Description">Описание:</label>
         <textarea name="Description"></textarea><br>
@@ -14,9 +18,48 @@
         <label for="Answer">Ответ:</label>
         <input type="text" name="Answer"><br>
 
-        <label for="ImagePath">Файл (изображение):</label>
-        <input type="file" name="ImageFile"><br>
+        <label>Paste Image Here:</label>
+        <div id="paste-area"
+             contenteditable="true"
+             style="border: 1px solid gray; width: 300px; height: 200px; margin-bottom: 10px;">
+            Нажмите сюда и вставьте скриншот (Ctrl+V)
+        </div>
 
-        <input type="submit" value="Добавить подзадачу">
+        <input type="file" name="ImageFile" id="imageFileInput" style="display:none;">
+
+
+
+        <input type="submit" value="Добавить подзадачу"><br>
     </form>
+
+<!-- Скрипт для вставки картинки из буфера-->
+    <script>
+        document.getElementById("paste-area").addEventListener("paste", function (event) {
+            const items = event.clipboardData.items;
+            for (let i = 0; i < items.length; i++) {
+                const item = items[i];
+                if (item.type.indexOf("image") !== -1) {
+                    const file = item.getAsFile();
+
+                    // Подставляем файл в input[type=file]
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(file);
+
+                    const input = document.getElementById("imageFileInput");
+                    input.files = dataTransfer.files;
+
+                    // Отображаем превью
+                    const preview = document.getElementById("preview");
+                    const img = document.createElement("img");
+                    img.src = URL.createObjectURL(file);
+                    img.style.maxWidth = "300px";
+                    img.style.marginTop = "10px";
+                    preview.innerHTML = ''; // Очистить старое превью
+                    preview.appendChild(img);
+
+                    alert("Изображение успешно вставлено!");
+                }
+            }
+        });
+    </script>
 {% endblock %}

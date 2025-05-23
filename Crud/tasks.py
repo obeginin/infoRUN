@@ -1,12 +1,15 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 from Schemas.tasks import SubTaskCreate
-from fastapi import HTTPException
+from fastapi import HTTPException, UploadFile, File
+from typing import Optional
+import shutil
+from pathlib import Path
 import logging
-
+logger = logging.getLogger(__name__)
 # Crud\tasks.py
 
-logger = logging.getLogger(__name__)
+
 ''' 
 CRUD - основная логика работы запроса
 описываем функции, которые выполняют SQL запросы к БД, результат возвращается в виде кортежа
@@ -86,7 +89,7 @@ def get_subtasks_TaskID(db: Session, task_id: int):
         raise HTTPException(status_code=404, detail=f"Задача с Категорией {task_id} не найдена")
     return subtasks
 
-''' Добавление новой подзадачи '''
+''' Добавление новой подзадачи (по API)'''
 def create_subtask(db: Session, subtask_data: SubTaskCreate):
 # Запрос на проверку наличия категории
     check_query = text("SELECT 1 FROM Tasks WHERE TaskID = :task_id")
@@ -112,8 +115,49 @@ def create_subtask(db: Session, subtask_data: SubTaskCreate):
     new_id = result.scalar() # возвращаем id добавленной задачи
     return {"SubTaskID": new_id}
 
+UPLOAD_DIR = Path("uploads")
+UPLOAD_DIR.mkdir(exist_ok=True)
 
+''' Добавление новой подзадачи (форма)'''
+def create_subtask_from_form(
+        TaskID: int,
+        Description: str,
+        Answer: str,
+        ImageFile: Optional[UploadFile],
+        db: Session
+):
+    # Генерация SubTaskNumber — последний + 1
+    result = db.execute(
+        text("SELECT MAX(SubTaskNumber) FROM SubTasks WHERE TaskID = :task_id"),  # изменить SubTaskNumber
+        {"task_id": TaskID}
+    ).scalar()
+    subtask_number = (int(result) or 0) + 1
 
+    # Сохраняем файл, если есть
+    image_path = None
+    if ImageFile:
+        ext = ImageFile.filename.split('.')[-1]
+        filename = f"task_{TaskID}_sub_{subtask_number}.{ext}"
+        filepath = UPLOAD_DIR / filename
+        with filepath.open("wb") as buffer:
+            shutil.copyfileobj(ImageFile.file, buffer)
+        image_path = str(filepath)
+
+    # Вставка подзадачи в БД
+    insert_query = (
+        text("""
+            INSERT INTO SubTasks (TaskID, SubTaskNumber, ImagePath, Description, Answer)
+            VALUES (:task_id, :subtask_number, :image_path, :description, :answer)
+        """))
+    db.execute(insert_query, {
+        "task_id": TaskID,
+        "subtask_number": subtask_number,
+        "image_path": image_path,
+        "description": Description,
+        "answer": Answer,
+    }
+               )
+    db.commit()
 
 '''def get_all_tasks(db: Session):
     return db.query(Task).order_by(Task.TaskNumber).all()'''
