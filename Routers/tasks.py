@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Depends, Request, Form, UploadFile, File
 from sqlalchemy.orm import Session
 from Schemas.tasks import TaskRead, SubTaskRead, SubTaskCreate
 from Crud import tasks as task_crud
@@ -7,8 +7,10 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from Crud.auth import get_current_student
 from Models import Student
+from pathlib import Path
 from Crud.auth import get_current_student, admin_required, verify_password, get_current_student_or_redirect
 from fastapi.responses import RedirectResponse
+import shutil
 import logging
 logger = logging.getLogger(__name__)
 # Routers\tasks.py
@@ -78,6 +80,22 @@ def get_task_columns(db: Session = Depends(get_db)):
 def read_all_subtasks(db: Session = Depends(get_db)):
     return task_crud.get_all_subtasks(db)
 
+# /subtasks/create/    (POST)
+''' Эндпоинт: Добавление подзадачи'''
+@subtask_router.post("/create/", status_code=201,summary="Добавление подзадачи")
+def create_new_subtask(subtask: SubTaskCreate, db: Session = Depends(get_db)):
+    new_id = task_crud.create_subtask(db, subtask)
+    return {"message": "Подзадача успешно добавлена", "SubTaskID": new_id}
+
+
+# /subtasks/new/  (GET)
+'''Вызов страницы с добавлением задачи'''
+@subtask_router.get("/new", response_class=HTMLResponse)
+def get_subtask_form(request: Request):
+    logger.debug("Открываем страницу с созданием задачи")
+    return templates.TemplateResponse("Tasks/create.html", {"request": request})
+
+
 # /subtasks/
 '''Вызываем html страницу с задачами'''
 @subtask_router.get("/", response_class=HTMLResponse)
@@ -115,12 +133,61 @@ def create_new_subtask(subtask: SubTaskCreate, db: Session = Depends(get_db)):
     return {"message": "Подзадача успешно добавлена", "SubTaskID": new_id}
 
 
-# /js   (GET)
 
 
 
 
 
+@subtask_router.get("/subtasks/create_form")
+def redirect_to_form():
+    return RedirectResponse(url="/subtasks/new")
+
+
+UPLOAD_DIR = Path("uploads")
+UPLOAD_DIR.mkdir(exist_ok=True)
+
+# /subtasks/create_form/    (POST)
+'''Вызов формы с html страницы'''
+'''@subtask_router.post("/subtasks/create_form")
+def post_subtask_form(
+    TaskID: int = Form(...),
+    Description: str = Form(""),
+    Answer: str = Form(""),
+    ImageFile: UploadFile = File(None),
+    db: Session = Depends(get_db)
+):
+    logger.debug("Отправляем форму на добавление задачи")
+    # Генерация SubTaskNumber — последний + 1
+    result = db.execute(
+        "SELECT MAX(SubTaskNumber) FROM SubTasks WHERE TaskID = :task_id", {"task_id": TaskID}
+    ).scalar()
+    subtask_number = (result or 0) + 1
+
+# Сохраняем файл, если есть
+    image_path = None
+    if ImageFile:
+        ext = ImageFile.filename.split('.')[-1]
+        filename = f"task_{TaskID}_sub_{subtask_number}.{ext}"
+        filepath = UPLOAD_DIR / filename
+        with filepath.open("wb") as buffer:
+            shutil.copyfileobj(ImageFile.file, buffer)
+        image_path = str(filepath)
+
+    # Вставка подзадачи в БД
+    insert_query = """
+        INSERT INTO SubTasks (TaskID, SubTaskNumber, ImagePath, Description, Answer)
+        VALUES (:task_id, :subtask_number, :image_path, :description, :answer)
+    """
+    db.execute(insert_query, {
+            "task_id": TaskID,
+            "subtask_number": subtask_number,
+            "image_path": image_path,
+            "description": Description,
+            "answer": Answer,
+        }
+    )
+    db.commit()
+    return RedirectResponse("/subtasks/new", status_code=303)'''
 # /html
 '''Подключаем html файл с Jinja2'''
 '''@task_ji_router.get("/", response_class=HTMLResponse)

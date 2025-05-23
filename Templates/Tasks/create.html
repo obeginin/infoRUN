@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Добавить подзадачу</title>
+</head>
+<body>
+    <h1>Добавить подзадачу</h1>
+    <form action="/subtasks/create_form" method="post" enctype="multipart/form-data">
+        <label>Категория (TaskID):</label>
+        <input type="number" name="TaskID" required><br>
+
+        <label>Описание:</label>
+        <textarea name="Description"></textarea><br>
+
+        <label>Ответ:</label>
+        <input type="text" name="Answer"><br>
+
+        <label>Изображение (файл):</label>
+        <input type="file" name="ImageFile"><br>
+
+        <input type="submit" value="Добавить">
+    </form>
+</body>
+</html>
