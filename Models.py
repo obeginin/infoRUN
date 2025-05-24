@@ -36,7 +36,7 @@ class SubTask(Base):
 
     SubTaskID = Column(Integer, primary_key=True, autoincrement=True)  # ID подзадачи
     TaskID = Column(Integer, ForeignKey('Tasks.TaskID'), nullable=False)  # Связь с задачей
-    SubTaskNumber = Column(String(10), nullable=False)  # Номер подзадачи
+    SubTaskNumber = Column(Integer, nullable=False)  # Номер подзадачи
     ImagePath = Column(String(255))  # Путь к изображению
     Description = Column(String)  # Описание подзадачи
     Answer = Column(String(32))  # Ответ

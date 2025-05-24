@@ -43,3 +43,11 @@ class SubTaskCreate(BaseModel):
     Description: str
     Answer: str
     SolutionPath: Optional[str] = None
+
+class SubTaskUpdate(BaseModel):
+    TaskID: int
+    SubTaskNumber: int
+    ImagePath: str | None = None
+    Description: str | None = None
+    Answer: str | None = None
+    SolutionPath: str | None = None

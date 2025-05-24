@@ -1,29 +1,58 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Детали подзадачи</title>
-    <link rel="stylesheet" type="text/css" href="/static/styles.css">
-</head>
-<body>
-    <h1 id="subtask-title">Загрузка подзадачи...</h1>
+<!-- Templates/Tasks/create.html -->
+{% extends "base.html" %}
+
+{% block title %}Добавление задачи{% endblock %}
+{% block title_1 %}Добавление задачи!{% endblock %}
+{% block content %}
+    <style>
+        .center-wrapper {
+            display: flex;
+            justify-content: left;   /* по горизонтали */
+            align-items: center;       /* по вертикали */
+        }
+        .btn-primary {
+            /*margin-top: 30px;*/
+            background-color: #d63384;
+            color: white;
+            font-weight: 600;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 200px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+    </style>
+    {% if student.Role == "admin" %}
+        <div class="center-wrapper">
+            <form action="/subtasks/edit/" method="get">
+                <input type="hidden" name="SubTaskID" id="SubTaskID-input">
+                <button type="submit" class="btn-primary">Редактировать задачу</button>
+            </form>
+        </div>
+    {% endif %}
     <div id="subtask-description"></div>
 
+
+    <!-- с помощью JS получаем задачу -->
     <script>
         // Получаем subtask_id из URL
         const urlParts = window.location.pathname.split("/");
         const subtaskId = urlParts[urlParts.length - 1];
 
+        document.getElementById("SubTaskID-input").value = subtaskId;
+        console.log(subtaskId);
         async function loadSubTaskDetails() {
             try {
                 const response = await fetch(`/subtasks/api/${subtaskId}`);
                 const subtask = await response.json();
-                console.log(subtask); // логирование в консоль api
-                document.getElementById("subtask-title").textContent = `Задача№${subtaskId} ${subtask.SubTaskNumber}`;
+                document.getElementById("subtask-title").textContent = `Задача №${subtaskId}`;
                 document.getElementById("subtask-description").innerText = `${subtask.Description}`;
-
-                console.log(document.getElementById("subtask-title"));
-
             } catch (err) {
                 console.error("Ошибка при загрузке подзадачи", err);
             }
@@ -31,5 +60,4 @@
 
         loadSubTaskDetails();
     </script>
-</body>
-</html>
+{% endblock %}

@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import text
-from Schemas.tasks import SubTaskCreate
+from Schemas.tasks import SubTaskCreate, SubTaskUpdate
 from fastapi import HTTPException, UploadFile, File
 from typing import Optional
 import shutil
@@ -22,7 +22,8 @@ def get_all_tasks(db: Session):
     #print(result) # выводит результат запроса в консоль
     return [{"TaskID": row.TaskID, "TaskNumber": row.TaskNumber, "TaskTitle": row.TaskTitle} for row in result]
 
-''' функция-SQL запрос к БД для вывода задачи по id'''
+
+''' функция-SQL запрос к БД для вывода задачи по id(категории)'''
 def get_task_id(db: Session, task_id: int):
     query = text(f"SELECT TaskID, TaskNumber, TaskTitle FROM Tasks where TaskID={task_id}")
     result = db.execute(query).fetchall()
@@ -37,7 +38,9 @@ def get_columns_of_table(db: Session, table_name: str = 'SubTasks'):
     result = db.execute(query, {"table_name": table_name}).fetchall()
     return [row.COLUMN_NAME for row in result]
 
-''' функция-SQL запрос к БД для вывода всех подзадач'''
+
+
+''' функция-SQL запрос к БД для вывода всех подзадач с сортировкой по категориям'''
 def get_all_subtasks(db: Session):
     query = text("SELECT SubTaskID, TaskID, SubTaskNumber, ImagePath, Description, Answer, SolutionPath FROM SubTasks ORDER BY TaskID")
     result = db.execute(query).fetchall()
@@ -52,13 +55,14 @@ def get_all_subtasks(db: Session):
         for row in result]
     return subtasks
 
-''' функция-SQL для вывода подзадачи по id'''
+
+''' функция-SQL для вывода подзадачи по её id (SubTaskID)'''
 def get_subtasks_id(db: Session, subtasks_id: int):
     query = text("SELECT * FROM SubTasks WHERE SubTaskID = :id")
     result = db.execute(query, {"id": subtasks_id}).fetchone()
     if not result:
         raise HTTPException(status_code=404, detail=f"Задача с ID {subtasks_id} не найдена")
-    subtasks = {
+    subtask = {
         "SubTaskID": result.SubTaskID,
         "TaskID": result.TaskID,
          "SubTaskNumber": result.SubTaskNumber,
@@ -70,7 +74,7 @@ def get_subtasks_id(db: Session, subtasks_id: int):
 
     if not result:
         raise HTTPException(status_code=404, detail=f"Задача с ID {subtasks_id} не найдена")
-    return subtasks
+    return subtask
 
 ''' функция-SQL для вывода подзадач по типу номеру ЕГЭ'''
 def get_subtasks_TaskID(db: Session, task_id: int):
@@ -88,6 +92,7 @@ def get_subtasks_TaskID(db: Session, task_id: int):
     if not result:
         raise HTTPException(status_code=404, detail=f"Задача с Категорией {task_id} не найдена")
     return subtasks
+
 
 ''' Добавление новой подзадачи (по API)'''
 def create_subtask(db: Session, subtask_data: SubTaskCreate):
@@ -115,10 +120,13 @@ def create_subtask(db: Session, subtask_data: SubTaskCreate):
     new_id = result.scalar() # возвращаем id добавленной задачи
     return {"SubTaskID": new_id}
 
+
+
+
 UPLOAD_DIR = Path("uploads")
 UPLOAD_DIR.mkdir(exist_ok=True)
 
-''' Добавление новой подзадачи (форма)'''
+''' Добавление новой подзадачи (через форму)'''
 def create_subtask_from_form(
         TaskID: int,
         Description: str,
@@ -159,5 +167,28 @@ def create_subtask_from_form(
                )
     db.commit()
 
+
+
+''' Редактирование подзадачи (через форму)'''
+def update_subtask(
+        SubTaskID: int,
+        subtask_data: SubTaskUpdate,
+        db: Session
+):
+    subtask = get_subtasks_id(SubTaskID, db)
+    if subtask is None:
+        logger.info("Нет такой задачи")
+        return None  # Или выбросить исключение
+
+    subtask.TaskID = subtask_data.TaskID
+    subtask.SubTaskNumber = subtask_data.SubTaskNumber
+    subtask.ImagePath = subtask_data.ImagePath
+    subtask.Description = subtask_data.Description
+    subtask.Answer = subtask_data.Answer
+    subtask.SolutionPath = subtask_data.SolutionPath
+
+    db.commit()
+    db.refresh(subtask)
+    return subtask
 '''def get_all_tasks(db: Session):
     return db.query(Task).order_by(Task.TaskNumber).all()'''
