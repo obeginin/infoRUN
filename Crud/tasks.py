@@ -139,7 +139,8 @@ def create_subtask_from_form(
         text("SELECT MAX(SubTaskNumber) FROM SubTasks WHERE TaskID = :task_id"),  # изменить SubTaskNumber
         {"task_id": TaskID}
     ).scalar()
-    subtask_number = (int(result) or 0) + 1
+    #subtask_number = (result or 0) + 1
+    subtask_number = (int(result) if result else 0) + 1
 
     # Сохраняем файл, если есть
     image_path = None
