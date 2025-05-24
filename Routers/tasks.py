@@ -90,7 +90,7 @@ def create_new_subtask(subtask: SubTaskCreate, db: Session = Depends(get_db)):
     logger.info("Выполнили роут с добавлением задачи")
     return {"message": "Подзадача успешно добавлена", "SubTaskID": new_id}
 
-UPLOAD_DIR = Path("uploads")
+UPLOAD_DIR = Path("Uploads")
 UPLOAD_DIR.mkdir(exist_ok=True)
 
 

@@ -26,6 +26,7 @@ app.include_router(files.router)
 
 #app.include_router(web_auth.router) # подключаем home
 app.mount("/static", StaticFiles(directory="Templates/Static"), name="static") # для CSS файлов
+app.mount("/Uploads", StaticFiles(directory="Uploads"), name="uploads")
 templates = Jinja2Templates(directory="templates") # для
 
 

@@ -123,7 +123,7 @@ def create_subtask(db: Session, subtask_data: SubTaskCreate):
 
 
 
-UPLOAD_DIR = Path("uploads")
+UPLOAD_DIR = Path("Uploads")
 UPLOAD_DIR.mkdir(exist_ok=True)
 
 ''' Добавление новой подзадачи (через форму)'''
