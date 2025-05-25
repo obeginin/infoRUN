@@ -34,4 +34,20 @@ class StudentTaskRead(BaseModel):
     class Config:
         from_attributes = True
 
-        
+
+class StudentTaskDetails(BaseModel):
+    StudentTaskID: int
+    StudentID: int
+    SubTaskID: int
+    StudentAnswer: Optional[str]
+    CompletionStatus: Optional[str]
+    Score: Optional[int]
+    CompletionDate: Optional[datetime]
+    Login: str
+    Role: str
+    TaskID: int
+    SubTaskNumber: int
+    ImagePath: Optional[str]
+    Description: Optional[str]
+    Answer: Optional[str]
+    SolutionPath: Optional[str]

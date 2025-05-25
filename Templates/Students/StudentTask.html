@@ -26,15 +26,16 @@
 
     <script>
 
-        const StudentID = {{ StudentID }};
+
         const tasks = {{ tasks | tojson }};
-        console.log('StudentID:', StudentID);
+        //console.log('StudentTaskID:', StudentTaskID);
+        console.log('tasks:', tasks.StudentTaskID);
         console.log('tasks:', tasks);
         const ul = document.getElementById("task-list");
 
         tasks.forEach(task => {
             const li = document.createElement("li");
-            li.innerHTML = `Задача: <a href="/students_subtasks/StudentTask/${StudentID}/${task.SubTaskID}">${task.SubTaskID}</a> - ${task.CompletionStatus}`;
+            li.innerHTML = `Задача: <a href="/students_subtasks/T/${task.StudentTaskID}">${task.SubTaskID}</a> - ${task.CompletionStatus}`;
 
             ul.appendChild(li);
         });

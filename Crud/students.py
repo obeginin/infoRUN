@@ -60,7 +60,10 @@ def get_all_students_tasks(db: Session):
 
 ''' Получения всех задач студента по ID'''
 def get_student_all_tasks(db: Session, student_id: int):
-    query = text(f"SELECT StudentTaskID,StudentID, Login, SubTaskID,CompletionStatus,Score,CompletionDate,StudentAnswer FROM StudentTasks JOIN Students ON Students.ID = StudentTasks.StudentID WHERE StudentTasks.StudentID = :student_id")
+    query = text(f"SELECT StudentTaskID,StudentID, Login, SubTaskID,CompletionStatus,Score,CompletionDate,StudentAnswer "
+                 f"FROM StudentTasks "
+                 f"JOIN Students ON Students.ID = StudentTasks.StudentID "
+                 f"WHERE StudentTasks.StudentID = :student_id")
     result = db.execute(query, {"student_id": student_id}).fetchall()
     logging.warning(f"Получаем задачи для студента с ID = {student_id}")
     logging.warning(f"Результатов найдено: {len(result)}")
@@ -116,3 +119,13 @@ def get_task_student(db: Session, student_id: int, SubTaskID: int) -> list[Stude
 def get_student_by_login(db: Session, login: str):
     return db.query(Student).filter(Student.Login == login).first()
 
+
+'''все данные задачи выбранного студента по StudentTaskID'''
+def Get_Student_TaskDetails_By_ID(db: Session, StudentTaskID: int):
+    query = text("EXEC dbo.GetStudentTaskDetailsByID :student_task_id")
+    result =  db.execute(query, {"student_task_id": StudentTaskID})
+    if not result:
+            raise HTTPException(status_code=404, detail=f"нет подзадачи с StudentTaskID {StudentTaskID}")
+
+    row = result.fetchone()
+    return dict(row._mapping)

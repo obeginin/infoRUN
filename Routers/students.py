@@ -2,7 +2,7 @@ from http.client import HTTPException
 
 from fastapi import APIRouter, Depends, Request, Query
 from sqlalchemy.orm import Session
-from Schemas.students import StudentsRead, StudentTaskRead
+from Schemas.students import StudentsRead, StudentTaskRead,StudentTaskDetails
 from Crud import students
 from dependencies import get_db  # Зависимость для подключения к базе данных
 from fastapi.responses import HTMLResponse
@@ -62,10 +62,10 @@ def read_student_all_subtasks(student_id: int, db: Session = Depends(get_db)):
 
 #/students_subtasks/api/{StudentID}/{SubTasksID}
 '''Эндпоинт для получения задачи студента по его student_id и номеру SubTasksID'''
-@students_subtasks_router.get("/api/{student_id}/{SubTasksID}", response_model=list[StudentTaskRead])
-def read_task_student(student_id: int, SubTasksID: int, db: Session = Depends(get_db)):
-    return students.get_task_student(db, student_id, SubTasksID)
-
+@students_subtasks_router.get("/api/{student_id}/{SubTasksID}", response_model=list[StudentTaskDetails])
+def read_task_student( StudentTaskID: int, db: Session = Depends(get_db)):
+    #return students.get_task_student(db, student_id, SubTasksID)
+    return students.Get_Student_TaskDetails_By_ID(db, StudentTaskID)
 
 # /students/List/
 '''Возвращем html страницу со списком всех пользователей'''
@@ -122,18 +122,19 @@ def read_student_all_subtasks_by_login(
         "student": current_student,
     })
 
-# /students_subtasks/StudentTask/{StudentID}/{SubTasksID}
+# /students_subtasks/StudentTasks/{StudentID}/{SubTasksID}
 '''Возращаем страницу с задачей пользователя по его id и номеру задачи'''
-@students_subtasks_router.get("/StudentTask/{StudentID}/{SubTasksID}",  response_class=HTMLResponse)
+@students_subtasks_router.get("/T/{StudentTaskID}/",  response_class=HTMLResponse)
 def read_student_all_subtasks(
         request: Request,
-        StudentID: int,
-        SubTasksID: int,
+        StudentTaskID: int,
+
         current_student=Depends(get_current_student_or_redirect),
         db: Session = Depends(get_db)):
-    logging.warning(f"Вызываем роут read_student_all_subtasks с параметрами: student_id={StudentID} SubTasksID={SubTasksID}")  # логирование
-    Task = students.get_task_student(db, StudentID, SubTasksID)
+    logging.warning(f"Вызываем роут read_student_all_subtasks с параметрами: StudentTaskID={StudentTaskID}")  # логирование
+    Task = students.Get_Student_TaskDetails_By_ID(db, StudentTaskID)
     print(Task)
+    print("Task:", Task)
 
-    return templates.TemplateResponse("Students/Task.html", {"request": request, "StudentID": StudentID, "SubTaskID": SubTasksID, "subtask": Task, "student": current_student})
+    return templates.TemplateResponse("Students/Task.html", {"request": request, "StudentTaskID": StudentTaskID, "subtask": Task, "student": current_student})
 

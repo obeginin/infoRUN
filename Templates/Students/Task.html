@@ -1,8 +1,8 @@
-<!-- Templates/Tasks/tasks.html -->
+<!-- Templates/Students/Task.html -->
 {% extends "base.html" %}
 
 {% block title %}Задача{% endblock %}
-{% block title_1 %}Задача№{{ SubTaskID }}{% endblock %}
+{% block title_1 %}{% endblock %}
 {% block content %}
    <div id="subtask-container"></div>
 
@@ -10,14 +10,24 @@
         // Подготовим данные из шаблона
         const subtask = {{ subtask | tojson }};
         const task = Array.isArray(subtask) ? subtask[0] : subtask;
+        console.log(subtask.StudentTaskID); // логирование в консоль
+        console.log(task); // логирование в консоль
+
+        // Заголовок
+            document.getElementById("subtask-title").textContent = `Задача №${task.SubTaskID}`;
 
         // Заполняем контейнер
         const container = document.getElementById("subtask-container");
         container.innerHTML = `
             <p><strong>ID подзадачи:</strong> ${task.SubTaskID}</p>
+            <p><strong>ID задачи студента:</strong> ${task.StudentTaskID ?? "—"}</p>
             <p><strong>Статус:</strong> ${task.CompletionStatus}</p>
             <p><strong>Оценка:</strong> ${task.Score}</p>
             <p><strong>Дата выполнения:</strong> ${task.CompletionDate ?? "—"}</p>
+
+            <p><strong>описание:</strong> ${task.Description ?? "—"}</p>
+            <p><strong>Категория:</strong> ${task.TaskID ?? "—"}</p>
+            <p><strong>Изобржение:</strong> ${task.StudentAnswer ?? "—"}</p>
             <p><strong>Ответ:</strong> ${task.StudentAnswer ?? "—"}</p>
         `;
     </script>
