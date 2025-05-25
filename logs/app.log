@@ -824,3 +824,457 @@
 2025-05-25 09:51:44,778 - INFO - requests - Ответ: GET /tasks/ - статус 200
 2025-05-25 09:51:44,792 - INFO - requests - Запрос: GET /tasks/api/
 2025-05-25 09:51:44,799 - INFO - requests - Ответ: GET /tasks/api/ - статус 200
+2025-05-25 09:52:24,649 - INFO - requests - Запрос: GET /tasks/
+2025-05-25 09:52:24,654 - INFO - requests - Ответ: GET /tasks/ - статус 200
+2025-05-25 09:52:24,679 - INFO - requests - Запрос: GET /tasks/api/
+2025-05-25 09:52:24,685 - INFO - requests - Ответ: GET /tasks/api/ - статус 200
+2025-05-25 09:52:25,330 - INFO - requests - Запрос: GET /subtasks/
+2025-05-25 09:52:25,335 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-05-25 09:52:25,358 - INFO - requests - Запрос: GET /subtasks/api/
+2025-05-25 09:52:25,366 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200
+2025-05-25 09:52:27,790 - INFO - requests - Запрос: GET /tasks/
+2025-05-25 09:52:27,794 - INFO - requests - Ответ: GET /tasks/ - статус 200
+2025-05-25 09:52:27,812 - INFO - requests - Запрос: GET /tasks/api/
+2025-05-25 09:52:27,816 - INFO - requests - Ответ: GET /tasks/api/ - статус 200
+2025-05-25 09:52:30,234 - INFO - requests - Запрос: GET /subtasks/
+2025-05-25 09:52:30,240 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-05-25 09:52:30,256 - INFO - requests - Запрос: GET /subtasks/api/
+2025-05-25 09:52:30,260 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200
+2025-05-25 09:52:44,608 - INFO - requests - Запрос: GET /tasks/
+2025-05-25 09:52:44,613 - INFO - requests - Ответ: GET /tasks/ - статус 200
+2025-05-25 09:52:44,631 - INFO - requests - Запрос: GET /tasks/api/
+2025-05-25 09:52:44,635 - INFO - requests - Ответ: GET /tasks/api/ - статус 200
+2025-05-25 09:53:38,436 - INFO - root - Логирование по дням инициализировано.
+2025-05-25 09:53:39,012 - INFO - requests - Запрос: GET /tasks/
+2025-05-25 09:53:39,124 - INFO - requests - Ответ: GET /tasks/ - статус 200
+2025-05-25 09:53:39,139 - INFO - requests - Запрос: GET /tasks/api/
+2025-05-25 09:53:39,145 - INFO - requests - Ответ: GET /tasks/api/ - статус 200
+2025-05-25 09:53:39,902 - INFO - requests - Запрос: GET /tasks/api/1
+2025-05-25 09:53:39,929 - INFO - requests - Ответ: GET /tasks/api/1 - статус 200
+2025-05-25 09:54:21,827 - INFO - requests - Запрос: GET /tasks/
+2025-05-25 09:54:21,835 - INFO - requests - Ответ: GET /tasks/ - статус 200
+2025-05-25 09:54:21,852 - INFO - requests - Запрос: GET /tasks/api/
+2025-05-25 09:54:21,857 - INFO - requests - Ответ: GET /tasks/api/ - статус 200
+2025-05-25 09:54:23,103 - INFO - requests - Запрос: GET /tasks/1
+2025-05-25 09:54:23,108 - INFO - requests - Ответ: GET /tasks/1 - статус 200
+2025-05-25 09:54:23,135 - INFO - requests - Запрос: GET /tasks/api/1
+2025-05-25 09:54:23,135 - INFO - requests - Запрос: GET /subtasks/api/TaskID/1
+2025-05-25 09:54:23,140 - INFO - requests - Ответ: GET /tasks/api/1 - статус 200
+2025-05-25 09:54:23,144 - INFO - requests - Ответ: GET /subtasks/api/TaskID/1 - статус 404
+2025-05-25 09:54:28,804 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-25 09:54:28,805 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-25 09:54:36,838 - INFO - root - Логирование по дням инициализировано.
+2025-05-25 09:54:37,337 - INFO - requests - Запрос: GET /tasks/1
+2025-05-25 09:54:37,442 - INFO - requests - Ответ: GET /tasks/1 - статус 200
+2025-05-25 09:54:37,456 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-25 09:54:37,457 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-25 09:54:37,465 - INFO - requests - Запрос: GET /tasks/api/1
+2025-05-25 09:54:37,466 - INFO - requests - Запрос: GET /subtasks/api/TaskID/1
+2025-05-25 09:54:37,471 - INFO - requests - Ответ: GET /tasks/api/1 - статус 200
+2025-05-25 09:54:37,476 - INFO - requests - Ответ: GET /subtasks/api/TaskID/1 - статус 404
+2025-05-25 09:54:38,812 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-25 09:54:38,813 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-25 09:54:38,824 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-25 09:54:38,825 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-25 09:54:39,786 - INFO - requests - Запрос: GET /tasks/1
+2025-05-25 09:54:39,791 - INFO - requests - Ответ: GET /tasks/1 - статус 200
+2025-05-25 09:54:39,810 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-25 09:54:39,810 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-25 09:54:39,819 - INFO - requests - Запрос: GET /tasks/api/1
+2025-05-25 09:54:39,819 - INFO - requests - Запрос: GET /subtasks/api/TaskID/1
+2025-05-25 09:54:39,824 - INFO - requests - Ответ: GET /tasks/api/1 - статус 200
+2025-05-25 09:54:39,825 - INFO - requests - Ответ: GET /subtasks/api/TaskID/1 - статус 404
+2025-05-25 09:54:58,747 - INFO - root - Логирование по дням инициализировано.
+2025-05-25 09:54:58,818 - INFO - requests - Запрос: GET /tasks/1
+2025-05-25 09:54:58,997 - INFO - requests - Ответ: GET /tasks/1 - статус 200
+2025-05-25 09:54:59,016 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-25 09:54:59,017 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-25 09:54:59,032 - INFO - requests - Запрос: GET /tasks/api/1
+2025-05-25 09:54:59,033 - INFO - requests - Запрос: GET /subtasks/api/TaskID/1
+2025-05-25 09:54:59,043 - INFO - requests - Ответ: GET /tasks/api/1 - статус 200
+2025-05-25 09:54:59,048 - INFO - requests - Ответ: GET /subtasks/api/TaskID/1 - статус 404
+2025-05-25 09:54:59,598 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-25 09:54:59,599 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-25 09:54:59,612 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-25 09:54:59,612 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-25 09:55:00,124 - INFO - requests - Запрос: GET /tasks/
+2025-05-25 09:55:00,130 - INFO - requests - Ответ: GET /tasks/ - статус 200
+2025-05-25 09:55:00,143 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-25 09:55:00,143 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-25 09:55:00,162 - INFO - requests - Запрос: GET /tasks/api/
+2025-05-25 09:55:00,167 - INFO - requests - Ответ: GET /tasks/api/ - статус 200
+2025-05-25 09:55:02,980 - INFO - requests - Запрос: GET /tasks/
+2025-05-25 09:55:02,986 - INFO - requests - Ответ: GET /tasks/ - статус 200
+2025-05-25 09:55:02,998 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-25 09:55:02,999 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-25 09:55:03,011 - INFO - requests - Запрос: GET /tasks/api/
+2025-05-25 09:55:03,014 - INFO - requests - Ответ: GET /tasks/api/ - статус 200
+2025-05-25 09:55:10,623 - INFO - root - Логирование по дням инициализировано.
+2025-05-25 09:55:10,707 - INFO - requests - Запрос: GET /tasks/
+2025-05-25 09:55:10,797 - INFO - requests - Ответ: GET /tasks/ - статус 200
+2025-05-25 09:55:10,812 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-25 09:55:10,812 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-25 09:55:10,829 - INFO - requests - Запрос: GET /tasks/api/
+2025-05-25 09:55:10,833 - INFO - requests - Ответ: GET /tasks/api/ - статус 200
+2025-05-25 09:55:11,551 - INFO - requests - Запрос: GET /tasks/
+2025-05-25 09:55:11,556 - INFO - requests - Ответ: GET /tasks/ - статус 200
+2025-05-25 09:55:11,569 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-25 09:55:11,570 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-25 09:55:11,583 - INFO - requests - Запрос: GET /tasks/api/
+2025-05-25 09:55:11,586 - INFO - requests - Ответ: GET /tasks/api/ - статус 200
+2025-05-25 09:55:17,454 - INFO - requests - Запрос: GET /tasks/
+2025-05-25 09:55:17,461 - INFO - requests - Ответ: GET /tasks/ - статус 200
+2025-05-25 09:55:17,472 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-25 09:55:17,473 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-25 09:55:17,490 - INFO - requests - Запрос: GET /tasks/api/
+2025-05-25 09:55:17,493 - INFO - requests - Ответ: GET /tasks/api/ - статус 200
+2025-05-25 09:55:17,968 - INFO - requests - Запрос: GET /tasks/
+2025-05-25 09:55:17,973 - INFO - requests - Ответ: GET /tasks/ - статус 200
+2025-05-25 09:55:17,988 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-25 09:55:17,989 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-25 09:55:18,003 - INFO - requests - Запрос: GET /tasks/api/
+2025-05-25 09:55:18,008 - INFO - requests - Ответ: GET /tasks/api/ - статус 200
+2025-05-25 09:55:27,177 - INFO - root - Логирование по дням инициализировано.
+2025-05-25 09:55:27,280 - INFO - requests - Запрос: GET /tasks/
+2025-05-25 09:55:27,343 - INFO - requests - Ответ: GET /tasks/ - статус 200
+2025-05-25 09:55:27,361 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-25 09:55:27,361 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-25 09:55:27,372 - INFO - requests - Запрос: GET /tasks/api/
+2025-05-25 09:55:27,377 - INFO - requests - Ответ: GET /tasks/api/ - статус 200
+2025-05-25 09:55:27,466 - INFO - requests - Запрос: GET /tasks/
+2025-05-25 09:55:27,470 - INFO - requests - Ответ: GET /tasks/ - статус 200
+2025-05-25 09:55:27,486 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-25 09:55:27,486 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-25 09:55:27,502 - INFO - requests - Запрос: GET /tasks/api/
+2025-05-25 09:55:27,507 - INFO - requests - Ответ: GET /tasks/api/ - статус 200
+2025-05-25 09:55:51,551 - INFO - requests - Запрос: GET /tasks/2
+2025-05-25 09:55:51,557 - INFO - requests - Ответ: GET /tasks/2 - статус 200
+2025-05-25 09:55:51,575 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-25 09:55:51,575 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-25 09:55:51,585 - INFO - requests - Запрос: GET /tasks/api/2
+2025-05-25 09:55:51,586 - INFO - requests - Запрос: GET /subtasks/api/TaskID/2
+2025-05-25 09:55:51,593 - INFO - requests - Ответ: GET /tasks/api/2 - статус 200
+2025-05-25 09:55:51,597 - INFO - requests - Ответ: GET /subtasks/api/TaskID/2 - статус 404
+2025-05-25 09:55:54,249 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-25 09:55:54,250 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-25 09:55:54,259 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-25 09:55:54,260 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-25 09:55:58,480 - INFO - requests - Запрос: GET /tasks/2
+2025-05-25 09:55:58,483 - INFO - requests - Ответ: GET /tasks/2 - статус 200
+2025-05-25 09:55:58,501 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-25 09:55:58,502 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-25 09:55:58,514 - INFO - requests - Запрос: GET /tasks/api/2
+2025-05-25 09:55:58,515 - INFO - requests - Запрос: GET /subtasks/api/TaskID/2
+2025-05-25 09:55:58,519 - INFO - requests - Ответ: GET /tasks/api/2 - статус 200
+2025-05-25 09:55:58,519 - INFO - requests - Ответ: GET /subtasks/api/TaskID/2 - статус 404
+2025-05-25 09:56:03,759 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-25 09:56:03,759 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-25 09:56:03,771 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-25 09:56:03,771 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-25 09:56:06,463 - INFO - requests - Запрос: GET /tasks/2
+2025-05-25 09:56:06,469 - INFO - requests - Ответ: GET /tasks/2 - статус 200
+2025-05-25 09:56:06,488 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-25 09:56:06,489 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-25 09:56:06,496 - INFO - requests - Запрос: GET /tasks/api/2
+2025-05-25 09:56:06,497 - INFO - requests - Запрос: GET /subtasks/api/TaskID/2
+2025-05-25 09:56:06,505 - INFO - requests - Ответ: GET /tasks/api/2 - статус 200
+2025-05-25 09:56:06,507 - INFO - requests - Ответ: GET /subtasks/api/TaskID/2 - статус 404
+2025-05-25 09:56:08,474 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-25 09:56:08,474 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-25 09:56:08,481 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-25 09:56:08,482 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-25 09:56:09,300 - INFO - requests - Запрос: GET /tasks/5
+2025-05-25 09:56:09,303 - INFO - requests - Ответ: GET /tasks/5 - статус 200
+2025-05-25 09:56:09,322 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-25 09:56:09,322 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-25 09:56:09,337 - INFO - requests - Запрос: GET /tasks/api/5
+2025-05-25 09:56:09,338 - INFO - requests - Запрос: GET /subtasks/api/TaskID/5
+2025-05-25 09:56:09,343 - INFO - requests - Ответ: GET /tasks/api/5 - статус 200
+2025-05-25 09:56:09,344 - INFO - requests - Ответ: GET /subtasks/api/TaskID/5 - статус 200
+2025-05-25 09:56:10,717 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-25 09:56:10,718 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-25 09:56:10,728 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-25 09:56:10,729 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-25 09:56:11,657 - INFO - requests - Запрос: GET /tasks/8
+2025-05-25 09:56:11,661 - INFO - requests - Ответ: GET /tasks/8 - статус 200
+2025-05-25 09:56:11,677 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-25 09:56:11,678 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-25 09:56:11,688 - INFO - requests - Запрос: GET /tasks/api/8
+2025-05-25 09:56:11,689 - INFO - requests - Запрос: GET /subtasks/api/TaskID/8
+2025-05-25 09:56:11,693 - INFO - requests - Ответ: GET /tasks/api/8 - статус 200
+2025-05-25 09:56:11,694 - INFO - requests - Ответ: GET /subtasks/api/TaskID/8 - статус 200
+2025-05-25 09:56:21,979 - INFO - requests - Запрос: GET /admin/
+2025-05-25 09:56:21,988 - INFO - requests - Ответ: GET /admin/ - статус 200
+2025-05-25 09:56:23,116 - INFO - requests - Запрос: GET /home/
+2025-05-25 09:56:23,118 - INFO - Routers.auth - [127.0.0.1] Студент ivanov открыл главную страницу
+2025-05-25 09:56:23,121 - INFO - requests - Ответ: GET /home/ - статус 200
+2025-05-25 09:56:23,545 - INFO - requests - Запрос: GET /tasks/
+2025-05-25 09:56:23,548 - INFO - requests - Ответ: GET /tasks/ - статус 200
+2025-05-25 09:56:23,560 - INFO - requests - Запрос: GET /tasks/api/
+2025-05-25 09:56:23,563 - INFO - requests - Ответ: GET /tasks/api/ - статус 200
+2025-05-25 09:56:23,911 - INFO - requests - Запрос: GET /subtasks/
+2025-05-25 09:56:23,915 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-05-25 09:56:23,927 - INFO - requests - Запрос: GET /subtasks/api/
+2025-05-25 09:56:23,931 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200
+2025-05-25 09:57:55,977 - INFO - requests - Запрос: GET /tasks/
+2025-05-25 09:57:55,979 - INFO - requests - Ответ: GET /tasks/ - статус 302
+2025-05-25 09:57:55,982 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-25 09:57:55,982 - INFO - Routers.auth - Выводим страницу с логином
+2025-05-25 09:57:55,985 - INFO - requests - Ответ: GET /home/login_in/ - статус 200
+2025-05-25 09:57:57,377 - INFO - requests - Запрос: POST /home/login_in/
+2025-05-25 09:57:57,395 - INFO - requests - Ответ: POST /home/login_in/ - статус 303
+2025-05-25 09:57:57,397 - INFO - requests - Запрос: GET /tasks/
+2025-05-25 09:57:57,400 - INFO - requests - Ответ: GET /tasks/ - статус 200
+2025-05-25 09:57:57,420 - INFO - requests - Запрос: GET /tasks/api/
+2025-05-25 09:57:57,427 - INFO - requests - Ответ: GET /tasks/api/ - статус 200
+2025-05-25 09:57:58,618 - INFO - requests - Запрос: GET /tasks/5
+2025-05-25 09:57:58,621 - INFO - requests - Ответ: GET /tasks/5 - статус 200
+2025-05-25 09:57:58,643 - INFO - requests - Запрос: GET /tasks/api/5
+2025-05-25 09:57:58,647 - INFO - requests - Запрос: GET /subtasks/api/TaskID/5
+2025-05-25 09:57:58,649 - INFO - requests - Ответ: GET /tasks/api/5 - статус 200
+2025-05-25 09:57:58,654 - INFO - requests - Ответ: GET /subtasks/api/TaskID/5 - статус 200
+2025-05-25 09:58:03,191 - INFO - requests - Запрос: GET /tasks/8
+2025-05-25 09:58:03,202 - INFO - requests - Ответ: GET /tasks/8 - статус 200
+2025-05-25 09:58:03,218 - INFO - requests - Запрос: GET /tasks/api/8
+2025-05-25 09:58:03,220 - INFO - requests - Ответ: GET /tasks/api/8 - статус 200
+2025-05-25 09:58:03,221 - INFO - requests - Запрос: GET /subtasks/api/TaskID/8
+2025-05-25 09:58:03,225 - INFO - requests - Ответ: GET /subtasks/api/TaskID/8 - статус 200
+2025-05-25 10:01:36,913 - INFO - root - Логирование по дням инициализировано.
+2025-05-25 10:01:37,059 - INFO - requests - Запрос: GET /tasks/8
+2025-05-25 10:01:37,203 - INFO - requests - Ответ: GET /tasks/8 - статус 200
+2025-05-25 10:01:37,225 - INFO - requests - Запрос: GET /tasks/api/8
+2025-05-25 10:01:37,233 - INFO - requests - Ответ: GET /tasks/api/8 - статус 200
+2025-05-25 10:01:37,236 - INFO - requests - Запрос: GET /subtasks/api/TaskID/8
+2025-05-25 10:01:37,240 - INFO - requests - Ответ: GET /subtasks/api/TaskID/8 - статус 200
+2025-05-25 10:01:38,850 - INFO - requests - Запрос: GET /tasks
+2025-05-25 10:01:38,851 - INFO - requests - Ответ: GET /tasks - статус 307
+2025-05-25 10:01:38,856 - INFO - requests - Запрос: GET /tasks/
+2025-05-25 10:01:38,862 - INFO - requests - Ответ: GET /tasks/ - статус 200
+2025-05-25 10:01:38,884 - INFO - requests - Запрос: GET /tasks/api/
+2025-05-25 10:01:38,889 - INFO - requests - Ответ: GET /tasks/api/ - статус 200
+2025-05-25 10:01:40,269 - INFO - requests - Запрос: GET /tasks/1
+2025-05-25 10:01:40,277 - INFO - requests - Ответ: GET /tasks/1 - статус 200
+2025-05-25 10:01:40,297 - INFO - requests - Запрос: GET /tasks/api/1
+2025-05-25 10:01:40,298 - INFO - requests - Запрос: GET /subtasks/api/TaskID/1
+2025-05-25 10:01:40,301 - INFO - requests - Ответ: GET /tasks/api/1 - статус 200
+2025-05-25 10:01:40,309 - INFO - requests - Ответ: GET /subtasks/api/TaskID/1 - статус 404
+2025-05-25 10:01:42,300 - INFO - requests - Запрос: GET /tasks
+2025-05-25 10:01:42,301 - INFO - requests - Ответ: GET /tasks - статус 307
+2025-05-25 10:01:42,303 - INFO - requests - Запрос: GET /tasks/
+2025-05-25 10:01:42,308 - INFO - requests - Ответ: GET /tasks/ - статус 200
+2025-05-25 10:01:42,323 - INFO - requests - Запрос: GET /tasks/api/
+2025-05-25 10:01:42,328 - INFO - requests - Ответ: GET /tasks/api/ - статус 200
+2025-05-25 10:01:42,971 - INFO - requests - Запрос: GET /tasks/2
+2025-05-25 10:01:42,976 - INFO - requests - Ответ: GET /tasks/2 - статус 200
+2025-05-25 10:01:42,993 - INFO - requests - Запрос: GET /tasks/api/2
+2025-05-25 10:01:42,996 - INFO - requests - Ответ: GET /tasks/api/2 - статус 200
+2025-05-25 10:01:42,997 - INFO - requests - Запрос: GET /subtasks/api/TaskID/2
+2025-05-25 10:01:43,002 - INFO - requests - Ответ: GET /subtasks/api/TaskID/2 - статус 404
+2025-05-25 10:01:43,884 - INFO - requests - Запрос: GET /tasks
+2025-05-25 10:01:43,885 - INFO - requests - Ответ: GET /tasks - статус 307
+2025-05-25 10:01:43,890 - INFO - requests - Запрос: GET /tasks/
+2025-05-25 10:01:43,893 - INFO - requests - Ответ: GET /tasks/ - статус 200
+2025-05-25 10:01:43,915 - INFO - requests - Запрос: GET /tasks/api/
+2025-05-25 10:01:43,918 - INFO - requests - Ответ: GET /tasks/api/ - статус 200
+2025-05-25 10:01:44,932 - INFO - requests - Запрос: GET /tasks/5
+2025-05-25 10:01:44,937 - INFO - requests - Ответ: GET /tasks/5 - статус 200
+2025-05-25 10:01:44,954 - INFO - requests - Запрос: GET /tasks/api/5
+2025-05-25 10:01:44,955 - INFO - requests - Запрос: GET /subtasks/api/TaskID/5
+2025-05-25 10:01:44,959 - INFO - requests - Ответ: GET /tasks/api/5 - статус 200
+2025-05-25 10:01:44,960 - INFO - requests - Ответ: GET /subtasks/api/TaskID/5 - статус 200
+2025-05-25 10:02:00,726 - INFO - requests - Запрос: GET /tasks/
+2025-05-25 10:02:00,731 - INFO - requests - Ответ: GET /tasks/ - статус 200
+2025-05-25 10:02:00,749 - INFO - requests - Запрос: GET /tasks/api/
+2025-05-25 10:02:00,752 - INFO - requests - Ответ: GET /tasks/api/ - статус 200
+2025-05-25 10:02:16,077 - INFO - requests - Запрос: GET /tasks/
+2025-05-25 10:02:16,081 - INFO - requests - Ответ: GET /tasks/ - статус 200
+2025-05-25 10:02:16,096 - INFO - requests - Запрос: GET /tasks/api/
+2025-05-25 10:02:16,100 - INFO - requests - Ответ: GET /tasks/api/ - статус 200
+2025-05-25 10:02:17,014 - INFO - requests - Запрос: GET /subtasks/
+2025-05-25 10:02:17,036 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-05-25 10:02:17,054 - INFO - requests - Запрос: GET /subtasks/api/
+2025-05-25 10:02:17,059 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200
+2025-05-25 10:03:56,164 - INFO - root - Логирование по дням инициализировано.
+2025-05-25 10:03:59,131 - INFO - requests - Запрос: GET /tasks/
+2025-05-25 10:03:59,210 - INFO - requests - Ответ: GET /tasks/ - статус 200
+2025-05-25 10:03:59,228 - INFO - requests - Запрос: GET /tasks/api/
+2025-05-25 10:03:59,232 - INFO - requests - Ответ: GET /tasks/api/ - статус 200
+2025-05-25 10:03:59,937 - INFO - requests - Запрос: GET /tasks/1
+2025-05-25 10:03:59,943 - INFO - requests - Ответ: GET /tasks/1 - статус 200
+2025-05-25 10:03:59,966 - INFO - requests - Запрос: GET /tasks/api/1
+2025-05-25 10:03:59,971 - INFO - requests - Запрос: GET /subtasks/api/TaskID/1
+2025-05-25 10:03:59,972 - INFO - requests - Ответ: GET /tasks/api/1 - статус 200
+2025-05-25 10:03:59,977 - INFO - requests - Ответ: GET /subtasks/api/TaskID/1 - статус 404
+2025-05-25 10:04:39,172 - INFO - root - Логирование по дням инициализировано.
+2025-05-25 10:04:39,376 - INFO - requests - Запрос: GET /tasks/1
+2025-05-25 10:04:39,470 - INFO - requests - Ответ: GET /tasks/1 - статус 200
+2025-05-25 10:04:39,489 - INFO - requests - Запрос: GET /tasks/api/1
+2025-05-25 10:04:39,490 - INFO - requests - Запрос: GET /subtasks/api/TaskID/1
+2025-05-25 10:04:39,496 - INFO - requests - Ответ: GET /tasks/api/1 - статус 200
+2025-05-25 10:04:39,499 - INFO - requests - Ответ: GET /subtasks/api/TaskID/1 - статус 404
+2025-05-25 10:06:56,974 - INFO - root - Логирование по дням инициализировано.
+2025-05-25 10:06:57,103 - INFO - requests - Запрос: GET /tasks/1
+2025-05-25 10:06:57,220 - INFO - requests - Ответ: GET /tasks/1 - статус 200
+2025-05-25 10:06:57,239 - INFO - requests - Запрос: GET /tasks/api/1
+2025-05-25 10:06:57,246 - INFO - requests - Ответ: GET /tasks/api/1 - статус 200
+2025-05-25 10:06:57,248 - INFO - requests - Запрос: GET /subtasks/api/TaskID/1
+2025-05-25 10:06:57,252 - INFO - requests - Ответ: GET /subtasks/api/TaskID/1 - статус 404
+2025-05-25 10:07:01,855 - INFO - requests - Запрос: GET /tasks
+2025-05-25 10:07:01,855 - INFO - requests - Ответ: GET /tasks - статус 307
+2025-05-25 10:07:01,861 - INFO - requests - Запрос: GET /tasks/
+2025-05-25 10:07:01,869 - INFO - requests - Ответ: GET /tasks/ - статус 200
+2025-05-25 10:07:01,897 - INFO - requests - Запрос: GET /tasks/api/
+2025-05-25 10:07:01,902 - INFO - requests - Ответ: GET /tasks/api/ - статус 200
+2025-05-25 10:07:06,369 - INFO - requests - Запрос: GET /tasks/8
+2025-05-25 10:07:06,373 - INFO - requests - Ответ: GET /tasks/8 - статус 200
+2025-05-25 10:07:06,390 - INFO - requests - Запрос: GET /tasks/api/8
+2025-05-25 10:07:06,391 - INFO - requests - Запрос: GET /subtasks/api/TaskID/8
+2025-05-25 10:07:06,396 - INFO - requests - Ответ: GET /tasks/api/8 - статус 200
+2025-05-25 10:07:06,400 - INFO - requests - Ответ: GET /subtasks/api/TaskID/8 - статус 200
+2025-05-25 10:07:08,438 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-05-25 10:07:08,438 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-05-25 10:08:16,312 - INFO - root - Логирование по дням инициализировано.
+2025-05-25 10:08:19,510 - INFO - requests - Запрос: GET /tasks/8
+2025-05-25 10:08:19,617 - INFO - requests - Ответ: GET /tasks/8 - статус 200
+2025-05-25 10:08:19,639 - INFO - requests - Запрос: GET /tasks/api/8
+2025-05-25 10:08:19,640 - INFO - requests - Запрос: GET /subtasks/api/TaskID/8
+2025-05-25 10:08:19,648 - INFO - requests - Ответ: GET /tasks/api/8 - статус 200
+2025-05-25 10:08:19,652 - INFO - requests - Ответ: GET /subtasks/api/TaskID/8 - статус 200
+2025-05-25 10:08:20,895 - INFO - requests - Запрос: GET /tasks
+2025-05-25 10:08:20,895 - INFO - requests - Ответ: GET /tasks - статус 307
+2025-05-25 10:08:20,900 - INFO - requests - Запрос: GET /tasks/
+2025-05-25 10:08:20,906 - INFO - requests - Ответ: GET /tasks/ - статус 200
+2025-05-25 10:08:20,922 - INFO - requests - Запрос: GET /tasks/api/
+2025-05-25 10:08:20,928 - INFO - requests - Ответ: GET /tasks/api/ - статус 200
+2025-05-25 10:08:26,677 - INFO - requests - Запрос: GET /tasks/
+2025-05-25 10:08:26,683 - INFO - requests - Ответ: GET /tasks/ - статус 200
+2025-05-25 10:08:26,693 - INFO - requests - Запрос: GET /tasks/api/
+2025-05-25 10:08:26,699 - INFO - requests - Ответ: GET /tasks/api/ - статус 200
+2025-05-25 10:08:27,922 - INFO - requests - Запрос: GET /subtasks/
+2025-05-25 10:08:27,928 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-05-25 10:08:27,941 - INFO - requests - Запрос: GET /subtasks/api/
+2025-05-25 10:08:27,944 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200
+2025-05-25 10:08:30,004 - INFO - requests - Запрос: GET /subtasks/4
+2025-05-25 10:08:30,011 - INFO - requests - Ответ: GET /subtasks/4 - статус 200
+2025-05-25 10:08:30,025 - INFO - requests - Запрос: GET /subtasks/api/4
+2025-05-25 10:08:30,030 - INFO - requests - Ответ: GET /subtasks/api/4 - статус 200
+2025-05-25 10:08:30,965 - INFO - requests - Запрос: GET /subtasks
+2025-05-25 10:08:30,966 - INFO - requests - Ответ: GET /subtasks - статус 307
+2025-05-25 10:08:30,970 - INFO - requests - Запрос: GET /subtasks/
+2025-05-25 10:08:30,974 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-05-25 10:08:30,992 - INFO - requests - Запрос: GET /subtasks/api/
+2025-05-25 10:08:30,994 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200
+2025-05-25 10:08:35,033 - INFO - requests - Запрос: GET /home/
+2025-05-25 10:08:35,035 - INFO - Routers.auth - [127.0.0.1] Студент ivanov открыл главную страницу
+2025-05-25 10:08:35,038 - INFO - requests - Ответ: GET /home/ - статус 200
+2025-05-25 10:08:35,829 - INFO - requests - Запрос: GET /admin/
+2025-05-25 10:08:35,837 - INFO - requests - Ответ: GET /admin/ - статус 200
+2025-05-25 10:08:37,109 - INFO - requests - Запрос: GET /students/List/
+2025-05-25 10:08:37,112 - INFO - Routers.students - Получен запрос на список студентов
+2025-05-25 10:08:37,117 - INFO - requests - Ответ: GET /students/List/ - статус 200
+2025-05-25 10:08:37,136 - INFO - requests - Запрос: GET /students/api/
+2025-05-25 10:08:37,140 - INFO - requests - Ответ: GET /students/api/ - статус 200
+2025-05-25 10:08:37,910 - INFO - requests - Запрос: GET /students_subtasks/StudentTask/1
+2025-05-25 10:08:37,912 - INFO - Routers.students - Вызван роут read_student_all_subtasks с StudentID=1
+2025-05-25 10:08:37,915 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-25 10:08:37,915 - WARNING - root - Результатов найдено: 5
+2025-05-25 10:08:37,918 - INFO - requests - Ответ: GET /students_subtasks/StudentTask/1 - статус 200
+2025-05-25 10:09:06,198 - INFO - requests - Запрос: GET /subtasks/
+2025-05-25 10:09:06,201 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-05-25 10:09:06,219 - INFO - requests - Запрос: GET /subtasks/api/
+2025-05-25 10:09:06,221 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200
+2025-05-25 10:09:08,112 - INFO - requests - Запрос: GET /subtasks/4
+2025-05-25 10:09:08,147 - INFO - requests - Ответ: GET /subtasks/4 - статус 200
+2025-05-25 10:09:08,165 - INFO - requests - Запрос: GET /subtasks/api/4
+2025-05-25 10:09:08,170 - INFO - requests - Ответ: GET /subtasks/api/4 - статус 200
+2025-05-25 10:09:08,174 - INFO - requests - Запрос: GET /Uploads/task_5_sub_1.png
+2025-05-25 10:09:08,196 - INFO - requests - Ответ: GET /Uploads/task_5_sub_1.png - статус 304
+2025-05-25 10:10:09,982 - INFO - root - Логирование по дням инициализировано.
+2025-05-25 10:10:10,065 - INFO - requests - Запрос: GET /admin/
+2025-05-25 10:10:10,214 - INFO - requests - Ответ: GET /admin/ - статус 200
+2025-05-25 10:10:11,445 - INFO - requests - Запрос: GET /students/List/
+2025-05-25 10:10:11,449 - INFO - Routers.students - Получен запрос на список студентов
+2025-05-25 10:10:11,455 - INFO - requests - Ответ: GET /students/List/ - статус 200
+2025-05-25 10:10:11,475 - INFO - requests - Запрос: GET /students/api/
+2025-05-25 10:10:11,477 - INFO - requests - Ответ: GET /students/api/ - статус 200
+2025-05-25 10:10:12,047 - INFO - requests - Запрос: GET /students_subtasks/StudentTask/1
+2025-05-25 10:10:12,049 - INFO - Routers.students - Вызван роут read_student_all_subtasks с StudentID=1
+2025-05-25 10:10:12,052 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-25 10:10:12,052 - WARNING - root - Результатов найдено: 5
+2025-05-25 10:10:12,055 - INFO - requests - Ответ: GET /students_subtasks/StudentTask/1 - статус 200
+2025-05-25 10:10:15,173 - INFO - requests - Запрос: GET /students/List
+2025-05-25 10:10:15,177 - INFO - requests - Ответ: GET /students/List - статус 400
+2025-05-25 10:10:26,840 - INFO - root - Логирование по дням инициализировано.
+2025-05-25 10:10:26,913 - INFO - requests - Запрос: GET /students_subtasks/StudentTask/1
+2025-05-25 10:10:27,009 - INFO - Routers.students - Вызван роут read_student_all_subtasks с StudentID=1
+2025-05-25 10:10:27,012 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-25 10:10:27,012 - WARNING - root - Результатов найдено: 5
+2025-05-25 10:10:27,019 - INFO - requests - Ответ: GET /students_subtasks/StudentTask/1 - статус 200
+2025-05-25 10:10:27,552 - INFO - requests - Запрос: GET /students/List/
+2025-05-25 10:10:27,560 - INFO - Routers.students - Получен запрос на список студентов
+2025-05-25 10:10:27,562 - INFO - requests - Ответ: GET /students/List/ - статус 200
+2025-05-25 10:10:27,582 - INFO - requests - Запрос: GET /students/api/
+2025-05-25 10:10:27,586 - INFO - requests - Ответ: GET /students/api/ - статус 200
+2025-05-25 10:11:25,486 - INFO - root - Логирование по дням инициализировано.
+2025-05-25 10:11:33,434 - INFO - root - Логирование по дням инициализировано.
+2025-05-25 10:11:33,546 - INFO - requests - Запрос: GET /students/List/
+2025-05-25 10:11:33,675 - INFO - Routers.students - Получен запрос на список студентов
+2025-05-25 10:11:33,683 - INFO - requests - Ответ: GET /students/List/ - статус 200
+2025-05-25 10:11:33,697 - INFO - requests - Запрос: GET /students/api/
+2025-05-25 10:11:33,702 - INFO - requests - Ответ: GET /students/api/ - статус 200
+2025-05-25 10:11:33,919 - INFO - requests - Запрос: GET /students_subtasks/StudentTask/1
+2025-05-25 10:11:33,928 - INFO - Routers.students - Вызван роут read_student_all_subtasks с StudentID=1
+2025-05-25 10:11:33,931 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-25 10:11:33,931 - WARNING - root - Результатов найдено: 5
+2025-05-25 10:11:33,936 - INFO - requests - Ответ: GET /students_subtasks/StudentTask/1 - статус 200
+2025-05-25 10:11:35,307 - INFO - requests - Запрос: GET /students/List/
+2025-05-25 10:11:35,313 - INFO - Routers.students - Получен запрос на список студентов
+2025-05-25 10:11:35,315 - INFO - requests - Ответ: GET /students/List/ - статус 200
+2025-05-25 10:11:35,330 - INFO - requests - Запрос: GET /students/api/
+2025-05-25 10:11:35,337 - INFO - requests - Ответ: GET /students/api/ - статус 200
+2025-05-25 10:11:37,579 - INFO - requests - Запрос: GET /admin/
+2025-05-25 10:11:37,587 - INFO - requests - Ответ: GET /admin/ - статус 200
+2025-05-25 10:11:47,004 - INFO - requests - Запрос: GET /home/
+2025-05-25 10:11:47,006 - INFO - Routers.auth - [127.0.0.1] Студент ivanov открыл главную страницу
+2025-05-25 10:11:47,007 - INFO - requests - Ответ: GET /home/ - статус 200
+2025-05-25 10:11:47,467 - INFO - requests - Запрос: GET /tasks/
+2025-05-25 10:11:47,472 - INFO - requests - Ответ: GET /tasks/ - статус 200
+2025-05-25 10:11:47,484 - INFO - requests - Запрос: GET /tasks/api/
+2025-05-25 10:11:47,487 - INFO - requests - Ответ: GET /tasks/api/ - статус 200
+2025-05-25 10:11:48,423 - INFO - requests - Запрос: GET /subtasks/
+2025-05-25 10:11:48,430 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-05-25 10:11:48,448 - INFO - requests - Запрос: GET /subtasks/api/
+2025-05-25 10:11:48,453 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200
+2025-05-25 10:11:54,495 - INFO - requests - Запрос: GET /admin/
+2025-05-25 10:11:54,499 - INFO - requests - Ответ: GET /admin/ - статус 200
+2025-05-25 10:12:01,697 - INFO - requests - Запрос: GET /tasks/
+2025-05-25 10:12:01,700 - INFO - requests - Ответ: GET /tasks/ - статус 200
+2025-05-25 10:12:01,722 - INFO - requests - Запрос: GET /tasks/api/
+2025-05-25 10:12:01,727 - INFO - requests - Ответ: GET /tasks/api/ - статус 200
+2025-05-25 10:12:02,266 - INFO - requests - Запрос: GET /subtasks/
+2025-05-25 10:12:02,273 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-05-25 10:12:02,293 - INFO - requests - Запрос: GET /subtasks/api/
+2025-05-25 10:12:02,296 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200
+2025-05-25 10:12:03,911 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-05-25 10:12:03,929 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-25 10:12:03,929 - WARNING - root - Результатов найдено: 5
+2025-05-25 10:12:03,929 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-05-25 10:12:03,930 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-05-25 10:12:04,757 - INFO - requests - Запрос: GET /tasks/
+2025-05-25 10:12:04,760 - INFO - requests - Ответ: GET /tasks/ - статус 200
+2025-05-25 10:12:04,773 - INFO - requests - Запрос: GET /tasks/api/
+2025-05-25 10:12:04,775 - INFO - requests - Ответ: GET /tasks/api/ - статус 200
+2025-05-25 10:12:05,374 - INFO - requests - Запрос: GET /home/
+2025-05-25 10:12:05,377 - INFO - Routers.auth - [127.0.0.1] Студент ivanov открыл главную страницу
+2025-05-25 10:12:05,378 - INFO - requests - Ответ: GET /home/ - статус 200
+2025-05-25 10:12:06,753 - INFO - requests - Запрос: GET /admin/
+2025-05-25 10:12:06,756 - INFO - requests - Ответ: GET /admin/ - статус 200
+2025-05-25 10:12:20,425 - INFO - requests - Запрос: GET /subtasks/
+2025-05-25 10:12:20,430 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-05-25 10:12:20,446 - INFO - requests - Запрос: GET /subtasks/api/
+2025-05-25 10:12:20,450 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200
+2025-05-25 10:12:26,490 - INFO - requests - Запрос: GET /students/List/
+2025-05-25 10:12:26,494 - INFO - Routers.students - Получен запрос на список студентов
+2025-05-25 10:12:26,495 - INFO - requests - Ответ: GET /students/List/ - статус 200
+2025-05-25 10:12:26,515 - INFO - requests - Запрос: GET /students/api/
+2025-05-25 10:12:26,519 - INFO - requests - Ответ: GET /students/api/ - статус 200

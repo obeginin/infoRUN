@@ -3,6 +3,27 @@
 {% block title %}Категория №{% endblock %}
 {% block title_1 %}{% endblock %}
 {% block content %}
+<style>
+#back-button {
+        margin-bottom: 20px;
+        background-color: #007bff;
+        color: white;
+        font-weight: 600;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+        display: inline-block;
+        text-decoration: none;
+    }
+
+    #back-button:hover {
+        background-color: #0056b3;
+    }
+</style>
+    <button id="back-button" onclick="goBack()">⬅ Назад</button>
     <div id="subtask-list"></div>
     <script>
         // Получаем task_id из URL (например, /tasks/js/3 - берется тройка)
@@ -48,5 +69,18 @@
 
         loadTaskDetails();
         loadSubTasks();
+
+        // Кнопка назад
+        document.getElementById("back-button").addEventListener("click", function () {
+        const parts = window.location.pathname.split("/").filter(Boolean); // убираем пустые части
+        if (parts.length > 1) {
+            parts.pop(); // убираем последний сегмент пути
+            const parentPath = "/" + parts.join("/");
+            window.location.href = parentPath;
+        } else {
+            // Если остался только "/", возвращаемся на главную
+            window.location.href = "/";
+        }
+    });
     </script>
 {% endblock %}

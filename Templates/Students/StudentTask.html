@@ -4,7 +4,26 @@
 {% block title %}Список категорий{% endblock %}
 {% block title_1 %}Задачи студента: {{ tasks[0].Login }}{% endblock %}
 {% block content %}
+<style>
+        .back-button {
+            display: inline-block;
+
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: #0056b3;
+        }
+</style>
+    <a href="/students/List/" class="back-button">Назад к списку</a>
     <ul id="task-list"></ul>
+
     <script>
 
         const StudentID = {{ StudentID }};
