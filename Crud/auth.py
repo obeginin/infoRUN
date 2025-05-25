@@ -24,10 +24,12 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
 
 # Создание пароля вручную:
+'''
 raw_password = "standart_password"
 hashed_password = hash_password(raw_password)
 print("Хешированный пароль:", hashed_password)
 #$pbkdf2-sha256$29000$HWPMube2tnYuZYwRwngPQQ$eSDzbZ3puIYCkdzcU94.2a5.ZvXUWXlIGjuSuM4ij/Y
+'''
 
 # редирект на страницу логина при неавторизованном доступе
 async def get_current_student_or_redirect(

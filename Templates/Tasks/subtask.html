@@ -1,26 +1,23 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Подзадачи</title>
-    <link rel="stylesheet" type="text/css" href="/static/styles.css">
-</head>
-<body>
-    <h1 id="task-title">Загрузка задачи...</h1>
-    <ul id="subtask-list"></ul>
+{% extends "base.html" %}
 
+{% block title %}Категория №{% endblock %}
+{% block title_1 %}{% endblock %}
+{% block content %}
+    <div id="subtask-list"></div>
     <script>
         // Получаем task_id из URL (например, /tasks/js/3 - берется тройка)
         const urlParts = window.location.pathname.split("/");
         const taskId = urlParts[urlParts.length - 1];
+
+        console.log("taskId", taskId); //Вывод в консоль браузера
 
         async function loadTaskDetails() {
             try {
                 // Загружаем данные самой задачи
                 const taskRes = await fetch(`/tasks/api/${taskId}`);
                 const task = await taskRes.json();
-
-                document.getElementById("task-title").textContent = `Задача: ${task.TaskNumber} - ${task.TaskTitle}`;
+                console.log("task", task);
+                document.getElementById("subtask-title").textContent = `${task[0].TaskTitle}`;
 
             } catch (err) {
                 console.error("Ошибка при загрузке задачи", err);
@@ -33,12 +30,14 @@
                 const response = await fetch(`/subtasks/api/TaskID/${taskId}`);
                 const subtasks = await response.json();
 
+                console.log("subtasks", subtasks);
+
                 const list = document.getElementById("subtask-list");
                 subtasks.forEach(subtask => {
                     const li = document.createElement("li");
+                    console.log("subtask", subtask);
                     li.innerHTML = `
-
-                        <strong>${subtask.SubTaskNumber}</strong>: <a href="/js/TaskID/${subtask.SubTaskID}">${subtask.Description}</a>`;
+                        <strong>${subtask.SubTaskNumber}</strong>: <a href="/subtasks/${subtask.SubTaskID}">${subtask.Description}</a>`;
 
                     list.appendChild(li);
                 });
@@ -50,5 +49,4 @@
         loadTaskDetails();
         loadSubTasks();
     </script>
-</body>
-</html>
+{% endblock %}
