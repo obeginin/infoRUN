@@ -22,7 +22,7 @@ class TaskRead(BaseModel):
 class SubTaskRead(BaseModel):
     SubTaskID: int
     TaskID: int
-    SubTaskNumber: str
+    SubTaskNumber: int
     ImagePath: Optional[str] = None
     Description: Optional[str] = None
     Answer: Optional[str] = None

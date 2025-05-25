@@ -134,39 +134,48 @@ def create_subtask_from_form(
         ImageFile: Optional[UploadFile],
         db: Session
 ):
-    # Генерация SubTaskNumber — последний + 1
-    result = db.execute(
-        text("SELECT MAX(SubTaskNumber) FROM SubTasks WHERE TaskID = :task_id"),  # изменить SubTaskNumber
-        {"task_id": TaskID}
-    ).scalar()
-    #subtask_number = (result or 0) + 1
-    subtask_number = (int(result) if result else 0) + 1
+    try:
+        # Генерация SubTaskNumber — последний + 1
+        result = db.execute(
+            text("SELECT MAX(SubTaskNumber) FROM SubTasks WHERE TaskID = :task_id"),
+            {"task_id": TaskID}
+        ).scalar()
+        #subtask_number = (result or 0) + 1
+        subtask_number = (int(result) if result else 0) + 1
 
-    # Сохраняем файл, если есть
-    image_path = None
-    if ImageFile:
-        ext = ImageFile.filename.split('.')[-1]
-        filename = f"task_{TaskID}_sub_{subtask_number}.{ext}"
-        filepath = UPLOAD_DIR / filename
-        with filepath.open("wb") as buffer:
-            shutil.copyfileobj(ImageFile.file, buffer)
-        image_path = str(filepath)
+        # Сохраняем файл, если есть
+        image_path = None
+        if ImageFile:
+            ext = ImageFile.filename.split('.')[-1]
+            filename = f"task_{TaskID}_sub_{subtask_number}.{ext}"
+            filepath = UPLOAD_DIR / filename
+            with filepath.open("wb") as buffer:
+                shutil.copyfileobj(ImageFile.file, buffer)
+            image_path = str(filepath)
 
-    # Вставка подзадачи в БД
-    insert_query = (
-        text("""
-            INSERT INTO SubTasks (TaskID, SubTaskNumber, ImagePath, Description, Answer)
-            VALUES (:task_id, :subtask_number, :image_path, :description, :answer)
-        """))
-    db.execute(insert_query, {
-        "task_id": TaskID,
-        "subtask_number": subtask_number,
-        "image_path": image_path,
-        "description": Description,
-        "answer": Answer,
-    }
-               )
-    db.commit()
+        # Вставка подзадачи в БД
+        insert_query = (
+            text("""
+                INSERT INTO SubTasks (TaskID, SubTaskNumber, ImagePath, Description, Answer)
+                OUTPUT INSERTED.SubTaskID
+                VALUES (:task_id, :subtask_number, :image_path, :description, :answer)
+            """))
+        result = db.execute(insert_query, {
+            "task_id": TaskID,
+            "subtask_number": subtask_number,
+            "image_path": image_path,
+            "description": Description,
+            "answer": Answer,
+        }
+                   )
+        new_SubTaskID = result.scalar_one() # Получаем единственное значение - новый SubTaskID
+        db.commit()
+        return new_SubTaskID
+
+    except Exception as e:
+        logger.error(f"Ошибка создания подзадачи: {e}")
+        db.rollback()
+        return None
 
 
 
@@ -176,20 +185,32 @@ def update_subtask(
         subtask_data: SubTaskUpdate,
         db: Session
 ):
-    subtask = get_subtasks_id(SubTaskID, db)
+    subtask = get_subtasks_id(db, SubTaskID)
     if subtask is None:
         logger.info("Нет такой задачи")
         return None  # Или выбросить исключение
 
-    subtask.TaskID = subtask_data.TaskID
-    subtask.SubTaskNumber = subtask_data.SubTaskNumber
-    subtask.ImagePath = subtask_data.ImagePath
-    subtask.Description = subtask_data.Description
-    subtask.Answer = subtask_data.Answer
-    subtask.SolutionPath = subtask_data.SolutionPath
-
+    update_query = text("""
+            UPDATE SubTasks SET
+                TaskID = :task_id,
+                SubTaskNumber = :subtask_number,
+                ImagePath = :image_path,
+                Description = :description,
+                Answer = :answer,
+                SolutionPath = :solution_path
+            WHERE SubTaskID = :subtask_id
+        """)
+    db.execute(update_query, {
+        "task_id": subtask_data.TaskID,
+        "subtask_number": subtask_data.SubTaskNumber,
+        "image_path": subtask_data.ImagePath,
+        "description": subtask_data.Description,
+        "answer": subtask_data.Answer,
+        "solution_path": subtask_data.SolutionPath,
+        "subtask_id": SubTaskID
+    })
     db.commit()
-    db.refresh(subtask)
-    return subtask
+
+    return get_subtasks_id(db, SubTaskID)
 '''def get_all_tasks(db: Session):
     return db.query(Task).order_by(Task.TaskNumber).all()'''

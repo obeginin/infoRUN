@@ -88,6 +88,7 @@
 <div class="form-wrapper">
     <form action="/subtasks/edit_form" method="post" enctype="multipart/form-data">
         <!-- Чтобы знать, какую подзадачу редактируем -->
+        <input type="hidden" name="SubTaskID" value="{{ subtask.SubTaskID }}">
         <input type="hidden" name="TaskID_old" value="{{ subtask.TaskID }}">
         <input type="hidden" name="SubTaskNumber" value="{{ subtask.SubTaskNumber }}">
 

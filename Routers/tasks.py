@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Request, Form, UploadFile, File, Query
+from fastapi import APIRouter, Depends, Request, Form, UploadFile, File, Query, HTTPException
 
 from sqlalchemy.orm import Session
 from Schemas.tasks import TaskRead, SubTaskRead, SubTaskCreate, SubTaskUpdate
@@ -114,15 +114,22 @@ def post_subtask_form(
     ImageFile: UploadFile = File(None),
     db: Session = Depends(get_db)
 ):
+
     logger.info("Отправляем форму на добавление задачи")
-    task_crud.create_subtask_from_form(
+    result = task_crud.create_subtask_from_form(
         TaskID=TaskID,
         Description=Description,
         Answer=Answer,
         ImageFile=ImageFile,
         db=db
     )
-    return RedirectResponse("/subtasks/new", status_code=303)
+
+    if result is None:
+        # Если не создалось, выбрасываем ошибку 400 с сообщением
+        logger.error("Не удалось создать подзадачу")
+        raise HTTPException(status_code=400, detail="Не удалось создать подзадачу")
+
+    return RedirectResponse(f"/subtasks/{result}", status_code=303)
 
 
 
@@ -167,7 +174,7 @@ def post_edit_subtask_form(
         return RedirectResponse("/error", status_code=303)
 
     # Обработка изображения
-    image_path = subtask.ImagePath  # по умолчанию оставляем старое изображение
+    image_path = subtask.get('ImagePath')  # по умолчанию оставляем старое изображение
     if ImageFile and ImageFile.filename:
         # Сохраняем изображение
         ext = ImageFile.filename.split('.')[-1]
@@ -186,7 +193,7 @@ def post_edit_subtask_form(
         Description=Description,
         Answer=Answer,
         ImagePath=image_path,
-        SolutionPath=subtask.SolutionPath  # если есть
+        SolutionPath=subtask.get('SolutionPath')  # если есть
     )
 
     updated_subtask = task_crud.update_subtask(SubTaskID, subtask_data, db)
