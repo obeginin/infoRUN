@@ -1,7 +1,7 @@
 from http.client import HTTPException
 
 from fastapi import APIRouter, Depends, Request, Query
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, text
 from Schemas.students import StudentsRead, StudentTaskRead,StudentTaskDetails
 from Crud import students
 from dependencies import get_db  # Зависимость для подключения к базе данных
@@ -138,3 +138,22 @@ def read_student_all_subtasks(
 
     return templates.TemplateResponse("Students/Task.html", {"request": request, "StudentTaskID": StudentTaskID, "subtask": Task, "student": current_student})
 
+'''@students_subtasks_router.post("/check-answer")
+def check_answer (StudentID: int, SubTaskID: int, StudentAnswer: str, db: Session = Depends(get_db)):
+
+    result = text("SELECT Answer FROM SubTasks where SubTaskID = :SubTaskID")
+    subtask = db.execute(result, {"SubTaskID": SubTaskID}).fetchone()
+
+    result = text("SELECT StudentAnswer FROM StudentTasks where SubTaskID = :SubTaskID and StudentID = ")
+    subtask = db.execute(result, {"SubTaskID": SubTaskID}).fetchone()
+
+    if not subtask or not student_task:
+        return {"status": "Error", "detail": "Задание не найдено"}
+
+    if subtask.Answer.strip().lower() == StudentAnswer.strip().lower():
+        student_task.status = "Completed"
+    else:
+        student_task.status = "In Progress"
+
+    db.commit()
+    return {"status": student_task.status}'''

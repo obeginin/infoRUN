@@ -96,14 +96,16 @@
 
     </div>
 
-    {% if student.Role == "admin" %}
+
         <div class="center-wrapper">
             <form action="/subtasks/edit/" method="get">
                 <input type="hidden" name="SubTaskID" id="SubTaskID-input">
+                {% if student.Role == "admin" %}
                 <button type="submit" class="btn-primary">Редактировать задачу</button>
+                {% endif %}
             </form>
         </div>
-    {% endif %}
+
 
     <!-- с помощью JS получаем задачу -->
     <script>

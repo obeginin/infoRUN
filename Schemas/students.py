@@ -51,3 +51,8 @@ class StudentTaskDetails(BaseModel):
     Description: Optional[str]
     Answer: Optional[str]
     SolutionPath: Optional[str]
+
+class AnswerInput(BaseModel):
+    subtask_id: int
+    student_id: int
+    user_answer: str

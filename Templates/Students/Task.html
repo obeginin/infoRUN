@@ -2,7 +2,7 @@
 {% extends "base.html" %}
 
 {% block title %}Задача{% endblock %}
-{% block title_1 %}{% endblock %}
+{% block title_1 %}Информация о задаче №{{subtask.SubTaskID}}{% endblock %}
 {% block content %}
  <style>
         body {
@@ -44,6 +44,29 @@
             white-space: pre-wrap;
         }
 
+        .inline-field {
+            display: flex;
+            align-items: center;
+        }
+
+        .inline-field label {
+            margin-right: 10px;
+            min-width: 50px; /* можно подстроить под нужную ширину */
+            margin-bottom: 0; /* убираем отступ снизу */
+        }
+
+        .inline-field .value {
+             text-align: center;
+            max-width: 150px;
+            flex: 1;
+            padding: 0;
+            background: #f1f1f1;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            white-space: pre-wrap;
+            text-overflow: ellipsis;
+        }
+
         .image-preview {
             margin-top: 20px;
         }
@@ -72,36 +95,68 @@
         .back-link:hover {
             text-decoration: underline;
         }
+
+     <!-- Стиль для кнопки (Надо вынести в общий файл) -->
+        .center-wrapper {
+    display: flex;
+    justify-content: center;   /* по горизонтали */
+    align-items: center;       /* по вертикали */
+    height: 100vh;             /* например, на весь экран */
+}
+
+.btn-primary {
+    background-color: #d63384;
+    color: white;
+    font-weight: 600;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 400px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
     </style>
     <div class="form-wrapper">
-        <h2>Информация о подзадаче</h2>
-
-        <div class="field">
-            <label>Категория:</label>
-            <div class="value">{{ task_title }}</div>
+        <h2>{{ subtask.TaskTitle }} {{ subtask.Description }}</h2>
+        <div class="inline-field">
+            <label>Статус:</label>
+            <div class="value">{{ subtask.CompletionStatus }}</div>
         </div>
-
-        <div class="field">
-            <label>Описание:</label>
-            <div class="value">{{ subtask.Description }}</div>
-        </div>
-
-        <div class="field">
-            <label>Ответ:</label>
-            <div class="value">{{ subtask.Answer }}</div>
-        </div>
-
         {% if subtask.ImagePath %}
         <div class="field image-preview">
-            <label>Изображение:</label>
+            <label>id={{subtask.TaskID}}</label>
             <img id="image" src="/{{ subtask.ImagePath }}" alt="Изображение подзадачи">
         </div>
         {% endif %}
+        <div class="field">
+            <label>Ваш ответ:</label>
+            <div class="value">{{ subtask.StudentAnswer }}</div>
+        </div>
 
+        <!--Проверка на роль админа (при условии что данное поле имеется в subtask-->
+        {% if subtask.Role == "admin" %}
+         <div class="field">
+            <label>Ответ:</label>
+            <div class="value">{{ subtask.Answer }}</div>
+        </div>
+        {% endif %}
+        <div class="center-wrapper">
+            <form action="/" method="get">
+                <button type="submit" class="btn-primary">Отправить на проверку</button>
+            </form>
+        </div>
         <a href="/subtasks" class="back-link">← Вернуться к списку</a>
     </div>
 
     <script>
+        // Заголовок
+        //document.getElementById("title_1").textContent = `Задача №${subtask.SubTaskID} (id=${subtask.TaskID})`;
+
         const image = document.getElementById("image");
         if (image) {
             image.addEventListener("click", () => {

@@ -226,7 +226,7 @@ def read_subtasks_subtask_id(subtask_id: int, db: Session = Depends(get_db)):
 # /subtasks/{subtask_id}   (GET)
 '''Вывод страницы html с задачей'''
 @subtask_router.get("/{subtask_id}", response_class=HTMLResponse)
-def read_subtasks_subtask_id(request: Request, subtask_id: int, current_student = Depends(admin_required),):
+def read_subtasks_subtask_id(request: Request, subtask_id: int, current_student = Depends(get_current_student_or_redirect),):
     if isinstance(current_student, RedirectResponse):
         logger.info("Пользователь не авторизован — перенаправляем")
         return current_student
