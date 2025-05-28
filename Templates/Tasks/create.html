@@ -102,13 +102,14 @@
 
             <label>Изображение:</label>
             <div id="paste-area"
-                 contenteditable="true"
-                 style="border: 1px solid gray; width: 500px; height: 200px; margin-bottom: 10px;">
+                 style="border: 1px solid gray; width: 500px; height: 30px; margin-bottom: 10px; overflow: auto;">
                 Нажмите сюда и вставьте скриншот (Ctrl+V)
             </div>
 
             <input type="file" name="ImageFile" id="imageFileInput" style="display:none;">
 
+            <!-- Контейнер для превью -->
+            <div id="preview" style="margin-top: 10px;"></div>
 
 
             <input type="submit" value="Добавить подзадачу"><br>
@@ -123,23 +124,28 @@
                 if (item.type.indexOf("image") !== -1) {
                     const file = item.getAsFile();
 
-                    // Подставляем файл в input[type=file]
+                    // Помещаем файл в input[type=file]
                     const dataTransfer = new DataTransfer();
                     dataTransfer.items.add(file);
-
                     const input = document.getElementById("imageFileInput");
                     input.files = dataTransfer.files;
 
-                    // Отображаем превью
+                    // Отображаем превью отдельно от paste-area
                     const preview = document.getElementById("preview");
                     const img = document.createElement("img");
                     img.src = URL.createObjectURL(file);
-                    img.style.maxWidth = "300px";
+                    img.style.maxWidth = "500px";
+                    img.style.maxHeight = "400px";
+                    img.style.display = "block";
+                    img.style.border = "1px solid #ccc";
                     img.style.marginTop = "10px";
-                    preview.innerHTML = ''; // Очистить старое превью
+                    img.style.borderRadius = "6px";
+                    preview.innerHTML = ''; // Очищаем предыдущее превью
                     preview.appendChild(img);
 
-                    alert("Изображение успешно вставлено!");
+                    //alert("Изображение успешно вставлено!");
+                    event.preventDefault(); // Предотвратить вставку в сам paste-area
+                    break;
                 }
             }
         });
