@@ -1,8 +1,9 @@
 from http.client import HTTPException
 
 from fastapi import APIRouter, Depends, Request, Query
-from sqlalchemy.orm import Session, text
-from Schemas.students import StudentsRead, StudentTaskRead,StudentTaskDetails
+from sqlalchemy.orm import Session
+from sqlalchemy import text
+from Schemas.students import StudentsRead, StudentTaskRead,StudentTaskDetails, AnswerInput
 from Crud import students
 from dependencies import get_db  # Зависимость для подключения к базе данных
 from fastapi.responses import HTMLResponse
@@ -133,27 +134,54 @@ def read_student_all_subtasks(
         db: Session = Depends(get_db)):
     logging.warning(f"Вызываем роут read_student_all_subtasks с параметрами: StudentTaskID={StudentTaskID}")  # логирование
     Task = students.Get_Student_TaskDetails_By_ID(db, StudentTaskID)
+    user_answer = None
+    if Task:
+        user_answer = Task['StudentAnswer']  # или как у тебя поле называется
     print(Task)
     print("Task:", Task)
 
-    return templates.TemplateResponse("Students/Task.html", {"request": request, "StudentTaskID": StudentTaskID, "subtask": Task, "student": current_student})
+    return templates.TemplateResponse("Students/Task.html", {"request": request, "StudentTaskID": StudentTaskID, "subtask": Task, "student": current_student, "user_answer": user_answer})
 
-'''@students_subtasks_router.post("/check-answer")
-def check_answer (StudentID: int, SubTaskID: int, StudentAnswer: str, db: Session = Depends(get_db)):
+'''Проверка ответа пользователя'''
+# /students_subtasks/check-answer/
+@students_subtasks_router.post("/check-answer/")
+def check_answer (request: AnswerInput, db: Session = Depends(get_db)):
+    logger.info("Запуск проверки ответа")
 
+    # Получаем правильный ответ
     result = text("SELECT Answer FROM SubTasks where SubTaskID = :SubTaskID")
-    subtask = db.execute(result, {"SubTaskID": SubTaskID}).fetchone()
+    correct = db.execute(result, {"SubTaskID": request.subtaskId}).fetchone()
 
-    result = text("SELECT StudentAnswer FROM StudentTasks where SubTaskID = :SubTaskID and StudentID = ")
-    subtask = db.execute(result, {"SubTaskID": SubTaskID}).fetchone()
+    if not correct:
+        return {"status": "Error", "detail": "Подзадача не найдена"}
+    correct_answer = correct[0]
+    logger.info(f"Получаем правильный ответ {correct_answer}")
+    # Получаем задание студента
+    result = text("SELECT * FROM StudentTasks where SubTaskID = :SubTaskID and StudentID = :StudentID ")
+    student_task = db.execute(result, {"SubTaskID": request.subtaskId,"StudentID": request.studentId}).fetchone()
 
-    if not subtask or not student_task:
-        return {"status": "Error", "detail": "Задание не найдено"}
+    student_answer = request.student_answer
+    if not student_task:
+        return {"status": "Error", "detail": "Задание студента не найдено"}
+    logger.info(f"Получаем задание студента {student_task}")
 
-    if subtask.Answer.strip().lower() == StudentAnswer.strip().lower():
-        student_task.status = "Completed"
+    # Проверка ответа
+    if correct_answer.strip().lower() == student_answer.strip().lower():
+        new_status  = "Completed"
     else:
-        student_task.status = "In Progress"
+        new_status  = "In Progress"
+    logger.info(f"Проверка ответа {new_status}")
+    # Обновляем статус
+    db.execute(
+        text("UPDATE StudentTasks SET CompletionStatus = :status, StudentAnswer = :student_answer WHERE StudentID = :StudentID AND SubTaskID = :SubTaskID"),
+        {
+            "student_answer": student_answer,
+            "status": new_status,
+            "StudentID": request.studentId,
+            "SubTaskID": request.subtaskId
+        }
+    )
 
     db.commit()
-    return {"status": student_task.status}'''
+
+    return {"status": new_status}
