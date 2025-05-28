@@ -167,9 +167,9 @@ def check_answer (request: AnswerInput, db: Session = Depends(get_db)):
 
     # Проверка ответа
     if correct_answer.strip().lower() == student_answer.strip().lower():
-        new_status  = "Completed"
+        new_status  = "Выполнено"
     else:
-        new_status  = "In Progress"
+        new_status  = "В процессе"
     logger.info(f"Проверка ответа {new_status}")
     # Обновляем статус
     db.execute(
@@ -183,5 +183,4 @@ def check_answer (request: AnswerInput, db: Session = Depends(get_db)):
     )
 
     db.commit()
-
     return {"status": new_status}

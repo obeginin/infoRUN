@@ -90,8 +90,12 @@ def create_new_subtask(subtask: SubTaskCreate, db: Session = Depends(get_db)):
     logger.info("Выполнили роут с добавлением задачи")
     return {"message": "Подзадача успешно добавлена", "SubTaskID": new_id}
 
-UPLOAD_DIR = Path("Uploads")
-UPLOAD_DIR.mkdir(exist_ok=True)
+#UPLOAD_DIR = Path("Uploads")
+#UPLOAD_DIR.mkdir(exist_ok=True)
+UPLOAD_IMAGE_DIR = Path("uploads/images")
+UPLOAD_SOLUTION_DIR = Path("uploads/solutions")
+UPLOAD_IMAGE_DIR.mkdir(parents=True, exist_ok=True)
+UPLOAD_SOLUTION_DIR.mkdir(parents=True, exist_ok=True)
 
 
 # /subtasks/new/  (GET)
@@ -163,6 +167,7 @@ def post_edit_subtask_form(
     Description: str = Form(""),
     Answer: str = Form(""),
     ImageFile: UploadFile = File(None),
+    SolutionFile: UploadFile = File(None),
     db: Session = Depends(get_db)
 ):
     logger.info(f"Редактируем подзадачу ID={SubTaskID}")
@@ -179,7 +184,7 @@ def post_edit_subtask_form(
         # Сохраняем изображение
         ext = ImageFile.filename.split('.')[-1]
         filename = f"subtask_{SubTaskID}.{ext}"
-        filepath = UPLOAD_DIR / filename
+        filepath = UPLOAD_IMAGE_DIR / filename
 
         # Сохраняем файл
         with filepath.open("wb") as buffer:
@@ -187,13 +192,25 @@ def post_edit_subtask_form(
         image_path = str(filepath)  # Обновляем переменную
         logger.info(f"Изображение сохранено как {filepath}")
 
+        # Обработка файла решения
+    solution_path = subtask.get('SolutionPath')  # сохраняем старый путь, если не загружено новое
+    if SolutionFile and SolutionFile.filename:
+        ext = SolutionFile.filename.split('.')[-1]
+        filename = f"subtask_{SubTaskID}_solution.{ext}"
+        filepath = UPLOAD_SOLUTION_DIR / filename
+
+        with filepath.open("wb") as buffer:
+            shutil.copyfileobj(SolutionFile.file, buffer)
+        solution_path = str(filepath)
+        logger.info(f"Решение сохранено как {filepath}")
+
     subtask_data = SubTaskUpdate(
         TaskID=TaskID,
         SubTaskNumber=SubTaskNumber,
         Description=Description,
         Answer=Answer,
         ImagePath=image_path,
-        SolutionPath=subtask.get('SolutionPath')  # если есть
+        SolutionPath=solution_path  # если есть
     )
 
     updated_subtask = task_crud.update_subtask(SubTaskID, subtask_data, db)
