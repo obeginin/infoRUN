@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from datetime import datetime
 from typing import Optional
-
+from pydantic import ConfigDict
 # Schemas\students.py
 ''' Данные схемы описывают структуру данных, которые мы получаем или отправляем через API
 сериализация (преобразование в JSON и обратно)
@@ -26,17 +26,16 @@ class StudentTaskRead(BaseModel):
     StudentID: int
     Login: Optional[str] = None
     SubTaskID: int
-    StudentAnswer: Optional[str] = None
     CompletionStatus: str
     Score: Optional[float] = None
-    SolutionStudentPath: Optional[str] = None  # Новое поле
-    StartDate: Optional[datetime] = None  # Новое поле
-    ModifiedDate: Optional[datetime] = None  # Новое поле
     CompletionDate: Optional[datetime] = None
-    Attempts: Optional[int] = 0  # Новое поле
+    StudentAnswer: Optional[str] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(
+        from_attributes=True,
+        json_encoders={datetime: lambda v: v.isoformat() if v else None}
+    )
+
 
 
 class StudentTaskDetails(BaseModel):
@@ -56,10 +55,7 @@ class StudentTaskDetails(BaseModel):
     Answer: Optional[str]
     SolutionPath: Optional[str]
     SolutionStudentPath: Optional[str] = None  # Новое поле
-    StartDate: Optional[datetime] = None  # Новое поле
-    ModifiedDate: Optional[datetime] = None  # Новое поле
-    CompletionDate: Optional[datetime] = None
-    Attempts: Optional[int] = 0  # Новое поле
+
 
 class AnswerInput(BaseModel):
     subtaskId: int

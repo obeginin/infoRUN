@@ -11,6 +11,7 @@ from fastapi.templating import Jinja2Templates
 from typing import Literal
 from Crud.auth import get_current_student, admin_required, verify_password, get_current_student_or_redirect
 from fastapi.responses import RedirectResponse
+import traceback
 import logging
 logger = logging.getLogger(__name__)
 # Routers\Students.py
@@ -105,7 +106,14 @@ def read_student_all_subtasks_by_login(
     if isinstance(current_student, RedirectResponse):
         return current_student
     StudentID = current_student.ID
-    tasks = students.get_student_all_tasks(db, StudentID)
+
+    tasks1 = students.get_student_all_tasks(db, StudentID)
+    print(f"TASK TYPE: {type(tasks1[0])}")
+    print(f"TASK VALUE: {tasks1[0]}")
+
+
+    """Для устранения проблемы преобразования даты в формат JSON"""
+    tasks = [StudentTaskRead(**task).model_dump(mode="json") for task in tasks1]
 
     logging.warning(f"ПАРАМЕТРЫ: StudentID={StudentID}") # логирование
 
