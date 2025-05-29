@@ -29,7 +29,11 @@ class StudentTaskRead(BaseModel):
     StudentAnswer: Optional[str] = None
     CompletionStatus: str
     Score: Optional[float] = None
+    SolutionStudentPath: Optional[str] = None  # Новое поле
+    StartDate: Optional[datetime] = None  # Новое поле
+    ModifiedDate: Optional[datetime] = None  # Новое поле
     CompletionDate: Optional[datetime] = None
+    Attempts: Optional[int] = 0  # Новое поле
 
     class Config:
         from_attributes = True
@@ -51,6 +55,11 @@ class StudentTaskDetails(BaseModel):
     Description: Optional[str]
     Answer: Optional[str]
     SolutionPath: Optional[str]
+    SolutionStudentPath: Optional[str] = None  # Новое поле
+    StartDate: Optional[datetime] = None  # Новое поле
+    ModifiedDate: Optional[datetime] = None  # Новое поле
+    CompletionDate: Optional[datetime] = None
+    Attempts: Optional[int] = 0  # Новое поле
 
 class AnswerInput(BaseModel):
     subtaskId: int

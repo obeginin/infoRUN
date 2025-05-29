@@ -168,19 +168,50 @@ def check_answer (request: AnswerInput, db: Session = Depends(get_db)):
     # Проверка ответа
     if correct_answer.strip().lower() == student_answer.strip().lower():
         new_status  = "Выполнено"
+        # Обновляем статус
+        db.execute(
+            text(
+                """
+                UPDATE StudentTasks
+                SET
+                    CompletionStatus = :status,
+                    StudentAnswer = :student_answer,
+                    Attempts = Attempts + 1,
+                    CompletionDate = GETDATE(),
+                    ModifiedDate = GETDATE(),
+                    StartDate = CASE WHEN StartDate IS NULL THEN GETDATE() ELSE StartDate END
+                WHERE
+                    StudentID = :StudentID AND SubTaskID = :SubTaskID
+                """
+            ),
+            {
+                "student_answer": student_answer,
+                "status": new_status,
+                "StudentID": request.studentId,
+                "SubTaskID": request.subtaskId,
+            }
+        )
     else:
         new_status  = "В процессе"
-    logger.info(f"Проверка ответа {new_status}")
-    # Обновляем статус
-    db.execute(
-        text("UPDATE StudentTasks SET CompletionStatus = :status, StudentAnswer = :student_answer WHERE StudentID = :StudentID AND SubTaskID = :SubTaskID"),
-        {
-            "student_answer": student_answer,
-            "status": new_status,
-            "StudentID": request.studentId,
-            "SubTaskID": request.subtaskId
-        }
-    )
+        logger.info(f"Проверка ответа {new_status}")
+        # Обновляем статус
+        db.execute(
+            text("""UPDATE StudentTasks 
+                    SET 
+                        CompletionStatus = :status, 
+                        StudentAnswer = :student_answer,
+                        Attempts = Attempts + 1,
+                        ModifiedDate = GETDATE(),
+                        StartDate = CASE WHEN StartDate IS NULL THEN GETDATE() ELSE StartDate END
+                    WHERE 
+                    StudentID = :StudentID AND SubTaskID = :SubTaskID"""),
+            {
+                "student_answer": student_answer,
+                "status": new_status,
+                "StudentID": request.studentId,
+                "SubTaskID": request.subtaskId
+            }
+        )
 
     db.commit()
     return {"status": new_status}
