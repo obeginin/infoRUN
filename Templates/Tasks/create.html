@@ -100,55 +100,73 @@
             <label for="Answer">Ответ:</label>
             <input type="text" name="Answer"><br>
 
+            <!-- Изображение подзадачи -->
             <label>Изображение:</label>
             <div id="paste-area"
-                 style="border: 1px solid gray; width: 500px; height: 30px; margin-bottom: 10px; overflow: auto;">
+                 style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc; height: 100px; margin-bottom: 10px; overflow: auto; cursor: text;">
                 Нажмите сюда и вставьте скриншот (Ctrl+V)
             </div>
-
-            <input type="file" name="ImageFile" id="imageFileInput" style="display:none;">
-
-            <!-- Контейнер для превью -->
+                <input type="file" name="ImageFile" id="imageFileInput" style="display:none;">
             <div id="preview" style="margin-top: 10px;"></div>
 
-            <input type="file" name="SolutionFile" accept=".pdf,.doc,.txt,.png,.jpg">
+
+            <!-- Решение -->
+            <div class="field">
+                <label for="solutionText">Решение:</label>
+                <textarea id="solutionText" name="solutionText" rows="5"
+                          placeholder="Введите решение или вставьте изображение решения сюда"
+                          style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc; resize: vertical;"></textarea>
+            </div>
+            <input type="file" name="SolutionFile" id="solutionFileInput" style="display:none;">
+            <div id="solution-preview" style="margin-top: 10px;"></div>
+
 
             <input type="submit" value="Добавить подзадачу"><br>
         </form>
     </div>
 <!-- Скрипт для вставки картинки из буфера-->
     <script>
-        document.getElementById("paste-area").addEventListener("paste", function (event) {
-            const items = event.clipboardData.items;
-            for (let i = 0; i < items.length; i++) {
-                const item = items[i];
-                if (item.type.indexOf("image") !== -1) {
-                    const file = item.getAsFile();
+        function handlePaste(event, inputId, previewId) {
+    const items = event.clipboardData.items;
+    for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        if (item.type.indexOf("image") !== -1) {
+            const file = item.getAsFile();
 
-                    // Помещаем файл в input[type=file]
-                    const dataTransfer = new DataTransfer();
-                    dataTransfer.items.add(file);
-                    const input = document.getElementById("imageFileInput");
-                    input.files = dataTransfer.files;
+            // Помещаем файл в input[type=file]
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            const input = document.getElementById(inputId);
+            input.files = dataTransfer.files;
 
-                    // Отображаем превью отдельно от paste-area
-                    const preview = document.getElementById("preview");
-                    const img = document.createElement("img");
-                    img.src = URL.createObjectURL(file);
-                    img.style.maxWidth = "500px";
-                    img.style.maxHeight = "400px";
-                    img.style.display = "block";
-                    img.style.border = "1px solid #ccc";
-                    img.style.marginTop = "10px";
-                    img.style.borderRadius = "6px";
-                    preview.innerHTML = ''; // Очищаем предыдущее превью
-                    preview.appendChild(img);
+            // Отображаем превью
+            const preview = document.getElementById(previewId);
+            const img = document.createElement("img");
+            img.src = URL.createObjectURL(file);
+            img.style.maxWidth = "500px";
+            img.style.maxHeight = "400px";
+            img.style.display = "block";
+            img.style.border = "1px solid #ccc";
+            img.style.marginTop = "10px";
+            img.style.borderRadius = "6px";
+            preview.innerHTML = '';
+            preview.appendChild(img);
 
-                    //alert("Изображение успешно вставлено!");
-                    event.preventDefault(); // Предотвратить вставку в сам paste-area
-                    break;
-                }
+            event.preventDefault(); // не вставлять в текст
+            break;
             }
+        }
+    }
+
+        // Обработка для области подзадачи
+        document.getElementById("paste-area").addEventListener("paste", function (event) {
+            handlePaste(event, "imageFileInput", "preview");
         });
+
+        // Обработка для поля "Решение"
+        document.getElementById("solutionText").addEventListener("paste", function (event) {
+            handlePaste(event, "solutionFileInput", "solution-preview");
+        });
+
     </script>
 {% endblock %}

@@ -694,3 +694,201 @@
 2025-05-29 16:02:16,770 - WARNING - root - Результатов найдено: 5
 2025-05-29 16:02:16,770 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
 2025-05-29 16:02:16,772 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-05-29 16:05:34,997 - INFO - root - Логирование по дням инициализировано.
+2025-05-29 16:05:35,010 - INFO - requests - Запрос: GET /subtasks/
+2025-05-29 16:05:35,087 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-05-29 16:05:35,106 - INFO - requests - Запрос: GET /subtasks/api/
+2025-05-29 16:05:35,113 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200
+2025-05-29 16:05:35,879 - INFO - requests - Запрос: GET /subtasks/new/
+2025-05-29 16:05:35,879 - INFO - requests - Ответ: GET /subtasks/new/ - статус 307
+2025-05-29 16:05:35,883 - INFO - requests - Запрос: GET /subtasks/new
+2025-05-29 16:05:35,885 - INFO - Routers.tasks - Открываем страницу с созданием задачи
+2025-05-29 16:05:35,890 - INFO - requests - Ответ: GET /subtasks/new - статус 200
+2025-05-29 16:09:06,225 - INFO - requests - Запрос: GET /subtasks/
+2025-05-29 16:09:06,233 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-05-29 16:09:06,265 - INFO - requests - Запрос: GET /subtasks/api/
+2025-05-29 16:09:06,268 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200
+2025-05-29 16:09:10,629 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-05-29 16:09:10,636 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-29 16:09:10,636 - WARNING - root - Результатов найдено: 5
+2025-05-29 16:09:10,636 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-05-29 16:09:10,641 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-05-29 16:09:11,456 - INFO - requests - Запрос: GET /students_subtasks/T/1
+2025-05-29 16:09:11,457 - INFO - requests - Ответ: GET /students_subtasks/T/1 - статус 307
+2025-05-29 16:09:11,460 - INFO - requests - Запрос: GET /students_subtasks/T/1/
+2025-05-29 16:09:11,472 - WARNING - root - Вызываем роут read_student_all_subtasks с параметрами: StudentTaskID=1
+2025-05-29 16:09:11,481 - INFO - requests - Ответ: GET /students_subtasks/T/1/ - статус 200
+2025-05-29 16:16:51,553 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-05-29 16:16:51,563 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-29 16:16:51,563 - WARNING - root - Результатов найдено: 5
+2025-05-29 16:16:51,563 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-05-29 16:16:51,565 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-05-29 16:16:53,661 - INFO - requests - Запрос: GET /tasks/
+2025-05-29 16:16:53,667 - INFO - requests - Ответ: GET /tasks/ - статус 200
+2025-05-29 16:16:53,684 - INFO - requests - Запрос: GET /tasks/api/
+2025-05-29 16:16:53,690 - INFO - requests - Ответ: GET /tasks/api/ - статус 200
+2025-05-29 16:16:54,544 - INFO - requests - Запрос: GET /subtasks/
+2025-05-29 16:16:54,547 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-05-29 16:16:54,560 - INFO - requests - Запрос: GET /subtasks/api/
+2025-05-29 16:16:54,563 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200
+2025-05-29 16:16:56,294 - INFO - requests - Запрос: GET /subtasks/new/
+2025-05-29 16:16:56,294 - INFO - requests - Ответ: GET /subtasks/new/ - статус 307
+2025-05-29 16:16:56,297 - INFO - requests - Запрос: GET /subtasks/new
+2025-05-29 16:16:56,302 - INFO - Routers.tasks - Открываем страницу с созданием задачи
+2025-05-29 16:16:56,307 - INFO - requests - Ответ: GET /subtasks/new - статус 200
+2025-05-29 16:16:58,025 - INFO - requests - Запрос: GET /tasks/
+2025-05-29 16:16:58,028 - INFO - requests - Ответ: GET /tasks/ - статус 200
+2025-05-29 16:16:58,040 - INFO - requests - Запрос: GET /tasks/api/
+2025-05-29 16:16:58,043 - INFO - requests - Ответ: GET /tasks/api/ - статус 200
+2025-05-29 16:16:59,365 - INFO - requests - Запрос: GET /subtasks/
+2025-05-29 16:16:59,372 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-05-29 16:16:59,389 - INFO - requests - Запрос: GET /subtasks/api/
+2025-05-29 16:16:59,392 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200
+2025-05-29 16:17:00,250 - INFO - requests - Запрос: GET /subtasks/4
+2025-05-29 16:17:00,257 - INFO - requests - Ответ: GET /subtasks/4 - статус 200
+2025-05-29 16:17:00,282 - INFO - requests - Запрос: GET /subtasks/api/4
+2025-05-29 16:17:00,287 - INFO - requests - Ответ: GET /subtasks/api/4 - статус 200
+2025-05-29 16:17:02,331 - INFO - requests - Запрос: GET /subtasks/edit/
+2025-05-29 16:17:02,335 - INFO - Routers.tasks - Открываем страницу с редактированием задачи
+2025-05-29 16:17:02,335 - INFO - Routers.tasks - Открываем страницу редактирования подзадачи ID=4
+2025-05-29 16:17:02,344 - INFO - requests - Ответ: GET /subtasks/edit/ - статус 200
+2025-05-29 16:17:15,705 - INFO - requests - Запрос: GET /subtasks/new/
+2025-05-29 16:17:15,706 - INFO - requests - Ответ: GET /subtasks/new/ - статус 307
+2025-05-29 16:17:15,709 - INFO - requests - Запрос: GET /subtasks/new
+2025-05-29 16:17:15,713 - INFO - Routers.tasks - Открываем страницу с созданием задачи
+2025-05-29 16:17:15,716 - INFO - requests - Ответ: GET /subtasks/new - статус 200
+2025-05-29 16:28:04,038 - INFO - requests - Запрос: GET /subtasks/new
+2025-05-29 16:28:04,040 - INFO - requests - Ответ: GET /subtasks/new - статус 401
+2025-05-29 16:28:05,020 - INFO - requests - Запрос: GET /subtasks/new
+2025-05-29 16:28:05,022 - INFO - requests - Ответ: GET /subtasks/new - статус 401
+2025-05-29 16:28:06,918 - INFO - requests - Запрос: GET /home/logout/
+2025-05-29 16:28:06,918 - INFO - requests - Ответ: GET /home/logout/ - статус 303
+2025-05-29 16:28:06,920 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-29 16:28:06,921 - INFO - Routers.auth - Выводим страницу с логином
+2025-05-29 16:28:06,924 - INFO - requests - Ответ: GET /home/login_in/ - статус 200
+2025-05-29 16:28:07,696 - INFO - requests - Запрос: POST /home/login_in/
+2025-05-29 16:28:07,719 - INFO - requests - Ответ: POST /home/login_in/ - статус 303
+2025-05-29 16:28:07,721 - INFO - requests - Запрос: GET /
+2025-05-29 16:28:07,723 - INFO - Routers.auth - [127.0.0.1] Студент ivanov открыл корневую страницу
+2025-05-29 16:28:07,727 - INFO - requests - Ответ: GET / - статус 200
+2025-05-29 16:28:09,100 - INFO - requests - Запрос: GET /subtasks/
+2025-05-29 16:28:09,103 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-05-29 16:28:09,121 - INFO - requests - Запрос: GET /subtasks/api/
+2025-05-29 16:28:09,127 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200
+2025-05-29 16:28:10,597 - INFO - requests - Запрос: GET /subtasks/new/
+2025-05-29 16:28:10,598 - INFO - requests - Ответ: GET /subtasks/new/ - статус 307
+2025-05-29 16:28:10,602 - INFO - requests - Запрос: GET /subtasks/new
+2025-05-29 16:28:10,606 - INFO - Routers.tasks - Открываем страницу с созданием задачи
+2025-05-29 16:28:10,610 - INFO - requests - Ответ: GET /subtasks/new - статус 200
+2025-05-29 16:37:10,781 - INFO - root - Логирование по дням инициализировано.
+2025-05-29 16:37:18,320 - INFO - requests - Запрос: GET /subtasks/
+2025-05-29 16:37:18,412 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-05-29 16:37:19,221 - INFO - root - Логирование по дням инициализировано.
+2025-05-29 16:37:19,234 - INFO - requests - Запрос: GET /subtasks/api/
+2025-05-29 16:37:19,272 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200
+2025-05-29 16:37:20,863 - INFO - requests - Запрос: GET /subtasks/new/
+2025-05-29 16:37:20,864 - INFO - requests - Ответ: GET /subtasks/new/ - статус 307
+2025-05-29 16:37:20,869 - INFO - requests - Запрос: GET /subtasks/new
+2025-05-29 16:37:20,884 - INFO - Routers.tasks - Открываем страницу с созданием задачи
+2025-05-29 16:37:20,893 - INFO - requests - Ответ: GET /subtasks/new - статус 200
+2025-05-29 16:37:44,147 - INFO - requests - Запрос: GET /tasks/
+2025-05-29 16:37:44,154 - INFO - requests - Ответ: GET /tasks/ - статус 200
+2025-05-29 16:37:44,171 - INFO - requests - Запрос: GET /tasks/api/
+2025-05-29 16:37:44,173 - INFO - requests - Ответ: GET /tasks/api/ - статус 200
+2025-05-29 16:37:44,893 - INFO - requests - Запрос: GET /tasks/2
+2025-05-29 16:37:44,901 - INFO - requests - Ответ: GET /tasks/2 - статус 200
+2025-05-29 16:37:44,920 - INFO - requests - Запрос: GET /tasks/api/2
+2025-05-29 16:37:44,924 - INFO - requests - Ответ: GET /tasks/api/2 - статус 200
+2025-05-29 16:37:44,925 - INFO - requests - Запрос: GET /subtasks/api/TaskID/2
+2025-05-29 16:37:44,930 - INFO - requests - Ответ: GET /subtasks/api/TaskID/2 - статус 404
+2025-05-29 16:37:48,032 - INFO - requests - Запрос: GET /subtasks/
+2025-05-29 16:37:48,039 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-05-29 16:37:48,062 - INFO - requests - Запрос: GET /subtasks/api/
+2025-05-29 16:37:48,068 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200
+2025-05-29 16:37:48,572 - INFO - requests - Запрос: GET /subtasks/new/
+2025-05-29 16:37:48,572 - INFO - requests - Ответ: GET /subtasks/new/ - статус 307
+2025-05-29 16:37:48,575 - INFO - requests - Запрос: GET /subtasks/new
+2025-05-29 16:37:48,579 - INFO - Routers.tasks - Открываем страницу с созданием задачи
+2025-05-29 16:37:48,581 - INFO - requests - Ответ: GET /subtasks/new - статус 200
+2025-05-29 16:52:46,517 - INFO - root - Логирование по дням инициализировано.
+2025-05-29 16:52:48,145 - INFO - requests - Запрос: GET /subtasks/new
+2025-05-29 16:52:48,243 - INFO - Routers.tasks - Открываем страницу с созданием задачи
+2025-05-29 16:52:48,251 - INFO - requests - Ответ: GET /subtasks/new - статус 200
+2025-05-29 16:52:49,036 - INFO - requests - Запрос: GET /subtasks/new
+2025-05-29 16:52:49,039 - INFO - Routers.tasks - Открываем страницу с созданием задачи
+2025-05-29 16:52:49,041 - INFO - requests - Ответ: GET /subtasks/new - статус 200
+2025-05-29 16:54:45,334 - INFO - root - Логирование по дням инициализировано.
+2025-05-29 16:54:45,551 - INFO - requests - Запрос: GET /subtasks/new
+2025-05-29 16:54:45,700 - INFO - Routers.tasks - Открываем страницу с созданием задачи
+2025-05-29 16:54:45,713 - INFO - requests - Ответ: GET /subtasks/new - статус 200
+2025-05-29 16:54:59,103 - INFO - requests - Запрос: GET /subtasks/new
+2025-05-29 16:54:59,110 - INFO - Routers.tasks - Открываем страницу с созданием задачи
+2025-05-29 16:54:59,111 - INFO - requests - Ответ: GET /subtasks/new - статус 200
+2025-05-29 16:58:36,493 - INFO - root - Логирование по дням инициализировано.
+2025-05-29 16:58:40,173 - INFO - requests - Запрос: GET /subtasks/new
+2025-05-29 16:58:40,273 - INFO - Routers.tasks - Открываем страницу с созданием задачи
+2025-05-29 16:58:40,282 - INFO - requests - Ответ: GET /subtasks/new - статус 200
+2025-05-29 17:01:27,137 - INFO - root - Логирование по дням инициализировано.
+2025-05-29 17:01:27,606 - INFO - requests - Запрос: GET /subtasks/new
+2025-05-29 17:01:27,738 - INFO - Routers.tasks - Открываем страницу с созданием задачи
+2025-05-29 17:01:27,747 - INFO - requests - Ответ: GET /subtasks/new - статус 200
+2025-05-29 17:02:49,072 - INFO - root - Логирование по дням инициализировано.
+2025-05-29 17:02:51,211 - INFO - requests - Запрос: GET /subtasks/new
+2025-05-29 17:02:51,322 - INFO - Routers.tasks - Открываем страницу с созданием задачи
+2025-05-29 17:02:51,330 - INFO - requests - Ответ: GET /subtasks/new - статус 200
+2025-05-29 17:03:13,804 - INFO - root - Логирование по дням инициализировано.
+2025-05-29 17:03:13,943 - INFO - requests - Запрос: GET /subtasks/new
+2025-05-29 17:03:14,066 - INFO - Routers.tasks - Открываем страницу с созданием задачи
+2025-05-29 17:03:14,076 - INFO - requests - Ответ: GET /subtasks/new - статус 200
+2025-05-29 17:03:25,891 - INFO - root - Логирование по дням инициализировано.
+2025-05-29 17:03:27,004 - INFO - requests - Запрос: GET /subtasks/new
+2025-05-29 17:03:27,142 - INFO - Routers.tasks - Открываем страницу с созданием задачи
+2025-05-29 17:03:27,156 - INFO - requests - Ответ: GET /subtasks/new - статус 200
+2025-05-29 17:04:09,691 - INFO - root - Логирование по дням инициализировано.
+2025-05-29 17:04:14,248 - INFO - requests - Запрос: GET /subtasks/new
+2025-05-29 17:04:14,338 - INFO - Routers.tasks - Открываем страницу с созданием задачи
+2025-05-29 17:04:14,345 - INFO - requests - Ответ: GET /subtasks/new - статус 200
+2025-05-29 17:04:15,019 - INFO - requests - Запрос: GET /subtasks/new
+2025-05-29 17:04:15,023 - INFO - Routers.tasks - Открываем страницу с созданием задачи
+2025-05-29 17:04:15,024 - INFO - requests - Ответ: GET /subtasks/new - статус 200
+2025-05-29 17:08:44,657 - INFO - requests - Запрос: POST /subtasks/create_form
+2025-05-29 17:08:44,660 - INFO - Routers.tasks - Отправляем форму на добавление задачи
+2025-05-29 17:08:44,669 - INFO - requests - Ответ: POST /subtasks/create_form - статус 303
+2025-05-29 17:08:44,671 - INFO - requests - Запрос: GET /subtasks/6
+2025-05-29 17:08:44,678 - INFO - requests - Ответ: GET /subtasks/6 - статус 200
+2025-05-29 17:08:44,703 - INFO - requests - Запрос: GET /subtasks/api/6
+2025-05-29 17:08:44,707 - INFO - requests - Ответ: GET /subtasks/api/6 - статус 200
+2025-05-29 17:08:44,825 - INFO - requests - Запрос: GET /Uploads/images/task_1_sub_1.png
+2025-05-29 17:08:44,867 - INFO - requests - Ответ: GET /Uploads/images/task_1_sub_1.png - статус 200
+2025-05-29 17:08:58,486 - INFO - requests - Запрос: GET /subtasks
+2025-05-29 17:08:58,487 - INFO - requests - Ответ: GET /subtasks - статус 307
+2025-05-29 17:08:58,493 - INFO - requests - Запрос: GET /subtasks/
+2025-05-29 17:08:58,501 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-05-29 17:08:58,528 - INFO - requests - Запрос: GET /subtasks/api/
+2025-05-29 17:08:58,534 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200
+2025-05-29 17:08:59,876 - INFO - requests - Запрос: GET /subtasks/6
+2025-05-29 17:08:59,881 - INFO - requests - Ответ: GET /subtasks/6 - статус 200
+2025-05-29 17:08:59,895 - INFO - requests - Запрос: GET /subtasks/api/6
+2025-05-29 17:08:59,901 - INFO - requests - Ответ: GET /subtasks/api/6 - статус 200
+2025-05-29 17:08:59,909 - INFO - requests - Запрос: GET /Uploads/images/task_1_sub_1.png
+2025-05-29 17:08:59,911 - INFO - requests - Ответ: GET /Uploads/images/task_1_sub_1.png - статус 304
+2025-05-29 17:09:02,449 - INFO - requests - Запрос: GET /subtasks
+2025-05-29 17:09:02,449 - INFO - requests - Ответ: GET /subtasks - статус 307
+2025-05-29 17:09:02,452 - INFO - requests - Запрос: GET /subtasks/
+2025-05-29 17:09:02,456 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-05-29 17:09:02,472 - INFO - requests - Запрос: GET /subtasks/api/
+2025-05-29 17:09:02,475 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200
+2025-05-29 17:09:03,815 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-05-29 17:09:03,823 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-29 17:09:03,823 - WARNING - root - Результатов найдено: 5
+2025-05-29 17:09:03,824 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-05-29 17:09:03,831 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-05-29 17:09:05,398 - INFO - requests - Запрос: GET /students_subtasks/T/1
+2025-05-29 17:09:05,399 - INFO - requests - Ответ: GET /students_subtasks/T/1 - статус 307
+2025-05-29 17:09:05,404 - INFO - requests - Запрос: GET /students_subtasks/T/1/
+2025-05-29 17:09:05,407 - WARNING - root - Вызываем роут read_student_all_subtasks с параметрами: StudentTaskID=1
+2025-05-29 17:09:05,433 - INFO - requests - Ответ: GET /students_subtasks/T/1/ - статус 200
+2025-05-29 17:09:26,978 - INFO - requests - Запрос: GET /subtasks/
+2025-05-29 17:09:26,981 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-05-29 17:09:27,001 - INFO - requests - Запрос: GET /subtasks/api/
+2025-05-29 17:09:27,005 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200

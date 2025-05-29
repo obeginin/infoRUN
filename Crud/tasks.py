@@ -123,8 +123,10 @@ def create_subtask(db: Session, subtask_data: SubTaskCreate):
 
 
 
-UPLOAD_DIR = Path("Uploads")
-UPLOAD_DIR.mkdir(exist_ok=True)
+UPLOAD_IMAGE_DIR = Path("Uploads/images")
+UPLOAD_SOLUTION_DIR = Path("Uploads/solutions")
+UPLOAD_IMAGE_DIR.mkdir(parents=True, exist_ok=True)
+UPLOAD_SOLUTION_DIR.mkdir(parents=True, exist_ok=True)
 
 ''' Добавление новой подзадачи (через форму)'''
 def create_subtask_from_form(
@@ -132,6 +134,7 @@ def create_subtask_from_form(
         Description: str,
         Answer: str,
         ImageFile: Optional[UploadFile],
+        SolutionFile: Optional[UploadFile],
         db: Session
 ):
     try:
@@ -148,22 +151,32 @@ def create_subtask_from_form(
         if ImageFile:
             ext = ImageFile.filename.split('.')[-1]
             filename = f"task_{TaskID}_sub_{subtask_number}.{ext}"
-            filepath = UPLOAD_DIR / filename
+            filepath = UPLOAD_IMAGE_DIR / filename
             with filepath.open("wb") as buffer:
                 shutil.copyfileobj(ImageFile.file, buffer)
             image_path = str(filepath)
 
+        solution_path = None
+        if SolutionFile:
+            ext = SolutionFile.filename.split('.')[-1]
+            filename = f"solution_task_{TaskID}_sub_{subtask_number}.{ext}"
+            filepath = UPLOAD_SOLUTION_DIR / filename
+            with filepath.open("wb") as buffer:
+                shutil.copyfileobj(SolutionFile.file, buffer)
+            solution_path = str(filepath)
+
         # Вставка подзадачи в БД
         insert_query = (
             text("""
-                INSERT INTO SubTasks (TaskID, SubTaskNumber, ImagePath, Description, Answer)
+                INSERT INTO SubTasks (TaskID, SubTaskNumber, ImagePath, SolutionPath, Description, Answer)
                 OUTPUT INSERTED.SubTaskID
-                VALUES (:task_id, :subtask_number, :image_path, :description, :answer)
+                VALUES (:task_id, :subtask_number, :image_path, :solution_path, :description, :answer)
             """))
         result = db.execute(insert_query, {
             "task_id": TaskID,
             "subtask_number": subtask_number,
             "image_path": image_path,
+            "solution_path": solution_path,
             "description": Description,
             "answer": Answer,
         }

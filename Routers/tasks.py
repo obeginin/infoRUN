@@ -92,10 +92,10 @@ def create_new_subtask(subtask: SubTaskCreate, db: Session = Depends(get_db)):
 
 #UPLOAD_DIR = Path("Uploads")
 #UPLOAD_DIR.mkdir(exist_ok=True)
-UPLOAD_IMAGE_DIR = Path("uploads/images")
+'''UPLOAD_IMAGE_DIR = Path("uploads/images")
 UPLOAD_SOLUTION_DIR = Path("uploads/solutions")
 UPLOAD_IMAGE_DIR.mkdir(parents=True, exist_ok=True)
-UPLOAD_SOLUTION_DIR.mkdir(parents=True, exist_ok=True)
+UPLOAD_SOLUTION_DIR.mkdir(parents=True, exist_ok=True)'''
 
 
 # /subtasks/new/  (GET)
@@ -116,6 +116,7 @@ def post_subtask_form(
     Description: str = Form(""),
     Answer: str = Form(""),
     ImageFile: UploadFile = File(None),
+    SolutionFile: UploadFile = File(None),
     db: Session = Depends(get_db)
 ):
 
@@ -125,6 +126,7 @@ def post_subtask_form(
         Description=Description,
         Answer=Answer,
         ImageFile=ImageFile,
+        SolutionFile=SolutionFile,
         db=db
     )
 
