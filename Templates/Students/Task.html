@@ -134,6 +134,7 @@
             <img id="image" src="/{{ subtask.ImagePath }}" alt="Изображение подзадачи">
         </div>
         {% endif %}
+
         <!--
         <div class="field">
             <label>Ваш ответ:</label>
@@ -165,13 +166,30 @@
         </div>
         <p id="statusMessage"></p>
 
+        <!--Проверка на роль админа (при условии что данное поле имеется в subtask
+        {% if subtask.Role == "admin" %}
+         <div class="field">
+            <label>Ответ:</label>
+            <div class="value">{{ subtask.Answer }}</div>
+        </div>
+        {% endif %}
+-->
+        {% if subtask.SolutionPath and subtask.Role == "admin"%}
+
+        <div class="field image-preview">
+            <label>Решение</label>
+            <img class="clickable-image" src="/{{ subtask.SolutionPath }}" alt="Изображение решения">
+        </div>
+        {% endif %}
+
+
         <a href="/students_subtasks/StudentTasksByLogin/?value=2&by=id" class="back-link">← Вернуться к списку</a>
     </div>
 
     <script>
         // Заголовок
         //document.getElementById("title_1").textContent = `Задача №${subtask.SubTaskID} (id=${subtask.TaskID})`;
-        //console.log('SubTaskID:', subtask.SubTaskID);
+
         //console.log('TaskID:', subtask.TaskID);
 
         // Работа с изображением
@@ -182,12 +200,21 @@
                 window.open(imageUrl, "_blank");
             });
         }
+        document.querySelectorAll(".clickable-image").forEach(image => {
+            image.addEventListener("click", () => {
+                const imageUrl = image.getAttribute("src");
+                window.open(imageUrl, "_blank");
+            });
+        });
+        //console.log('subtask:', subtask);
+
+
 
         // Скрипт для кнопки проверки ответа
         document.getElementById("submitBtn").addEventListener("click", async () => {
         const answer = document.getElementById("userAnswer").value;
         const subtaskId = {{ subtask.SubTaskID }};
-        const studentId = {{ student.ID }}; // если нужно
+        //const studentId = {{ student.ID }}; // если нужно
         console.log('subtaskId:', subtaskId);
         console.log('studentId:', studentId);
         console.log('answer:', answer);
@@ -223,40 +250,7 @@
             alert("Произошла ошибка при отправке запроса.");
         }
     });
-        <!-- Скрипт для вставки картинки из буфера-->
 
-        document.getElementById("paste-area").addEventListener("paste", function (event) {
-            const items = event.clipboardData.items;
-            for (let i = 0; i < items.length; i++) {
-                const item = items[i];
-                if (item.type.indexOf("image") !== -1) {
-                    const file = item.getAsFile();
-
-                    // Помещаем файл в input[type=file]
-                    const dataTransfer = new DataTransfer();
-                    dataTransfer.items.add(file);
-                    const input = document.getElementById("imageFileInput");
-                    input.files = dataTransfer.files;
-
-                    // Отображаем превью отдельно от paste-area
-                    const preview = document.getElementById("preview");
-                    const img = document.createElement("img");
-                    img.src = URL.createObjectURL(file);
-                    img.style.maxWidth = "500px";
-                    img.style.maxHeight = "400px";
-                    img.style.display = "block";
-                    img.style.border = "1px solid #ccc";
-                    img.style.marginTop = "10px";
-                    img.style.borderRadius = "6px";
-                    preview.innerHTML = ''; // Очищаем предыдущее превью
-                    preview.appendChild(img);
-
-                    //alert("Изображение успешно вставлено!");
-                    event.preventDefault(); // Предотвратить вставку в сам paste-area
-                    break;
-                }
-            }
-        });
 
     </script>
 

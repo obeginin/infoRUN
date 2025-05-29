@@ -154,7 +154,7 @@ def create_subtask_from_form(
             filepath = UPLOAD_IMAGE_DIR / filename
             with filepath.open("wb") as buffer:
                 shutil.copyfileobj(ImageFile.file, buffer)
-            image_path = str(filepath)
+            image_path = f"/Uploads/images/{filename}"
 
         solution_path = None
         if SolutionFile:
@@ -163,7 +163,7 @@ def create_subtask_from_form(
             filepath = UPLOAD_SOLUTION_DIR / filename
             with filepath.open("wb") as buffer:
                 shutil.copyfileobj(SolutionFile.file, buffer)
-            solution_path = str(filepath)
+            solution_path = f"/Uploads/solutions/{filename}"
 
         # Вставка подзадачи в БД
         insert_query = (

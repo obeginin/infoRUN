@@ -56,6 +56,7 @@ class StudentTask(Base):
     CompletionStatus = Column(String(20), nullable=False)  # Статус выполнения
     Score = Column(DECIMAL(5, 2), nullable=True)  # Баллы
     CompletionDate = Column(DateTime, nullable=True)  # Дата выполнения
+    SolutionStudentPath = Column(String(255), nullable=True)  # путь к решению студента
 
     # Связь с пользователем (студентом)
     student = relationship('Student', backref='student_tasks')
