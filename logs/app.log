@@ -1540,3 +1540,554 @@
 2025-05-29 17:57:56,501 - INFO - requests - Ответ: GET /students_subtasks/T/48/ - статус 200
 2025-05-29 17:57:56,515 - INFO - requests - Запрос: GET /Uploads/images/task_1_sub_1.png
 2025-05-29 17:57:56,541 - INFO - requests - Ответ: GET /Uploads/images/task_1_sub_1.png - статус 304
+2025-05-30 13:15:10,808 - INFO - root - Логирование по дням инициализировано.
+2025-05-30 13:15:15,366 - INFO - requests - Запрос: GET /favicon.ico
+2025-05-30 13:15:15,367 - INFO - requests - Ответ: GET /favicon.ico - статус 404
+2025-05-30 13:15:15,368 - INFO - requests - Запрос: GET /favicon.ico
+2025-05-30 13:15:15,368 - INFO - requests - Ответ: GET /favicon.ico - статус 404
+2025-05-30 13:15:18,186 - INFO - requests - Запрос: GET /
+2025-05-30 13:15:18,187 - INFO - Routers.auth - [127.0.0.1] Неавторизованный доступ к / — выполняется редирект на страницу входа
+2025-05-30 13:15:18,187 - INFO - requests - Ответ: GET / - статус 302
+2025-05-30 13:15:18,190 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-30 13:15:18,190 - INFO - Routers.auth - Выводим страницу с логином
+2025-05-30 13:15:18,204 - INFO - requests - Ответ: GET /home/login_in/ - статус 200
+2025-05-30 13:15:19,072 - INFO - requests - Запрос: POST /home/login_in/
+2025-05-30 13:15:19,439 - INFO - requests - Ответ: POST /home/login_in/ - статус 303
+2025-05-30 13:15:19,441 - INFO - requests - Запрос: GET /
+2025-05-30 13:15:19,443 - INFO - Routers.auth - [127.0.0.1] Студент obeginin открыл корневую страницу
+2025-05-30 13:15:19,468 - INFO - requests - Ответ: GET / - статус 200
+2025-05-30 13:15:19,481 - INFO - requests - Запрос: GET /static/styles.css
+2025-05-30 13:15:19,481 - INFO - requests - Запрос: GET /static/scripts.js
+2025-05-30 13:15:19,495 - INFO - requests - Ответ: GET /static/styles.css - статус 304
+2025-05-30 13:15:19,495 - INFO - requests - Ответ: GET /static/scripts.js - статус 304
+2025-05-30 13:15:21,341 - INFO - requests - Запрос: GET /subtasks/
+2025-05-30 13:15:21,363 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-05-30 13:15:21,381 - INFO - requests - Запрос: GET /subtasks/api/
+2025-05-30 13:15:21,390 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200
+2025-05-30 13:15:22,828 - INFO - requests - Запрос: GET /subtasks/1
+2025-05-30 13:15:22,852 - INFO - requests - Ответ: GET /subtasks/1 - статус 200
+2025-05-30 13:15:22,873 - INFO - requests - Запрос: GET /subtasks/api/1
+2025-05-30 13:15:22,880 - INFO - requests - Ответ: GET /subtasks/api/1 - статус 200
+2025-05-30 13:15:24,932 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-05-30 13:15:24,936 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-30 13:15:24,936 - WARNING - root - Результатов найдено: 1
+2025-05-30 13:15:24,937 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-05-30 13:15:24,955 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-05-30 13:15:26,523 - INFO - requests - Запрос: GET /students_subtasks/T/1
+2025-05-30 13:15:26,524 - INFO - requests - Ответ: GET /students_subtasks/T/1 - статус 307
+2025-05-30 13:15:26,526 - INFO - requests - Запрос: GET /students_subtasks/T/1/
+2025-05-30 13:15:26,528 - WARNING - root - Вызываем роут read_student_all_subtasks с параметрами: StudentTaskID=1
+2025-05-30 13:15:26,554 - INFO - requests - Ответ: GET /students_subtasks/T/1/ - статус 200
+2025-05-30 13:16:38,874 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-05-30 13:16:38,877 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-30 13:16:38,877 - WARNING - root - Результатов найдено: 1
+2025-05-30 13:16:38,877 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-05-30 13:16:38,878 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-05-30 13:16:39,860 - INFO - requests - Запрос: GET /subtasks/
+2025-05-30 13:16:39,863 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-05-30 13:16:39,892 - INFO - requests - Запрос: GET /subtasks/api/
+2025-05-30 13:16:39,894 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200
+2025-05-30 13:16:40,925 - INFO - requests - Запрос: GET /subtasks/1
+2025-05-30 13:16:40,928 - INFO - requests - Ответ: GET /subtasks/1 - статус 200
+2025-05-30 13:16:40,948 - INFO - requests - Запрос: GET /subtasks/api/1
+2025-05-30 13:16:40,955 - INFO - requests - Ответ: GET /subtasks/api/1 - статус 200
+2025-05-30 13:16:42,353 - INFO - requests - Запрос: GET /subtasks/edit/
+2025-05-30 13:16:42,355 - INFO - Routers.tasks - Открываем страницу с редактированием задачи
+2025-05-30 13:16:42,355 - INFO - Routers.tasks - Открываем страницу редактирования подзадачи ID=1
+2025-05-30 13:16:42,380 - INFO - requests - Ответ: GET /subtasks/edit/ - статус 200
+2025-05-30 13:16:55,347 - INFO - requests - Запрос: POST /subtasks/edit_form
+2025-05-30 13:16:55,349 - INFO - Routers.tasks - Редактируем подзадачу ID=1
+2025-05-30 13:18:41,862 - INFO - root - Логирование по дням инициализировано.
+2025-05-30 13:18:46,167 - INFO - requests - Запрос: GET /subtasks/edit/
+2025-05-30 13:18:46,212 - INFO - Routers.tasks - Открываем страницу с редактированием задачи
+2025-05-30 13:18:46,212 - INFO - Routers.tasks - Открываем страницу редактирования подзадачи ID=1
+2025-05-30 13:18:46,222 - INFO - requests - Ответ: GET /subtasks/edit/ - статус 200
+2025-05-30 13:19:39,392 - INFO - requests - Запрос: GET /subtasks/1
+2025-05-30 13:19:39,397 - INFO - requests - Ответ: GET /subtasks/1 - статус 200
+2025-05-30 13:19:39,425 - INFO - requests - Запрос: GET /subtasks/api/1
+2025-05-30 13:19:39,428 - INFO - requests - Ответ: GET /subtasks/api/1 - статус 200
+2025-05-30 13:19:40,645 - INFO - requests - Запрос: GET /subtasks/edit/
+2025-05-30 13:19:40,648 - INFO - Routers.tasks - Открываем страницу с редактированием задачи
+2025-05-30 13:19:40,648 - INFO - Routers.tasks - Открываем страницу редактирования подзадачи ID=1
+2025-05-30 13:19:40,649 - INFO - requests - Ответ: GET /subtasks/edit/ - статус 200
+2025-05-30 13:19:43,073 - INFO - requests - Запрос: GET /subtasks/
+2025-05-30 13:19:43,077 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-05-30 13:19:43,099 - INFO - requests - Запрос: GET /subtasks/api/
+2025-05-30 13:19:43,102 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200
+2025-05-30 13:19:43,754 - INFO - requests - Запрос: GET /subtasks/new/
+2025-05-30 13:19:43,754 - INFO - requests - Ответ: GET /subtasks/new/ - статус 307
+2025-05-30 13:19:43,756 - INFO - requests - Запрос: GET /subtasks/new
+2025-05-30 13:19:43,758 - INFO - Routers.tasks - Открываем страницу с созданием задачи
+2025-05-30 13:19:43,761 - INFO - requests - Ответ: GET /subtasks/new - статус 200
+2025-05-30 13:20:04,925 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-05-30 13:20:04,928 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-30 13:20:04,928 - WARNING - root - Результатов найдено: 1
+2025-05-30 13:20:04,928 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-05-30 13:20:04,932 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-05-30 13:20:17,605 - INFO - requests - Запрос: GET /students/List/
+2025-05-30 13:20:17,608 - INFO - Routers.students - Получен запрос на список студентов
+2025-05-30 13:20:17,622 - INFO - requests - Ответ: GET /students/List/ - статус 200
+2025-05-30 13:20:17,642 - INFO - requests - Запрос: GET /students/api/
+2025-05-30 13:20:17,644 - INFO - requests - Ответ: GET /students/api/ - статус 200
+2025-05-30 13:23:04,440 - INFO - requests - Запрос: GET /subtasks/
+2025-05-30 13:23:04,443 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-05-30 13:23:04,474 - INFO - requests - Запрос: GET /subtasks/api/
+2025-05-30 13:23:04,476 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200
+2025-05-30 13:23:05,615 - INFO - requests - Запрос: GET /subtasks/1
+2025-05-30 13:23:05,617 - INFO - requests - Ответ: GET /subtasks/1 - статус 200
+2025-05-30 13:23:05,637 - INFO - requests - Запрос: GET /subtasks/api/1
+2025-05-30 13:23:05,639 - INFO - requests - Ответ: GET /subtasks/api/1 - статус 200
+2025-05-30 13:23:08,574 - INFO - requests - Запрос: GET /subtasks
+2025-05-30 13:23:08,575 - INFO - requests - Ответ: GET /subtasks - статус 307
+2025-05-30 13:23:08,577 - INFO - requests - Запрос: GET /subtasks/
+2025-05-30 13:23:08,579 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-05-30 13:23:08,599 - INFO - requests - Запрос: GET /subtasks/api/
+2025-05-30 13:23:08,602 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200
+2025-05-30 13:23:09,508 - INFO - requests - Запрос: GET /subtasks/new/
+2025-05-30 13:23:09,508 - INFO - requests - Ответ: GET /subtasks/new/ - статус 307
+2025-05-30 13:23:09,510 - INFO - requests - Запрос: GET /subtasks/new
+2025-05-30 13:23:09,512 - INFO - Routers.tasks - Открываем страницу с созданием задачи
+2025-05-30 13:23:09,513 - INFO - requests - Ответ: GET /subtasks/new - статус 200
+2025-05-30 13:23:31,448 - INFO - requests - Запрос: POST /subtasks/create_form
+2025-05-30 13:23:31,450 - INFO - Routers.tasks - Отправляем форму на добавление задачи
+2025-05-30 13:23:31,458 - INFO - requests - Ответ: POST /subtasks/create_form - статус 303
+2025-05-30 13:23:31,460 - INFO - requests - Запрос: GET /subtasks/2
+2025-05-30 13:23:31,462 - INFO - requests - Ответ: GET /subtasks/2 - статус 200
+2025-05-30 13:23:31,483 - INFO - requests - Запрос: GET /subtasks/api/2
+2025-05-30 13:23:31,485 - INFO - requests - Ответ: GET /subtasks/api/2 - статус 200
+2025-05-30 13:23:35,332 - INFO - requests - Запрос: GET /tasks/
+2025-05-30 13:23:35,337 - INFO - requests - Ответ: GET /tasks/ - статус 200
+2025-05-30 13:23:35,381 - INFO - requests - Запрос: GET /tasks/api/
+2025-05-30 13:23:35,383 - INFO - requests - Ответ: GET /tasks/api/ - статус 200
+2025-05-30 13:23:36,700 - INFO - requests - Запрос: GET /subtasks/
+2025-05-30 13:23:36,703 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-05-30 13:23:36,725 - INFO - requests - Запрос: GET /subtasks/api/
+2025-05-30 13:23:36,728 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200
+2025-05-30 13:23:38,772 - INFO - requests - Запрос: GET /subtasks/2
+2025-05-30 13:23:38,775 - INFO - requests - Ответ: GET /subtasks/2 - статус 200
+2025-05-30 13:23:38,808 - INFO - requests - Запрос: GET /subtasks/api/2
+2025-05-30 13:23:38,810 - INFO - requests - Ответ: GET /subtasks/api/2 - статус 200
+2025-05-30 13:23:43,180 - INFO - requests - Запрос: GET /subtasks
+2025-05-30 13:23:43,181 - INFO - requests - Ответ: GET /subtasks - статус 307
+2025-05-30 13:23:43,183 - INFO - requests - Запрос: GET /subtasks/
+2025-05-30 13:23:43,185 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-05-30 13:23:43,229 - INFO - requests - Запрос: GET /subtasks/api/
+2025-05-30 13:23:43,233 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200
+2025-05-30 13:23:43,819 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-05-30 13:23:43,821 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-30 13:23:43,821 - WARNING - root - Результатов найдено: 1
+2025-05-30 13:23:43,821 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-05-30 13:23:43,822 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-05-30 13:23:45,045 - INFO - requests - Запрос: GET /students_subtasks/T/1
+2025-05-30 13:23:45,046 - INFO - requests - Ответ: GET /students_subtasks/T/1 - статус 307
+2025-05-30 13:23:45,047 - INFO - requests - Запрос: GET /students_subtasks/T/1/
+2025-05-30 13:23:45,049 - WARNING - root - Вызываем роут read_student_all_subtasks с параметрами: StudentTaskID=1
+2025-05-30 13:23:45,054 - INFO - requests - Ответ: GET /students_subtasks/T/1/ - статус 200
+2025-05-30 15:15:52,052 - INFO - requests - Запрос: GET /subtasks/
+2025-05-30 15:15:52,054 - INFO - requests - Ответ: GET /subtasks/ - статус 302
+2025-05-30 15:15:52,056 - INFO - requests - Запрос: GET /home/login_in/
+2025-05-30 15:15:52,056 - INFO - Routers.auth - Выводим страницу с логином
+2025-05-30 15:15:52,058 - INFO - requests - Ответ: GET /home/login_in/ - статус 200
+2025-05-30 15:15:52,904 - INFO - requests - Запрос: POST /home/login_in/
+2025-05-30 15:15:52,920 - INFO - requests - Ответ: POST /home/login_in/ - статус 303
+2025-05-30 15:15:52,922 - INFO - requests - Запрос: GET /subtasks/
+2025-05-30 15:15:52,924 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-05-30 15:15:52,940 - INFO - requests - Запрос: GET /static/styles.css
+2025-05-30 15:15:52,940 - INFO - requests - Запрос: GET /static/scripts.js
+2025-05-30 15:15:52,957 - INFO - requests - Ответ: GET /static/styles.css - статус 304
+2025-05-30 15:15:52,957 - INFO - requests - Ответ: GET /static/scripts.js - статус 304
+2025-05-30 15:15:52,964 - INFO - requests - Запрос: GET /subtasks/api/
+2025-05-30 15:15:52,971 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200
+2025-05-30 15:15:54,255 - INFO - requests - Запрос: GET /subtasks/1
+2025-05-30 15:15:54,257 - INFO - requests - Ответ: GET /subtasks/1 - статус 200
+2025-05-30 15:15:54,286 - INFO - requests - Запрос: GET /subtasks/api/1
+2025-05-30 15:15:54,288 - INFO - requests - Ответ: GET /subtasks/api/1 - статус 200
+2025-05-30 15:16:24,803 - INFO - requests - Запрос: GET /subtasks
+2025-05-30 15:16:24,803 - INFO - requests - Ответ: GET /subtasks - статус 307
+2025-05-30 15:16:24,805 - INFO - requests - Запрос: GET /subtasks/
+2025-05-30 15:16:24,811 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-05-30 15:16:24,827 - INFO - requests - Запрос: GET /subtasks/api/
+2025-05-30 15:16:24,828 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200
+2025-05-30 15:16:25,473 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-05-30 15:16:25,475 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-30 15:16:25,475 - WARNING - root - Результатов найдено: 1
+2025-05-30 15:16:25,475 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-05-30 15:16:25,476 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-05-30 15:16:26,785 - INFO - requests - Запрос: GET /students_subtasks/T/1
+2025-05-30 15:16:26,785 - INFO - requests - Ответ: GET /students_subtasks/T/1 - статус 307
+2025-05-30 15:16:26,787 - INFO - requests - Запрос: GET /students_subtasks/T/1/
+2025-05-30 15:16:26,789 - WARNING - root - Вызываем роут read_student_all_subtasks с параметрами: StudentTaskID=1
+2025-05-30 15:16:26,791 - INFO - requests - Ответ: GET /students_subtasks/T/1/ - статус 200
+2025-05-30 15:20:43,004 - INFO - root - Логирование по дням инициализировано.
+2025-05-30 15:20:47,860 - INFO - requests - Запрос: GET /students_subtasks/T/1/
+2025-05-30 15:20:47,892 - WARNING - root - Вызываем роут read_student_all_subtasks с параметрами: StudentTaskID=1
+2025-05-30 15:20:47,900 - INFO - requests - Ответ: GET /students_subtasks/T/1/ - статус 200
+2025-05-30 15:20:49,057 - INFO - requests - Запрос: GET /students_subtasks/T/1/
+2025-05-30 15:20:49,060 - WARNING - root - Вызываем роут read_student_all_subtasks с параметрами: StudentTaskID=1
+2025-05-30 15:20:49,061 - INFO - requests - Ответ: GET /students_subtasks/T/1/ - статус 200
+2025-05-30 15:21:13,739 - INFO - requests - Запрос: GET /Uploads/images/task_8_sub_1.png
+2025-05-30 15:21:13,742 - INFO - requests - Ответ: GET /Uploads/images/task_8_sub_1.png - статус 404
+2025-05-30 15:21:13,776 - INFO - requests - Запрос: GET /favicon.ico
+2025-05-30 15:21:13,776 - INFO - requests - Ответ: GET /favicon.ico - статус 404
+2025-05-30 15:21:25,515 - INFO - requests - Запрос: GET /Uploads/images/task_8_sub_1.png
+2025-05-30 15:21:25,515 - INFO - requests - Ответ: GET /Uploads/images/task_8_sub_1.png - статус 404
+2025-05-30 15:22:06,082 - INFO - requests - Запрос: GET /uploads/images/task_8_sub_1.png
+2025-05-30 15:22:06,083 - INFO - requests - Ответ: GET /uploads/images/task_8_sub_1.png - статус 404
+2025-05-30 15:23:06,291 - INFO - root - Логирование по дням инициализировано.
+2025-05-30 15:24:17,912 - INFO - requests - Запрос: GET //Uploads/images/task_8_sub_1.png
+2025-05-30 15:24:17,912 - INFO - requests - Ответ: GET //Uploads/images/task_8_sub_1.png - статус 404
+2025-05-30 15:24:20,694 - INFO - requests - Запрос: GET /Uploads/images/task_8_sub_1.png
+2025-05-30 15:24:20,696 - INFO - requests - Ответ: GET /Uploads/images/task_8_sub_1.png - статус 404
+2025-05-30 15:24:35,748 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-05-30 15:24:35,785 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-30 15:24:35,785 - WARNING - root - Результатов найдено: 1
+2025-05-30 15:24:35,785 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-05-30 15:24:35,790 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-05-30 15:24:36,713 - INFO - requests - Запрос: GET /students/List/
+2025-05-30 15:24:36,717 - INFO - Routers.students - Получен запрос на список студентов
+2025-05-30 15:24:36,719 - INFO - requests - Ответ: GET /students/List/ - статус 200
+2025-05-30 15:24:36,733 - INFO - requests - Запрос: GET /students/api/
+2025-05-30 15:24:36,741 - INFO - requests - Ответ: GET /students/api/ - статус 200
+2025-05-30 15:24:38,435 - INFO - requests - Запрос: GET /students_subtasks/StudentTask/2
+2025-05-30 15:24:38,437 - INFO - Routers.students - Вызван роут read_student_all_subtasks с StudentID=2
+2025-05-30 15:24:38,438 - WARNING - root - Получаем задачи для студента с ID = 2
+2025-05-30 15:24:38,438 - WARNING - root - Результатов найдено: 1
+2025-05-30 15:24:38,439 - INFO - requests - Ответ: GET /students_subtasks/StudentTask/2 - статус 200
+2025-05-30 15:24:39,009 - INFO - requests - Запрос: GET /students/List/
+2025-05-30 15:24:39,012 - INFO - Routers.students - Получен запрос на список студентов
+2025-05-30 15:24:39,012 - INFO - requests - Ответ: GET /students/List/ - статус 200
+2025-05-30 15:24:39,029 - INFO - requests - Запрос: GET /students/api/
+2025-05-30 15:24:39,037 - INFO - requests - Ответ: GET /students/api/ - статус 200
+2025-05-30 15:24:40,252 - INFO - requests - Запрос: GET /subtasks/
+2025-05-30 15:24:40,258 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-05-30 15:24:40,275 - INFO - requests - Запрос: GET /subtasks/api/
+2025-05-30 15:24:40,277 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200
+2025-05-30 15:24:41,130 - INFO - requests - Запрос: GET /subtasks/2
+2025-05-30 15:24:41,135 - INFO - requests - Ответ: GET /subtasks/2 - статус 200
+2025-05-30 15:24:41,158 - INFO - requests - Запрос: GET /subtasks/api/2
+2025-05-30 15:24:41,160 - INFO - requests - Ответ: GET /subtasks/api/2 - статус 200
+2025-05-30 15:24:46,718 - INFO - requests - Запрос: GET /subtasks
+2025-05-30 15:24:46,719 - INFO - requests - Ответ: GET /subtasks - статус 307
+2025-05-30 15:24:46,721 - INFO - requests - Запрос: GET /subtasks/
+2025-05-30 15:24:46,723 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-05-30 15:24:46,744 - INFO - requests - Запрос: GET /subtasks/api/
+2025-05-30 15:24:46,746 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200
+2025-05-30 15:29:10,077 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-05-30 15:29:10,080 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-30 15:29:10,080 - WARNING - root - Результатов найдено: 1
+2025-05-30 15:29:10,080 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-05-30 15:29:10,081 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-05-30 15:29:50,077 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-05-30 15:29:50,080 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-30 15:29:50,081 - WARNING - root - Результатов найдено: 2
+2025-05-30 15:29:50,081 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-05-30 15:29:50,082 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-05-30 15:29:51,162 - INFO - requests - Запрос: GET /students_subtasks/T/3
+2025-05-30 15:29:51,162 - INFO - requests - Ответ: GET /students_subtasks/T/3 - статус 307
+2025-05-30 15:29:51,169 - INFO - requests - Запрос: GET /students_subtasks/T/3/
+2025-05-30 15:29:51,171 - WARNING - root - Вызываем роут read_student_all_subtasks с параметрами: StudentTaskID=3
+2025-05-30 15:29:51,176 - INFO - requests - Ответ: GET /students_subtasks/T/3/ - статус 200
+2025-05-30 15:30:03,004 - INFO - requests - Запрос: GET /uploads/images/task_2_sub_1.png
+2025-05-30 15:30:03,005 - INFO - requests - Ответ: GET /uploads/images/task_2_sub_1.png - статус 404
+2025-05-30 15:30:09,450 - INFO - requests - Запрос: GET //uploads/images/task_2_sub_1.png
+2025-05-30 15:30:09,450 - INFO - requests - Ответ: GET //uploads/images/task_2_sub_1.png - статус 404
+2025-05-30 15:30:13,128 - INFO - requests - Запрос: GET /uploads/images/task_2_sub_1.png
+2025-05-30 15:30:13,128 - INFO - requests - Ответ: GET /uploads/images/task_2_sub_1.png - статус 404
+2025-05-30 15:33:38,001 - INFO - requests - Запрос: GET /uploads/images/task_2_sub_1.png
+2025-05-30 15:33:38,002 - INFO - requests - Ответ: GET /uploads/images/task_2_sub_1.png - статус 404
+2025-05-30 15:37:39,887 - INFO - root - Логирование по дням инициализировано.
+2025-05-30 15:38:12,325 - INFO - root - Логирование по дням инициализировано.
+2025-05-30 15:38:12,909 - INFO - root - Логирование по дням инициализировано.
+2025-05-30 15:38:12,934 - INFO - root - Логирование по дням инициализировано.
+2025-05-30 15:39:10,085 - INFO - root - Логирование по дням инициализировано.
+2025-05-30 15:39:19,702 - INFO - root - Логирование по дням инициализировано.
+2025-05-30 15:39:20,329 - INFO - root - Логирование по дням инициализировано.
+2025-05-30 15:39:20,355 - INFO - root - Логирование по дням инициализировано.
+2025-05-30 15:39:22,497 - INFO - requests - Запрос: GET /uploads/images/task_2_sub_1.png
+2025-05-30 15:39:22,497 - INFO - requests - Ответ: GET /uploads/images/task_2_sub_1.png - статус 404
+2025-05-30 15:39:23,183 - INFO - requests - Запрос: GET /uploads/images/task_2_sub_1.png
+2025-05-30 15:39:23,184 - INFO - requests - Ответ: GET /uploads/images/task_2_sub_1.png - статус 404
+2025-05-30 15:39:55,593 - INFO - requests - Запрос: GET /Uploads/images/task_2_sub_1.png
+2025-05-30 15:39:55,610 - INFO - requests - Ответ: GET /Uploads/images/task_2_sub_1.png - статус 200
+2025-05-30 15:39:56,507 - INFO - root - Логирование по дням инициализировано.
+2025-05-30 15:40:01,821 - INFO - requests - Запрос: GET /students_subtasks/T/3/
+2025-05-30 15:40:01,852 - WARNING - root - Вызываем роут read_student_all_subtasks с параметрами: StudentTaskID=3
+2025-05-30 15:40:01,860 - INFO - requests - Ответ: GET /students_subtasks/T/3/ - статус 200
+2025-05-30 15:53:17,794 - INFO - root - Логирование по дням инициализировано.
+2025-05-30 15:53:18,357 - INFO - root - Логирование по дням инициализировано.
+2025-05-30 15:53:18,383 - INFO - root - Логирование по дням инициализировано.
+2025-05-30 15:53:26,606 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-05-30 15:53:26,609 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-30 15:53:26,609 - WARNING - root - Результатов найдено: 2
+2025-05-30 15:53:26,609 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-05-30 15:53:26,612 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-05-30 15:53:27,536 - INFO - requests - Запрос: GET /subtasks/
+2025-05-30 15:53:27,542 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-05-30 15:53:27,565 - INFO - requests - Запрос: GET /subtasks/api/
+2025-05-30 15:53:27,567 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200
+2025-05-30 15:53:29,374 - INFO - requests - Запрос: GET /subtasks/new/
+2025-05-30 15:53:29,374 - INFO - requests - Ответ: GET /subtasks/new/ - статус 307
+2025-05-30 15:53:29,376 - INFO - requests - Запрос: GET /subtasks/new
+2025-05-30 15:53:29,379 - INFO - Routers.tasks - Открываем страницу с созданием задачи
+2025-05-30 15:53:29,383 - INFO - requests - Ответ: GET /subtasks/new - статус 200
+2025-05-30 15:53:48,165 - INFO - requests - Запрос: POST /subtasks/create_form
+2025-05-30 15:53:48,167 - INFO - Routers.tasks - Отправляем форму на добавление задачи
+2025-05-30 15:53:48,181 - INFO - requests - Ответ: POST /subtasks/create_form - статус 303
+2025-05-30 15:53:48,183 - INFO - requests - Запрос: GET /subtasks/3
+2025-05-30 15:53:48,187 - INFO - requests - Ответ: GET /subtasks/3 - статус 200
+2025-05-30 15:53:48,204 - INFO - requests - Запрос: GET /subtasks/api/3
+2025-05-30 15:53:48,206 - INFO - requests - Ответ: GET /subtasks/api/3 - статус 200
+2025-05-30 15:53:54,144 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-05-30 15:53:54,148 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-30 15:53:54,148 - WARNING - root - Результатов найдено: 3
+2025-05-30 15:53:54,149 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-05-30 15:53:54,149 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-05-30 15:53:55,648 - INFO - requests - Запрос: GET /students_subtasks/T/5
+2025-05-30 15:53:55,649 - INFO - requests - Ответ: GET /students_subtasks/T/5 - статус 307
+2025-05-30 15:53:55,651 - INFO - requests - Запрос: GET /students_subtasks/T/5/
+2025-05-30 15:53:55,653 - WARNING - root - Вызываем роут read_student_all_subtasks с параметрами: StudentTaskID=5
+2025-05-30 15:53:55,658 - INFO - requests - Ответ: GET /students_subtasks/T/5/ - статус 200
+2025-05-30 15:53:55,695 - INFO - requests - Запрос: GET //Uploads/images/task_1_sub_2.png
+2025-05-30 15:53:55,695 - INFO - requests - Запрос: GET /Uploads/images/task_8_sub_1.png
+2025-05-30 15:53:55,696 - INFO - requests - Ответ: GET //Uploads/images/task_1_sub_2.png - статус 404
+2025-05-30 15:53:55,697 - INFO - requests - Ответ: GET /Uploads/images/task_8_sub_1.png - статус 404
+2025-05-30 15:54:02,577 - INFO - requests - Запрос: GET //Uploads/images/task_1_sub_2.png
+2025-05-30 15:54:02,578 - INFO - requests - Ответ: GET //Uploads/images/task_1_sub_2.png - статус 404
+2025-05-30 15:54:10,359 - INFO - requests - Запрос: GET /Uploads/images/task_1_sub_2.png
+2025-05-30 15:54:10,373 - INFO - requests - Ответ: GET /Uploads/images/task_1_sub_2.png - статус 200
+2025-05-30 15:55:44,069 - INFO - root - Логирование по дням инициализировано.
+2025-05-30 15:55:44,668 - INFO - root - Логирование по дням инициализировано.
+2025-05-30 15:55:44,697 - INFO - root - Логирование по дням инициализировано.
+2025-05-30 15:55:49,962 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-05-30 15:55:49,966 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-30 15:55:49,966 - WARNING - root - Результатов найдено: 3
+2025-05-30 15:55:49,966 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-05-30 15:55:49,967 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-05-30 15:55:51,503 - INFO - requests - Запрос: GET /students/List/
+2025-05-30 15:55:51,505 - INFO - Routers.students - Получен запрос на список студентов
+2025-05-30 15:55:51,508 - INFO - requests - Ответ: GET /students/List/ - статус 200
+2025-05-30 15:55:51,531 - INFO - requests - Запрос: GET /students/api/
+2025-05-30 15:55:51,536 - INFO - requests - Ответ: GET /students/api/ - статус 200
+2025-05-30 15:55:52,100 - INFO - requests - Запрос: GET /subtasks/
+2025-05-30 15:55:52,102 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-05-30 15:55:52,139 - INFO - requests - Запрос: GET /subtasks/api/
+2025-05-30 15:55:52,141 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200
+2025-05-30 15:55:52,971 - INFO - requests - Запрос: GET /subtasks/new/
+2025-05-30 15:55:52,972 - INFO - requests - Ответ: GET /subtasks/new/ - статус 307
+2025-05-30 15:55:52,974 - INFO - requests - Запрос: GET /subtasks/new
+2025-05-30 15:55:52,976 - INFO - Routers.tasks - Открываем страницу с созданием задачи
+2025-05-30 15:55:52,977 - INFO - requests - Ответ: GET /subtasks/new - статус 200
+2025-05-30 15:56:03,939 - INFO - requests - Запрос: POST /subtasks/create_form
+2025-05-30 15:56:03,940 - INFO - Routers.tasks - Отправляем форму на добавление задачи
+2025-05-30 15:56:03,944 - INFO - requests - Ответ: POST /subtasks/create_form - статус 303
+2025-05-30 15:56:03,946 - INFO - requests - Запрос: GET /subtasks/4
+2025-05-30 15:56:03,948 - INFO - requests - Ответ: GET /subtasks/4 - статус 200
+2025-05-30 15:56:03,966 - INFO - requests - Запрос: GET /subtasks/api/4
+2025-05-30 15:56:03,968 - INFO - requests - Ответ: GET /subtasks/api/4 - статус 200
+2025-05-30 15:56:05,771 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-05-30 15:56:05,773 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-30 15:56:05,773 - WARNING - root - Результатов найдено: 3
+2025-05-30 15:56:05,774 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-05-30 15:56:05,774 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-05-30 15:56:11,750 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-05-30 15:56:11,753 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-30 15:56:11,753 - WARNING - root - Результатов найдено: 4
+2025-05-30 15:56:11,753 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-05-30 15:56:11,754 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-05-30 15:56:12,732 - INFO - requests - Запрос: GET /students_subtasks/T/7
+2025-05-30 15:56:12,733 - INFO - requests - Ответ: GET /students_subtasks/T/7 - статус 307
+2025-05-30 15:56:12,735 - INFO - requests - Запрос: GET /students_subtasks/T/7/
+2025-05-30 15:56:12,737 - WARNING - root - Вызываем роут read_student_all_subtasks с параметрами: StudentTaskID=7
+2025-05-30 15:56:12,740 - INFO - requests - Ответ: GET /students_subtasks/T/7/ - статус 200
+2025-05-30 15:56:12,755 - INFO - requests - Запрос: GET //Uploads/images/task_1_sub_3.png
+2025-05-30 15:56:12,755 - INFO - requests - Ответ: GET //Uploads/images/task_1_sub_3.png - статус 404
+2025-05-30 15:56:12,756 - INFO - requests - Запрос: GET /Uploads/images/task_8_sub_1.png
+2025-05-30 15:56:12,757 - INFO - requests - Ответ: GET /Uploads/images/task_8_sub_1.png - статус 404
+2025-05-30 15:56:14,648 - INFO - requests - Запрос: GET //Uploads/images/task_1_sub_3.png
+2025-05-30 15:56:14,649 - INFO - requests - Ответ: GET //Uploads/images/task_1_sub_3.png - статус 404
+2025-05-30 15:56:22,290 - INFO - requests - Запрос: GET /Uploads/images/task_1_sub_3.png
+2025-05-30 15:56:22,291 - INFO - requests - Ответ: GET /Uploads/images/task_1_sub_3.png - статус 200
+2025-05-30 15:56:41,884 - INFO - root - Логирование по дням инициализировано.
+2025-05-30 15:56:55,402 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-05-30 15:56:55,405 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-30 15:56:55,405 - WARNING - root - Результатов найдено: 4
+2025-05-30 15:56:55,405 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-05-30 15:56:55,406 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-05-30 15:56:56,536 - INFO - requests - Запрос: GET /students/List/
+2025-05-30 15:56:56,538 - INFO - Routers.students - Получен запрос на список студентов
+2025-05-30 15:56:56,539 - INFO - requests - Ответ: GET /students/List/ - статус 200
+2025-05-30 15:56:56,562 - INFO - requests - Запрос: GET /students/api/
+2025-05-30 15:56:56,564 - INFO - requests - Ответ: GET /students/api/ - статус 200
+2025-05-30 15:56:57,302 - INFO - requests - Запрос: GET /subtasks/
+2025-05-30 15:56:57,306 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-05-30 15:56:57,341 - INFO - requests - Запрос: GET /subtasks/api/
+2025-05-30 15:56:57,345 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200
+2025-05-30 15:56:58,253 - INFO - requests - Запрос: GET /subtasks/new/
+2025-05-30 15:56:58,253 - INFO - requests - Ответ: GET /subtasks/new/ - статус 307
+2025-05-30 15:56:58,256 - INFO - requests - Запрос: GET /subtasks/new
+2025-05-30 15:56:58,258 - INFO - Routers.tasks - Открываем страницу с созданием задачи
+2025-05-30 15:56:58,259 - INFO - requests - Ответ: GET /subtasks/new - статус 200
+2025-05-30 15:57:03,391 - INFO - requests - Запрос: POST /subtasks/create_form
+2025-05-30 15:57:03,392 - INFO - Routers.tasks - Отправляем форму на добавление задачи
+2025-05-30 15:57:03,402 - INFO - requests - Ответ: POST /subtasks/create_form - статус 303
+2025-05-30 15:57:03,405 - INFO - requests - Запрос: GET /subtasks/5
+2025-05-30 15:57:03,408 - INFO - requests - Ответ: GET /subtasks/5 - статус 200
+2025-05-30 15:57:03,424 - INFO - requests - Запрос: GET /subtasks/api/5
+2025-05-30 15:57:03,427 - INFO - requests - Ответ: GET /subtasks/api/5 - статус 200
+2025-05-30 15:57:04,976 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-05-30 15:57:04,979 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-30 15:57:04,979 - WARNING - root - Результатов найдено: 4
+2025-05-30 15:57:04,979 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-05-30 15:57:04,980 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-05-30 15:57:08,433 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-05-30 15:57:08,435 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-30 15:57:08,436 - WARNING - root - Результатов найдено: 5
+2025-05-30 15:57:08,436 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-05-30 15:57:08,436 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-05-30 15:57:10,122 - INFO - requests - Запрос: GET /students_subtasks/T/9
+2025-05-30 15:57:10,122 - INFO - requests - Ответ: GET /students_subtasks/T/9 - статус 307
+2025-05-30 15:57:10,124 - INFO - requests - Запрос: GET /students_subtasks/T/9/
+2025-05-30 15:57:10,127 - WARNING - root - Вызываем роут read_student_all_subtasks с параметрами: StudentTaskID=9
+2025-05-30 15:57:10,129 - INFO - requests - Ответ: GET /students_subtasks/T/9/ - статус 200
+2025-05-30 15:57:10,152 - INFO - requests - Запрос: GET //Uploads/images/task_1_sub_4.png
+2025-05-30 15:57:10,153 - INFO - requests - Ответ: GET //Uploads/images/task_1_sub_4.png - статус 404
+2025-05-30 15:57:10,154 - INFO - requests - Запрос: GET /Uploads/images/task_8_sub_1.png
+2025-05-30 15:57:10,158 - INFO - requests - Ответ: GET /Uploads/images/task_8_sub_1.png - статус 404
+2025-05-30 15:57:11,466 - INFO - requests - Запрос: GET //Uploads/images/task_1_sub_4.png
+2025-05-30 15:57:11,466 - INFO - requests - Ответ: GET //Uploads/images/task_1_sub_4.png - статус 404
+2025-05-30 15:57:23,188 - INFO - root - Логирование по дням инициализировано.
+2025-05-30 15:57:28,355 - INFO - root - Логирование по дням инициализировано.
+2025-05-30 15:57:57,507 - INFO - root - Логирование по дням инициализировано.
+2025-05-30 15:58:00,695 - INFO - root - Логирование по дням инициализировано.
+2025-05-30 15:58:06,817 - INFO - requests - Запрос: GET /subtasks/
+2025-05-30 15:58:06,857 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-05-30 15:58:06,875 - INFO - requests - Запрос: GET /subtasks/api/
+2025-05-30 15:58:06,878 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200
+2025-05-30 15:58:07,534 - INFO - requests - Запрос: GET /subtasks/new/
+2025-05-30 15:58:07,534 - INFO - requests - Ответ: GET /subtasks/new/ - статус 307
+2025-05-30 15:58:07,536 - INFO - requests - Запрос: GET /subtasks/new
+2025-05-30 15:58:07,538 - INFO - Routers.tasks - Открываем страницу с созданием задачи
+2025-05-30 15:58:07,542 - INFO - requests - Ответ: GET /subtasks/new - статус 200
+2025-05-30 15:58:13,638 - INFO - requests - Запрос: POST /subtasks/create_form
+2025-05-30 15:58:13,639 - INFO - Routers.tasks - Отправляем форму на добавление задачи
+2025-05-30 15:58:13,646 - INFO - requests - Ответ: POST /subtasks/create_form - статус 303
+2025-05-30 15:58:13,648 - INFO - requests - Запрос: GET /subtasks/6
+2025-05-30 15:58:13,652 - INFO - requests - Ответ: GET /subtasks/6 - статус 200
+2025-05-30 15:58:13,667 - INFO - requests - Запрос: GET /subtasks/api/6
+2025-05-30 15:58:13,670 - INFO - requests - Ответ: GET /subtasks/api/6 - статус 200
+2025-05-30 15:58:13,672 - INFO - requests - Запрос: GET /http://localhost:9000Uploads/images/task_1_sub_5.png
+2025-05-30 15:58:13,672 - INFO - requests - Ответ: GET /http://localhost:9000Uploads/images/task_1_sub_5.png - статус 404
+2025-05-30 15:58:18,011 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-05-30 15:58:18,014 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-30 15:58:18,014 - WARNING - root - Результатов найдено: 6
+2025-05-30 15:58:18,014 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-05-30 15:58:18,018 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-05-30 15:58:19,387 - INFO - requests - Запрос: GET /students_subtasks/T/11
+2025-05-30 15:58:19,387 - INFO - requests - Ответ: GET /students_subtasks/T/11 - статус 307
+2025-05-30 15:58:19,389 - INFO - requests - Запрос: GET /students_subtasks/T/11/
+2025-05-30 15:58:19,391 - WARNING - root - Вызываем роут read_student_all_subtasks с параметрами: StudentTaskID=11
+2025-05-30 15:58:19,398 - INFO - requests - Ответ: GET /students_subtasks/T/11/ - статус 200
+2025-05-30 15:58:19,417 - INFO - requests - Запрос: GET /http://localhost:9000Uploads/solutions/solution_task_1_sub_5.png
+2025-05-30 15:58:19,417 - INFO - requests - Запрос: GET /http://localhost:9000Uploads/images/task_1_sub_5.png
+2025-05-30 15:58:19,418 - INFO - requests - Ответ: GET /http://localhost:9000Uploads/solutions/solution_task_1_sub_5.png - статус 404
+2025-05-30 15:58:19,418 - INFO - requests - Ответ: GET /http://localhost:9000Uploads/images/task_1_sub_5.png - статус 404
+2025-05-30 15:58:19,419 - INFO - requests - Запрос: GET /Uploads/images/task_8_sub_1.png
+2025-05-30 15:58:19,420 - INFO - requests - Ответ: GET /Uploads/images/task_8_sub_1.png - статус 404
+2025-05-30 15:58:22,226 - INFO - requests - Запрос: GET /http://localhost:9000Uploads/images/task_1_sub_5.png
+2025-05-30 15:58:22,227 - INFO - requests - Ответ: GET /http://localhost:9000Uploads/images/task_1_sub_5.png - статус 404
+2025-05-30 15:58:58,200 - INFO - root - Логирование по дням инициализировано.
+2025-05-30 15:59:03,541 - INFO - requests - Запрос: GET /students_subtasks/T/11/
+2025-05-30 15:59:03,605 - WARNING - root - Вызываем роут read_student_all_subtasks с параметрами: StudentTaskID=11
+2025-05-30 15:59:03,613 - INFO - requests - Ответ: GET /students_subtasks/T/11/ - статус 200
+2025-05-30 15:59:03,631 - INFO - requests - Запрос: GET /http://localhost:9000Uploads/images/task_1_sub_5.png
+2025-05-30 15:59:03,632 - INFO - requests - Запрос: GET /Uploads/images/task_8_sub_1.png
+2025-05-30 15:59:03,632 - INFO - requests - Ответ: GET /http://localhost:9000Uploads/images/task_1_sub_5.png - статус 404
+2025-05-30 15:59:03,633 - INFO - requests - Ответ: GET /Uploads/images/task_8_sub_1.png - статус 404
+2025-05-30 15:59:03,636 - INFO - requests - Запрос: GET /http://localhost:9000Uploads/solutions/solution_task_1_sub_5.png
+2025-05-30 15:59:03,636 - INFO - requests - Ответ: GET /http://localhost:9000Uploads/solutions/solution_task_1_sub_5.png - статус 404
+2025-05-30 15:59:04,343 - INFO - requests - Запрос: GET /http://localhost:9000Uploads/images/task_1_sub_5.png
+2025-05-30 15:59:04,344 - INFO - requests - Ответ: GET /http://localhost:9000Uploads/images/task_1_sub_5.png - статус 404
+2025-05-30 15:59:10,934 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-05-30 15:59:10,937 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-30 15:59:10,937 - WARNING - root - Результатов найдено: 6
+2025-05-30 15:59:10,938 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-05-30 15:59:10,940 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-05-30 15:59:11,933 - INFO - requests - Запрос: GET /subtasks/
+2025-05-30 15:59:11,939 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-05-30 15:59:11,955 - INFO - requests - Запрос: GET /subtasks/api/
+2025-05-30 15:59:11,963 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200
+2025-05-30 15:59:12,439 - INFO - requests - Запрос: GET /subtasks/new/
+2025-05-30 15:59:12,439 - INFO - requests - Ответ: GET /subtasks/new/ - статус 307
+2025-05-30 15:59:12,442 - INFO - requests - Запрос: GET /subtasks/new
+2025-05-30 15:59:12,444 - INFO - Routers.tasks - Открываем страницу с созданием задачи
+2025-05-30 15:59:12,447 - INFO - requests - Ответ: GET /subtasks/new - статус 200
+2025-05-30 15:59:16,539 - INFO - requests - Запрос: POST /subtasks/create_form
+2025-05-30 15:59:16,541 - INFO - Routers.tasks - Отправляем форму на добавление задачи
+2025-05-30 15:59:16,546 - INFO - requests - Ответ: POST /subtasks/create_form - статус 303
+2025-05-30 15:59:16,549 - INFO - requests - Запрос: GET /subtasks/7
+2025-05-30 15:59:16,557 - INFO - requests - Ответ: GET /subtasks/7 - статус 200
+2025-05-30 15:59:16,574 - INFO - requests - Запрос: GET /subtasks/api/7
+2025-05-30 15:59:16,576 - INFO - requests - Ответ: GET /subtasks/api/7 - статус 200
+2025-05-30 15:59:16,577 - INFO - requests - Запрос: GET /Uploads/images/task_1_sub_6.png
+2025-05-30 15:59:16,595 - INFO - requests - Ответ: GET /Uploads/images/task_1_sub_6.png - статус 200
+2025-05-30 15:59:17,730 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-05-30 15:59:17,732 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-30 15:59:17,732 - WARNING - root - Результатов найдено: 6
+2025-05-30 15:59:17,732 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-05-30 15:59:17,733 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-05-30 15:59:21,073 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-05-30 15:59:21,076 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-30 15:59:21,076 - WARNING - root - Результатов найдено: 7
+2025-05-30 15:59:21,076 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-05-30 15:59:21,076 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-05-30 15:59:22,136 - INFO - requests - Запрос: GET /students_subtasks/T/13
+2025-05-30 15:59:22,136 - INFO - requests - Ответ: GET /students_subtasks/T/13 - статус 307
+2025-05-30 15:59:22,138 - INFO - requests - Запрос: GET /students_subtasks/T/13/
+2025-05-30 15:59:22,140 - WARNING - root - Вызываем роут read_student_all_subtasks с параметрами: StudentTaskID=13
+2025-05-30 15:59:22,143 - INFO - requests - Ответ: GET /students_subtasks/T/13/ - статус 200
+2025-05-30 15:59:22,159 - INFO - requests - Запрос: GET /Uploads/solutions/solution_task_1_sub_6.png
+2025-05-30 15:59:22,159 - INFO - requests - Запрос: GET /Uploads/images/task_1_sub_6.png
+2025-05-30 15:59:22,160 - INFO - requests - Ответ: GET /Uploads/solutions/solution_task_1_sub_6.png - статус 200
+2025-05-30 15:59:22,161 - INFO - requests - Ответ: GET /Uploads/images/task_1_sub_6.png - статус 304
+2025-05-30 15:59:22,162 - INFO - requests - Запрос: GET /Uploads/images/task_8_sub_1.png
+2025-05-30 15:59:22,163 - INFO - requests - Ответ: GET /Uploads/images/task_8_sub_1.png - статус 404
+2025-05-30 15:59:53,160 - INFO - root - Логирование по дням инициализировано.
+2025-05-30 16:00:08,601 - INFO - root - Логирование по дням инициализировано.
+2025-05-30 16:00:08,662 - INFO - root - Логирование по дням инициализировано.
+2025-05-30 16:00:11,936 - INFO - requests - Запрос: GET /subtasks/
+2025-05-30 16:00:11,974 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-05-30 16:00:11,999 - INFO - requests - Запрос: GET /subtasks/api/
+2025-05-30 16:00:12,002 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200
+2025-05-30 16:00:12,636 - INFO - requests - Запрос: GET /subtasks/new/
+2025-05-30 16:00:12,636 - INFO - requests - Ответ: GET /subtasks/new/ - статус 307
+2025-05-30 16:00:12,638 - INFO - requests - Запрос: GET /subtasks/new
+2025-05-30 16:00:12,645 - INFO - Routers.tasks - Открываем страницу с созданием задачи
+2025-05-30 16:00:12,648 - INFO - requests - Ответ: GET /subtasks/new - статус 200
+2025-05-30 16:00:24,085 - INFO - requests - Запрос: POST /subtasks/create_form
+2025-05-30 16:00:24,087 - INFO - Routers.tasks - Отправляем форму на добавление задачи
+2025-05-30 16:00:24,095 - INFO - requests - Ответ: POST /subtasks/create_form - статус 303
+2025-05-30 16:00:24,098 - INFO - requests - Запрос: GET /subtasks/8
+2025-05-30 16:00:24,102 - INFO - requests - Ответ: GET /subtasks/8 - статус 200
+2025-05-30 16:00:24,121 - INFO - requests - Запрос: GET /subtasks/api/8
+2025-05-30 16:00:24,135 - INFO - requests - Ответ: GET /subtasks/api/8 - статус 200
+2025-05-30 16:00:24,138 - INFO - requests - Запрос: GET /Uploads/images/task_1_sub_7.png
+2025-05-30 16:00:24,151 - INFO - requests - Ответ: GET /Uploads/images/task_1_sub_7.png - статус 200
+2025-05-30 16:00:25,142 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-05-30 16:00:25,148 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-30 16:00:25,148 - WARNING - root - Результатов найдено: 7
+2025-05-30 16:00:25,148 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-05-30 16:00:25,151 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-05-30 16:00:28,498 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-05-30 16:00:28,501 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-05-30 16:00:28,501 - WARNING - root - Результатов найдено: 8
+2025-05-30 16:00:28,501 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-05-30 16:00:28,501 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-05-30 16:00:30,168 - INFO - requests - Запрос: GET /students_subtasks/T/15
+2025-05-30 16:00:30,168 - INFO - requests - Ответ: GET /students_subtasks/T/15 - статус 307
+2025-05-30 16:00:30,171 - INFO - requests - Запрос: GET /students_subtasks/T/15/
+2025-05-30 16:00:30,174 - WARNING - root - Вызываем роут read_student_all_subtasks с параметрами: StudentTaskID=15
+2025-05-30 16:00:30,180 - INFO - requests - Ответ: GET /students_subtasks/T/15/ - статус 200
+2025-05-30 16:00:30,196 - INFO - requests - Запрос: GET /Uploads/solutions/solution_task_1_sub_7.png
+2025-05-30 16:00:30,196 - INFO - requests - Запрос: GET /Uploads/images/task_1_sub_7.png
+2025-05-30 16:00:30,197 - INFO - requests - Ответ: GET /Uploads/solutions/solution_task_1_sub_7.png - статус 200
+2025-05-30 16:00:30,198 - INFO - requests - Ответ: GET /Uploads/images/task_1_sub_7.png - статус 304

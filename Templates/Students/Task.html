@@ -131,10 +131,9 @@
         {% if subtask.ImagePath %}
         <div class="field image-preview">
             <label>id={{subtask.TaskID}}</label>
-            <img id="image" src="/{{ subtask.ImagePath }}" alt="Изображение подзадачи">
+            <img id="image" src="{{ request.base_url }}{{ subtask.ImagePath }}" alt="Изображение подзадачи">
         </div>
         {% endif %}
-
         <!--
         <div class="field">
             <label>Ваш ответ:</label>
