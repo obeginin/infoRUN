@@ -1,4 +1,4 @@
- <!-- Templates/Students/Task.html -->
+<!-- Templates/Students/Task.html -->
 {% extends "base.html" %}
 
 {% block title %}Задача{% endblock %}
@@ -131,16 +131,72 @@
         {% if subtask.ImagePath %}
         <div class="field image-preview">
             <label>id={{subtask.TaskID}}</label>
-            <img id="image" src="{{ request.base_url }}{{ subtask.ImagePath }}" alt="Изображение подзадачи">
+            <!--<img id="image" src="{{ request.base_url }}{{ subtask.ImagePath }}" alt="Изображение подзадачи">-->
+            <img id="image" src="/{{ subtask.ImagePath }}" alt="Изображение подзадачи">
+
         </div>
         {% endif %}
-        <!--
-        <div class="field">
-            <label>Ваш ответ:</label>
-            <input type="text" id="userAnswer" placeholder="Введите ответ">
-            //<div class="value">{{ subtask.StudentAnswer }}</div>
-        </div>
+
+
+
+
+ <!--
+        <form id="solutionForm" action="/students_subtasks/submit-solution/" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="ID" value="{{ student.ID }}">
+            <input type="hidden" name="SubTaskID" value="{{ subtask.SubTaskID }}">
+            <input type="hidden" name="StudentTaskID" id="{{ subtask.student_task_id }}">
+            <div class="field">
+                <label for="solutionText">Решение:</label>
+                <textarea id="solutionText" name="solution_text" rows="5"
+                          placeholder="Вставьте изображение решения сюда (Ctrl+V или перетащите файл)"
+                          style="width: 100%; height: 80px; padding: 10px; border-radius: 6px; border: 1px solid #ccc; resize: vertical;"></textarea>
+            </div>
+
+            Скрытое поле для файла
+            <input type="file" name="solution_file" id="solutionFileInput" style="display:none;">
+
+          Превью картинки
+            <div id="solution-preview" style="margin-top: 10px;"></div>
+
+            <button type="submit" class="btn-primary">Отправить</button>
+        </form>
 -->
+<!--    {% if subtask.SolutionPath and subtask.Role == "admin"%}
+
+        <div class="field image-preview">
+            <label>Решение</label>
+            <img class="clickable-image" src="/{{ subtask.SolutionPath }}" alt="Изображение решения">
+        </div>
+        {% endif %}
+-->
+        <form action="/students_subtasks/submit-solution/" method="post" enctype="multipart/form-data">
+          <input type="hidden" name="ID" value="2" />
+          <input type="hidden" name="SubTaskID" value="1" />
+          <input type="hidden" name="StudentTaskID" value="3" />
+
+
+
+
+
+            <div class="field">
+
+                <label for="userAnswer">Ваш ответ:</label>
+                <input type="text" class="value" id="userAnswer" name="userAnswer" value="{{ user_answer or '' }}" required>
+                <button type="button" id="submitBtn" class="btn-primary">Проверить</button>
+                <label for="solution_file">Файл решения:</label>
+                <input type="file" id="solution_file" name="solution_file" />
+                    <!--<pre>Путь к решению студента: {{ subtask.SolutionStudentPath or "Путь не задан" }}</pre>-->
+
+                    {% if subtask.SolutionStudentPath %}
+                        <div class="field image-preview">
+                            <label>Ваше текущее решение:</label>
+                            <img src="/{{ subtask.SolutionStudentPath }}" alt="Решение студента" class="clickable-image" style="max-width: 100%; border-radius: 8px; border: 1px solid #ccc;">
+                        </div>
+                    {% endif %}
+            </div>
+            <p id="statusMessage"></p>
+        </form>
+
         <!--Проверка на роль админа (при условии что данное поле имеется в subtask-->
         {% if subtask.Role == "admin" %}
          <div class="field">
@@ -148,39 +204,6 @@
             <div class="value">{{ subtask.Answer }}</div>
         </div>
         {% endif %}
-        <!--
-        <div class="center-wrapper">
-            <form action="/students_subtasks/check-answer/" method="get">
-                <button id="submitBtn"  class="btn-primary">Отправить на проверку</button>
-            </form>
-        </div>
-        <div id="statusMessage" style="margin-top: 10px;"></div>
-        -->
-        <div class="field">
-
-            <label for="userAnswer">Ваш ответ:</label>
-            <input type="text" class="value" id="userAnswer" name="userAnswer" value="{{ user_answer or '' }}" required>
-            <button type="button" id="submitBtn" class="btn-primary">Проверить</button>
-
-        </div>
-        <p id="statusMessage"></p>
-
-        <!--Проверка на роль админа (при условии что данное поле имеется в subtask
-        {% if subtask.Role == "admin" %}
-         <div class="field">
-            <label>Ответ:</label>
-            <div class="value">{{ subtask.Answer }}</div>
-        </div>
-        {% endif %}
--->
-        {% if subtask.SolutionPath and subtask.Role == "admin"%}
-
-        <div class="field image-preview">
-            <label>Решение</label>
-            <img class="clickable-image" src="/{{ subtask.SolutionPath }}" alt="Изображение решения">
-        </div>
-        {% endif %}
-
 
         <a href="/students_subtasks/StudentTasksByLogin/?value=2&by=id" class="back-link">← Вернуться к списку</a>
     </div>
@@ -189,7 +212,6 @@
         // Заголовок
         //document.getElementById("title_1").textContent = `Задача №${subtask.SubTaskID} (id=${subtask.TaskID})`;
 
-        //console.log('TaskID:', subtask.TaskID);
 
         // Работа с изображением
         const image = document.getElementById("image");
@@ -213,7 +235,7 @@
         document.getElementById("submitBtn").addEventListener("click", async () => {
         const answer = document.getElementById("userAnswer").value;
         const subtaskId = {{ subtask.SubTaskID }};
-        //const studentId = {{ student.ID }}; // если нужно
+        const studentId = {{ student.ID }}; // если нужно
         console.log('subtaskId:', subtaskId);
         console.log('studentId:', studentId);
         console.log('answer:', answer);
@@ -249,6 +271,14 @@
             alert("Произошла ошибка при отправке запроса.");
         }
     });
+    //console.log('subtask:', subtask);
+
+      // Скрипт для отправки решения студента
+        //document.getElementById("solutionText").addEventListener("paste", function (event) {
+            // тут может быть твоя функция handlePaste(event, "solutionFile", "solution-preview");
+            // чтобы превью вставленного изображения появлялось и автоматически подставлялось в инпут для файла
+        //});
+
 
 
     </script>

@@ -21,6 +21,7 @@ BEGIN
         st.CompletionStatus, 
         st.Score,
         st.CompletionDate,
+		st.SolutionStudentPath,
         sd.Login,
         sd.Role,
         s.TaskID,

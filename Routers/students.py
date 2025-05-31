@@ -1,9 +1,9 @@
 from http.client import HTTPException
 
-from fastapi import APIRouter, Depends, Request, Query
+from fastapi import APIRouter, Depends, Request, Query, Form,  UploadFile, File
 from sqlalchemy.orm import Session
 from sqlalchemy import text
-from Schemas.students import StudentsRead, StudentTaskRead,StudentTaskDetails, AnswerInput
+from Schemas.students import StudentsRead, StudentTaskRead,StudentTaskDetails, AnswerInput, SolutionInput
 from Crud import students
 from dependencies import get_db  # Зависимость для подключения к базе данных
 from fastapi.responses import HTMLResponse
@@ -11,6 +11,8 @@ from fastapi.templating import Jinja2Templates
 from typing import Literal
 from Crud.auth import get_current_student, admin_required, verify_password, get_current_student_or_redirect
 from fastapi.responses import RedirectResponse
+from starlette.responses import JSONResponse
+from pathlib import Path
 import traceback
 import logging
 logger = logging.getLogger(__name__)
@@ -148,6 +150,7 @@ def read_student_all_subtasks(
     print(Task)
     print("Task:", Task)
 
+
     return templates.TemplateResponse("Students/Task.html", {"request": request, "StudentTaskID": StudentTaskID, "subtask": Task, "student": current_student, "user_answer": user_answer})
 
 '''Проверка ответа пользователя'''
@@ -223,3 +226,71 @@ def check_answer (request: AnswerInput, db: Session = Depends(get_db)):
 
     db.commit()
     return {"status": new_status}
+
+UPLOAD_IMAGE_DIR = Path("Uploads/StudentSolutions")
+UPLOAD_IMAGE_DIR.mkdir(parents=True, exist_ok=True)
+'''Отправка решения  пользователя'''
+# /students_subtasks/submit-solution/
+@students_subtasks_router.post("/submit-solution/")
+async def submit_solution(
+    ID: int = Form(...),
+    SubTaskID: int = Form(...),
+    StudentTaskID: int = Form(...),
+    solution_text: str | None = Form(None),
+    solution_file: UploadFile | None = File(None),
+
+    db: Session = Depends(get_db),
+):
+    print(
+        f"submit_solution received: ID={ID}, SubTaskID={SubTaskID}, StudentTaskID={StudentTaskID}, solution_text={solution_text}")
+    if solution_file:
+        print(f"File received: filename={solution_file.filename}, content_type={solution_file.content_type}")
+    else:
+        print("No file uploaded")
+    # ... далее остальной код
+    # Логирование
+    logger.info(f"Пришло решение от студента {ID} по подзадаче {SubTaskID}")
+
+    # Проверим есть ли запись студента и подзадачи
+    student_task = db.execute(
+        text("SELECT * FROM StudentTasks WHERE StudentID = :StudentID AND SubTaskID = :SubTaskID"),
+        {"StudentID": ID, "SubTaskID": SubTaskID}
+    ).fetchone()
+
+    if not student_task:
+        return JSONResponse(status_code=404, content={"status": "Error", "detail": "Задание студента не найдено"})
+
+    # Обновим запись решения Студента
+    student_solution_path = None
+    if solution_file:
+        # Сохраняем файл решения на диск (папку можно настроить)
+        filename = f"{ID}_{SubTaskID}_{solution_file.filename}"
+        filepath = f"{UPLOAD_IMAGE_DIR}/{filename}"
+        content = await solution_file.read()
+        with open(filepath, "wb") as f:
+            f.write(content)
+        student_solution_path = filepath
+        logger.info(f"Файл решения сохранён по пути: {filepath}")
+
+    # Обновим таблицу StudentTasks
+    update_query = """
+        UPDATE StudentTasks
+        SET
+            StudentAnswer = :solution_text,
+            SolutionStudentPath = :student_solution_path,
+            ModifiedDate = GETDATE()
+        WHERE StudentID = :StudentID AND SubTaskID = :SubTaskID
+    """
+    db.execute(
+        text(update_query),
+        {
+            "solution_text": solution_text,
+            "student_solution_path": student_solution_path,
+            "StudentID": ID,
+            "SubTaskID": SubTaskID,
+        }
+    )
+    db.commit()
+    return RedirectResponse(f"/students_subtasks/T/{StudentTaskID}", status_code=303)
+
+    #return {"status": "Решение сохранено"}

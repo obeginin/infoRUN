@@ -10,6 +10,8 @@ import os
 # Настроим логирование при запуске приложения
 setup_logging()
 
+
+
 app = FastAPI()
 # Регистрируем роутер
 app.include_router(auth.home_router)

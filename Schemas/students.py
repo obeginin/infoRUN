@@ -30,7 +30,8 @@ class StudentTaskRead(BaseModel):
     Score: Optional[float] = None
     CompletionDate: Optional[datetime] = None
     StudentAnswer: Optional[str] = None
-
+    TaskNumber: Optional[int] = None
+    TaskTitle: Optional[str] = None
     model_config = ConfigDict(
         from_attributes=True,
         json_encoders={datetime: lambda v: v.isoformat() if v else None}
@@ -61,3 +62,8 @@ class AnswerInput(BaseModel):
     subtaskId: int
     studentId: int
     student_answer: str
+
+class SolutionInput(BaseModel):
+    student_id: int
+    subtask_id: int
+    solution_text: Optional[str] = None

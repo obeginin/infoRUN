@@ -45,7 +45,7 @@ def get_student_by_field(db: Session, value: str, by: str = "id"):
 
 ''' Получения всех задач всех студентов '''
 def get_all_students_tasks(db: Session):
-    query = text("SELECT * FROM StudentTasks")
+    query = text("SELECT * FROM StudentTasks JOIN Tasks on Tasks.TaskID = StudentTasks.SubTaskID")
     result = db.execute(query).fetchall()
     student_tasks = [
         {"StudentTaskID": row.StudentTaskID,
@@ -53,17 +53,21 @@ def get_all_students_tasks(db: Session):
          "SubTaskID": row.SubTaskID,
          "CompletionStatus": row.CompletionStatus,
          "Score": row.Score,
-         "CompletionDate": row.CompletionDate,
-         "StudentAnswer": row.StudentAnswer}
+         #"CompletionDate": row.CompletionDate,
+         "StudentAnswer": row.StudentAnswer,
+         "TaskNumber": row.TaskNumber,
+         "TaskTitle": row.TaskTitle
+         }
         for row in result]
     return student_tasks
 
 ''' Получения всех задач студента по ID'''
 def get_student_all_tasks(db: Session, student_id: int):
-    query = text(f"SELECT StudentTaskID,StudentID, Login, SubTaskID,CompletionStatus,Score,CompletionDate,StudentAnswer "
-                 f"FROM StudentTasks "
-                 f"JOIN Students ON Students.ID = StudentTasks.StudentID "
-                 f"WHERE StudentTasks.StudentID = :student_id")
+    query = text(f"""SELECT StudentTaskID,StudentID, Login, SubTaskID,CompletionStatus,Score,CompletionDate,StudentAnswer, TaskNumber, TaskTitle  
+                 FROM StudentTasks 
+                 JOIN Students ON Students.ID = StudentTasks.StudentID 
+				 JOIN Tasks on Tasks.TaskID = StudentTasks.SubTaskID
+                 WHERE StudentTasks.StudentID = :student_id""")
     result = db.execute(query, {"student_id": student_id}).fetchall()
     logging.warning(f"Получаем задачи для студента с ID = {student_id}")
     logging.warning(f"Результатов найдено: {len(result)}")
@@ -74,8 +78,10 @@ def get_student_all_tasks(db: Session, student_id: int):
          "SubTaskID": row.SubTaskID,
          "CompletionStatus": row.CompletionStatus,
          "Score": row.Score,
-         "CompletionDate": row.CompletionDate,
-         "StudentAnswer": row.StudentAnswer}
+         #"CompletionDate": row.CompletionDate,
+         "StudentAnswer": row.StudentAnswer,
+         "TaskNumber": row.TaskNumber,
+         "TaskTitle": row.TaskTitle}
         for row in result]
     if not result:
         raise HTTPException (status_code=404, detail=f"Студент с ID {student_id} не найден")
@@ -110,7 +116,7 @@ def get_task_student(db: Session, student_id: int, SubTaskID: int) -> list[Stude
          "SubTaskID": row.SubTaskID,
          "CompletionStatus": row.CompletionStatus,
          "Score": row.Score,
-         "CompletionDate": row.CompletionDate,
+         #"CompletionDate": row.CompletionDate,
          "StudentAnswer": row.StudentAnswer}
         for row in result]
     return task_student
