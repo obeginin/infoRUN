@@ -70,11 +70,12 @@ delete Students where id=219359
 */
 
 INSERT INTO Students (Login, Last_Name, First_Name, Middle_Name, Email, Sex, BirthDate, Comment,Password,Role)
-	VALUES ('ivanov', 'Иванов', 'Иван', 'Иванович', 'ivanov@example.com', 'M', '1990-06-01 00:00:00.000', 'Комментарий','$pbkdf2-sha256$29000$HWPMube2tnYuZYwRwngPQQ$eSDzbZ3puIYCkdzcU94.2a5.ZvXUWXlIGjuSuM4ij/Y','admin'),
-		('petrovv', 'Петров', 'Петр', 'Петрович', 'petrov@example.com', 'M', '1990-06-01 00:00:00.000', 'Комментарий','$pbkdf2-sha256$29000$HWPMube2tnYuZYwRwngPQQ$eSDzbZ3puIYCkdzcU94.2a5.ZvXUWXlIGjuSuM4ij/Y','student'),
-		('sidorov', 'Сидорова', 'Сидора', 'Сидоровна', 'sidorova@example.com', 'Ж', '1999-09-01 00:00:00.000', 'Комментарий','$pbkdf2-sha256$29000$HWPMube2tnYuZYwRwngPQQ$eSDzbZ3puIYCkdzcU94.2a5.ZvXUWXlIGjuSuM4ij/Y','student'),
-		('smirnov', 'Смирнов', 'Смир', 'Смирович', 'smirnov@example.com', 'M', '2005-02-12 00:00:00.000', 'Комментарий','$pbkdf2-sha256$29000$HWPMube2tnYuZYwRwngPQQ$eSDzbZ3puIYCkdzcU94.2a5.ZvXUWXlIGjuSuM4ij/Y','student'),
-		('andreev', 'Андреев', 'Андрей', 'Андреевич', 'andreev@example.com', 'M', '2012-02-12 00:00:00.000', 'Комментарий','$pbkdf2-sha256$29000$HWPMube2tnYuZYwRwngPQQ$eSDzbZ3puIYCkdzcU94.2a5.ZvXUWXlIGjuSuM4ij/Y','student');
+	VALUES ('obeginin', 'Бегинин', 'Олег', 'Вячеславович', 'lezhik.from@gmail.com', 'M', '', 'Комментарий','$pbkdf2-sha256$29000$3zunFMK4955zjpEyxngPYQ$nECQLRTK9OFP8I6QErp5iVHRy6D4j4/mC7IgkxDGTEY','admin'),
+	('jkochetova', 'Кочетова', 'Юлия', 'Вячеславовна', 'petrov@example.com', 'Ж', '', 'Комментарий','$pbkdf2-sha256$29000$3zunFMK4955zjpEyxngPYQ$nECQLRTK9OFP8I6QErp5iVHRy6D4j4/mC7IgkxDGTEY','admin'),
+		('petr', 'Петров', 'Петр', 'Петрович', 'petrov@example.com', 'M', '', 'Комментарий','$pbkdf2-sha256$29000$N4bwvvceQ2gtBaD03htDyA$BLHTA0T4Q.f1kZMSLoQjTm1.Pr7hUMpK/dFKMtDdAkk','student'),
+		('stepa', 'Степанов', 'Степан', 'Степанович', 'sidorova@example.com', 'М', '', 'Комментарий','$pbkdf2-sha256$29000$N4bwvvceQ2gtBaD03htDyA$BLHTA0T4Q.f1kZMSLoQjTm1.Pr7hUMpK/dFKMtDdAkk','student'),
+		('ivan', 'Иванов', 'Иван', 'Иванович', 'smirnov@example.com', 'M', '', 'Комментарий','$pbkdf2-sha256$29000$N4bwvvceQ2gtBaD03htDyA$BLHTA0T4Q.f1kZMSLoQjTm1.Pr7hUMpK/dFKMtDdAkk','student'),
+		('rustam', 'Рустамов', 'Рустам', 'Рустамович', 'andreev@example.com', 'M', '', 'Комментарий','$pbkdf2-sha256$29000$N4bwvvceQ2gtBaD03htDyA$BLHTA0T4Q.f1kZMSLoQjTm1.Pr7hUMpK/dFKMtDdAkk','student');
 
 INSERT INTO Students (Login, Last_Name, First_Name, Middle_Name, Email, Sex, BirthDate, Comment,Password,Role)
 	VALUES 

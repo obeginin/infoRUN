@@ -1,11 +1,11 @@
 --Создаем Хранимку, которая создает базу данных BASE--
-IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'BASE')
+IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'infoRUN')
 BEGIN
-    CREATE DATABASE BASE;
+    CREATE DATABASE infoRUN;
 END
 GO  -- Разделяем блоки
 
-USE BASE
+USE infoRUN
 GO  -- Указываем использование базы
 
 

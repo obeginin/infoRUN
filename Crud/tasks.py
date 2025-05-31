@@ -148,7 +148,7 @@ def create_subtask_from_form(
 
         # Сохраняем файл, если есть
         image_path = None
-        if ImageFile:
+        if ImageFile and ImageFile.filename:
             ext = ImageFile.filename.split('.')[-1]
             filename = f"task_{TaskID}_sub_{subtask_number}.{ext}"
             filepath = UPLOAD_IMAGE_DIR / filename
@@ -157,7 +157,7 @@ def create_subtask_from_form(
             image_path = f"Uploads/images/{filename}"
 
         solution_path = None
-        if SolutionFile:
+        if SolutionFile and SolutionFile.filename:
             ext = SolutionFile.filename.split('.')[-1]
             filename = f"solution_task_{TaskID}_sub_{subtask_number}.{ext}"
             filepath = UPLOAD_SOLUTION_DIR / filename
@@ -176,12 +176,13 @@ def create_subtask_from_form(
             "task_id": TaskID,
             "subtask_number": subtask_number,
             "image_path": image_path,
-            "solution_path": solution_path,
+            "solution_path": solution_path or "",
             "description": Description,
             "answer": Answer,
         }
                    )
         new_SubTaskID = result.scalar_one() # Получаем единственное значение - новый SubTaskID
+        db.execute(text("EXEC dbo.AssignSubTasksToStudent"))
         db.commit()
         return new_SubTaskID
 

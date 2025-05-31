@@ -33,4 +33,17 @@ END;
 DROP PROCEDURE Create_Table_Students
 
 drop table Students
+
+INSERT INTO Students (Login, Last_Name, First_Name, Middle_Name, Email, Sex, BirthDate, Comment,Password,Role)
+	VALUES 
+
+INSERT INTO Students (Login, Last_Name, First_Name, Middle_Name, Email, Sex, BirthDate, Comment,Password,Role)
+	VALUES ('obeginin', 'Бегинин', 'Олег', 'Вячеславович', 'lezhik.from@gmail.com', 'M', '', 'Комментарий','$pbkdf2-sha256$29000$3zunFMK4955zjpEyxngPYQ$nECQLRTK9OFP8I6QErp5iVHRy6D4j4/mC7IgkxDGTEY','admin'),
+	('jkochetova', 'Кочетова', 'Юлия', 'Вячеславовна', 'petrov@example.com', 'Ж', '', 'Комментарий','$pbkdf2-sha256$29000$3zunFMK4955zjpEyxngPYQ$nECQLRTK9OFP8I6QErp5iVHRy6D4j4/mC7IgkxDGTEY','admin'),
+		('petr', 'Петров', 'Петр', 'Петрович', 'petrov@example.com', 'M', '', 'Комментарий','$pbkdf2-sha256$29000$N4bwvvceQ2gtBaD03htDyA$BLHTA0T4Q.f1kZMSLoQjTm1.Pr7hUMpK/dFKMtDdAkk','student'),
+		('stepa', 'Степанов', 'Степан', 'Степанович', 'sidorova@example.com', 'М', '', 'Комментарий','$pbkdf2-sha256$29000$N4bwvvceQ2gtBaD03htDyA$BLHTA0T4Q.f1kZMSLoQjTm1.Pr7hUMpK/dFKMtDdAkk','student'),
+		('ivan', 'Иванов', 'Иван', 'Иванович', 'smirnov@example.com', 'M', '', 'Комментарий','$pbkdf2-sha256$29000$N4bwvvceQ2gtBaD03htDyA$BLHTA0T4Q.f1kZMSLoQjTm1.Pr7hUMpK/dFKMtDdAkk','student'),
+		('rustam', 'Рустамов', 'Рустам', 'Рустамович', 'andreev@example.com', 'M', '', 'Комментарий','$pbkdf2-sha256$29000$N4bwvvceQ2gtBaD03htDyA$BLHTA0T4Q.f1kZMSLoQjTm1.Pr7hUMpK/dFKMtDdAkk','student'),
+		('test', 'Тестов', 'Тест', 'Тестович', 'test@gmail.com', 'M', '', 'Комментарий','$pbkdf2-sha256$29000$N4bwvvceQ2gtBaD03htDyA$BLHTA0T4Q.f1kZMSLoQjTm1.Pr7hUMpK/dFKMtDdAkk','student');
+
 */

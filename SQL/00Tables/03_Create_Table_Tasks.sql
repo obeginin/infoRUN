@@ -16,6 +16,12 @@ BEGIN
 	END
 END;
 
+
+
+
+
+
+
 /*
 DROP PROCEDURE Create_Table_Tasks --удалить хранимку
 
@@ -23,7 +29,23 @@ drop table Tasks --удалить таблицу (вместе с данными)
 SELECT name FROM sys.tables; --вывод всех таблиц Ѕƒ
 
 вставл€ем данные в таблицу
+INSERT INTO Tasks (TaskNumber, TaskTitle) 
+VALUES 
+	(1,'≈√Ё_1'),(2,'≈√Ё_2'),(3,'≈√Ё_3'),(4,'≈√Ё_4'),(5,'≈√Ё_5'),(6,'≈√Ё_6'),(7,'≈√Ё_7'),(8,'≈√Ё_8');
+
 INSERT INTO Tasks (TaskNumber, TaskTitle) VALUES (1,'первое задание'),(2,'второе задание'),(3,'третье задание'),(4,'четвертое задание');
+
+јвтоматическа€ втавка строк от 1 до 27
+WITH Numbers AS (
+    SELECT 1 AS n
+    UNION ALL
+    SELECT n + 1 FROM Numbers WHERE n < 27
+)
+INSERT INTO Tasks (TaskNumber, TaskTitle)
+SELECT n, CONCAT('≈√Ё_', n)
+FROM Numbers
+OPTION (MAXRECURSION 0);
+
 update Tasks set TaskTitle='четвертое задание' where TaskID=4
 delete Tasks where TaskID in (1,2,3,4) --удал€ем строки
 
