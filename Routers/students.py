@@ -103,33 +103,87 @@ def read_student_all_subtasks(
 def read_student_all_subtasks_by_login(
     request: Request,
     current_student=Depends(get_current_student_or_redirect),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    StudentID: int = Query(default=None),
+    status: str = Query(default=None),
+    TaskID: str | None = Query(None),
+    variant: str | None = Query(None),
+    #Tasks: str = Query(default=None),
+    SortColumn: str = Query(default="StudentTaskID"),
+    SortDirection: str = Query(default="ASC")
 ):
+    logger.info(f"Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin")
+# Проверям что пользователь авторизован и отправляем на страницу с логином
+
     if isinstance(current_student, RedirectResponse):
         return current_student
-    StudentID = current_student.ID
 
-    tasks1 = students.get_student_all_tasks(db, StudentID)
-    print(f"TASK TYPE: {type(tasks1[0])}")
-    print(f"TASK VALUE: {tasks1[0]}")
+    # Если пришла пустая строка или None — оставляем None
+    try:
+        student_id_int = int(StudentID) if StudentID not in (None, "") else None
+    except ValueError:
+        student_id_int = None
 
+    try:
+        task_id_int = int(TaskID) if TaskID not in (None, "") else None
+    except ValueError:
+        task_id_int = None
 
-    """Для устранения проблемы преобразования даты в формат JSON"""
-    tasks = [StudentTaskRead(**task).model_dump(mode="json") for task in tasks1]
-
-    logging.warning(f"ПАРАМЕТРЫ: StudentID={StudentID}") # логирование
-
+    # Если админ выбрал студента — используем его, иначе id текущего
+    StudentID = student_id_int if student_id_int is not None else current_student.ID
+# Проверяет что студент есть в базей
     if not current_student:
         return templates.TemplateResponse("Students/StudentTask.html", {
             "request": request,
             "error": "Студент не найден"
         })
-    StudentID = current_student.ID
+
+# ищем список категорий
+    query = text("SELECT TaskID, TaskTitle FROM Tasks")
+    result = db.execute(query)
+    TasksID = result.fetchall()
+
+# ищем всех студентов
+    query = text("select ID, Login from Students")
+    result = db.execute(query)
+    students_id = result.fetchall()
+
+# ищем все варианты
+    query = text("select distinct Description from SubTasks")
+    result = db.execute(query)
+    variants = result.fetchall()
+
+# по его id ищем все его задачи
+    tasks1 = students.get_students_all_tasks(
+        db=db,
+        StudentID=StudentID,
+        CompletionStatus=status,
+        TaskID=task_id_int,
+        SortColumn=SortColumn,
+        SortDirection=SortDirection,
+        Description=variant
+    )
+    #print(f"TASK TYPE: {type(tasks1[0])}")
+    #print(f"TASK VALUE: {tasks1[0]}")
+    #print(tasks1)
+
+    # Если никаких задач нет — делаем redirect обратно на страницу без параметров
+    if not tasks1:
+        # Перенаправляем на тот же путь, но без query-параметров
+        return RedirectResponse(request.url.path, status_code=302)
+    # Иначе преобразуем в JSON-словарики
+    """Для устранения проблемы преобразования даты в формат JSON"""
+    tasks = [StudentTaskRead(**task).model_dump(mode="json") for task in tasks1]
+
+    logging.warning(f"ПАРАМЕТРЫ: StudentID={StudentID}") # логирование
 
     return templates.TemplateResponse("Students/StudentTask.html", {
         "request": request,
         "StudentID": StudentID,
+        "students_id": students_id,
         "tasks": tasks,
+        "variants": variants,
+        "TasksID": TasksID,
         "student": current_student,
     })
 

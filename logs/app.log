@@ -2930,3 +2930,1479 @@
 2025-05-31 19:15:43,708 - INFO - requests - Ответ: GET /students_subtasks/T/3/ - статус 200
 2025-05-31 19:15:43,968 - INFO - requests - Запрос: GET /Uploads/StudentSolutions/2_1_image.png
 2025-05-31 19:15:43,979 - INFO - requests - Ответ: GET /Uploads/StudentSolutions/2_1_image.png - статус 304
+2025-06-02 12:42:12,220 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 12:43:35,971 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 12:43:50,510 - INFO - requests - Запрос: GET /
+2025-06-02 12:43:50,512 - INFO - Routers.auth - [127.0.0.1] Неавторизованный доступ к / — выполняется редирект на страницу входа
+2025-06-02 12:43:50,513 - INFO - requests - Ответ: GET / - статус 302
+2025-06-02 12:43:50,516 - INFO - requests - Запрос: GET /home/login_in/
+2025-06-02 12:43:50,516 - INFO - Routers.auth - Выводим страницу с логином
+2025-06-02 12:43:50,522 - INFO - requests - Ответ: GET /home/login_in/ - статус 200
+2025-06-02 12:43:50,565 - INFO - requests - Запрос: GET /favicon.ico
+2025-06-02 12:43:50,566 - INFO - requests - Ответ: GET /favicon.ico - статус 404
+2025-06-02 12:44:00,036 - INFO - requests - Запрос: POST /home/login_in/
+2025-06-02 12:44:07,073 - INFO - requests - Запрос: POST /home/login_in/
+2025-06-02 12:46:40,848 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 12:46:48,219 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 12:46:54,126 - INFO - requests - Запрос: GET /home/login_in/
+2025-06-02 12:46:54,127 - INFO - Routers.auth - Выводим страницу с логином
+2025-06-02 12:46:54,131 - INFO - requests - Ответ: GET /home/login_in/ - статус 200
+2025-06-02 12:46:59,322 - INFO - requests - Запрос: POST /home/login_in/
+2025-06-02 12:46:59,471 - INFO - requests - Ответ: POST /home/login_in/ - статус 303
+2025-06-02 12:46:59,473 - INFO - requests - Запрос: GET /home/login_in/
+2025-06-02 12:46:59,474 - INFO - Routers.auth - Выводим страницу с логином
+2025-06-02 12:46:59,474 - INFO - requests - Ответ: GET /home/login_in/ - статус 200
+2025-06-02 12:47:11,353 - INFO - requests - Запрос: POST /home/login_in/
+2025-06-02 12:47:11,429 - INFO - requests - Ответ: POST /home/login_in/ - статус 303
+2025-06-02 12:47:11,437 - INFO - requests - Запрос: GET /
+2025-06-02 12:47:11,481 - INFO - Routers.auth - [127.0.0.1] Студент ivanov открыл корневую страницу
+2025-06-02 12:47:11,500 - INFO - requests - Ответ: GET / - статус 200
+2025-06-02 12:47:11,550 - INFO - requests - Запрос: GET /static/styles.css
+2025-06-02 12:47:11,643 - INFO - requests - Ответ: GET /static/styles.css - статус 200
+2025-06-02 12:47:11,650 - INFO - requests - Запрос: GET /static/scripts.js
+2025-06-02 12:47:11,655 - INFO - requests - Ответ: GET /static/scripts.js - статус 200
+2025-06-02 12:47:13,890 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 12:47:13,902 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-06-02 12:47:13,903 - WARNING - root - Результатов найдено: 6
+2025-06-02 12:47:13,904 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 12:47:13,909 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 12:49:18,876 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 12:49:18,883 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-06-02 12:49:18,883 - WARNING - root - Результатов найдено: 6
+2025-06-02 12:49:18,883 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 12:49:18,884 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 12:49:19,251 - INFO - requests - Запрос: GET /students/List/
+2025-06-02 12:49:19,254 - INFO - Routers.students - Получен запрос на список студентов
+2025-06-02 12:49:19,257 - INFO - requests - Ответ: GET /students/List/ - статус 200
+2025-06-02 12:49:19,270 - INFO - requests - Запрос: GET /students/api/
+2025-06-02 12:49:19,273 - INFO - requests - Ответ: GET /students/api/ - статус 200
+2025-06-02 12:49:20,212 - INFO - requests - Запрос: GET /students_subtasks/StudentTask/1
+2025-06-02 12:49:20,216 - INFO - Routers.students - Вызван роут read_student_all_subtasks с StudentID=1
+2025-06-02 12:49:20,217 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-06-02 12:49:20,217 - WARNING - root - Результатов найдено: 6
+2025-06-02 12:49:20,218 - INFO - requests - Ответ: GET /students_subtasks/StudentTask/1 - статус 200
+2025-06-02 12:49:21,380 - INFO - requests - Запрос: GET /students_subtasks/T/1
+2025-06-02 12:49:21,380 - INFO - requests - Ответ: GET /students_subtasks/T/1 - статус 307
+2025-06-02 12:49:21,388 - INFO - requests - Запрос: GET /students_subtasks/T/1/
+2025-06-02 12:49:21,393 - WARNING - root - Вызываем роут read_student_all_subtasks с параметрами: StudentTaskID=1
+2025-06-02 12:49:24,109 - INFO - requests - Запрос: GET /students_subtasks/T/2
+2025-06-02 12:49:24,109 - INFO - requests - Ответ: GET /students_subtasks/T/2 - статус 307
+2025-06-02 12:49:24,112 - INFO - requests - Запрос: GET /students_subtasks/T/2/
+2025-06-02 12:49:24,116 - WARNING - root - Вызываем роут read_student_all_subtasks с параметрами: StudentTaskID=2
+2025-06-02 12:53:49,665 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 12:53:49,714 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-06-02 12:53:49,715 - WARNING - root - Результатов найдено: 6
+2025-06-02 12:53:49,715 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 12:53:49,726 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 13:14:57,744 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 13:15:02,313 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 13:15:04,539 - INFO - requests - Запрос: GET /students/List/
+2025-06-02 13:15:04,543 - INFO - Routers.students - Получен запрос на список студентов
+2025-06-02 13:15:04,551 - INFO - requests - Ответ: GET /students/List/ - статус 200
+2025-06-02 13:15:04,572 - INFO - requests - Запрос: GET /students/api/
+2025-06-02 13:15:04,576 - INFO - requests - Ответ: GET /students/api/ - статус 200
+2025-06-02 13:15:06,470 - INFO - requests - Запрос: GET /subtasks/
+2025-06-02 13:15:06,483 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-06-02 13:15:06,504 - INFO - requests - Запрос: GET /subtasks/api/
+2025-06-02 13:15:06,508 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200
+2025-06-02 13:15:07,053 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 13:18:20,076 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 13:18:20,245 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 13:18:20,370 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-06-02 13:18:20,370 - WARNING - root - Результатов найдено: 6
+2025-06-02 13:18:20,370 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 13:18:20,378 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 13:28:51,256 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 13:29:19,624 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 13:29:22,586 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 13:29:22,685 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-06-02 13:29:22,685 - WARNING - root - Результатов найдено: 6
+2025-06-02 13:29:22,686 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 13:30:06,439 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 13:30:07,901 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 13:30:08,001 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-06-02 13:30:08,001 - WARNING - root - Результатов найдено: 6
+2025-06-02 13:30:08,002 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 13:30:08,009 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 13:31:33,721 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 13:31:34,572 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 13:31:34,663 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-06-02 13:31:34,663 - WARNING - root - Результатов найдено: 6
+2025-06-02 13:31:34,663 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 13:31:34,670 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 13:33:25,323 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 13:33:29,184 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 13:33:29,273 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-06-02 13:33:29,273 - WARNING - root - Результатов найдено: 6
+2025-06-02 13:33:29,274 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 13:33:29,279 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 13:38:25,352 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 13:38:58,767 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 13:39:00,881 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 13:40:12,710 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 13:40:15,918 - INFO - requests - Запрос: GET /subtasks/
+2025-06-02 13:40:16,046 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-06-02 13:40:16,059 - INFO - requests - Запрос: GET /subtasks/api/
+2025-06-02 13:40:16,064 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200
+2025-06-02 13:40:17,346 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 13:41:11,887 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 13:41:12,265 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 13:45:04,711 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 13:45:07,813 - INFO - requests - Запрос: GET /subtasks/
+2025-06-02 13:45:07,944 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-06-02 13:45:07,970 - INFO - requests - Запрос: GET /subtasks/api/
+2025-06-02 13:45:07,977 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200
+2025-06-02 13:45:09,857 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 13:45:09,881 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-06-02 13:45:09,881 - WARNING - root - Результатов найдено: 6
+2025-06-02 13:45:09,881 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 13:45:09,890 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 13:45:43,296 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 13:45:47,524 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 13:45:47,614 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-06-02 13:45:47,614 - WARNING - root - Результатов найдено: 6
+2025-06-02 13:45:47,614 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 13:45:47,621 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 13:45:48,088 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 13:45:48,094 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-06-02 13:45:48,094 - WARNING - root - Результатов найдено: 6
+2025-06-02 13:45:48,094 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 13:45:48,095 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 13:45:51,041 - INFO - requests - Запрос: GET /home/logout/
+2025-06-02 13:45:51,042 - INFO - requests - Ответ: GET /home/logout/ - статус 303
+2025-06-02 13:45:51,046 - INFO - requests - Запрос: GET /home/login_in/
+2025-06-02 13:45:51,046 - INFO - Routers.auth - Выводим страницу с логином
+2025-06-02 13:45:51,048 - INFO - requests - Ответ: GET /home/login_in/ - статус 200
+2025-06-02 13:46:01,338 - INFO - requests - Запрос: POST /home/login_in/
+2025-06-02 13:46:01,357 - INFO - requests - Ответ: POST /home/login_in/ - статус 303
+2025-06-02 13:46:01,360 - INFO - requests - Запрос: GET /
+2025-06-02 13:46:01,362 - INFO - Routers.auth - [127.0.0.1] Студент petrovv открыл корневую страницу
+2025-06-02 13:46:01,368 - INFO - requests - Ответ: GET / - статус 200
+2025-06-02 13:46:03,482 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 13:46:03,488 - WARNING - root - Получаем задачи для студента с ID = 2
+2025-06-02 13:46:03,488 - WARNING - root - Результатов найдено: 6
+2025-06-02 13:46:03,488 - WARNING - root - ПАРАМЕТРЫ: StudentID=2
+2025-06-02 13:46:03,490 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 13:46:06,842 - INFO - requests - Запрос: GET /home/logout/
+2025-06-02 13:46:06,843 - INFO - requests - Ответ: GET /home/logout/ - статус 303
+2025-06-02 13:46:06,848 - INFO - requests - Запрос: GET /home/login_in/
+2025-06-02 13:46:06,849 - INFO - Routers.auth - Выводим страницу с логином
+2025-06-02 13:46:06,849 - INFO - requests - Ответ: GET /home/login_in/ - статус 200
+2025-06-02 13:46:07,645 - INFO - requests - Запрос: POST /home/login_in/
+2025-06-02 13:46:07,660 - INFO - requests - Ответ: POST /home/login_in/ - статус 303
+2025-06-02 13:46:07,662 - INFO - requests - Запрос: GET /
+2025-06-02 13:46:07,664 - INFO - Routers.auth - [127.0.0.1] Студент petrovv открыл корневую страницу
+2025-06-02 13:46:07,665 - INFO - requests - Ответ: GET / - статус 200
+2025-06-02 13:46:08,207 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 13:46:08,211 - WARNING - root - Получаем задачи для студента с ID = 2
+2025-06-02 13:46:08,211 - WARNING - root - Результатов найдено: 6
+2025-06-02 13:46:08,212 - WARNING - root - ПАРАМЕТРЫ: StudentID=2
+2025-06-02 13:46:08,213 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 13:46:10,700 - INFO - requests - Запрос: GET /home/logout/
+2025-06-02 13:46:10,700 - INFO - requests - Ответ: GET /home/logout/ - статус 303
+2025-06-02 13:46:10,703 - INFO - requests - Запрос: GET /home/login_in/
+2025-06-02 13:46:10,703 - INFO - Routers.auth - Выводим страницу с логином
+2025-06-02 13:46:10,704 - INFO - requests - Ответ: GET /home/login_in/ - статус 200
+2025-06-02 13:46:12,836 - INFO - requests - Запрос: POST /home/login_in/
+2025-06-02 13:46:12,880 - INFO - requests - Ответ: POST /home/login_in/ - статус 303
+2025-06-02 13:46:12,884 - INFO - requests - Запрос: GET /
+2025-06-02 13:46:12,890 - INFO - Routers.auth - [127.0.0.1] Студент ivanov открыл корневую страницу
+2025-06-02 13:46:12,894 - INFO - requests - Ответ: GET / - статус 200
+2025-06-02 13:46:13,791 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 13:46:13,808 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-06-02 13:46:13,808 - WARNING - root - Результатов найдено: 6
+2025-06-02 13:46:13,808 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 13:46:13,810 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 13:46:20,896 - INFO - requests - Запрос: GET /admin/statistics
+2025-06-02 13:46:20,897 - INFO - requests - Ответ: GET /admin/statistics - статус 404
+2025-06-02 13:50:56,446 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 13:50:59,670 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 13:50:59,762 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-06-02 13:50:59,762 - WARNING - root - Результатов найдено: 6
+2025-06-02 13:50:59,762 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 13:50:59,769 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 13:51:31,478 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 13:51:32,206 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 13:51:32,318 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-06-02 13:51:32,318 - WARNING - root - Результатов найдено: 6
+2025-06-02 13:51:32,318 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 13:51:32,326 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 13:57:34,099 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 14:38:36,632 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 15:20:37,416 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 15:20:37,419 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 302
+2025-06-02 15:20:37,421 - INFO - requests - Запрос: GET /home/login_in/
+2025-06-02 15:20:37,422 - INFO - Routers.auth - Выводим страницу с логином
+2025-06-02 15:20:37,427 - INFO - requests - Ответ: GET /home/login_in/ - статус 200
+2025-06-02 15:20:38,244 - INFO - requests - Запрос: POST /home/login_in/
+2025-06-02 15:20:38,363 - INFO - requests - Ответ: POST /home/login_in/ - статус 303
+2025-06-02 15:20:38,366 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 15:20:38,372 - WARNING - root - Получаем задачи для студента с ID = 1
+2025-06-02 15:20:38,372 - WARNING - root - Результатов найдено: 6
+2025-06-02 15:20:38,372 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 15:20:38,378 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 15:27:23,801 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 15:32:24,932 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 15:37:24,577 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 15:40:16,261 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 15:40:16,445 - INFO - requests - Запрос: GET /admin/statistics
+2025-06-02 15:40:16,446 - INFO - requests - Ответ: GET /admin/statistics - статус 404
+2025-06-02 15:40:24,368 - INFO - requests - Запрос: GET /admin/statistics
+2025-06-02 15:40:24,368 - INFO - requests - Ответ: GET /admin/statistics - статус 404
+2025-06-02 15:40:25,563 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 15:40:25,664 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 15:40:25,666 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 15:40:31,457 - INFO - requests - Запрос: GET /
+2025-06-02 15:40:31,460 - INFO - Routers.auth - [127.0.0.1] Студент ivanov открыл корневую страницу
+2025-06-02 15:40:31,470 - INFO - requests - Ответ: GET / - статус 200
+2025-06-02 15:40:32,716 - INFO - requests - Запрос: GET /home/logout/
+2025-06-02 15:40:32,717 - INFO - requests - Ответ: GET /home/logout/ - статус 303
+2025-06-02 15:40:32,722 - INFO - requests - Запрос: GET /home/login_in/
+2025-06-02 15:40:32,722 - INFO - Routers.auth - Выводим страницу с логином
+2025-06-02 15:40:32,725 - INFO - requests - Ответ: GET /home/login_in/ - статус 200
+2025-06-02 15:40:33,344 - INFO - requests - Запрос: POST /home/login_in/
+2025-06-02 15:40:33,361 - INFO - requests - Ответ: POST /home/login_in/ - статус 303
+2025-06-02 15:40:33,363 - INFO - requests - Запрос: GET /
+2025-06-02 15:40:33,367 - INFO - Routers.auth - [127.0.0.1] Студент ivanov открыл корневую страницу
+2025-06-02 15:40:33,369 - INFO - requests - Ответ: GET / - статус 200
+2025-06-02 15:40:34,373 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 15:40:34,376 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 15:40:34,377 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 15:42:29,271 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 15:42:35,174 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 15:42:36,703 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 15:42:36,805 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 15:42:36,807 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 15:42:37,484 - INFO - requests - Запрос: GET /
+2025-06-02 15:42:37,489 - INFO - Routers.auth - [127.0.0.1] Студент ivanov открыл корневую страницу
+2025-06-02 15:42:37,498 - INFO - requests - Ответ: GET / - статус 200
+2025-06-02 15:42:38,440 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 15:42:38,445 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 15:42:38,449 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 15:43:13,212 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 15:43:14,433 - INFO - requests - Запрос: GET /
+2025-06-02 15:43:14,499 - INFO - Routers.auth - [127.0.0.1] Студент ivanov открыл корневую страницу
+2025-06-02 15:43:14,505 - INFO - requests - Ответ: GET / - статус 200
+2025-06-02 15:43:15,842 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 15:43:15,847 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 15:43:15,849 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 15:45:26,591 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 15:45:30,117 - INFO - requests - Запрос: GET /
+2025-06-02 15:45:30,242 - INFO - Routers.auth - [127.0.0.1] Студент ivanov открыл корневую страницу
+2025-06-02 15:45:30,249 - INFO - requests - Ответ: GET / - статус 200
+2025-06-02 15:45:30,665 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 15:45:30,671 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 15:45:30,673 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 15:51:23,440 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 15:51:26,226 - INFO - requests - Запрос: GET /
+2025-06-02 15:51:26,325 - INFO - Routers.auth - [127.0.0.1] Студент ivanov открыл корневую страницу
+2025-06-02 15:51:26,330 - INFO - requests - Ответ: GET / - статус 200
+2025-06-02 15:51:27,025 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 15:51:27,030 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 15:51:27,032 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 15:53:04,049 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 15:53:07,997 - INFO - requests - Запрос: GET /
+2025-06-02 15:53:08,114 - INFO - Routers.auth - [127.0.0.1] Студент ivanov открыл корневую страницу
+2025-06-02 15:53:08,121 - INFO - requests - Ответ: GET / - статус 200
+2025-06-02 15:53:09,047 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 15:53:09,052 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 15:53:09,055 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 15:54:35,297 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 15:54:36,470 - INFO - requests - Запрос: GET /
+2025-06-02 15:54:36,602 - INFO - Routers.auth - [127.0.0.1] Студент ivanov открыл корневую страницу
+2025-06-02 15:54:36,610 - INFO - requests - Ответ: GET / - статус 200
+2025-06-02 15:54:37,264 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 15:54:37,270 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 15:54:37,273 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 15:54:58,764 - INFO - requests - Запрос: GET /
+2025-06-02 15:54:58,765 - INFO - Routers.auth - [127.0.0.1] Студент ivanov открыл корневую страницу
+2025-06-02 15:54:58,766 - INFO - requests - Ответ: GET / - статус 200
+2025-06-02 15:54:59,911 - INFO - requests - Запрос: GET /
+2025-06-02 15:54:59,923 - INFO - Routers.auth - [127.0.0.1] Студент ivanov открыл корневую страницу
+2025-06-02 15:54:59,925 - INFO - requests - Ответ: GET / - статус 200
+2025-06-02 15:55:05,919 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 15:55:05,921 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 15:55:05,923 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:00:14,182 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 16:00:20,874 - INFO - requests - Запрос: GET /
+2025-06-02 16:00:20,990 - INFO - Routers.auth - [127.0.0.1] Студент ivanov открыл корневую страницу
+2025-06-02 16:00:20,997 - INFO - requests - Ответ: GET / - статус 200
+2025-06-02 16:00:23,988 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:00:23,990 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:00:23,991 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:03:23,471 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 16:03:27,730 - INFO - requests - Запрос: GET /
+2025-06-02 16:03:27,833 - INFO - Routers.auth - [127.0.0.1] Студент ivanov открыл корневую страницу
+2025-06-02 16:03:27,839 - INFO - requests - Ответ: GET / - статус 200
+2025-06-02 16:03:28,307 - INFO - requests - Запрос: GET /
+2025-06-02 16:03:28,311 - INFO - Routers.auth - [127.0.0.1] Студент ivanov открыл корневую страницу
+2025-06-02 16:03:28,312 - INFO - requests - Ответ: GET / - статус 200
+2025-06-02 16:03:29,133 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:03:29,135 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:03:29,137 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:06:05,496 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 16:06:07,351 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 16:06:11,824 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:06:11,910 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:06:11,928 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:06:13,148 - INFO - requests - Запрос: GET /
+2025-06-02 16:06:13,150 - INFO - Routers.auth - [127.0.0.1] Студент ivanov открыл корневую страницу
+2025-06-02 16:06:13,155 - INFO - requests - Ответ: GET / - статус 200
+2025-06-02 16:06:14,109 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:06:14,120 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:06:14,123 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:06:57,520 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 16:06:57,619 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:06:57,775 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:06:57,777 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:08:21,179 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 16:08:24,693 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:08:24,773 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:08:24,778 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:09:03,406 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 16:09:04,191 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:09:04,298 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:09:04,300 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:10:17,244 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 16:10:18,596 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 16:10:21,615 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:10:21,704 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:10:21,705 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:10:53,226 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 16:10:54,224 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:10:54,329 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:10:54,331 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:Не приступал TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:10:57,429 - INFO - requests - Запрос: GET /
+2025-06-02 16:10:57,432 - INFO - Routers.auth - [127.0.0.1] Студент ivanov открыл корневую страницу
+2025-06-02 16:10:57,441 - INFO - requests - Ответ: GET / - статус 200
+2025-06-02 16:10:58,275 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:10:58,279 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:10:58,280 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:Не приступал TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:13:22,935 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 16:13:26,551 - INFO - requests - Запрос: GET /
+2025-06-02 16:13:26,621 - INFO - Routers.auth - [127.0.0.1] Студент ivanov открыл корневую страницу
+2025-06-02 16:13:26,630 - INFO - requests - Ответ: GET / - статус 200
+2025-06-02 16:13:28,543 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:13:28,547 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:13:28,551 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:Не приступал TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:13:28,560 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:13:28,566 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:14:08,832 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 16:14:10,516 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:14:10,557 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:14:10,557 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:14:10,565 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:14:10,571 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:14:34,242 - INFO - requests - Запрос: GET /admin/statistics
+2025-06-02 16:14:34,242 - INFO - requests - Ответ: GET /admin/statistics - статус 404
+2025-06-02 16:15:49,771 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 16:15:51,013 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:15:51,072 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:15:51,073 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:15:51,074 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:15:51,082 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:15:51,896 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:15:51,902 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 422
+2025-06-02 16:16:14,541 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 16:16:16,337 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:16:16,386 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:16:16,388 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:16:16,390 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:16:16,398 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:16:17,046 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin
+2025-06-02 16:16:17,046 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin - статус 307
+2025-06-02 16:16:17,050 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:16:17,056 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 422
+2025-06-02 16:16:26,592 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:16:26,594 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:16:26,595 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:16:26,596 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:16:26,597 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:16:31,558 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin
+2025-06-02 16:16:31,559 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin - статус 307
+2025-06-02 16:16:31,561 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:16:31,564 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 422
+2025-06-02 16:16:58,878 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:16:58,881 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:16:58,881 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:16:58,883 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:16:58,886 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:16:59,987 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:16:59,990 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:16:59,992 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:16:59,994 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:16:59,996 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:17:10,127 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:17:10,130 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 422
+2025-06-02 16:18:26,112 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 16:18:26,998 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:18:27,119 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:18:27,121 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:18:27,136 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:18:27,147 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:18:27,918 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:18:27,952 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:18:27,956 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:18:27,967 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:18:27,969 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:18:32,287 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:18:32,292 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 422
+2025-06-02 16:21:57,663 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:21:57,667 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:21:57,672 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:21:57,681 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:21:57,683 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:21:59,842 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:21:59,844 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:21:59,847 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:21:59,849 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:21:59,851 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:22:47,676 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 16:22:51,469 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:22:51,561 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:22:51,562 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:22:51,563 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:22:51,570 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:22:52,045 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:22:52,048 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:22:52,049 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:22:52,050 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:22:52,051 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:22:53,903 - INFO - requests - Запрос: GET /students/List/
+2025-06-02 16:22:53,906 - INFO - Routers.students - Получен запрос на список студентов
+2025-06-02 16:22:53,910 - INFO - requests - Ответ: GET /students/List/ - статус 200
+2025-06-02 16:22:53,932 - INFO - requests - Запрос: GET /students/api/
+2025-06-02 16:22:53,936 - INFO - requests - Ответ: GET /students/api/ - статус 200
+2025-06-02 16:22:55,337 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:22:55,340 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:22:55,341 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:22:55,344 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:22:55,346 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:22:57,310 - INFO - requests - Запрос: GET /students_subtasks/T/1
+2025-06-02 16:22:57,311 - INFO - requests - Ответ: GET /students_subtasks/T/1 - статус 307
+2025-06-02 16:22:57,316 - INFO - requests - Запрос: GET /students_subtasks/T/1/
+2025-06-02 16:22:57,319 - WARNING - root - Вызываем роут read_student_all_subtasks с параметрами: StudentTaskID=1
+2025-06-02 16:23:04,738 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:23:04,741 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:23:04,745 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:23:04,747 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:23:04,748 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:23:06,166 - INFO - requests - Запрос: POST /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:23:06,167 - INFO - requests - Ответ: POST /students_subtasks/StudentTasksByLogin/ - статус 405
+2025-06-02 16:23:11,174 - INFO - requests - Запрос: POST /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:23:11,174 - INFO - requests - Ответ: POST /students_subtasks/StudentTasksByLogin/ - статус 405
+2025-06-02 16:23:17,828 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 16:23:18,037 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:23:18,113 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:23:18,114 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:23:18,116 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:23:18,126 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:23:18,830 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:23:18,834 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 422
+2025-06-02 16:23:20,728 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:23:20,753 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:23:20,755 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:23:20,757 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:23:20,759 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:23:22,250 - INFO - requests - Запрос: GET /students_subtasks/T/1
+2025-06-02 16:23:22,251 - INFO - requests - Ответ: GET /students_subtasks/T/1 - статус 307
+2025-06-02 16:23:22,254 - INFO - requests - Запрос: GET /students_subtasks/T/1/
+2025-06-02 16:23:22,258 - WARNING - root - Вызываем роут read_student_all_subtasks с параметрами: StudentTaskID=1
+2025-06-02 16:23:43,341 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:23:43,344 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:23:43,345 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:23:43,347 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:23:43,349 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:23:52,969 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:23:52,978 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 422
+2025-06-02 16:26:37,555 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 16:26:39,653 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 16:26:42,555 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:26:42,651 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:26:42,653 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:26:42,661 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:26:42,667 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:26:43,283 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:26:43,285 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:26:43,287 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:26:43,289 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:26:43,290 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:26:47,411 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:26:47,415 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 422
+2025-06-02 16:26:49,097 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:26:49,099 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:26:49,101 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:26:49,109 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:26:49,111 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:26:49,727 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:26:49,729 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:26:49,731 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:26:49,733 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:26:49,734 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:26:52,357 - INFO - requests - Запрос: GET /students/List/
+2025-06-02 16:26:52,360 - INFO - Routers.students - Получен запрос на список студентов
+2025-06-02 16:26:52,363 - INFO - requests - Ответ: GET /students/List/ - статус 200
+2025-06-02 16:26:52,381 - INFO - requests - Запрос: GET /students/api/
+2025-06-02 16:26:52,384 - INFO - requests - Ответ: GET /students/api/ - статус 200
+2025-06-02 16:26:53,650 - INFO - requests - Запрос: GET /admin/
+2025-06-02 16:26:53,659 - INFO - requests - Ответ: GET /admin/ - статус 200
+2025-06-02 16:26:54,439 - INFO - requests - Запрос: GET /students/List/
+2025-06-02 16:26:54,442 - INFO - Routers.students - Получен запрос на список студентов
+2025-06-02 16:26:54,444 - INFO - requests - Ответ: GET /students/List/ - статус 200
+2025-06-02 16:26:54,475 - INFO - requests - Запрос: GET /students/api/
+2025-06-02 16:26:54,478 - INFO - requests - Ответ: GET /students/api/ - статус 200
+2025-06-02 16:26:55,290 - INFO - requests - Запрос: GET /students_subtasks/StudentTask/3
+2025-06-02 16:26:55,292 - INFO - Routers.students - Вызван роут read_student_all_subtasks с StudentID=3
+2025-06-02 16:26:55,294 - WARNING - root - Получаем задачи для студента с ID = 3
+2025-06-02 16:26:55,294 - WARNING - root - Результатов найдено: 6
+2025-06-02 16:26:55,296 - INFO - requests - Ответ: GET /students_subtasks/StudentTask/3 - статус 200
+2025-06-02 16:26:59,132 - INFO - requests - Запрос: GET /students_subtasks/T/22
+2025-06-02 16:26:59,132 - INFO - requests - Ответ: GET /students_subtasks/T/22 - статус 307
+2025-06-02 16:26:59,134 - INFO - requests - Запрос: GET /students_subtasks/T/22/
+2025-06-02 16:26:59,138 - WARNING - root - Вызываем роут read_student_all_subtasks с параметрами: StudentTaskID=22
+2025-06-02 16:27:05,186 - INFO - requests - Запрос: GET /students_subtasks/T/49
+2025-06-02 16:27:05,187 - INFO - requests - Ответ: GET /students_subtasks/T/49 - статус 307
+2025-06-02 16:27:05,189 - INFO - requests - Запрос: GET /students_subtasks/T/49/
+2025-06-02 16:27:05,193 - WARNING - root - Вызываем роут read_student_all_subtasks с параметрами: StudentTaskID=49
+2025-06-02 16:29:04,688 - INFO - requests - Запрос: GET /students_subtasks/T/22
+2025-06-02 16:29:04,689 - INFO - requests - Ответ: GET /students_subtasks/T/22 - статус 307
+2025-06-02 16:29:04,694 - INFO - requests - Запрос: GET /students_subtasks/T/22/
+2025-06-02 16:29:04,699 - WARNING - root - Вызываем роут read_student_all_subtasks с параметрами: StudentTaskID=22
+2025-06-02 16:29:11,023 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:29:11,024 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:29:15,922 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:29:15,923 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:29:18,015 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:29:18,019 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:29:18,021 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:29:18,033 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:29:18,034 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:29:18,101 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:29:18,102 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:29:20,700 - INFO - requests - Запрос: GET /students/List/
+2025-06-02 16:29:20,703 - INFO - Routers.students - Получен запрос на список студентов
+2025-06-02 16:29:20,706 - INFO - requests - Ответ: GET /students/List/ - статус 200
+2025-06-02 16:29:20,765 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:29:20,766 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:29:20,774 - INFO - requests - Запрос: GET /students/api/
+2025-06-02 16:29:20,777 - INFO - requests - Ответ: GET /students/api/ - статус 200
+2025-06-02 16:29:23,314 - INFO - requests - Запрос: GET /students_subtasks/StudentTask/3
+2025-06-02 16:29:23,317 - INFO - Routers.students - Вызван роут read_student_all_subtasks с StudentID=3
+2025-06-02 16:29:23,319 - WARNING - root - Получаем задачи для студента с ID = 3
+2025-06-02 16:29:23,319 - WARNING - root - Результатов найдено: 6
+2025-06-02 16:29:23,321 - INFO - requests - Ответ: GET /students_subtasks/StudentTask/3 - статус 200
+2025-06-02 16:29:23,393 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:29:23,393 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:29:29,659 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:29:29,662 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:29:29,663 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:29:29,665 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:29:29,667 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:29:29,770 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:29:29,771 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:29:47,097 - INFO - requests - Запрос: GET /students/List/
+2025-06-02 16:29:47,100 - INFO - Routers.students - Получен запрос на список студентов
+2025-06-02 16:29:47,100 - INFO - requests - Ответ: GET /students/List/ - статус 200
+2025-06-02 16:29:47,122 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:29:47,123 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:29:47,133 - INFO - requests - Запрос: GET /students/api/
+2025-06-02 16:29:47,136 - INFO - requests - Ответ: GET /students/api/ - статус 200
+2025-06-02 16:29:48,058 - INFO - requests - Запрос: GET /students_subtasks/StudentTask/3
+2025-06-02 16:29:48,061 - INFO - Routers.students - Вызван роут read_student_all_subtasks с StudentID=3
+2025-06-02 16:29:48,062 - WARNING - root - Получаем задачи для студента с ID = 3
+2025-06-02 16:29:48,062 - WARNING - root - Результатов найдено: 6
+2025-06-02 16:29:48,064 - INFO - requests - Ответ: GET /students_subtasks/StudentTask/3 - статус 200
+2025-06-02 16:29:48,088 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:29:48,089 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:30:06,402 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:30:06,407 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:30:06,415 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:30:06,425 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:30:06,426 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:30:12,297 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:30:12,298 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:30:19,652 - INFO - requests - Запрос: GET /subtasks/
+2025-06-02 16:30:19,674 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-06-02 16:30:19,719 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:30:19,720 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:30:19,732 - INFO - requests - Запрос: GET /subtasks/api/
+2025-06-02 16:30:19,737 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200
+2025-06-02 16:30:21,917 - INFO - requests - Запрос: GET /subtasks/6
+2025-06-02 16:30:21,925 - INFO - requests - Ответ: GET /subtasks/6 - статус 200
+2025-06-02 16:30:21,971 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:30:21,972 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:30:21,981 - INFO - requests - Запрос: GET /subtasks/api/6
+2025-06-02 16:30:21,984 - INFO - requests - Ответ: GET /subtasks/api/6 - статус 200
+2025-06-02 16:30:21,996 - INFO - requests - Запрос: GET /Uploads/images/task_1_sub_1.png
+2025-06-02 16:30:22,021 - INFO - requests - Ответ: GET /Uploads/images/task_1_sub_1.png - статус 200
+2025-06-02 16:30:23,813 - INFO - requests - Запрос: GET /subtasks
+2025-06-02 16:30:23,813 - INFO - requests - Ответ: GET /subtasks - статус 307
+2025-06-02 16:30:23,816 - INFO - requests - Запрос: GET /subtasks/
+2025-06-02 16:30:23,820 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-06-02 16:30:23,883 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:30:23,883 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:30:23,894 - INFO - requests - Запрос: GET /subtasks/api/
+2025-06-02 16:30:23,896 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200
+2025-06-02 16:30:30,376 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:30:30,379 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:30:30,380 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:30:30,383 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:30:30,385 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:30:30,481 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:30:30,481 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:30:40,045 - INFO - requests - Запрос: GET /admin/
+2025-06-02 16:30:40,052 - INFO - requests - Ответ: GET /admin/ - статус 200
+2025-06-02 16:30:40,153 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:30:40,154 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:30:41,753 - INFO - requests - Запрос: GET /students/List/
+2025-06-02 16:30:41,758 - INFO - Routers.students - Получен запрос на список студентов
+2025-06-02 16:30:41,760 - INFO - requests - Ответ: GET /students/List/ - статус 200
+2025-06-02 16:30:41,883 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:30:41,883 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:30:41,895 - INFO - requests - Запрос: GET /students/api/
+2025-06-02 16:30:41,898 - INFO - requests - Ответ: GET /students/api/ - статус 200
+2025-06-02 16:30:42,925 - INFO - requests - Запрос: GET /students_subtasks/StudentTask/3
+2025-06-02 16:30:42,927 - INFO - Routers.students - Вызван роут read_student_all_subtasks с StudentID=3
+2025-06-02 16:30:42,930 - WARNING - root - Получаем задачи для студента с ID = 3
+2025-06-02 16:30:42,930 - WARNING - root - Результатов найдено: 6
+2025-06-02 16:30:42,931 - INFO - requests - Ответ: GET /students_subtasks/StudentTask/3 - статус 200
+2025-06-02 16:30:43,050 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:30:43,050 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:30:52,927 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:30:52,936 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:30:52,940 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:30:52,943 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:30:52,944 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:30:52,960 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:30:52,960 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:30:55,510 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:30:55,514 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:30:55,515 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:30:55,518 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:30:55,519 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:30:55,536 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:30:55,536 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:31:25,711 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 16:31:25,905 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:31:26,020 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:31:26,022 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:31:26,032 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:31:26,041 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:31:26,057 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:31:26,057 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:32:06,053 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:32:06,057 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 422
+2025-06-02 16:32:06,086 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:32:06,087 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:34:01,296 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 16:34:03,471 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:34:03,471 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:34:04,253 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:34:04,360 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:34:04,361 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:34:04,371 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:34:04,379 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:34:04,389 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:34:04,389 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:34:11,019 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:34:11,022 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 422
+2025-06-02 16:34:11,058 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:34:11,059 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:35:10,544 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 16:35:10,756 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:35:10,833 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 422
+2025-06-02 16:35:10,848 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:35:10,848 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:35:11,968 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:35:11,968 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:35:12,384 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:35:12,386 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:35:12,388 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:35:12,400 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:35:12,407 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:35:12,419 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:35:12,420 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:35:14,403 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:35:14,406 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 422
+2025-06-02 16:35:14,467 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:35:14,467 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:35:19,700 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:35:19,700 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:35:19,704 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:35:19,704 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:35:26,136 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 16:35:37,495 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:35:37,547 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:35:37,548 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:35:37,550 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:35:37,556 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:35:37,567 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:35:37,568 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:35:39,024 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:35:39,031 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 422
+2025-06-02 16:35:39,122 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:35:39,123 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:39:36,881 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 16:39:40,178 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:39:40,178 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:39:40,323 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:39:40,417 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:39:40,419 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:39:40,426 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:39:40,434 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:39:40,443 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:39:40,443 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:39:43,623 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:39:43,626 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:39:43,627 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus: TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:39:43,628 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:39:43,683 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:39:43,684 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:39:45,974 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:39:45,975 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:39:45,978 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:39:45,978 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:39:47,957 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:39:47,960 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:39:47,961 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:Не приступал TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:39:47,963 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:39:47,965 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:39:48,034 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:39:48,034 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:39:53,031 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:39:53,034 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:39:53,035 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:В процессе TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:39:53,037 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:39:53,038 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:39:53,120 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:39:53,121 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:39:55,043 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:39:55,049 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:39:55,052 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:Выполнено TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:39:55,059 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:39:55,061 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:39:55,144 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:39:55,144 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:39:58,947 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:39:58,950 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:39:58,951 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus: TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:39:58,952 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:39:59,074 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:39:59,075 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:40:02,610 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:40:02,611 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:40:02,615 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:40:02,616 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:40:22,352 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:40:22,357 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:40:22,359 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus: TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:40:22,363 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:40:22,388 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:40:22,388 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:42:04,009 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 16:42:07,791 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:42:07,794 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:42:07,795 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 302
+2025-06-02 16:42:07,796 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:42:07,797 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:42:07,799 - INFO - requests - Запрос: GET /home/login_in/
+2025-06-02 16:42:07,800 - INFO - Routers.auth - Выводим страницу с логином
+2025-06-02 16:42:07,804 - INFO - requests - Ответ: GET /home/login_in/ - статус 200
+2025-06-02 16:42:07,806 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:42:07,806 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:42:07,820 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:42:07,820 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:42:08,836 - INFO - requests - Запрос: POST /home/login_in/
+2025-06-02 16:42:08,960 - INFO - requests - Ответ: POST /home/login_in/ - статус 303
+2025-06-02 16:42:08,964 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:42:08,967 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:42:08,969 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:42:08,980 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:42:08,987 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:42:09,027 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:42:09,028 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:42:09,828 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:42:09,844 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:42:09,845 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:42:09,847 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:42:09,848 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:42:09,909 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:42:09,910 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:42:11,704 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:42:11,707 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:42:11,710 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:42:11,712 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:42:11,713 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:42:11,776 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:42:11,776 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:42:13,317 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:42:13,320 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:42:13,324 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:42:13,327 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:42:13,334 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:42:13,347 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:42:13,348 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:43:02,999 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:43:03,001 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:43:03,003 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:43:03,005 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:43:03,007 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:43:03,030 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:43:03,030 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:43:13,374 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:43:13,378 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:43:13,379 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:43:13,386 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:43:13,387 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:43:13,423 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:43:13,423 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:43:18,195 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:43:18,198 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:43:18,199 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: DESC
+2025-06-02 16:43:18,200 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:43:18,201 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:43:18,256 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:43:18,256 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:43:25,071 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:43:25,074 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:43:25,075 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:CompletionDate SortDirection: ASC
+2025-06-02 16:43:25,077 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:43:25,078 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:43:25,139 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:43:25,140 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:43:27,795 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:43:27,797 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:43:27,800 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: DESC
+2025-06-02 16:43:27,802 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:43:27,803 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:43:27,879 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:43:27,879 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:46:21,544 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 16:46:23,388 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:46:23,494 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:46:23,496 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: DESC
+2025-06-02 16:46:23,506 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:46:23,514 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:46:23,528 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:46:23,529 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:46:43,220 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:46:43,224 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:46:43,226 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:46:43,235 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:46:43,237 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:46:43,259 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:46:43,260 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:46:55,673 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:46:55,677 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:46:55,680 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:46:55,682 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:46:55,684 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:46:55,698 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:46:55,699 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:49:21,548 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 16:49:23,846 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:49:23,958 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 422
+2025-06-02 16:49:23,976 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:49:23,977 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:49:26,091 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:49:26,092 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:49:26,360 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:49:26,362 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:49:26,365 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:49:26,376 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:49:26,385 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:49:26,398 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:49:26,399 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:49:27,188 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:49:27,193 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:49:27,194 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:49:27,197 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:49:27,199 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:49:27,215 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:49:27,216 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:49:35,061 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:49:35,067 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 422
+2025-06-02 16:49:35,145 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:49:35,146 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:49:37,308 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:49:37,309 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:49:37,319 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:49:37,319 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:50:11,328 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 16:50:11,575 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:50:11,689 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:50:11,691 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:50:11,703 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:50:11,712 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:50:11,734 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:50:11,735 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:50:12,349 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:50:12,352 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:50:12,354 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:50:12,357 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:50:12,358 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:50:12,371 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:50:12,372 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:50:13,062 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:50:13,082 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 422
+2025-06-02 16:50:13,119 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:50:13,119 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:50:15,768 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:50:15,768 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:50:15,773 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:50:15,773 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:50:58,080 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 16:50:58,159 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:50:58,294 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:50:58,296 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:50:58,310 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:50:58,322 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:50:58,338 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:50:58,339 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:50:59,152 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:50:59,161 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 422
+2025-06-02 16:50:59,196 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:50:59,197 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:51:00,686 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:51:00,687 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:51:00,696 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:51:00,696 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:51:13,627 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:51:13,630 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 422
+2025-06-02 16:51:13,651 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:51:13,652 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:51:15,651 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:51:15,651 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:51:15,655 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:51:15,656 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:51:23,581 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 16:51:23,693 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:51:23,758 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:51:23,759 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:51:23,762 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:51:23,772 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:51:23,837 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:51:23,838 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:51:24,677 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:51:24,680 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:51:24,681 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:51:24,684 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:51:24,686 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:51:24,704 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:51:24,704 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:51:26,848 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:51:26,851 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:51:26,853 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:Не приступал TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:51:26,855 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:51:26,856 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:51:26,926 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:51:26,926 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:51:29,826 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:51:29,828 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:51:29,830 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:51:29,832 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:51:29,834 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:51:29,933 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:51:29,934 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:51:52,475 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 16:52:26,845 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 16:52:26,973 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:52:27,110 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:52:27,113 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:52:27,125 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:52:27,135 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:52:27,151 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:52:27,152 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:52:28,154 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:52:28,164 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:52:28,166 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:52:28,168 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:52:28,169 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:52:28,196 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:52:28,197 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:52:30,214 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:52:30,220 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:52:30,221 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:52:30,223 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:52:30,224 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:52:30,263 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:52:30,264 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:52:32,509 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:52:32,512 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:52:32,517 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:52:32,519 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:52:32,520 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:52:32,573 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:52:32,574 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:53:34,403 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 16:53:35,956 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:53:36,034 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:53:36,035 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:53:36,043 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:53:36,050 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:53:36,060 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:53:36,061 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:53:36,585 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:53:36,589 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:53:36,590 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:53:36,592 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:53:36,595 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:53:36,609 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:53:36,610 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:56:15,177 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 16:56:17,688 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:56:17,794 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:56:17,795 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:56:17,802 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:56:17,809 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:56:17,822 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:56:17,823 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:56:18,586 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:56:18,588 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:56:18,589 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:56:18,590 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:56:18,591 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:56:18,613 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:56:18,613 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:56:21,311 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:56:21,316 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:56:21,318 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:1 SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:56:21,328 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:56:21,373 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:56:21,374 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:56:22,542 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:56:22,543 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:56:22,553 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:56:22,554 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:56:24,907 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:56:24,910 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:56:24,913 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:8 SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:56:24,915 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:56:24,916 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:56:25,000 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:56:25,000 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:56:32,325 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:56:32,327 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:56:32,329 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:2 SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:56:32,333 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:56:32,342 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:56:32,421 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:56:32,422 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:56:33,633 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:56:33,634 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:56:33,638 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:56:33,638 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:56:33,899 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:56:33,899 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:56:33,905 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 16:56:33,906 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 16:58:35,951 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 16:58:52,649 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:58:52,789 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:58:52,792 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:58:52,805 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:58:52,816 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:58:55,235 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:58:55,243 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:58:55,245 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:1 SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:58:55,257 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 302
+2025-06-02 16:58:55,259 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:58:55,262 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:58:55,263 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:58:55,265 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:58:55,266 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:58:57,817 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:58:57,822 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:58:57,827 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:1 SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:58:57,839 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 302
+2025-06-02 16:58:57,841 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:58:57,844 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:58:57,844 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:58:57,847 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:58:57,849 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:59:42,814 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 16:59:49,009 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:59:49,104 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:59:49,106 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:В процессе TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:59:49,113 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:59:49,119 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:59:51,694 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:59:51,697 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:59:51,698 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:Выполнено TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:59:51,700 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:59:51,702 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:59:53,725 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:59:53,728 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:59:53,729 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:В процессе TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:59:53,731 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:59:53,733 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:59:55,776 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:59:55,780 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:59:55,781 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:Не приступал TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:59:55,784 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:59:55,786 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 16:59:59,218 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 16:59:59,222 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 16:59:59,228 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 16:59:59,239 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 16:59:59,240 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 17:00:05,043 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 17:00:09,928 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 17:00:10,002 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 17:00:10,004 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:CompletionDate SortDirection: ASC
+2025-06-02 17:00:10,011 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 17:00:10,018 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 17:00:19,873 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 17:00:19,879 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 17:00:19,881 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:8 SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 17:00:19,882 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 17:00:19,883 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 17:00:26,173 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 17:00:26,176 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 17:00:26,177 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 17:00:26,179 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 17:00:26,181 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 17:01:23,582 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 17:01:26,030 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 17:01:26,154 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 17:01:26,156 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 17:01:26,168 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 17:01:26,177 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 17:01:33,760 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 17:01:33,763 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 17:01:33,765 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 17:01:33,767 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 17:01:33,768 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 17:01:39,527 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 17:01:39,529 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 17:01:39,534 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:Не приступал TaskID:8 SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 17:01:39,538 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 17:01:39,540 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 17:01:41,181 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 17:01:41,183 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 17:01:41,184 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 17:01:41,186 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 17:01:41,187 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 17:01:52,609 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 17:01:52,613 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 17:01:52,614 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:Login SortDirection: ASC
+2025-06-02 17:02:01,462 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 17:02:01,467 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 17:02:01,469 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:5, CompletionStatus:None TaskID:None SortColumn:Login SortDirection: ASC
+2025-06-02 17:02:35,560 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 17:02:35,724 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 17:02:35,872 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 17:02:35,875 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 17:02:35,887 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 17:02:37,551 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 17:02:37,554 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 17:02:37,555 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:Не приступал TaskID:8 SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 17:02:37,556 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 17:02:46,373 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 17:02:46,906 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 17:02:46,977 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 17:02:46,978 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 17:02:46,981 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 17:02:47,429 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 17:02:47,432 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 17:02:47,434 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 17:02:47,437 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 17:03:29,698 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 17:03:30,915 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 17:03:31,058 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 17:03:31,060 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 17:03:31,074 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 17:03:31,086 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 17:03:33,124 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 17:03:33,126 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 17:03:33,131 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 17:03:33,133 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 17:03:33,135 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 17:03:35,242 - INFO - requests - Запрос: GET /home/logout/
+2025-06-02 17:03:35,242 - INFO - requests - Ответ: GET /home/logout/ - статус 303
+2025-06-02 17:03:35,244 - INFO - requests - Запрос: GET /home/login_in/
+2025-06-02 17:03:35,245 - INFO - Routers.auth - Выводим страницу с логином
+2025-06-02 17:03:35,247 - INFO - requests - Ответ: GET /home/login_in/ - статус 200
+2025-06-02 17:03:37,304 - INFO - requests - Запрос: POST /home/login_in/
+2025-06-02 17:03:37,324 - INFO - requests - Ответ: POST /home/login_in/ - статус 303
+2025-06-02 17:03:37,326 - INFO - requests - Запрос: GET /
+2025-06-02 17:03:37,328 - INFO - Routers.auth - [127.0.0.1] Студент petrovv открыл корневую страницу
+2025-06-02 17:03:37,333 - INFO - requests - Ответ: GET / - статус 200
+2025-06-02 17:03:38,298 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 17:03:38,302 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 17:03:38,303 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:2, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 17:03:38,305 - WARNING - root - ПАРАМЕТРЫ: StudentID=2
+2025-06-02 17:03:38,307 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 17:07:32,895 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 17:07:32,899 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 17:07:32,901 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:2, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 17:07:32,911 - WARNING - root - ПАРАМЕТРЫ: StudentID=2
+2025-06-02 17:07:32,913 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 17:07:35,079 - INFO - requests - Запрос: GET /students_subtasks/T/21
+2025-06-02 17:07:35,079 - INFO - requests - Ответ: GET /students_subtasks/T/21 - статус 307
+2025-06-02 17:07:35,082 - INFO - requests - Запрос: GET /students_subtasks/T/21/
+2025-06-02 17:07:35,085 - WARNING - root - Вызываем роут read_student_all_subtasks с параметрами: StudentTaskID=21
+2025-06-02 17:09:32,850 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 17:11:35,841 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 17:11:37,830 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 17:11:37,949 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 17:11:37,953 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:2, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 17:11:37,963 - WARNING - root - ПАРАМЕТРЫ: StudentID=2
+2025-06-02 17:11:37,973 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 17:11:56,878 - INFO - requests - Запрос: GET /home/logout/
+2025-06-02 17:11:56,879 - INFO - requests - Ответ: GET /home/logout/ - статус 303
+2025-06-02 17:11:56,881 - INFO - requests - Запрос: GET /home/login_in/
+2025-06-02 17:11:56,882 - INFO - Routers.auth - Выводим страницу с логином
+2025-06-02 17:11:56,884 - INFO - requests - Ответ: GET /home/login_in/ - статус 200
+2025-06-02 17:11:59,152 - INFO - requests - Запрос: POST /home/login_in/
+2025-06-02 17:11:59,173 - INFO - requests - Ответ: POST /home/login_in/ - статус 303
+2025-06-02 17:11:59,176 - INFO - requests - Запрос: GET /
+2025-06-02 17:11:59,178 - INFO - Routers.auth - [127.0.0.1] Студент ivanov открыл корневую страницу
+2025-06-02 17:11:59,184 - INFO - requests - Ответ: GET / - статус 200
+2025-06-02 17:12:00,000 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 17:12:00,003 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 17:12:00,006 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 17:12:00,021 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 17:12:00,023 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 17:13:26,825 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 17:13:26,994 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 17:13:27,127 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 17:13:27,130 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 17:13:27,143 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 17:13:27,155 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 17:14:02,525 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 17:14:02,799 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 17:14:02,910 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 17:14:02,914 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 17:14:02,925 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 17:14:02,936 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 17:15:53,580 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 17:15:59,168 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 17:15:59,261 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 17:15:59,263 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 17:15:59,271 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 17:15:59,278 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 17:16:18,058 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 17:16:18,100 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 17:16:18,237 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 17:16:18,241 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 17:16:18,253 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 17:16:18,264 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 17:16:26,732 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 17:16:26,735 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 17:16:26,738 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 17:16:26,739 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 17:16:26,740 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 17:21:17,254 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 17:22:11,935 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 17:22:16,915 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 17:22:17,078 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 17:23:53,929 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 17:23:54,082 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 17:23:54,212 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 17:23:54,216 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 17:23:54,608 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 17:23:54,612 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 17:23:54,615 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 17:23:55,547 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 17:23:55,550 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 17:23:55,552 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 17:23:56,748 - INFO - requests - Запрос: GET /
+2025-06-02 17:23:56,752 - INFO - Routers.auth - [127.0.0.1] Студент ivanov открыл корневую страницу
+2025-06-02 17:23:56,760 - INFO - requests - Ответ: GET / - статус 200
+2025-06-02 17:23:57,675 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 17:23:57,677 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 17:23:57,678 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 17:24:31,185 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 17:24:33,567 - INFO - requests - Запрос: GET /
+2025-06-02 17:24:33,626 - INFO - Routers.auth - [127.0.0.1] Студент ivanov открыл корневую страницу
+2025-06-02 17:24:33,631 - INFO - requests - Ответ: GET / - статус 200
+2025-06-02 17:24:35,185 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 17:24:35,188 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 17:24:35,192 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 17:24:35,205 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 17:24:35,214 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 17:24:40,705 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 17:24:40,724 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 17:24:40,727 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 17:24:40,729 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 302
+2025-06-02 17:24:40,731 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 17:24:40,733 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 17:24:40,734 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 17:24:40,735 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 17:24:40,736 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 17:24:47,016 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 17:24:47,026 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 17:24:47,029 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 17:24:47,032 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 302
+2025-06-02 17:24:47,034 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 17:24:47,035 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 17:24:47,036 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC
+2025-06-02 17:24:47,037 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 17:24:47,038 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 17:25:12,857 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 17:25:14,532 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 17:25:14,615 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 17:25:14,618 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC Description: None
+2025-06-02 17:25:14,627 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 17:25:14,635 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 17:25:18,073 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 17:25:18,078 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 17:25:18,080 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC Description: ('Демо 2024',)
+2025-06-02 17:25:18,082 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 302
+2025-06-02 17:25:18,084 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 17:25:18,086 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 17:25:18,086 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC Description: None
+2025-06-02 17:25:18,088 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 17:25:18,089 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 17:30:00,127 - INFO - root - Логирование по дням инициализировано.
+2025-06-02 17:30:03,840 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 17:30:03,926 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 17:30:03,928 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC Description: None
+2025-06-02 17:30:03,937 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 17:30:03,945 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 17:30:05,002 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 17:30:05,006 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 17:30:05,020 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC Description: None
+2025-06-02 17:30:05,023 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 17:30:05,024 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 17:30:08,722 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 17:30:08,725 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 17:30:08,728 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC Description: Демо 2024
+2025-06-02 17:30:08,730 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 17:30:08,731 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 17:30:11,475 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 17:30:11,477 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 17:30:11,481 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC Description: Демо 2025
+2025-06-02 17:30:11,483 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 17:30:11,484 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 17:30:16,041 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 17:30:16,044 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 17:30:16,048 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC Description: None
+2025-06-02 17:30:16,050 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 17:30:16,052 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 17:30:32,937 - INFO - requests - Запрос: GET /students_subtasks/T/1
+2025-06-02 17:30:32,938 - INFO - requests - Ответ: GET /students_subtasks/T/1 - статус 307
+2025-06-02 17:30:32,942 - INFO - requests - Запрос: GET /students_subtasks/T/1/
+2025-06-02 17:30:32,946 - WARNING - root - Вызываем роут read_student_all_subtasks с параметрами: StudentTaskID=1
+2025-06-02 17:31:33,267 - INFO - requests - Запрос: GET /students_subtasks/students_subtasks/T/1
+2025-06-02 17:31:33,269 - INFO - requests - Ответ: GET /students_subtasks/students_subtasks/T/1 - статус 404
+2025-06-02 17:32:06,392 - INFO - requests - Запрос: GET /students_subtasks/T/1
+2025-06-02 17:32:06,393 - INFO - requests - Ответ: GET /students_subtasks/T/1 - статус 307
+2025-06-02 17:32:06,398 - INFO - requests - Запрос: GET /students_subtasks/T/1/
+2025-06-02 17:32:06,401 - WARNING - root - Вызываем роут read_student_all_subtasks с параметрами: StudentTaskID=1
+2025-06-02 17:32:12,236 - INFO - requests - Запрос: GET /students_subtasks/T/1/2
+2025-06-02 17:32:12,236 - INFO - requests - Ответ: GET /students_subtasks/T/1/2 - статус 404
+2025-06-02 17:32:14,398 - INFO - requests - Запрос: GET /students_subtasks/T/1/1
+2025-06-02 17:32:14,398 - INFO - requests - Ответ: GET /students_subtasks/T/1/1 - статус 404
+2025-06-02 17:34:10,763 - INFO - requests - Запрос: GET /students_subtasks/T/1/1
+2025-06-02 17:34:10,764 - INFO - requests - Ответ: GET /students_subtasks/T/1/1 - статус 404
+2025-06-02 17:34:13,568 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 17:34:13,573 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 17:34:13,578 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC Description: None
+2025-06-02 17:34:13,593 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 17:34:13,595 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 17:34:15,530 - INFO - requests - Запрос: GET /students_subtasks/T/1
+2025-06-02 17:34:15,530 - INFO - requests - Ответ: GET /students_subtasks/T/1 - статус 307
+2025-06-02 17:34:15,534 - INFO - requests - Запрос: GET /students_subtasks/T/1/
+2025-06-02 17:34:15,540 - WARNING - root - Вызываем роут read_student_all_subtasks с параметрами: StudentTaskID=1
+2025-06-02 17:34:18,635 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 17:34:18,636 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 17:34:54,122 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 17:34:54,123 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 17:34:54,145 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 17:34:54,146 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 17:34:56,490 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 17:34:56,490 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 17:38:27,197 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 17:38:27,201 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 17:38:27,204 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC Description: None
+2025-06-02 17:38:27,211 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 17:38:27,213 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 17:38:27,237 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 17:38:27,237 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 17:38:29,726 - INFO - requests - Запрос: GET /students_subtasks/T/3
+2025-06-02 17:38:29,727 - INFO - requests - Ответ: GET /students_subtasks/T/3 - статус 307
+2025-06-02 17:38:29,729 - INFO - requests - Запрос: GET /students_subtasks/T/3/
+2025-06-02 17:38:29,731 - WARNING - root - Вызываем роут read_student_all_subtasks с параметрами: StudentTaskID=3
+2025-06-02 17:38:29,764 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 17:38:29,764 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 17:38:31,767 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 17:38:31,768 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 17:38:31,793 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 17:38:31,793 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 17:38:33,155 - INFO - requests - Запрос: GET /students_subtasks/T/47
+2025-06-02 17:38:33,155 - INFO - requests - Ответ: GET /students_subtasks/T/47 - статус 307
+2025-06-02 17:38:33,158 - INFO - requests - Запрос: GET /students_subtasks/T/47/
+2025-06-02 17:38:33,161 - WARNING - root - Вызываем роут read_student_all_subtasks с параметрами: StudentTaskID=47
+2025-06-02 17:38:33,186 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 17:38:33,186 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 17:38:35,584 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 17:38:35,584 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 17:38:35,588 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 17:38:35,589 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 17:38:45,646 - INFO - requests - Запрос: GET /students/List/
+2025-06-02 17:38:45,650 - INFO - Routers.students - Получен запрос на список студентов
+2025-06-02 17:38:45,653 - INFO - requests - Ответ: GET /students/List/ - статус 200
+2025-06-02 17:38:45,718 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 17:38:45,718 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 17:38:45,730 - INFO - requests - Запрос: GET /students/api/
+2025-06-02 17:38:45,733 - INFO - requests - Ответ: GET /students/api/ - статус 200
+2025-06-02 17:38:47,094 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 17:38:47,096 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 17:38:47,097 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC Description: None
+2025-06-02 17:38:47,099 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 17:38:47,100 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 17:38:47,185 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 17:38:47,185 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 17:38:48,235 - INFO - requests - Запрос: GET /students_subtasks/T/2
+2025-06-02 17:38:48,235 - INFO - requests - Ответ: GET /students_subtasks/T/2 - статус 307
+2025-06-02 17:38:48,238 - INFO - requests - Запрос: GET /students_subtasks/T/2/
+2025-06-02 17:38:48,240 - WARNING - root - Вызываем роут read_student_all_subtasks с параметрами: StudentTaskID=2
+2025-06-02 17:38:48,267 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 17:38:48,269 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 17:38:49,369 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 17:38:49,369 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 17:38:49,378 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 17:38:49,379 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 17:38:50,302 - INFO - requests - Запрос: GET /subtasks/
+2025-06-02 17:38:50,311 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-06-02 17:38:50,331 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 17:38:50,332 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 17:38:50,339 - INFO - requests - Запрос: GET /subtasks/api/
+2025-06-02 17:38:50,344 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200
+2025-06-02 17:38:51,044 - INFO - requests - Запрос: GET /subtasks/4
+2025-06-02 17:38:51,052 - INFO - requests - Ответ: GET /subtasks/4 - статус 200
+2025-06-02 17:38:51,095 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 17:38:51,096 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 17:38:51,105 - INFO - requests - Запрос: GET /subtasks/api/4
+2025-06-02 17:38:51,109 - INFO - requests - Ответ: GET /subtasks/api/4 - статус 200
+2025-06-02 17:38:51,121 - INFO - requests - Запрос: GET /Uploads/images/task_5_sub_1.png
+2025-06-02 17:38:51,170 - INFO - requests - Ответ: GET /Uploads/images/task_5_sub_1.png - статус 200
+2025-06-02 17:38:55,602 - INFO - requests - Запрос: GET /subtasks
+2025-06-02 17:38:55,602 - INFO - requests - Ответ: GET /subtasks - статус 307
+2025-06-02 17:38:55,607 - INFO - requests - Запрос: GET /subtasks/
+2025-06-02 17:38:55,611 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-06-02 17:38:55,673 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 17:38:55,673 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 17:38:55,685 - INFO - requests - Запрос: GET /subtasks/api/
+2025-06-02 17:38:55,689 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200
+2025-06-02 17:38:57,358 - INFO - requests - Запрос: GET /tasks/2
+2025-06-02 17:38:57,372 - INFO - requests - Ответ: GET /tasks/2 - статус 200
+2025-06-02 17:38:57,450 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 17:38:57,451 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 17:38:57,457 - INFO - requests - Запрос: GET /tasks/api/2
+2025-06-02 17:38:57,458 - INFO - requests - Запрос: GET /subtasks/api/TaskID/2
+2025-06-02 17:38:57,463 - INFO - requests - Ответ: GET /tasks/api/2 - статус 200
+2025-06-02 17:38:57,468 - INFO - requests - Ответ: GET /subtasks/api/TaskID/2 - статус 200
+2025-06-02 17:38:58,590 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 17:38:58,591 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 17:38:58,602 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 17:38:58,602 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-02 17:38:59,452 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-02 17:38:59,454 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-02 17:38:59,457 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:1, CompletionStatus:None TaskID:None SortColumn:StudentTaskID SortDirection: ASC Description: None
+2025-06-02 17:38:59,460 - WARNING - root - ПАРАМЕТРЫ: StudentID=1
+2025-06-02 17:38:59,461 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-02 17:38:59,547 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-02 17:38:59,548 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404

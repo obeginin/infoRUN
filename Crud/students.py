@@ -62,6 +62,7 @@ def get_all_students_tasks(db: Session):
     return student_tasks
 
 ''' Получения всех задач студента по ID'''
+# МЕНЯЮ НА ХРАНИМКУ!!!!
 def get_student_all_tasks(db: Session, student_id: int):
     query = text(f"""SELECT StudentTaskID,StudentID, Login, SubTaskID,CompletionStatus,Score,CompletionDate,StudentAnswer, TaskNumber, TaskTitle  
                  FROM StudentTasks 
@@ -86,6 +87,36 @@ def get_student_all_tasks(db: Session, student_id: int):
     if not result:
         raise HTTPException (status_code=404, detail=f"Студент с ID {student_id} не найден")
     return student_tasks
+
+'''функция которая работает по хранимке'''
+def get_students_all_tasks(db, StudentID=None, CompletionStatus=None, TaskID=None, SortColumn=None, SortDirection=None, Description =None):
+    '''if CompletionStatus is None:
+        CompletionStatus = 'Не приступал'
+        '''
+    logging.info(
+        f"Запускаем функцию с вызовом хранимки. StudentID:{StudentID}, CompletionStatus:{CompletionStatus} TaskID:{TaskID} SortColumn:{SortColumn} SortDirection: {SortDirection} Description: {Description}")
+
+    query = text("""
+        EXEC GetStudentsTasks 
+            @StudentID = :StudentID,
+            @CompletionStatus = :CompletionStatus,
+            @TaskID = :TaskID,
+            @SortColumn = :SortColumn,
+            @SortDirection = :SortDirection,
+            @Description = :Description
+    """)
+    result = db.execute(query, {
+        "StudentID": StudentID,
+        "CompletionStatus": CompletionStatus,
+        "TaskID": TaskID,
+        "SortColumn": SortColumn,
+        "SortDirection": SortDirection,
+        "Description": Description
+    })
+    rows = result.mappings().all()  # получаем все строки как словари
+    for row in rows:
+        print(row)
+    return rows
 
 
 ''' Получения задачи студента по SubTaskID'''

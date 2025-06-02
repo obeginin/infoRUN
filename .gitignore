@@ -1,9 +1,10 @@
 # исключить папки из Git
 _notGit
 Uploads/
+logs/
 
 # Исключить файл logs/app.log
-#logs/app.log
+Database.py
 
 # Исключить виртуальное окружение
 venv/

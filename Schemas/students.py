@@ -25,13 +25,22 @@ class StudentTaskRead(BaseModel):
     StudentTaskID: int
     StudentID: int
     Login: Optional[str] = None
+    Role: Optional[str] = None
     SubTaskID: int
     CompletionStatus: str
     Score: Optional[float] = None
     CompletionDate: Optional[datetime] = None
     StudentAnswer: Optional[str] = None
-    TaskNumber: Optional[int] = None
+    TaskID: Optional[int] = None
     TaskTitle: Optional[str] = None
+    SubTaskNumber: Optional[int] = None
+    ImagePath: Optional[str] = None
+    Description: Optional[str] = None
+    Answer: Optional[str] = None
+    SolutionPath: Optional[str] = None
+    TotalSubTasks: Optional[int] = None
+    CompletedSubTasks: Optional[int] = None
+    TotalCount: Optional[int] = None
     model_config = ConfigDict(
         from_attributes=True,
         json_encoders={datetime: lambda v: v.isoformat() if v else None}
