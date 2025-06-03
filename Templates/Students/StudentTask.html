@@ -34,27 +34,26 @@
         {% endif %}
         <label>Статус:</label>
         <select name="status">
-            <option value="" disabled selected>-- любой --</option>
-            <option value="Не приступал">Не приступал</option>
-            <option value="В процессе">В процессе</option>
-            <option value="Выполнено">Выполнено</option>
+            <option value=""  {% if request.query_params.get('status') is none %}selected{% endif %}>-- любой --</option>
+            <option value="Не приступал" {% if request.query_params.get('status') == 'Не приступал' %}selected{% endif %}>Не приступал</option>
+            <option value="В процессе" {% if request.query_params.get('status') == 'В процессе' %}selected{% endif %}>В процессе</option>
+            <option value="Выполнено" {% if request.query_params.get('status') == 'Выполнено' %}selected{% endif %}>Выполнено</option>
         </select>
 
         <label>Категория:</label>
-        <select name="TaskID" id="select-task">
-          <!-- «– любой –» будем делать disabled+selected, чтобы пустоту не отправлять -->
-          <option value="" disabled selected>-- любой --</option>
-          {% for (tid, title) in TasksID %}
-            <option value="{{ tid }}">{{ title }}</option>
-          {% endfor %}
-        </select>
+            <select name="TaskID" id="select-task">
+              <option value="" {% if not filter_TaskID %}selected{% endif %}>-- любой --</option>
+              {% for tid, title in TasksID %}
+                <option value="{{ tid }}"{% if filter_TaskID|string == tid|string %}selected{% endif %}>{{ title }}</option>
+              {% endfor %}
+            </select>
 
         <label>Вариант:</label>
         <select name="variant">
           <!-- «– любой –» будем делать disabled+selected, чтобы пустоту не отправлять -->
-          <option value="" disabled selected>-- любой --</option>
+          <option value="" {% if not filter_variant %}selected{% endif %}>-- любой --</option>
           {% for var in variants %}
-            <option value="{{ var[0] }}">{{ var[0] }}</option>
+            <option value="{{ var[0] }}" {% if filter_variant|string == var|string %}selected{% endif %}>{{ var[0] }}</option>
           {% endfor %}
         </select>
 
@@ -82,7 +81,7 @@
     </form>
     <a href="/students/List/" class="back-button">Назад к списку</a>
     <ul id="task-list"></ul>
-
+<p>"filter_TaskID":{{filter_TaskID}}</p>
     <script>
 
 
@@ -95,7 +94,7 @@
         tasks.forEach(task => {
             const li = document.createElement("li");
             //li.innerHTML = `Задача: <a href="/students_subtasks/T/${task.StudentTaskID}">${task.SubTaskID}</a> - ${task.CompletionStatus}`;
-            li.innerHTML = `Задача: <a href="http://${location.host}/students_subtasks/T/${task.StudentTaskID}">${task.SubTaskID}</a> - ${task.CompletionStatus} <b>${task.Description}</b> ${task.TaskTitle} `;
+            li.innerHTML = `Задача: <a href="http://${location.host}/students_subtasks/T/${task.StudentTaskID}?return_url={{ request.url }}">${task.SubTaskID}</a> - ${task.CompletionStatus} <b>${task.Description}</b> ${task.TaskTitle} `;
             ul.appendChild(li);
         });
     </script>

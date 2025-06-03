@@ -2,7 +2,7 @@ from sqlalchemy import create_engine,text
 from sqlalchemy.orm import sessionmaker, declarative_base
 # Строка подключения для pymssql
 DATABASE_URL = (
-    "mssql+pyodbc://localhost/BASE"
+    "mssql+pyodbc://localhost/infoRUN"
     "?driver=ODBC+Driver+18+for+SQL+Server"
     
     "&trusted_connection=yes"

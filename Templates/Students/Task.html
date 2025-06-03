@@ -205,7 +205,7 @@
         </div>
         {% endif %}
 
-        <a href="/students_subtasks/StudentTasksByLogin/?value=2&by=id" class="back-link">← Вернуться к списку</a>
+        <a href="{{ request.query_params.get('return_url', '/tasks') }}" class="back-link">← Вернуться к списку</a>
     </div>
 
     <script>
