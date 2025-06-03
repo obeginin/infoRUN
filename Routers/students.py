@@ -141,7 +141,7 @@ def read_student_all_subtasks_by_login(
 # ищем список категорий
     query = text("SELECT TaskID, TaskTitle FROM Tasks")
     result = db.execute(query)
-    TasksID = result.fetchall()
+    list_of_tasks = result.fetchall()
 
 # ищем всех студентов
     query = text("select ID, Login from Students")
@@ -152,16 +152,19 @@ def read_student_all_subtasks_by_login(
     query = text("select distinct Description from SubTasks")
     result = db.execute(query)
     variants = result.fetchall()
+    # по его id ищем все его задачи
 
-# по его id ищем все его задачи
+    '''Была проблема с типами str и none и фильтры не отрабатывали'''
+    print(f" Вызов Хранимки с параметрами StudentID:{StudentID}, CompletionStatus:{(status)} TaskID:{(task_id_int)} SortColumn:{(SortColumn)} SortDirection: {(SortDirection)} Description: {(variant)}")
+    print(f" Вызов Хранимки с параметрами StudentID:{StudentID}, CompletionStatus:{type(status)} TaskID:{type(task_id_int)} SortColumn:{type(SortColumn)} SortDirection: {type(SortDirection)} Description: {type(variant)}")
     tasks1 = students.get_students_all_tasks(
         db=db,
         StudentID=StudentID,
-        CompletionStatus=status,
+        CompletionStatus=status or None,
         TaskID=task_id_int,
-        SortColumn=SortColumn,
-        SortDirection=SortDirection,
-        Description=variant
+        SortColumn=SortColumn if SortColumn else None,
+        SortDirection=SortDirection if SortDirection else None,
+        Description=variant or None
     )
     #print(f"TASK TYPE: {type(tasks1[0])}")
     #print(f"TASK VALUE: {tasks1[0]}")
@@ -183,8 +186,14 @@ def read_student_all_subtasks_by_login(
         "students_id": students_id,
         "tasks": tasks,
         "variants": variants,
-        "TasksID": TasksID,
+        "TasksID": list_of_tasks,
         "student": current_student,
+        "filter_StudentID": StudentID,
+        "filter_status": status,
+        "filter_TaskID": TaskID,
+        "filter_variant": variant,
+        "filter_SortColumn": SortColumn,
+        "filter_SortDirection": SortDirection,
     })
 
 # /students_subtasks/StudentTasks/{StudentID}/{SubTasksID}

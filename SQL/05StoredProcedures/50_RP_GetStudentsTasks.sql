@@ -1,7 +1,7 @@
 /*
 С помощью данного скрипта находм подробную информацию о выбранной задачи студента по StudentTaskID
 
-exec GetStudentTaskDetailsByID @StudentTaskID=1
+exec GetStudentsTasks @StudentTaskID=1
 EXEC dbo.GetStudentTaskDetails 1
 
 */
@@ -138,22 +138,22 @@ EXEC GetStudentsTasks @StudentTaskID = 2; конкретная задача
 EXEC GetStudentsTasks @Description = N'Демо 2025'; конкретная задача
 
 С сортировкой 
-EXEC GetStudentTaskDetailsByID @SortColumn = 'StudentTaskID', @SortDirection = 'ASC';
-EXEC GetStudentTaskDetailsByID @SortColumn = 'StudentTaskID', @SortDirection = 'DESC';
-EXEC GetStudentTaskDetailsByID @SortColumn = 'TaskID', @SortDirection = 'ASC';
-EXEC GetStudentTaskDetailsByID @SortColumn = 'TaskID', @SortDirection = 'DESC';
+EXEC GetStudentsTasks @SortColumn = 'StudentTaskID', @SortDirection = 'ASC';
+EXEC GetStudentsTasks @SortColumn = 'StudentTaskID', @SortDirection = 'DESC';
+EXEC GetStudentsTasks @SortColumn = 'TaskID', @SortDirection = 'ASC';
+EXEC GetStudentsTasks @SortColumn = 'TaskID', @SortDirection = 'DESC';
 
-EXEC GetStudentTaskDetailsByID @SortColumn = 'CompletionDate', @SortDirection = 'ASC'; Сортировка по дате по убыванию:
-EXEC GetStudentTaskDetailsByID @SortColumn = 'CompletionDate', @SortDirection = 'DESC'; Сортировка по дате по убыванию:
+EXEC GetStudentsTasks @SortColumn = 'CompletionDate', @SortDirection = 'ASC'; Сортировка по дате по убыванию:
+EXEC GetStudentsTasks @SortColumn = 'CompletionDate', @SortDirection = 'DESC'; Сортировка по дате по убыванию:
 
 Сортировка не отрабатывает
-EXEC GetStudentTaskDetailsByID @SortColumn = 'StudentID', @SortDirection = 'ASC';
-EXEC GetStudentTaskDetailsByID @SortColumn = 'StudentID', @SortDirection = 'DESC';
-EXEC GetStudentTaskDetailsByID @SortColumn = 'Login', @SortDirection = 'ASC';
-EXEC GetStudentTaskDetailsByID @SortColumn = 'Login', @SortDirection = 'DESC';
+EXEC GetStudentsTasks @SortColumn = 'StudentID', @SortDirection = 'ASC';
+EXEC GetStudentsTasks @SortColumn = 'StudentID', @SortDirection = 'DESC';
+EXEC GetStudentsTasks @SortColumn = 'Login', @SortDirection = 'ASC';
+EXEC GetStudentsTasks @SortColumn = 'Login', @SortDirection = 'DESC';
 
 
-EXEC GetStudentTaskDetailsByID @StudentID = 1, @SortColumn = 'StudentTaskID', @SortDirection = 'ASC';
+EXEC GetStudentsTasks @StudentID = 1, @SortColumn = 'StudentTaskID', @SortDirection = 'ASC';
 */ 
 
 /*

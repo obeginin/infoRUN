@@ -116,8 +116,8 @@ def get_students_all_tasks(db, StudentID=None, CompletionStatus=None, TaskID=Non
         "Description": Description
     })
     rows = result.mappings().all()  # получаем все строки как словари
-    for row in rows:
-        print(row)
+    #for row in rows:
+        #print(row)
     return rows
 
 
