@@ -51,9 +51,9 @@
         <label>Вариант:</label>
         <select name="variant">
           <!-- «– любой –» будем делать disabled+selected, чтобы пустоту не отправлять -->
-          <option value="" {% if request.query_params.get('variant') is none %}selected{% endif %}>-- любой --</option>
+          <option value="" {% if request.query_params.get('variant') in (None, '') %}selected{% endif %}>-- любой --</option>
           {% for var in variants %}
-            <option value="{{ var[0] }}" {% if request.query_params.get('variant') == var %}selected{% endif %}>{{ var[0] }}</option>
+            <option value="{{ var[0] }}"  {% if request.query_params.get('variant') == var[0] %}selected{% endif %}>>{{ var[0] }}</option>
           {% endfor %}
         </select>
 
@@ -81,7 +81,7 @@
     </form>
     <a href="/students/List/" class="back-button">Назад к списку</a>
     <ul id="task-list"></ul>
-<p>"filter_TaskID":{{filter_TaskID}}</p>
+
     <script>
 
 
