@@ -10,14 +10,14 @@ IF EXISTS(SELECT 1 FROM sys.procedures WHERE OBJECT_SCHEMA_NAME([object_id]) = '
 GO
 
 CREATE PROCEDURE GetStudentsTasks
-    @StudentTaskID INT = NULL,
-    @StudentID INT = NULL,
-    @SubTaskID INT = NULL,
-    @TaskID INT = NULL,
-    @CompletionStatus NVARCHAR(20) = NULL, 
-	@SortColumn NVARCHAR(50) = NULL, -- ¬ыбор пол€ дл€ сортировки
-    @SortDirection NVARCHAR(4) = 'ASC', -- выбор сортировки (по умолчанию ASC по возрастанию) DESC -по убыванию
-	@Description  NVARCHAR(MAX)
+    @StudentTaskID INT				= NULL,
+    @StudentID INT					= NULL,
+    @SubTaskID INT					= NULL,
+    @TaskID INT						= NULL,
+    @CompletionStatus NVARCHAR(20)  = NULL, 
+	@SortColumn NVARCHAR(50)		= NULL, -- ¬ыбор пол€ дл€ сортировки
+    @SortDirection NVARCHAR(4)		= 'ASC', -- выбор сортировки (по умолчанию ASC по возрастанию) DESC -по убыванию
+	@Description  NVARCHAR(MAX)		= NULL
 AS
 BEGIN
 	/*отладочный вывод в сообщени€ SSMS
@@ -135,7 +135,7 @@ EXEC GetStudentsTasks @TaskID = 2; по категории задани€
 EXEC GetStudentsTasks @SubTaskID = 2, @CompletionStatus = N'Ќе приступал';
 EXEC GetStudentsTasks @CompletionStatus = N'¬ыполнено'; по статусу выполнени€
 EXEC GetStudentsTasks @StudentTaskID = 2; конкретна€ задача
-EXEC GetStudentsTasks @Description = N'ƒемо 2025'; конкретна€ задача
+EXEC GetStudentsTasks @Description = N' рылов ¬ариант є14'; конкретна€ задача
 
 — сортировкой 
 EXEC GetStudentsTasks @SortColumn = 'StudentTaskID', @SortDirection = 'ASC';

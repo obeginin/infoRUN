@@ -21,7 +21,7 @@
             background-color: #0056b3;
         }
 </style>
-    <form method="get" action="/students_subtasks/StudentTasksByLogin/">
+    <form method="get" id="filter-form" action="/students_subtasks/StudentTasksByLogin/">
         {% if student.Role == "admin" %}
           <label>Студент:</label>
           <select name="StudentID" id="select-student">
@@ -32,6 +32,16 @@
             {% endfor %}
           </select>
         {% endif %}
+<!--
+        <label>Задача (SubTaskID):</label>
+        <input
+          type="number"
+          name="SubTaskID"
+          placeholder="Введите ID"
+          value="{{ request.query_params.get('SubTaskID', '') }}"
+          style="width: 6em;"
+        >
+-->
         <label>Статус:</label>
         <select name="status">
             <option value=""  {% if request.query_params.get('status') is none %}selected{% endif %}>-- любой --</option>
@@ -53,7 +63,7 @@
           <!-- «– любой –» будем делать disabled+selected, чтобы пустоту не отправлять -->
           <option value="" {% if request.query_params.get('variant') in (None, '') %}selected{% endif %}>-- любой --</option>
           {% for var in variants %}
-            <option value="{{ var[0] }}"  {% if request.query_params.get('variant') == var[0] %}selected{% endif %}>>{{ var[0] }}</option>
+            <option value="{{ var[0] }}"  {% if request.query_params.get('variant') == var[0] %}selected{% endif %}>{{ var[0] }}</option>
           {% endfor %}
         </select>
 
@@ -73,7 +83,7 @@
             <option value="ASC" {% if request.query_params.get('SortDirection') == "ASC" %}selected{% endif %}>По возрастанию</option>
             <option value="DESC" {% if request.query_params.get('SortDirection') == "DESC" %}selected{% endif %}>По убыванию</option>
         </select>
-        <button type="submit">Показать</button>
+        <!--<button type="submit">Показать</button>-->
         <!-- Кнопка-ссылка для сброса всех фильтров -->
       <a href="/students_subtasks/StudentTasksByLogin/" style="margin-left: 1em; text-decoration: none;">
         <button type="button">Сбросить фильтры</button>
@@ -84,7 +94,7 @@
 
     <script>
 
-
+// Вывод списка задач студента
         const tasks = {{ tasks | tojson }};
         //console.log('StudentTaskID:', StudentTaskID);
         //console.log('tasks:', tasks.StudentTaskID);
@@ -97,6 +107,18 @@
             li.innerHTML = `Задача: <a href="http://${location.host}/students_subtasks/T/${task.StudentTaskID}?return_url={{ request.url | urlencode }}">${task.SubTaskID}</a> - ${task.CompletionStatus} <b>${task.Description}</b> ${task.TaskTitle} `;
             ul.appendChild(li);
         });
+
+// Найдём все select внутри формы с id="filter-form" (присвойте форме id="filter-form")
+// при изменении любого <select> автоматически отправится та же форма.
+        const form = document.getElementById("filter-form");
+        const selects = form.querySelectorAll("select");
+
+        selects.forEach(sel => {
+          sel.addEventListener("change", () => {
+            form.submit();
+          });
+        });
+
     </script>
 {% endblock %}
 

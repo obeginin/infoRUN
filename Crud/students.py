@@ -96,7 +96,7 @@ def get_students_all_tasks(db, StudentID=None, CompletionStatus=None, TaskID=Non
         CompletionStatus = 'Не приступал'
         '''
     logging.info(
-        f"Запускаем функцию с вызовом хранимки. StudentID:{StudentID}, CompletionStatus:{CompletionStatus} TaskID:{TaskID} SortColumn:{SortColumn} SortDirection: {SortDirection} Description: {Description}")
+        f"Запускаем функцию с вызовом хранимки. StudentID:{StudentID}, CompletionStatus:{CompletionStatus} TaskID:{TaskID}  SortColumn:{SortColumn} SortDirection: {SortDirection} Description: {Description}")
 
     query = text("""
         EXEC GetStudentsTasks 

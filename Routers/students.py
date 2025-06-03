@@ -108,7 +108,6 @@ def read_student_all_subtasks_by_login(
     status: str = Query(default=None),
     TaskID: str | None = Query(None),
     variant: str | None = Query(None),
-    #Tasks: str = Query(default=None),
     SortColumn: str = Query(default="StudentTaskID"),
     SortDirection: str = Query(default="ASC")
 ):
@@ -128,6 +127,11 @@ def read_student_all_subtasks_by_login(
         task_id_int = int(TaskID) if TaskID not in (None, "") else None
     except ValueError:
         task_id_int = None
+
+    '''try:
+        SubTaskID_int = int(SubTaskID) if SubTaskID not in (None, "") else None
+    except ValueError:
+        SubTaskID_int = None'''
 
     # Если админ выбрал студента — используем его, иначе id текущего
     StudentID = student_id_int if student_id_int is not None else current_student.ID
@@ -177,7 +181,7 @@ def read_student_all_subtasks_by_login(
     # Иначе преобразуем в JSON-словарики
     """Для устранения проблемы преобразования даты в формат JSON"""
     tasks = [StudentTaskRead(**task).model_dump(mode="json") for task in tasks1]
-
+    #tasks = tasks or []
     logging.warning(f"ПАРАМЕТРЫ: StudentID={StudentID}") # логирование
 
     return templates.TemplateResponse("Students/StudentTask.html", {
