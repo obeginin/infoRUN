@@ -2,7 +2,13 @@
 {% extends "base.html" %}
 
 {% block title %}Список категорий{% endblock %}
-{% block title_1 %}Задачи студента: {{ tasks[0].Login }}{% endblock %}
+{% block title_1 %}
+    {% if tasks %}
+        Задачи студента: {{ tasks[0].Login }}
+    {% else %}
+        Задачи студента не найдены
+    {% endif %}
+{% endblock %}
 {% block content %}
 <style>
         .back-button {
@@ -21,14 +27,18 @@
             background-color: #0056b3;
         }
 </style>
+    {% if tasks %}
+        <p>Моих задач:{{ tasks[0].TotalSubTasks }}</p>
+        <p>Решено задач: {{ tasks[0].CompletedSubTasks }}</p>
+    {% endif %}
     <form method="get" id="filter-form" action="/students_subtasks/StudentTasksByLogin/">
         {% if student.Role == "admin" %}
           <label>Студент:</label>
           <select name="StudentID" id="select-student">
             <!-- Эта опция disabled, поэтому не попадёт в запрос -->
-            <option value="" disabled selected>-- выбери студента --</option>
+            <option value=""  {% if request.query_params.get('StudentID') is none %}selected{% endif %}}>-- выбери студента --</option>
             {% for _student in students_id %}
-              <option value="{{ _student.ID }}">{{ _student.Login }}</option>
+              <option value="{{ _student.ID }}"{% if request.query_params.get('StudentID') == _student.ID|string %} selected{% endif %}>{{ _student.Login }}</option>
             {% endfor %}
           </select>
         {% endif %}
@@ -89,7 +99,8 @@
         <button type="button">Сбросить фильтры</button>
       </a>
     </form>
-    <a href="/students/List/" class="back-button">Назад к списку</a>
+    <p>Количество найденных задач: {{ tasks[0].TotalCount if tasks else 0 }}</p></p>
+    <!--<a href="/students/List/" class="back-button">Назад к списку</a>-->
     <ul id="task-list"></ul>
 
     <script>
@@ -101,12 +112,19 @@
         console.log('tasks:', tasks);
         const ul = document.getElementById("task-list");
 
-        tasks.forEach(task => {
+        //document.getElementById("p").innerText = `Найдено задач: ${ tasks[0].TotalCount }`;
+        //console.log('tasks[0]:', tasks[0]);
+        if (tasks.length === 0) {
             const li = document.createElement("li");
-            //li.innerHTML = `Задача: <a href="/students_subtasks/T/${task.StudentTaskID}">${task.SubTaskID}</a> - ${task.CompletionStatus}`;
-            li.innerHTML = `Задача: <a href="http://${location.host}/students_subtasks/T/${task.StudentTaskID}?return_url={{ request.url | urlencode }}">${task.SubTaskID}</a> - ${task.CompletionStatus} <b>${task.Description}</b> ${task.TaskTitle} `;
+            li.innerText = "Задачи не найдены.";
             ul.appendChild(li);
-        });
+        } else {
+            tasks.forEach(task => {
+                const li = document.createElement("li");
+                li.innerHTML = `Задача: <a href="http://${location.host}/students_subtasks/T/${task.StudentTaskID}?return_url={{ request.url | urlencode }}">${task.SubTaskID}</a> - ${task.CompletionStatus} <b>${task.Description}</b> ${task.TaskTitle}`;
+                ul.appendChild(li);
+            });
+        }
 
 // Найдём все select внутри формы с id="filter-form" (присвойте форме id="filter-form")
 // при изменении любого <select> автоматически отправится та же форма.

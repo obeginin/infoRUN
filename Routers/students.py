@@ -14,6 +14,7 @@ from fastapi.responses import RedirectResponse
 from starlette.responses import JSONResponse
 from pathlib import Path
 import traceback
+from typing import Optional
 import logging
 logger = logging.getLogger(__name__)
 # Routers\Students.py
@@ -104,7 +105,7 @@ def read_student_all_subtasks_by_login(
     request: Request,
     current_student=Depends(get_current_student_or_redirect),
     db: Session = Depends(get_db),
-    StudentID: int = Query(default=None),
+    StudentID: Optional[int] = Query(default=None),
     status: str = Query(default=None),
     TaskID: str | None = Query(None),
     variant: str | None = Query(None),
@@ -143,20 +144,13 @@ def read_student_all_subtasks_by_login(
         })
 
 # ищем список категорий
-    query = text("SELECT TaskID, TaskTitle FROM Tasks")
-    result = db.execute(query)
-    list_of_tasks = result.fetchall()
-
+    list_of_tasks = db.execute(text("SELECT TaskID, TaskTitle FROM Tasks")).fetchall()
 # ищем всех студентов
-    query = text("select ID, Login from Students")
-    result = db.execute(query)
-    students_id = result.fetchall()
-
+    students_id = db.execute(text("select ID, Login from Students")).fetchall()
 # ищем все варианты
-    query = text("select distinct Description from SubTasks")
-    result = db.execute(query)
-    variants = result.fetchall()
-    # по его id ищем все его задачи
+    variants = db.execute(text("select distinct Description from SubTasks")).fetchall()
+
+# по его id ищем все его задачи
 
     '''Была проблема с типами str и none и фильтры не отрабатывали'''
     print(f" Вызов Хранимки с параметрами StudentID:{StudentID}, CompletionStatus:{(status)} TaskID:{(task_id_int)} SortColumn:{(SortColumn)} SortDirection: {(SortDirection)} Description: {(variant)}")
@@ -175,13 +169,13 @@ def read_student_all_subtasks_by_login(
     #print(tasks1)
 
     # Если никаких задач нет — делаем redirect обратно на страницу без параметров
-    if not tasks1:
+    '''if not tasks1:
         # Перенаправляем на тот же путь, но без query-параметров
-        return RedirectResponse(request.url.path, status_code=302)
+        return RedirectResponse(request.url.path, status_code=302)'''
     # Иначе преобразуем в JSON-словарики
     """Для устранения проблемы преобразования даты в формат JSON"""
     tasks = [StudentTaskRead(**task).model_dump(mode="json") for task in tasks1]
-    #tasks = tasks or []
+    tasks = tasks or []
     logging.warning(f"ПАРАМЕТРЫ: StudentID={StudentID}") # логирование
 
     return templates.TemplateResponse("Students/StudentTask.html", {
@@ -192,12 +186,6 @@ def read_student_all_subtasks_by_login(
         "variants": variants,
         "TasksID": list_of_tasks,
         "student": current_student,
-        "filter_StudentID": StudentID,
-        "filter_status": status,
-        "filter_TaskID": TaskID,
-        "filter_variant": variant,
-        "filter_SortColumn": SortColumn,
-        "filter_SortDirection": SortDirection,
     })
 
 # /students_subtasks/StudentTasks/{StudentID}/{SubTasksID}
