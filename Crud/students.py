@@ -62,8 +62,10 @@ def get_all_students_tasks(db: Session):
     return student_tasks
 
 ''' Получения всех задач студента по ID'''
+
 # МЕНЯЮ НА ХРАНИМКУ!!!!
-def get_student_all_tasks(db: Session, student_id: int):
+# С нее работает список задач студентов в админке
+'''def get_student_all_tasks(db: Session, student_id: int):
     query = text(f"""SELECT StudentTaskID,StudentID, Login, SubTaskID,CompletionStatus,Score,CompletionDate,StudentAnswer, TaskNumber, TaskTitle  
                  FROM StudentTasks 
                  JOIN Students ON Students.ID = StudentTasks.StudentID 
@@ -87,7 +89,7 @@ def get_student_all_tasks(db: Session, student_id: int):
     if not result:
         raise HTTPException (status_code=404, detail=f"Студент с ID {student_id} не найден")
     return student_tasks
-
+'''
 '''функция которая работает по хранимке'''
 def get_students_all_tasks(db, StudentID=None, CompletionStatus=None, TaskID=None, SortColumn=None, SortDirection=None, Description =None):
     '''if CompletionStatus is None:
