@@ -45,8 +45,8 @@ BEGIN
         s.Description,
         s.Answer,
         s.SolutionPath,
-		(SELECT COUNT(*) FROM StudentTasks) AS TotalSubTasks, --Количество задач студента
-		(SELECT COUNT(*) FROM StudentTasks where CompletionStatus='Выполнено') AS CompletedSubTasks, --Количество решеных задач студента
+		(SELECT COUNT(*) FROM StudentTasks where StudentID= @StudentID) AS TotalSubTasks, --Количество задач студента
+		(SELECT COUNT(*) FROM StudentTasks where StudentID=@StudentID and CompletionStatus='Выполнено') AS CompletedSubTasks, --Количество решеных задач студента
 		COUNT(*) OVER() AS TotalCount --  Добавлено общее количество всех найденных записей
     FROM StudentTasks st
         JOIN Students sd ON sd.ID = st.StudentID 
@@ -131,11 +131,13 @@ GO
 
 EXEC GetStudentsTasks; Вывод всех задач всех студентов
 EXEC GetStudentsTasks @StudentID = 2; Вывод всех задач студента с id=2
+EXEC GetStudentsTasks @StudentID = 2, @Description = N'Крылов Вариант №14'; Вывод всех задач студента с id=2
 EXEC GetStudentsTasks @TaskID = 2; по категории задания
 EXEC GetStudentsTasks @SubTaskID = 2, @CompletionStatus = N'Не приступал';
 EXEC GetStudentsTasks @CompletionStatus = N'Выполнено'; по статусу выполнения
 EXEC GetStudentsTasks @StudentTaskID = 2; конкретная задача
 EXEC GetStudentsTasks @Description = N'Крылов Вариант №14'; конкретная задача
+
 
 С сортировкой 
 EXEC GetStudentsTasks @SortColumn = 'StudentTaskID', @SortDirection = 'ASC';
@@ -159,9 +161,12 @@ EXEC GetStudentsTasks @StudentID = 1, @SortColumn = 'StudentTaskID', @SortDirect
 /*
 select* from Tasks
 select* from SubTasks
-select* from StudentTasks
+
 select ID, Login from Students
 select distinct Description from SubTasks
 SELECT TaskTitle FROM Tasks
 */
 
+select* from StudentTasks where StudentID=2 and CompletionStatus='Выполнено'
+SELECT COUNT(*) FROM StudentTasks where StudentID=2 and CompletionStatus='Выполнено'
+SELECT COUNT(*) FROM StudentTasks where  CompletionStatus='Выполнено'
