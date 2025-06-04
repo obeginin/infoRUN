@@ -39,6 +39,7 @@ def setup_logging():
 # настраивает логирование:
     logging.basicConfig(
         level = logging.INFO,
+        encoding="utf-8",
         format = "%(asctime)s - %(levelname)s - %(name)s - %(message)s",
         handlers = [
             handler,
