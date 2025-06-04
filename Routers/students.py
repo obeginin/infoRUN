@@ -105,7 +105,7 @@ def read_student_all_subtasks_by_login(
     request: Request,
     current_student=Depends(get_current_student_or_redirect),
     db: Session = Depends(get_db),
-    StudentID: Optional[int] = Query(default=None),
+    StudentID: Optional[str] = Query(default=None),
     status: str = Query(default=None),
     TaskID: str | None = Query(None),
     variant: str | None = Query(None),
@@ -282,8 +282,9 @@ def check_answer (request: AnswerInput, db: Session = Depends(get_db)):
     db.commit()
     return {"status": new_status}
 
-UPLOAD_IMAGE_DIR = Path("Uploads/StudentSolutions")
-UPLOAD_IMAGE_DIR.mkdir(parents=True, exist_ok=True)
+UPLOAD_STUDENTS_IMAGE_DIR = Path("Uploads/StudentSolutions")
+UPLOAD_STUDENTS_IMAGE_DIR.mkdir(parents=True, exist_ok=True)
+
 '''Отправка решения  пользователя'''
 # /students_subtasks/submit-solution/
 @students_subtasks_router.post("/submit-solution/")
@@ -320,7 +321,7 @@ async def submit_solution(
     if solution_file:
         # Сохраняем файл решения на диск (папку можно настроить)
         filename = f"{ID}_{SubTaskID}_{solution_file.filename}"
-        filepath = f"{UPLOAD_IMAGE_DIR}/{filename}"
+        filepath = f"{UPLOAD_STUDENTS_IMAGE_DIR}/{filename}"
         content = await solution_file.read()
         with open(filepath, "wb") as f:
             f.write(content)

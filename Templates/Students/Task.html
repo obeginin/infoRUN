@@ -161,14 +161,14 @@
             <button type="submit" class="btn-primary">Отправить</button>
         </form>
 -->
-<!--    {% if subtask.SolutionPath and subtask.Role == "admin"%}
+    {% if subtask.SolutionPath and subtask.Role == "admin"%}
 
         <div class="field image-preview">
             <label>Решение</label>
             <img class="clickable-image" src="/{{ subtask.SolutionPath }}" alt="Изображение решения">
         </div>
         {% endif %}
--->
+
         <form action="/students_subtasks/submit-solution/" method="post" enctype="multipart/form-data">
           <input type="hidden" name="ID" value="2" />
           <input type="hidden" name="SubTaskID" value="1" />
@@ -231,7 +231,7 @@
 
 
 
-        // Скрипт для кнопки проверки ответа
+   // Скрипт для кнопки проверки ответа
         document.getElementById("submitBtn").addEventListener("click", async () => {
         const answer = document.getElementById("userAnswer").value;
         const subtaskId = {{ subtask.SubTaskID }};
