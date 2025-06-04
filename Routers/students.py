@@ -292,15 +292,15 @@ async def submit_solution(
     ID: int = Form(...),
     SubTaskID: int = Form(...),
     StudentTaskID: int = Form(...),
-    solution_text: str | None = Form(None),
-    solution_file: UploadFile | None = File(None),
+    StudentSolutionText: str | None = Form(None),
+    StudentSolutionFile: UploadFile | None = File(None),
 
     db: Session = Depends(get_db),
 ):
     print(
-        f"submit_solution received: ID={ID}, SubTaskID={SubTaskID}, StudentTaskID={StudentTaskID}, solution_text={solution_text}")
-    if solution_file:
-        print(f"File received: filename={solution_file.filename}, content_type={solution_file.content_type}")
+        f"submit_solution received: ID={ID}, SubTaskID={SubTaskID}, StudentTaskID={StudentTaskID}, StudentSolutionText={StudentSolutionText}, StudentSolutionFile={StudentSolutionFile}")
+    if StudentSolutionFile:
+        print(f"File received: filename={StudentSolutionFile.filename}, content_type={StudentSolutionFile.content_type}")
     else:
         print("No file uploaded")
     # ... далее остальной код
@@ -318,11 +318,11 @@ async def submit_solution(
 
     # Обновим запись решения Студента
     student_solution_path = None
-    if solution_file:
+    if StudentSolutionFile:
         # Сохраняем файл решения на диск (папку можно настроить)
-        filename = f"{ID}_{SubTaskID}_{solution_file.filename}"
+        filename = f"{ID}_{SubTaskID}_{StudentSolutionFile.filename}"
         filepath = f"{UPLOAD_STUDENTS_IMAGE_DIR}/{filename}"
-        content = await solution_file.read()
+        content = await StudentSolutionFile.read()
         with open(filepath, "wb") as f:
             f.write(content)
         student_solution_path = filepath
@@ -340,7 +340,7 @@ async def submit_solution(
     db.execute(
         text(update_query),
         {
-            "solution_text": solution_text,
+            "solution_text": StudentSolutionFile,
             "student_solution_path": student_solution_path,
             "StudentID": ID,
             "SubTaskID": SubTaskID,

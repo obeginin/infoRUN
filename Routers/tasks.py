@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, Request, Form, UploadFile, File, Query, HTTPException
-
+from sqlalchemy import text
 from sqlalchemy.orm import Session
 from Schemas.tasks import TaskRead, SubTaskRead, SubTaskCreate, SubTaskUpdate
 from Crud import tasks as task_crud
@@ -182,29 +182,66 @@ def post_edit_subtask_form(
 
     # Обработка изображения
     image_path = subtask.get('ImagePath')  # по умолчанию оставляем старое изображение
-    if ImageFile and ImageFile.filename:
+    if ImageFile and ImageFile.filename: # Если был загружен новый файл изображения
         # Сохраняем изображение
         ext = ImageFile.filename.split('.')[-1]
-        filename = f"subtask_{SubTaskID}.{ext}"
+        if image_path:
+            # Было изображение — сохраняем под тем же именем
+            filename = Path(image_path).name
+        else:
+            # Не было изображения — создаем имя по логике новой подзадачи
+            result = db.execute(
+                text("SELECT MAX(SubTaskNumber) FROM SubTasks WHERE TaskID = :task_id"),
+                {"task_id": TaskID}
+            ).scalar()
+            subtask_number = (int(result) if result else 0) + 1
+            filename = f"task_{TaskID}_sub_{subtask_number}.{ext}"
+            image_path = f"Uploads/images/{filename}"
+
         filepath = UPLOAD_IMAGE_DIR / filename
 
         # Сохраняем файл
         with filepath.open("wb") as buffer:
             shutil.copyfileobj(ImageFile.file, buffer)
-        image_path = str(filepath)  # Обновляем переменную
+
         logger.info(f"Изображение сохранено как {filepath}")
+    else:
+        # Файл не загружен
+        if not image_path:
+            # И раньше не было изображения — путь остаётся пустым
+            image_path = None
 
         # Обработка файла решения
-    solution_path = subtask.get('SolutionPath')  # сохраняем старый путь, если не загружено новое
-    if SolutionFile and SolutionFile.filename:
+    solution_path = subtask.get('SolutionPath')  # по умолчанию оставляем старое решение
+
+    if SolutionFile and SolutionFile.filename:  # Если был загружен новый файл решения
+        # Сохраняем решение
         ext = SolutionFile.filename.split('.')[-1]
-        filename = f"subtask_{SubTaskID}_solution.{ext}"
+        if solution_path:
+            # Был файл — сохраняем под тем же именем
+            filename = Path(solution_path).name
+        else:
+            # Не было файла — создаем имя по логике новой подзадачи
+            result = db.execute(
+                text("SELECT MAX(SubTaskNumber) FROM SubTasks WHERE TaskID = :task_id"),
+                {"task_id": TaskID}
+            ).scalar()
+            subtask_number = (int(result) if result else 0) + 1
+            filename = f"solution_task_{TaskID}_sub_{subtask_number}.{ext}"
+            solution_path = f"Uploads/solutions/{filename}"
+
         filepath = UPLOAD_SOLUTION_DIR / filename
 
+        # Сохраняем файл
         with filepath.open("wb") as buffer:
             shutil.copyfileobj(SolutionFile.file, buffer)
-        solution_path = str(filepath)
+
         logger.info(f"Решение сохранено как {filepath}")
+    else:
+        # Файл не загружен
+        if not solution_path:
+            # И раньше не было файла — путь остаётся пустым
+            solution_path = None
 
     subtask_data = SubTaskUpdate(
         TaskID=TaskID,

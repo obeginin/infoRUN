@@ -175,17 +175,23 @@
           <input type="hidden" name="StudentTaskID" value="3" />
 
 
-
-
-
             <div class="field">
 
                 <label for="userAnswer">Ваш ответ:</label>
                 <input type="text" class="value" id="userAnswer" name="userAnswer" value="{{ user_answer or '' }}" required>
                 <button type="button" id="submitBtn" class="btn-primary">Проверить</button>
-                <label for="solution_file">Файл решения:</label>
+                <!--<label for="solution_file">Файл решения:</label>
                 <input type="file" id="solution_file" name="solution_file" />
-                    <!--<pre>Путь к решению студента: {{ subtask.SolutionStudentPath or "Путь не задан" }}</pre>-->
+                    <pre>Путь к решению студента: {{ subtask.SolutionStudentPath or "Путь не задан" }}</pre>-->
+                <!-- Решение -->
+                <div class="field">
+                    <label for="StudentSolutionText">Решение:</label>
+                    <textarea id="StudentSolutionText" name="StudentSolutionText" rows="5"
+                              placeholder="Введите решение или вставьте изображение решения сюда"
+                              style="width: 100%; height: 80px; padding: 10px; border-radius: 6px; border: 1px solid #ccc; resize: vertical;"></textarea>
+                </div>
+                <input type="file" name="StudentSolutionFile" id="StudentSolutionFileInput" style="display:none;">
+                <div id="StudentSolution-preview" style="margin-top: 10px;"></div>
 
                     {% if subtask.SolutionStudentPath %}
                         <div class="field image-preview">
@@ -273,11 +279,41 @@
     });
     //console.log('subtask:', subtask);
 
-      // Скрипт для отправки решения студента
-        //document.getElementById("solutionText").addEventListener("paste", function (event) {
-            // тут может быть твоя функция handlePaste(event, "solutionFile", "solution-preview");
-            // чтобы превью вставленного изображения появлялось и автоматически подставлялось в инпут для файла
-        //});
+     function handlePaste(event, inputId, previewId) {
+    const items = event.clipboardData.items;
+    for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        if (item.type.indexOf("image") !== -1) {
+            const file = item.getAsFile();
+
+            // Помещаем файл в input[type=file]
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            const input = document.getElementById(inputId);
+            input.files = dataTransfer.files;
+
+            // Отображаем превью
+            const preview = document.getElementById(previewId);
+            const img = document.createElement("img");
+            img.src = URL.createObjectURL(file);
+            img.style.maxWidth = "500px";
+            img.style.maxHeight = "400px";
+            img.style.display = "block";
+            img.style.border = "1px solid #ccc";
+            img.style.marginTop = "10px";
+            img.style.borderRadius = "6px";
+            preview.innerHTML = '';
+            preview.appendChild(img);
+
+            event.preventDefault(); // не вставлять в текст
+            break;
+            }
+        }
+    }
+        // Обработка для поля "Решение"
+        document.getElementById("StudentSolutionText").addEventListener("paste", function (event) {
+            handlePaste(event, "StudentSolutionFileInput", "StudentSolution-preview");
+        });
 
 
 
