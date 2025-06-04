@@ -162,8 +162,8 @@
         </form>
 -->
     {% if subtask.SolutionPath and subtask.Role == "admin"%}
-
-        <div class="field image-preview">
+        <button type="button" onclick="toggleVisibility('solution-block')">Показать / Скрыть решение</button>
+        <div id="solution-block" class="field image-preview" style="display:none;">
             <label>Решение</label>
             <img class="clickable-image" src="/{{ subtask.SolutionPath }}" alt="Изображение решения">
         </div>
@@ -205,7 +205,8 @@
 
         <!--Проверка на роль админа (при условии что данное поле имеется в subtask-->
         {% if subtask.Role == "admin" %}
-         <div class="field">
+        <button type="button" onclick="toggleVisibility('answer-block')">Показать/Скрыть ответ</button>
+        <div class="field" id="answer-block" style="display:none;">
             <label>Ответ:</label>
             <div class="value">{{ subtask.Answer }}</div>
         </div>
@@ -315,6 +316,12 @@
             handlePaste(event, "StudentSolutionFileInput", "StudentSolution-preview");
         });
 
+// функция для переключения режима скрыть/раскрыть
+        function toggleVisibility(id) {
+            const block = document.getElementById(id);
+            if (!block) return;
+            block.style.display = (block.style.display === 'none' || block.style.display === '') ? 'block' : 'none';
+          }
 
 
     </script>
