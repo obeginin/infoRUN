@@ -312,16 +312,26 @@ async def submit_solution(
         text("SELECT * FROM StudentTasks WHERE StudentID = :StudentID AND SubTaskID = :SubTaskID"),
         {"StudentID": StudentID, "SubTaskID": SubTaskID}
     ).fetchone()
-
+    # Проверим есть ли запись студента и подзадачи
     if not student_task:
         return JSONResponse(status_code=404, content={"status": "Error", "detail": "Задание студента не найдено"})
+
+   # берем TaskID и SubTaskNumber
+    result = db.execute(
+        text("SELECT TaskID, SubTaskNumber FROM SubTasks WHERE SubTaskID = :SubTaskID"),
+        {"SubTaskID": SubTaskID}
+    ).mappings().fetchone()
+
+    if result:
+        task_id = result["TaskID"]
+        subtask_number = result["SubTaskNumber"]
 
     # Обновим запись решения Студента
     student_solution_path = None
     if StudentSolutionFile:
         ext = StudentSolutionFile.filename.split('.')[-1]
         # Сохраняем файл решения на диск (папку можно настроить)
-        filename = f"taskID_{SubTaskID}_student_{StudentID}.{ext}"
+        filename = f"taskID_{SubTaskID}_task_{task_id}_sub_{subtask_number}_student_{StudentID}.{ext}"
         filepath = UPLOAD_STUDENTS_IMAGE_DIR / filename
         with filepath.open("wb") as buffer:
             shutil.copyfileobj(StudentSolutionFile.file, buffer)
