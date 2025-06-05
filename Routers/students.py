@@ -13,6 +13,7 @@ from Crud.auth import get_current_student, admin_required, verify_password, get_
 from fastapi.responses import RedirectResponse
 from starlette.responses import JSONResponse
 from pathlib import Path
+import shutil
 import traceback
 from typing import Optional
 import logging
@@ -285,32 +286,31 @@ def check_answer (request: AnswerInput, db: Session = Depends(get_db)):
 UPLOAD_STUDENTS_IMAGE_DIR = Path("Uploads/StudentSolutions")
 UPLOAD_STUDENTS_IMAGE_DIR.mkdir(parents=True, exist_ok=True)
 
-'''Отправка решения  пользователя'''
+'''Отправка Решения  пользователя'''
 # /students_subtasks/submit-solution/
 @students_subtasks_router.post("/submit-solution/")
 async def submit_solution(
-    ID: int = Form(...),
+    StudentID: int = Form(...),
     SubTaskID: int = Form(...),
     StudentTaskID: int = Form(...),
-    StudentSolutionText: str | None = Form(None),
     StudentSolutionFile: UploadFile | None = File(None),
 
     db: Session = Depends(get_db),
 ):
     print(
-        f"submit_solution received: ID={ID}, SubTaskID={SubTaskID}, StudentTaskID={StudentTaskID}, StudentSolutionText={StudentSolutionText}, StudentSolutionFile={StudentSolutionFile}")
+        f"submit_solution received: ID={StudentID}, SubTaskID={SubTaskID}, StudentTaskID={StudentTaskID}, StudentSolutionFile={StudentSolutionFile}")
     if StudentSolutionFile:
         print(f"File received: filename={StudentSolutionFile.filename}, content_type={StudentSolutionFile.content_type}")
     else:
         print("No file uploaded")
     # ... далее остальной код
     # Логирование
-    logger.info(f"Пришло решение от студента {ID} по подзадаче {SubTaskID}")
+    logger.info(f"Пришло решение от студента {StudentID} по подзадаче {SubTaskID}")
 
     # Проверим есть ли запись студента и подзадачи
     student_task = db.execute(
         text("SELECT * FROM StudentTasks WHERE StudentID = :StudentID AND SubTaskID = :SubTaskID"),
-        {"StudentID": ID, "SubTaskID": SubTaskID}
+        {"StudentID": StudentID, "SubTaskID": SubTaskID}
     ).fetchone()
 
     if not student_task:
@@ -319,33 +319,40 @@ async def submit_solution(
     # Обновим запись решения Студента
     student_solution_path = None
     if StudentSolutionFile:
+        ext = StudentSolutionFile.filename.split('.')[-1]
         # Сохраняем файл решения на диск (папку можно настроить)
-        filename = f"{ID}_{SubTaskID}_{StudentSolutionFile.filename}"
-        filepath = f"{UPLOAD_STUDENTS_IMAGE_DIR}/{filename}"
-        content = await StudentSolutionFile.read()
-        with open(filepath, "wb") as f:
-            f.write(content)
-        student_solution_path = filepath
-        logger.info(f"Файл решения сохранён по пути: {filepath}")
+        filename = f"taskID_{SubTaskID}_student_{StudentID}.{ext}"
+        filepath = UPLOAD_STUDENTS_IMAGE_DIR / filename
+        with filepath.open("wb") as buffer:
+            shutil.copyfileobj(StudentSolutionFile.file, buffer)
+        student_solution_path = f"Uploads/StudentSolutions/{filename}"
+        logger.info(f"Файл решения сохранён по пути: {student_solution_path}")
 
     # Обновим таблицу StudentTasks
-    update_query = """
-        UPDATE StudentTasks
-        SET
-            StudentAnswer = :solution_text,
-            SolutionStudentPath = :student_solution_path,
-            ModifiedDate = GETDATE()
-        WHERE StudentID = :StudentID AND SubTaskID = :SubTaskID
-    """
-    db.execute(
-        text(update_query),
-        {
-            "solution_text": StudentSolutionFile,
+    if student_task:
+        # Обновляем
+        update_query = """
+            UPDATE StudentTasks
+            SET SolutionStudentPath = :student_solution_path, ModifiedDate = GETDATE()
+            WHERE StudentID = :StudentID AND SubTaskID = :SubTaskID
+        """
+        db.execute(text(update_query), {
             "student_solution_path": student_solution_path,
-            "StudentID": ID,
+            "StudentID": StudentID,
             "SubTaskID": SubTaskID,
-        }
-    )
+        })
+    else:
+        # Вставляем новую строку
+        insert_query = """
+            INSERT INTO StudentTasks (StudentID, SubTaskID, SolutionStudentPath, ModifiedDate)
+            VALUES (:StudentID, :SubTaskID, :student_solution_path, GETDATE())
+        """
+        db.execute(text(insert_query), {
+            "StudentID": StudentID,
+            "SubTaskID": SubTaskID,
+            "student_solution_path": student_solution_path,
+        })
+
     db.commit()
     return RedirectResponse(f"/students_subtasks/T/{StudentTaskID}", status_code=303)
 

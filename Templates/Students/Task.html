@@ -170,37 +170,37 @@
         {% endif %}
 
         <form action="/students_subtasks/submit-solution/" method="post" enctype="multipart/form-data">
-          <input type="hidden" name="ID" value="2" />
-          <input type="hidden" name="SubTaskID" value="1" />
-          <input type="hidden" name="StudentTaskID" value="3" />
-
+            <input type="hidden" name="StudentID" value="{{ student.ID }}">
+            <input type="hidden" name="SubTaskID" value="{{ subtask.SubTaskID }}">
+            <input type="hidden" name="StudentTaskID" value="{{subtask.StudentTaskID}}" />
 
             <div class="field">
 
                 <label for="userAnswer">Ваш ответ:</label>
                 <input type="text" class="value" id="userAnswer" name="userAnswer" value="{{ user_answer or '' }}" required>
-                <button type="button" id="submitBtn" class="btn-primary">Проверить</button>
+                <button type="button" id="submitBtn" class="btn-primary">Проверить ответ</button>
                 <!--<label for="solution_file">Файл решения:</label>
                 <input type="file" id="solution_file" name="solution_file" />
                     <pre>Путь к решению студента: {{ subtask.SolutionStudentPath or "Путь не задан" }}</pre>-->
                 <!-- Решение -->
-                <div class="field">
+            </div>
+            <div id="statusMessage" style="margin-top:10px; color: green;"></div>
+
+            <div class="field">
                     <label for="StudentSolutionText">Решение:</label>
                     <textarea id="StudentSolutionText" name="StudentSolutionText" rows="5"
                               placeholder="Введите решение или вставьте изображение решения сюда"
                               style="width: 100%; height: 80px; padding: 10px; border-radius: 6px; border: 1px solid #ccc; resize: vertical;"></textarea>
-                </div>
-                <input type="file" name="StudentSolutionFile" id="StudentSolutionFileInput" style="display:none;">
-                <div id="StudentSolution-preview" style="margin-top: 10px;"></div>
-
-                    {% if subtask.SolutionStudentPath %}
-                        <div class="field image-preview">
-                            <label>Ваше текущее решение:</label>
-                            <img src="/{{ subtask.SolutionStudentPath }}" alt="Решение студента" class="clickable-image" style="max-width: 100%; border-radius: 8px; border: 1px solid #ccc;">
-                        </div>
-                    {% endif %}
             </div>
-            <p id="statusMessage"></p>
+            <input type="file" name="StudentSolutionFile" id="StudentSolutionFileInput" style="display:none;">
+            <div id="StudentSolution-preview" style="margin-top: 10px;"></div>
+            <button type="submit" id="submitBtn2" class="btn-primary">Отправить решение</button>
+                {% if subtask.SolutionStudentPath %}
+                    <div class="field image-preview">
+                        <label>Ваше текущее решение:</label>
+                        <img src="/{{ subtask.SolutionStudentPath }}" alt="Решение студента" class="clickable-image" style="max-width: 100%; border-radius: 8px; border: 1px solid #ccc;">
+                    </div>
+                {% endif %}
         </form>
 
         <!--Проверка на роль админа (при условии что данное поле имеется в subtask-->

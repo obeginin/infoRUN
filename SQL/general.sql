@@ -127,9 +127,13 @@ CREATE NONCLUSTERED INDEX IX_StudentTasks_Student_SubTask
 ON dbo.StudentTasks (StudentID, SubTaskID);
 GO
 
+--Обновление адреса файла
+select * from SubTasks where SubTaskID =180
+update  SubTasks set ImagePath='Uploads/images/task_57_sub_3.png' where SubTaskID =57
+
 select * from Students
 select * from Tasks
-select * from SubTasks 
+select * from SubTasks  
 select * from StudentTasks where StudentID=2 and SubTaskID=3
 SELECT * FROM SubTasks where TaskID=1 ORDER BY SubTaskNumber
 SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'Students';

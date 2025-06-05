@@ -211,7 +211,7 @@ def post_edit_subtask_form(
             # И раньше не было изображения — путь остаётся пустым
             image_path = None
 
-        # Обработка файла решения
+    # Обработка файла решения
     solution_path = subtask.get('SolutionPath')  # по умолчанию оставляем старое решение
 
     if SolutionFile and SolutionFile.filename:  # Если был загружен новый файл решения
