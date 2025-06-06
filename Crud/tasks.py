@@ -3,13 +3,21 @@ from sqlalchemy import text
 from Schemas.tasks import SubTaskCreate, SubTaskUpdate
 from fastapi import HTTPException, UploadFile, File
 from typing import Optional
+from Models import SubTaskFiles
 import shutil
 from pathlib import Path
 import logging
+from typing import List
 logger = logging.getLogger(__name__)
 # Crud\tasks.py
 
 
+UPLOAD_IMAGE_DIR = Path("Uploads/images")
+UPLOAD_SOLUTION_DIR = Path("Uploads/solutions")
+UPLOAD_IMAGE_DIR.mkdir(parents=True, exist_ok=True)
+UPLOAD_SOLUTION_DIR.mkdir(parents=True, exist_ok=True)
+UPLOAD_FILES_DIR = Path("Uploads/files")
+UPLOAD_FILES_DIR.mkdir(parents=True, exist_ok=True)
 ''' 
 CRUD - основная логика работы запроса
 описываем функции, которые выполняют SQL запросы к БД, результат возвращается в виде кортежа
@@ -123,10 +131,7 @@ def create_subtask(db: Session, subtask_data: SubTaskCreate):
 
 
 
-UPLOAD_IMAGE_DIR = Path("Uploads/images")
-UPLOAD_SOLUTION_DIR = Path("Uploads/solutions")
-UPLOAD_IMAGE_DIR.mkdir(parents=True, exist_ok=True)
-UPLOAD_SOLUTION_DIR.mkdir(parents=True, exist_ok=True)
+
 
 ''' Добавление новой подзадачи (через форму)'''
 def create_subtask_from_form(
@@ -227,3 +232,71 @@ def update_subtask(
     return get_subtasks_id(db, SubTaskID)
 '''def get_all_tasks(db: Session):
     return db.query(Task).order_by(Task.TaskNumber).all()'''
+
+
+'''Прикрепление дополнительных файлов к задаче'''
+def upload_file(
+        subtask_id: int,
+        task_id: int,
+        subtask_number: int,
+        files: List[UploadFile],
+        db: Session
+):
+    #logger.info("Запускаем роут сохранения дополнительного файла")
+    '''# берем TaskID и SubTaskNumber
+    result_SubTasks = db.execute(
+        text("SELECT TaskID, SubTaskNumber FROM SubTasks WHERE SubTaskID = :SubTaskID"),
+        {"SubTaskID": subtask_id}
+    ).mappings().fetchone()
+
+    if not result_SubTasks:
+        raise HTTPException(status_code=404, detail="SubTask not found")'''
+
+    '''task_id = result_SubTasks["TaskID"]
+    subtask_number = result_SubTasks["SubTaskNumber"]'''
+    try:
+        logger.info(
+            f"Start uploading files for subtask_id={subtask_id}, task_id={task_id}, subtask_number={subtask_number}")
+        start_index = db.execute(
+            text("SELECT count(*) FROM SubTaskFiles WHERE SubTaskID = :subtask_id"),
+            {"subtask_id": subtask_id}
+        ).scalar()
+        logger.info(f"Initial file count: {start_index}")
+
+        uploaded_files = []
+        for idx, file in enumerate(files, start=1):
+            ext = Path(file.filename).suffix  # с точкой или пустая строка
+            filename = f"task_{task_id}_sub_{subtask_number}_file{start_index + idx}{ext}"
+            filepath = UPLOAD_FILES_DIR / filename
+            file_path = f"{UPLOAD_FILES_DIR.as_posix()}/{filename}"
+
+            with filepath.open("wb") as buffer:
+                shutil.copyfileobj(file.file, buffer)
+            logger.info(f"Saved file {filename}")
+
+            db_file = SubTaskFiles(
+                SubTaskID=subtask_id,
+                FileName=file.filename,
+                FilePath=file_path
+            )
+            db.add(db_file)
+            uploaded_files.append(file.filename)
+
+        db.commit()
+        logger.info(f"Uploaded files: {uploaded_files}")
+
+        return {"message": "Файлы загружены", "files": uploaded_files}
+    except Exception as e:
+        logger.error(f"Error during file upload: {e}", exc_info=True)
+        raise
+
+
+# /subtasks/files/{file_id}/download   (GET)
+'''Скачивание файла прикрепленного к задаче'''
+'''@subtask_router.get("/files/{file_id}/download")
+def download_file(file_id: int, db: Session = Depends(get_db)):
+    db_file = db.query(TaskFile).filter(TaskFile.ID == file_id).first()
+    if not db_file:
+        raise HTTPException(status_code=404, detail="Файл не найден")
+
+    return FileResponse(path=db_file.FilePath, filename=db_file.FileName)'''

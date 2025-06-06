@@ -140,51 +140,105 @@
         </div>
         {% endif %}
 
+
+        <!-- Загрузка дополнительных файлов для задания -->
+        <label for="newFilesInput" id="drop-area" style="
+            border: 2px dashed #aaa;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            ">
+            Перетащите файлы сюда или нажмите для выбора
+
+            <input type="file" id="newFilesInput" name="Files" multiple style="display:none;">
+        </label>
+        <div id="file-list"></div>
         <input type="submit" value="Сохранить изменения">
     </form>
 </div>
 
 <script>
     function handlePaste(event, inputId, previewId) {
-    const items = event.clipboardData.items;
-    for (let i = 0; i < items.length; i++) {
-        const item = items[i];
-        if (item.type.indexOf("image") !== -1) {
-            const file = item.getAsFile();
+        const items = event.clipboardData.items;
+        for (let i = 0; i < items.length; i++) {
+            const item = items[i];
+            if (item.type.indexOf("image") !== -1) {
+                const file = item.getAsFile();
 
-            // Помещаем файл в input[type=file]
-            const dataTransfer = new DataTransfer();
-            dataTransfer.items.add(file);
-            const input = document.getElementById(inputId);
-            input.files = dataTransfer.files;
+                // Помещаем файл в input[type=file]
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                const input = document.getElementById(inputId);
+                input.files = dataTransfer.files;
 
-            // Отображаем превью
-            const preview = document.getElementById(previewId);
-            const img = document.createElement("img");
-            img.src = URL.createObjectURL(file);
-            img.style.maxWidth = "500px";
-            img.style.maxHeight = "400px";
-            img.style.display = "block";
-            img.style.border = "1px solid #ccc";
-            img.style.marginTop = "10px";
-            img.style.borderRadius = "6px";
-            preview.innerHTML = '';
-            preview.appendChild(img);
+                // Отображаем превью
+                const preview = document.getElementById(previewId);
+                const img = document.createElement("img");
+                img.src = URL.createObjectURL(file);
+                img.style.maxWidth = "500px";
+                img.style.maxHeight = "400px";
+                img.style.display = "block";
+                img.style.border = "1px solid #ccc";
+                img.style.marginTop = "10px";
+                img.style.borderRadius = "6px";
+                preview.innerHTML = '';
+                preview.appendChild(img);
 
-            event.preventDefault(); // не вставлять в текст
-            break;
+                event.preventDefault(); // не вставлять в текст
+                break;
             }
         }
     }
 
-        // Обработка для области подзадачи
-        document.getElementById("paste-area").addEventListener("paste", function (event) {
-            handlePaste(event, "imageFileInput", "preview");
-        });
+    // Обработка для области подзадачи
+    document.getElementById("paste-area").addEventListener("paste", function (event) {
+        handlePaste(event, "imageFileInput", "preview");
+    });
 
-        // Обработка для поля "Решение"
-        document.getElementById("solutionText").addEventListener("paste", function (event) {
-            handlePaste(event, "solutionFileInput", "solution-preview");
-        });
+    // Обработка для поля "Решение"
+    document.getElementById("solutionText").addEventListener("paste", function (event) {
+        handlePaste(event, "solutionFileInput", "solution-preview");
+    });
+
+    // Перетаскивание дополнительных файлов
+    const dropArea = document.getElementById('drop-area');
+    const fileInput = document.getElementById('newFilesInput');
+    const fileList = document.getElementById('file-list');
+
+    dropArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropArea.style.borderColor = 'green';
+    });
+
+    dropArea.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        dropArea.style.borderColor = '#aaa';
+    });
+
+    dropArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropArea.style.borderColor = '#aaa';
+
+        const files = e.dataTransfer.files;
+        if (files.length) {
+            // Показываем имена файлов
+            fileList.innerHTML = '';
+            for (let i = 0; i < files.length; i++) {
+                const li = document.createElement('div');
+                li.textContent = files[i].name;
+                fileList.appendChild(li);
+            }
+        }
+    });
+
+    // При выборе файлов через диалог тоже показываем имена
+    fileInput.addEventListener('change', () => {
+        fileList.innerHTML = '';
+        for (let i = 0; i < fileInput.files.length; i++) {
+            const li = document.createElement('div');
+            li.textContent = fileInput.files[i].name;
+            fileList.appendChild(li);
+        }
+    });
 </script>
 {% endblock %}

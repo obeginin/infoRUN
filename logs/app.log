@@ -948,3 +948,806 @@
 2025-06-05 16:53:31,928 - INFO - requests - Ответ: GET /students_subtasks/T/3/ - статус 200
 2025-06-05 16:53:32,191 - INFO - requests - Запрос: GET /Uploads/StudentSolutions/taskID_1_student_2.png
 2025-06-05 16:53:32,192 - INFO - requests - Ответ: GET /Uploads/StudentSolutions/taskID_1_student_2.png - статус 200
+2025-06-06 09:20:43,736 - INFO - root - Логирование по дням инициализировано.
+2025-06-06 09:20:54,659 - INFO - requests - Запрос: GET /
+2025-06-06 09:20:54,660 - INFO - Routers.auth - [127.0.0.1] Неавторизованный доступ к / — выполняется редирект на страницу входа
+2025-06-06 09:20:54,661 - INFO - requests - Ответ: GET / - статус 302
+2025-06-06 09:20:54,664 - INFO - requests - Запрос: GET /home/login_in/
+2025-06-06 09:20:54,665 - INFO - Routers.auth - Выводим страницу с логином
+2025-06-06 09:20:54,668 - INFO - requests - Ответ: GET /home/login_in/ - статус 200
+2025-06-06 09:20:56,688 - INFO - requests - Запрос: POST /home/login_in/
+2025-06-06 09:21:17,248 - INFO - root - Логирование по дням инициализировано.
+2025-06-06 09:21:21,474 - INFO - requests - Запрос: GET /home/login_in/
+2025-06-06 09:21:21,475 - INFO - Routers.auth - Выводим страницу с логином
+2025-06-06 09:21:21,480 - INFO - requests - Ответ: GET /home/login_in/ - статус 200
+2025-06-06 09:21:32,408 - INFO - requests - Запрос: POST /home/login_in/
+2025-06-06 09:21:32,557 - INFO - requests - Ответ: POST /home/login_in/ - статус 303
+2025-06-06 09:21:32,559 - INFO - requests - Запрос: GET /
+2025-06-06 09:21:32,561 - INFO - Routers.auth - [127.0.0.1] Студент obeginin открыл корневую страницу
+2025-06-06 09:21:32,566 - INFO - requests - Ответ: GET / - статус 200
+2025-06-06 09:21:32,579 - INFO - requests - Запрос: GET /static/styles.css
+2025-06-06 09:21:32,579 - INFO - requests - Запрос: GET /static/scripts.js
+2025-06-06 09:21:32,603 - INFO - requests - Ответ: GET /static/styles.css - статус 304
+2025-06-06 09:21:32,604 - INFO - requests - Ответ: GET /static/scripts.js - статус 304
+2025-06-06 09:21:36,374 - INFO - requests - Запрос: GET /home/logout/
+2025-06-06 09:21:36,374 - INFO - requests - Ответ: GET /home/logout/ - статус 303
+2025-06-06 09:21:36,377 - INFO - requests - Запрос: GET /home/login_in/
+2025-06-06 09:21:36,377 - INFO - Routers.auth - Выводим страницу с логином
+2025-06-06 09:21:36,377 - INFO - requests - Ответ: GET /home/login_in/ - статус 200
+2025-06-06 09:21:40,956 - INFO - requests - Запрос: POST /home/login_in/
+2025-06-06 09:21:40,978 - INFO - requests - Ответ: POST /home/login_in/ - статус 303
+2025-06-06 09:21:40,981 - INFO - requests - Запрос: GET /
+2025-06-06 09:21:40,986 - INFO - Routers.auth - [127.0.0.1] Студент test открыл корневую страницу
+2025-06-06 09:21:41,009 - INFO - requests - Ответ: GET / - статус 200
+2025-06-06 09:21:43,772 - INFO - requests - Запрос: GET /home/logout/
+2025-06-06 09:21:43,773 - INFO - requests - Ответ: GET /home/logout/ - статус 303
+2025-06-06 09:21:43,775 - INFO - requests - Запрос: GET /home/login_in/
+2025-06-06 09:21:43,776 - INFO - Routers.auth - Выводим страницу с логином
+2025-06-06 09:21:43,776 - INFO - requests - Ответ: GET /home/login_in/ - статус 200
+2025-06-06 09:21:45,740 - INFO - requests - Запрос: POST /home/login_in/
+2025-06-06 09:21:45,761 - INFO - requests - Ответ: POST /home/login_in/ - статус 303
+2025-06-06 09:21:45,763 - INFO - requests - Запрос: GET /
+2025-06-06 09:21:45,766 - INFO - Routers.auth - [127.0.0.1] Студент obeginin открыл корневую страницу
+2025-06-06 09:21:45,768 - INFO - requests - Ответ: GET / - статус 200
+2025-06-06 09:21:46,299 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-06 09:21:46,302 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-06 09:21:46,305 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:2, CompletionStatus:None TaskID:None  SortColumn:StudentTaskID SortDirection: ASC Description: None
+2025-06-06 09:21:46,326 - WARNING - root - ПАРАМЕТРЫ: StudentID=2
+2025-06-06 09:21:46,341 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-06 09:21:49,625 - INFO - requests - Запрос: GET /students_subtasks/T/3
+2025-06-06 09:21:49,625 - INFO - requests - Ответ: GET /students_subtasks/T/3 - статус 307
+2025-06-06 09:21:49,629 - INFO - requests - Запрос: GET /students_subtasks/T/3/
+2025-06-06 09:21:49,635 - WARNING - root - Вызываем роут read_student_all_subtasks с параметрами: StudentTaskID=3
+2025-06-06 09:21:49,651 - INFO - requests - Ответ: GET /students_subtasks/T/3/ - статус 200
+2025-06-06 09:21:49,668 - INFO - requests - Запрос: GET /Uploads/images/task_1_sub_1.PNG
+2025-06-06 09:21:49,669 - INFO - requests - Ответ: GET /Uploads/images/task_1_sub_1.PNG - статус 200
+2025-06-06 09:21:49,671 - INFO - requests - Запрос: GET /Uploads/StudentSolutions/taskID_1_student_2.png
+2025-06-06 09:21:49,673 - INFO - requests - Ответ: GET /Uploads/StudentSolutions/taskID_1_student_2.png - статус 404
+2025-06-06 09:21:52,117 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-06 09:21:52,120 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-06 09:21:52,124 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:2, CompletionStatus:None TaskID:None  SortColumn:StudentTaskID SortDirection: ASC Description: None
+2025-06-06 09:21:52,133 - WARNING - root - ПАРАМЕТРЫ: StudentID=2
+2025-06-06 09:21:52,137 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-06 09:21:53,239 - INFO - requests - Запрос: GET /students_subtasks/T/36
+2025-06-06 09:21:53,239 - INFO - requests - Ответ: GET /students_subtasks/T/36 - статус 307
+2025-06-06 09:21:53,243 - INFO - requests - Запрос: GET /students_subtasks/T/36/
+2025-06-06 09:21:53,244 - WARNING - root - Вызываем роут read_student_all_subtasks с параметрами: StudentTaskID=36
+2025-06-06 09:21:53,246 - INFO - requests - Ответ: GET /students_subtasks/T/36/ - статус 200
+2025-06-06 09:21:53,261 - INFO - requests - Запрос: GET /Uploads/images/task_6_sub_1.PNG
+2025-06-06 09:21:53,262 - INFO - requests - Ответ: GET /Uploads/images/task_6_sub_1.PNG - статус 404
+2025-06-06 09:21:54,087 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-06 09:21:54,089 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-06 09:21:54,091 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:2, CompletionStatus:None TaskID:None  SortColumn:StudentTaskID SortDirection: ASC Description: None
+2025-06-06 09:21:54,100 - WARNING - root - ПАРАМЕТРЫ: StudentID=2
+2025-06-06 09:21:54,103 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-06 09:23:45,076 - INFO - requests - Запрос: GET /subtasks/
+2025-06-06 09:23:45,095 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-06-06 09:23:45,135 - INFO - requests - Запрос: GET /subtasks/api/
+2025-06-06 09:23:45,147 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200
+2025-06-06 09:23:46,431 - INFO - requests - Запрос: GET /subtasks/1
+2025-06-06 09:23:46,441 - INFO - requests - Ответ: GET /subtasks/1 - статус 200
+2025-06-06 09:23:46,470 - INFO - requests - Запрос: GET /subtasks/api/1
+2025-06-06 09:23:46,475 - INFO - requests - Ответ: GET /subtasks/api/1 - статус 200
+2025-06-06 09:23:47,225 - INFO - requests - Запрос: GET /subtasks
+2025-06-06 09:23:47,226 - INFO - requests - Ответ: GET /subtasks - статус 307
+2025-06-06 09:23:47,230 - INFO - requests - Запрос: GET /subtasks/
+2025-06-06 09:23:47,236 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-06-06 09:23:47,261 - INFO - requests - Запрос: GET /subtasks/api/
+2025-06-06 09:23:47,274 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200
+2025-06-06 09:23:47,992 - INFO - requests - Запрос: GET /tasks/
+2025-06-06 09:23:48,006 - INFO - requests - Ответ: GET /tasks/ - статус 200
+2025-06-06 09:23:48,037 - INFO - requests - Запрос: GET /tasks/api/
+2025-06-06 09:23:48,042 - INFO - requests - Ответ: GET /tasks/api/ - статус 200
+2025-06-06 09:23:48,751 - INFO - requests - Запрос: GET /home/
+2025-06-06 09:23:48,759 - INFO - Routers.auth - [127.0.0.1] Студент obeginin открыл главную страницу
+2025-06-06 09:23:48,761 - INFO - requests - Ответ: GET /home/ - статус 200
+2025-06-06 09:23:49,446 - INFO - requests - Запрос: GET /admin/
+2025-06-06 09:23:49,456 - INFO - requests - Ответ: GET /admin/ - статус 200
+2025-06-06 09:23:50,770 - INFO - requests - Запрос: GET /subtasks/
+2025-06-06 09:23:50,776 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-06-06 09:23:50,798 - INFO - requests - Запрос: GET /subtasks/api/
+2025-06-06 09:23:50,814 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200
+2025-06-06 09:23:51,682 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-06 09:23:51,686 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-06 09:23:51,689 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:2, CompletionStatus:None TaskID:None  SortColumn:StudentTaskID SortDirection: ASC Description: None
+2025-06-06 09:23:51,704 - WARNING - root - ПАРАМЕТРЫ: StudentID=2
+2025-06-06 09:23:51,708 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-06 11:23:02,451 - INFO - root - Логирование по дням инициализировано.
+2025-06-06 11:23:11,947 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-06 11:23:14,787 - INFO - requests - Запрос: GET /subtasks/
+2025-06-06 11:24:50,908 - INFO - root - Логирование по дням инициализировано.
+2025-06-06 11:24:53,149 - INFO - requests - Запрос: GET /subtasks/
+2025-06-06 11:24:53,293 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-06-06 11:24:53,316 - INFO - requests - Запрос: GET /subtasks/api/
+2025-06-06 11:24:53,328 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200
+2025-06-06 11:24:57,261 - INFO - requests - Запрос: GET /subtasks/1
+2025-06-06 11:24:57,274 - INFO - requests - Ответ: GET /subtasks/1 - статус 200
+2025-06-06 11:24:57,297 - INFO - requests - Запрос: GET /subtasks/api/1
+2025-06-06 11:24:57,304 - INFO - requests - Ответ: GET /subtasks/api/1 - статус 200
+2025-06-06 11:24:58,658 - INFO - requests - Запрос: GET /subtasks/edit/
+2025-06-06 11:24:58,662 - INFO - Routers.tasks - Открываем страницу с редактированием задачи
+2025-06-06 11:24:58,662 - INFO - Routers.tasks - Открываем страницу редактирования подзадачи ID=1
+2025-06-06 11:24:58,674 - INFO - requests - Ответ: GET /subtasks/edit/ - статус 200
+2025-06-06 11:31:13,049 - INFO - root - Логирование по дням инициализировано.
+2025-06-06 11:31:15,741 - INFO - requests - Запрос: GET /subtasks/edit/
+2025-06-06 11:31:15,839 - INFO - Routers.tasks - Открываем страницу с редактированием задачи
+2025-06-06 11:31:15,839 - INFO - Routers.tasks - Открываем страницу редактирования подзадачи ID=1
+2025-06-06 11:31:15,847 - INFO - requests - Ответ: GET /subtasks/edit/ - статус 200
+2025-06-06 11:32:04,600 - INFO - root - Логирование по дням инициализировано.
+2025-06-06 11:32:16,051 - INFO - requests - Запрос: GET /subtasks/edit/
+2025-06-06 11:32:16,172 - INFO - Routers.tasks - Открываем страницу с редактированием задачи
+2025-06-06 11:32:16,172 - INFO - Routers.tasks - Открываем страницу редактирования подзадачи ID=1
+2025-06-06 11:32:16,185 - INFO - requests - Ответ: GET /subtasks/edit/ - статус 200
+2025-06-06 11:33:08,137 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-06 11:33:08,137 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-06 11:36:17,574 - INFO - root - Логирование по дням инициализировано.
+2025-06-06 11:36:19,721 - INFO - requests - Запрос: GET /subtasks/edit/
+2025-06-06 11:36:19,834 - INFO - Routers.tasks - Открываем страницу с редактированием задачи
+2025-06-06 11:36:19,834 - INFO - Routers.tasks - Открываем страницу редактирования подзадачи ID=1
+2025-06-06 11:36:19,846 - INFO - requests - Ответ: GET /subtasks/edit/ - статус 200
+2025-06-06 11:36:19,865 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-06 11:36:19,866 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-06 11:37:43,031 - INFO - root - Логирование по дням инициализировано.
+2025-06-06 11:37:46,176 - INFO - requests - Запрос: GET /subtasks/edit/
+2025-06-06 11:37:46,304 - INFO - Routers.tasks - Открываем страницу с редактированием задачи
+2025-06-06 11:37:46,304 - INFO - Routers.tasks - Открываем страницу редактирования подзадачи ID=1
+2025-06-06 11:37:46,317 - INFO - requests - Ответ: GET /subtasks/edit/ - статус 200
+2025-06-06 11:37:46,335 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-06 11:37:46,336 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-06 11:37:59,840 - INFO - root - Логирование по дням инициализировано.
+2025-06-06 11:38:00,356 - INFO - requests - Запрос: GET /subtasks/edit/
+2025-06-06 11:38:00,437 - INFO - Routers.tasks - Открываем страницу с редактированием задачи
+2025-06-06 11:38:00,437 - INFO - Routers.tasks - Открываем страницу редактирования подзадачи ID=1
+2025-06-06 11:38:00,453 - INFO - requests - Ответ: GET /subtasks/edit/ - статус 200
+2025-06-06 11:38:00,494 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-06 11:38:00,495 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-06 11:38:05,371 - INFO - root - Логирование по дням инициализировано.
+2025-06-06 11:38:05,500 - INFO - requests - Запрос: GET /subtasks/edit/
+2025-06-06 11:38:05,583 - INFO - Routers.tasks - Открываем страницу с редактированием задачи
+2025-06-06 11:38:05,583 - INFO - Routers.tasks - Открываем страницу редактирования подзадачи ID=1
+2025-06-06 11:38:05,595 - INFO - requests - Ответ: GET /subtasks/edit/ - статус 200
+2025-06-06 11:38:05,625 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-06 11:38:05,625 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-06 11:40:27,522 - INFO - root - Логирование по дням инициализировано.
+2025-06-06 11:40:28,276 - INFO - requests - Запрос: GET /subtasks/edit/
+2025-06-06 11:40:28,427 - INFO - Routers.tasks - Открываем страницу с редактированием задачи
+2025-06-06 11:40:28,427 - INFO - Routers.tasks - Открываем страницу редактирования подзадачи ID=1
+2025-06-06 11:40:28,442 - INFO - requests - Ответ: GET /subtasks/edit/ - статус 200
+2025-06-06 11:40:28,476 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-06 11:40:28,476 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-06 11:44:21,684 - INFO - requests - Запрос: POST /subtasks/edit_form
+2025-06-06 11:44:21,687 - INFO - Routers.tasks - Редактируем подзадачу ID=1
+2025-06-06 11:44:21,694 - INFO - requests - Ответ: POST /subtasks/edit_form - статус 303
+2025-06-06 11:44:21,697 - INFO - requests - Запрос: GET /tasks/1
+2025-06-06 11:44:21,704 - INFO - requests - Ответ: GET /tasks/1 - статус 200
+2025-06-06 11:44:21,719 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-06 11:44:21,720 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-06 11:44:21,729 - INFO - requests - Запрос: GET /tasks/api/1
+2025-06-06 11:44:21,730 - INFO - requests - Запрос: GET /subtasks/api/TaskID/1
+2025-06-06 11:44:21,735 - INFO - requests - Ответ: GET /tasks/api/1 - статус 200
+2025-06-06 11:44:21,742 - INFO - requests - Ответ: GET /subtasks/api/TaskID/1 - статус 200
+2025-06-06 11:44:25,521 - INFO - requests - Запрос: GET /subtasks/1
+2025-06-06 11:44:25,526 - INFO - requests - Ответ: GET /subtasks/1 - статус 200
+2025-06-06 11:44:25,539 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-06 11:44:25,540 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-06 11:44:25,549 - INFO - requests - Запрос: GET /subtasks/api/1
+2025-06-06 11:44:25,554 - INFO - requests - Ответ: GET /subtasks/api/1 - статус 200
+2025-06-06 11:44:27,149 - INFO - requests - Запрос: GET /subtasks/edit/
+2025-06-06 11:44:27,152 - INFO - Routers.tasks - Открываем страницу с редактированием задачи
+2025-06-06 11:44:27,152 - INFO - Routers.tasks - Открываем страницу редактирования подзадачи ID=1
+2025-06-06 11:44:27,155 - INFO - requests - Ответ: GET /subtasks/edit/ - статус 200
+2025-06-06 11:44:27,168 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-06 11:44:27,168 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-06 11:46:17,635 - INFO - root - Логирование по дням инициализировано.
+2025-06-06 11:46:35,146 - INFO - requests - Запрос: POST /subtasks/edit_form
+2025-06-06 11:46:35,148 - INFO - Routers.tasks - Редактируем подзадачу ID=1
+2025-06-06 11:46:35,245 - INFO - requests - Ответ: POST /subtasks/edit_form - статус 303
+2025-06-06 11:46:35,247 - INFO - requests - Запрос: GET /tasks/1
+2025-06-06 11:46:35,266 - INFO - requests - Ответ: GET /tasks/1 - статус 200
+2025-06-06 11:46:35,278 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-06 11:46:35,279 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-06 11:46:35,295 - INFO - requests - Запрос: GET /tasks/api/1
+2025-06-06 11:46:35,296 - INFO - requests - Запрос: GET /subtasks/api/TaskID/1
+2025-06-06 11:46:35,302 - INFO - requests - Ответ: GET /tasks/api/1 - статус 200
+2025-06-06 11:46:35,307 - INFO - requests - Ответ: GET /subtasks/api/TaskID/1 - статус 200
+2025-06-06 11:46:55,302 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-06 11:46:55,303 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-06 11:46:56,510 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-06 11:46:56,511 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-06 11:51:18,467 - INFO - root - Логирование по дням инициализировано.
+2025-06-06 11:51:45,169 - INFO - root - Логирование по дням инициализировано.
+2025-06-06 11:51:49,118 - INFO - requests - Запрос: GET /tasks/1
+2025-06-06 11:51:49,238 - INFO - requests - Ответ: GET /tasks/1 - статус 200
+2025-06-06 11:51:49,251 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-06 11:51:49,252 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-06 11:51:49,266 - INFO - requests - Запрос: GET /tasks/api/1
+2025-06-06 11:51:49,267 - INFO - requests - Запрос: GET /subtasks/api/TaskID/1
+2025-06-06 11:51:49,273 - INFO - requests - Ответ: GET /tasks/api/1 - статус 200
+2025-06-06 11:51:49,280 - INFO - requests - Ответ: GET /subtasks/api/TaskID/1 - статус 200
+2025-06-06 11:51:49,884 - INFO - requests - Запрос: GET /subtasks/1
+2025-06-06 11:51:49,901 - INFO - requests - Ответ: GET /subtasks/1 - статус 200
+2025-06-06 11:51:49,916 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-06 11:51:49,917 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-06 11:51:49,936 - INFO - requests - Запрос: GET /subtasks/api/1
+2025-06-06 11:51:49,944 - INFO - requests - Ответ: GET /subtasks/api/1 - статус 200
+2025-06-06 11:51:51,189 - INFO - requests - Запрос: GET /subtasks/edit/
+2025-06-06 11:51:51,193 - INFO - Routers.tasks - Открываем страницу с редактированием задачи
+2025-06-06 11:51:51,194 - INFO - Routers.tasks - Открываем страницу редактирования подзадачи ID=1
+2025-06-06 11:51:51,205 - INFO - requests - Ответ: GET /subtasks/edit/ - статус 200
+2025-06-06 11:51:51,225 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-06 11:51:51,226 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-06 11:51:56,040 - INFO - requests - Запрос: POST /subtasks/edit_form
+2025-06-06 11:51:56,043 - INFO - Routers.tasks - Редактируем подзадачу ID=1
+2025-06-06 11:51:56,052 - INFO - requests - Ответ: POST /subtasks/edit_form - статус 303
+2025-06-06 11:51:56,056 - INFO - requests - Запрос: GET /tasks/1
+2025-06-06 11:51:56,064 - INFO - requests - Ответ: GET /tasks/1 - статус 200
+2025-06-06 11:51:56,080 - INFO - requests - Запрос: GET /.well-known/appspecific/com.chrome.devtools.json
+2025-06-06 11:51:56,081 - INFO - requests - Ответ: GET /.well-known/appspecific/com.chrome.devtools.json - статус 404
+2025-06-06 11:51:56,101 - INFO - requests - Запрос: GET /tasks/api/1
+2025-06-06 11:51:56,102 - INFO - requests - Запрос: GET /subtasks/api/TaskID/1
+2025-06-06 11:51:56,107 - INFO - requests - Ответ: GET /tasks/api/1 - статус 200
+2025-06-06 11:51:56,110 - INFO - requests - Ответ: GET /subtasks/api/TaskID/1 - статус 200
+2025-06-06 11:57:50,980 - INFO - root - Логирование по дням инициализировано.
+2025-06-06 12:00:34,679 - INFO - requests - Запрос: GET /subtasks/1
+2025-06-06 12:00:34,789 - INFO - requests - Ответ: GET /subtasks/1 - статус 200
+2025-06-06 12:00:34,809 - INFO - requests - Запрос: GET /subtasks/api/1
+2025-06-06 12:00:34,815 - INFO - requests - Ответ: GET /subtasks/api/1 - статус 200
+2025-06-06 12:06:36,614 - INFO - root - Логирование по дням инициализировано.
+2025-06-06 12:20:31,559 - INFO - root - Логирование по дням инициализировано.
+2025-06-06 12:20:35,766 - INFO - requests - Запрос: GET /subtasks
+2025-06-06 12:20:35,767 - INFO - requests - Ответ: GET /subtasks - статус 307
+2025-06-06 12:20:35,770 - INFO - requests - Запрос: GET /subtasks/
+2025-06-06 12:20:35,892 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-06-06 12:20:35,913 - INFO - requests - Запрос: GET /subtasks/api/
+2025-06-06 12:20:35,926 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200
+2025-06-06 12:20:38,108 - INFO - requests - Запрос: GET /subtasks/1
+2025-06-06 12:20:38,116 - INFO - requests - Ответ: GET /subtasks/1 - статус 200
+2025-06-06 12:20:38,134 - INFO - requests - Запрос: GET /subtasks/api/1
+2025-06-06 12:20:38,139 - INFO - requests - Ответ: GET /subtasks/api/1 - статус 200
+2025-06-06 12:20:39,006 - INFO - requests - Запрос: GET /subtasks/edit/
+2025-06-06 12:20:39,010 - INFO - Routers.tasks - Открываем страницу с редактированием задачи
+2025-06-06 12:20:39,010 - INFO - Routers.tasks - Открываем страницу редактирования подзадачи ID=1
+2025-06-06 12:20:39,019 - INFO - requests - Ответ: GET /subtasks/edit/ - статус 200
+2025-06-06 12:20:46,694 - INFO - requests - Запрос: POST /subtasks/edit_form
+2025-06-06 12:20:46,697 - INFO - Routers.tasks - Редактируем подзадачу ID=1
+2025-06-06 12:25:56,173 - INFO - root - Логирование по дням инициализировано.
+2025-06-06 12:25:56,267 - INFO - requests - Запрос: GET /subtasks/edit/
+2025-06-06 12:25:56,420 - INFO - Routers.tasks - Открываем страницу с редактированием задачи
+2025-06-06 12:25:56,420 - INFO - Routers.tasks - Открываем страницу редактирования подзадачи ID=1
+2025-06-06 12:25:56,438 - INFO - requests - Ответ: GET /subtasks/edit/ - статус 200
+2025-06-06 12:26:00,269 - INFO - requests - Запрос: POST /subtasks/edit_form
+2025-06-06 12:26:00,273 - INFO - Routers.tasks - Редактируем подзадачу ID=1
+2025-06-06 12:26:00,277 - INFO - Crud.tasks - По SubTaskID:1 находим TaskID:[UploadFile(filename='license (12).lic', size=1834, headers=Headers({'content-disposition': 'form-data; name="Files"; filename="license (12).lic"', 'content-type': 'application/octet-stream'}))] и SubTaskNumber:1
+2025-06-06 12:27:25,636 - INFO - root - Логирование по дням инициализировано.
+2025-06-06 12:27:26,002 - INFO - requests - Запрос: GET /subtasks/edit/
+2025-06-06 12:27:26,156 - INFO - Routers.tasks - Открываем страницу с редактированием задачи
+2025-06-06 12:27:26,156 - INFO - Routers.tasks - Открываем страницу редактирования подзадачи ID=1
+2025-06-06 12:27:26,175 - INFO - requests - Ответ: GET /subtasks/edit/ - статус 200
+2025-06-06 12:27:28,822 - INFO - requests - Запрос: POST /subtasks/edit_form
+2025-06-06 12:27:28,825 - INFO - Routers.tasks - Редактируем подзадачу ID=1
+2025-06-06 12:27:28,827 - INFO - Crud.tasks - По SubTaskID:1 находим TaskID:1 и SubTaskNumber:1
+2025-06-06 12:29:21,360 - INFO - root - Логирование по дням инициализировано.
+2025-06-06 12:29:23,155 - INFO - requests - Запрос: GET /subtasks/edit/
+2025-06-06 12:29:23,331 - INFO - Routers.tasks - Открываем страницу с редактированием задачи
+2025-06-06 12:29:23,332 - INFO - Routers.tasks - Открываем страницу редактирования подзадачи ID=1
+2025-06-06 12:29:23,350 - INFO - requests - Ответ: GET /subtasks/edit/ - статус 200
+2025-06-06 12:29:27,112 - INFO - requests - Запрос: POST /subtasks/edit_form
+2025-06-06 12:29:27,118 - INFO - Routers.tasks - Редактируем подзадачу ID=1
+2025-06-06 12:29:27,119 - INFO - Crud.tasks - По SubTaskID:1 находим TaskID:1 и SubTaskNumber:1
+2025-06-06 12:30:21,631 - INFO - root - Логирование по дням инициализировано.
+2025-06-06 12:30:22,728 - INFO - requests - Запрос: GET /subtasks/edit/
+2025-06-06 12:30:22,919 - INFO - Routers.tasks - Открываем страницу с редактированием задачи
+2025-06-06 12:30:22,919 - INFO - Routers.tasks - Открываем страницу редактирования подзадачи ID=1
+2025-06-06 12:30:22,939 - INFO - requests - Ответ: GET /subtasks/edit/ - статус 200
+2025-06-06 12:30:23,947 - INFO - requests - Запрос: POST /subtasks/edit_form
+2025-06-06 12:30:23,950 - INFO - Routers.tasks - Редактируем подзадачу ID=1
+2025-06-06 12:30:23,951 - INFO - Crud.tasks - По SubTaskID:1 находим TaskID:1 и SubTaskNumber:1
+2025-06-06 12:35:21,810 - INFO - root - Логирование по дням инициализировано.
+2025-06-06 12:35:23,408 - INFO - requests - Запрос: GET /subtasks/edit/
+2025-06-06 12:35:23,870 - INFO - Routers.tasks - Открываем страницу с редактированием задачи
+2025-06-06 12:35:23,870 - INFO - Routers.tasks - Открываем страницу редактирования подзадачи ID=1
+2025-06-06 12:35:23,929 - INFO - requests - Ответ: GET /subtasks/edit/ - статус 200
+2025-06-06 12:35:24,587 - INFO - requests - Запрос: POST /subtasks/edit_form
+2025-06-06 12:35:24,590 - INFO - Routers.tasks - Редактируем подзадачу ID=1
+2025-06-06 12:35:24,591 - INFO - Crud.tasks - По SubTaskID:1 находим TaskID:1 и SubTaskNumber:1
+2025-06-06 12:37:43,494 - INFO - root - Логирование по дням инициализировано.
+2025-06-06 12:38:01,943 - INFO - requests - Запрос: POST /subtasks/edit_form
+2025-06-06 12:38:01,947 - INFO - Routers.tasks - Редактируем подзадачу ID=1
+2025-06-06 12:38:02,047 - INFO - Crud.tasks - По SubTaskID:1 находим TaskID:1 и SubTaskNumber:1
+2025-06-06 12:39:38,090 - INFO - root - Логирование по дням инициализировано.
+2025-06-06 12:39:41,601 - INFO - requests - Запрос: POST /subtasks/edit_form
+2025-06-06 12:39:41,603 - INFO - Routers.tasks - Редактируем подзадачу ID=1
+2025-06-06 12:39:41,762 - INFO - Crud.tasks - Start uploading files for subtask_id=1, task_id=1, subtask_number=1
+2025-06-06 12:39:41,764 - ERROR - Crud.tasks - Error during file upload: (pyodbc.ProgrammingError) ('42S02', '[42S02] [Microsoft][ODBC Driver 18 for SQL Server][SQL Server]Недопустимое имя объекта "TaskFiles". (208) (SQLExecDirectW); [42S02] [Microsoft][ODBC Driver 18 for SQL Server][SQL Server]Не удалось выполнить подготовку инструкций. (8180)')
+[SQL: SELECT count(*) FROM TaskFiles WHERE TaskID = ? and SubTaskNumber = ?]
+[parameters: (1, 1)]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+Traceback (most recent call last):
+  File "C:\Base\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1964, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Base\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 945, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+pyodbc.ProgrammingError: ('42S02', '[42S02] [Microsoft][ODBC Driver 18 for SQL Server][SQL Server]Недопустимое имя объекта "TaskFiles". (208) (SQLExecDirectW); [42S02] [Microsoft][ODBC Driver 18 for SQL Server][SQL Server]Не удалось выполнить подготовку инструкций. (8180)')
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Base\Crud\tasks.py", line 260, in upload_file
+    start_index = db.execute(
+                  ~~~~~~~~~~^
+        text("SELECT count(*) FROM TaskFiles WHERE TaskID = :task_id and SubTaskNumber = :subtask_number"),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        {"task_id": task_id, "subtask_number": subtask_number}
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ).scalar()
+    ^
+  File "C:\Base\.venv\Lib\site-packages\sqlalchemy\orm\session.py", line 2365, in execute
+    return self._execute_internal(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+    ...<4 lines>...
+        _add_event=_add_event,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Base\.venv\Lib\site-packages\sqlalchemy\orm\session.py", line 2260, in _execute_internal
+    result = conn.execute(
+        statement, params or {}, execution_options=execution_options
+    )
+  File "C:\Base\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1416, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "C:\Base\.venv\Lib\site-packages\sqlalchemy\sql\elements.py", line 523, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Base\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1638, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "C:\Base\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1843, in _execute_context
+    return self._exec_single_context(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        dialect, context, statement, parameters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Base\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1983, in _exec_single_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str_statement, effective_parameters, cursor, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Base\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 2352, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Base\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1964, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Base\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 945, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlalchemy.exc.ProgrammingError: (pyodbc.ProgrammingError) ('42S02', '[42S02] [Microsoft][ODBC Driver 18 for SQL Server][SQL Server]Недопустимое имя объекта "TaskFiles". (208) (SQLExecDirectW); [42S02] [Microsoft][ODBC Driver 18 for SQL Server][SQL Server]Не удалось выполнить подготовку инструкций. (8180)')
+[SQL: SELECT count(*) FROM TaskFiles WHERE TaskID = ? and SubTaskNumber = ?]
+[parameters: (1, 1)]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2025-06-06 12:40:44,777 - INFO - root - Логирование по дням инициализировано.
+2025-06-06 12:40:48,733 - INFO - requests - Запрос: GET /subtasks/edit/
+2025-06-06 12:40:48,868 - INFO - Routers.tasks - Открываем страницу с редактированием задачи
+2025-06-06 12:40:48,868 - INFO - Routers.tasks - Открываем страницу редактирования подзадачи ID=1
+2025-06-06 12:40:48,881 - INFO - requests - Ответ: GET /subtasks/edit/ - статус 200
+2025-06-06 12:40:49,973 - INFO - requests - Запрос: POST /subtasks/edit_form
+2025-06-06 12:40:49,975 - INFO - Routers.tasks - Редактируем подзадачу ID=1
+2025-06-06 12:40:49,976 - INFO - Crud.tasks - Start uploading files for subtask_id=1, task_id=1, subtask_number=1
+2025-06-06 12:40:49,978 - ERROR - Crud.tasks - Error during file upload: (pyodbc.ProgrammingError) ('42S22', '[42S22] [Microsoft][ODBC Driver 18 for SQL Server][SQL Server]Недопустимое имя столбца "TaskID". (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 18 for SQL Server][SQL Server]Недопустимое имя столбца "SubTaskNumber". (207); [42S22] [Microsoft][ODBC Driver 18 for SQL Server][SQL Server]Не удалось выполнить подготовку инструкций. (8180)')
+[SQL: SELECT count(*) FROM SubTaskFiles WHERE TaskID = ? and SubTaskNumber = ?]
+[parameters: (1, 1)]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+Traceback (most recent call last):
+  File "C:\Base\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1964, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Base\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 945, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+pyodbc.ProgrammingError: ('42S22', '[42S22] [Microsoft][ODBC Driver 18 for SQL Server][SQL Server]Недопустимое имя столбца "TaskID". (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 18 for SQL Server][SQL Server]Недопустимое имя столбца "SubTaskNumber". (207); [42S22] [Microsoft][ODBC Driver 18 for SQL Server][SQL Server]Не удалось выполнить подготовку инструкций. (8180)')
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Base\Crud\tasks.py", line 260, in upload_file
+    start_index = db.execute(
+                  ~~~~~~~~~~^
+        text("SELECT count(*) FROM SubTaskFiles WHERE TaskID = :task_id and SubTaskNumber = :subtask_number"),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        {"task_id": task_id, "subtask_number": subtask_number}
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ).scalar()
+    ^
+  File "C:\Base\.venv\Lib\site-packages\sqlalchemy\orm\session.py", line 2365, in execute
+    return self._execute_internal(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+    ...<4 lines>...
+        _add_event=_add_event,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Base\.venv\Lib\site-packages\sqlalchemy\orm\session.py", line 2260, in _execute_internal
+    result = conn.execute(
+        statement, params or {}, execution_options=execution_options
+    )
+  File "C:\Base\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1416, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "C:\Base\.venv\Lib\site-packages\sqlalchemy\sql\elements.py", line 523, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Base\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1638, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "C:\Base\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1843, in _execute_context
+    return self._exec_single_context(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        dialect, context, statement, parameters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Base\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1983, in _exec_single_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str_statement, effective_parameters, cursor, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Base\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 2352, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Base\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1964, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Base\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 945, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlalchemy.exc.ProgrammingError: (pyodbc.ProgrammingError) ('42S22', '[42S22] [Microsoft][ODBC Driver 18 for SQL Server][SQL Server]Недопустимое имя столбца "TaskID". (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 18 for SQL Server][SQL Server]Недопустимое имя столбца "SubTaskNumber". (207); [42S22] [Microsoft][ODBC Driver 18 for SQL Server][SQL Server]Не удалось выполнить подготовку инструкций. (8180)')
+[SQL: SELECT count(*) FROM SubTaskFiles WHERE TaskID = ? and SubTaskNumber = ?]
+[parameters: (1, 1)]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2025-06-06 12:43:27,176 - INFO - root - Логирование по дням инициализировано.
+2025-06-06 12:43:31,343 - INFO - root - Логирование по дням инициализировано.
+2025-06-06 12:43:37,542 - INFO - requests - Запрос: GET /subtasks/edit/
+2025-06-06 12:43:37,694 - INFO - Routers.tasks - Открываем страницу с редактированием задачи
+2025-06-06 12:43:37,694 - INFO - Routers.tasks - Открываем страницу редактирования подзадачи ID=1
+2025-06-06 12:43:37,709 - INFO - requests - Ответ: GET /subtasks/edit/ - статус 200
+2025-06-06 12:43:39,667 - INFO - requests - Запрос: POST /subtasks/edit_form
+2025-06-06 12:43:39,669 - INFO - Routers.tasks - Редактируем подзадачу ID=1
+2025-06-06 12:43:39,673 - INFO - Crud.tasks - Start uploading files for subtask_id=1, task_id=1, subtask_number=1
+2025-06-06 12:43:39,675 - ERROR - Crud.tasks - Error during file upload: (pyodbc.ProgrammingError) ('42S02', '[42S02] [Microsoft][ODBC Driver 18 for SQL Server][SQL Server]Недопустимое имя объекта "TaskFiles". (208) (SQLExecDirectW); [42S02] [Microsoft][ODBC Driver 18 for SQL Server][SQL Server]Не удалось выполнить подготовку инструкций. (8180)')
+[SQL: SELECT count(*) FROM TaskFiles WHERE SubTaskID = ?]
+[parameters: (1,)]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+Traceback (most recent call last):
+  File "C:\Base\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1964, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Base\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 945, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+pyodbc.ProgrammingError: ('42S02', '[42S02] [Microsoft][ODBC Driver 18 for SQL Server][SQL Server]Недопустимое имя объекта "TaskFiles". (208) (SQLExecDirectW); [42S02] [Microsoft][ODBC Driver 18 for SQL Server][SQL Server]Не удалось выполнить подготовку инструкций. (8180)')
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Base\Crud\tasks.py", line 260, in upload_file
+    start_index = db.execute(
+                  ~~~~~~~~~~^
+        text("SELECT count(*) FROM TaskFiles WHERE SubTaskID = :subtask_id"),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        {"subtask_id": subtask_id}
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ).scalar()
+    ^
+  File "C:\Base\.venv\Lib\site-packages\sqlalchemy\orm\session.py", line 2365, in execute
+    return self._execute_internal(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+    ...<4 lines>...
+        _add_event=_add_event,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Base\.venv\Lib\site-packages\sqlalchemy\orm\session.py", line 2260, in _execute_internal
+    result = conn.execute(
+        statement, params or {}, execution_options=execution_options
+    )
+  File "C:\Base\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1416, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "C:\Base\.venv\Lib\site-packages\sqlalchemy\sql\elements.py", line 523, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Base\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1638, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "C:\Base\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1843, in _execute_context
+    return self._exec_single_context(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        dialect, context, statement, parameters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Base\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1983, in _exec_single_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str_statement, effective_parameters, cursor, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Base\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 2352, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Base\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1964, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Base\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 945, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlalchemy.exc.ProgrammingError: (pyodbc.ProgrammingError) ('42S02', '[42S02] [Microsoft][ODBC Driver 18 for SQL Server][SQL Server]Недопустимое имя объекта "TaskFiles". (208) (SQLExecDirectW); [42S02] [Microsoft][ODBC Driver 18 for SQL Server][SQL Server]Не удалось выполнить подготовку инструкций. (8180)')
+[SQL: SELECT count(*) FROM TaskFiles WHERE SubTaskID = ?]
+[parameters: (1,)]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2025-06-06 12:43:53,762 - INFO - root - Логирование по дням инициализировано.
+2025-06-06 12:43:55,765 - INFO - requests - Запрос: GET /subtasks/edit/
+2025-06-06 12:43:55,873 - INFO - Routers.tasks - Открываем страницу с редактированием задачи
+2025-06-06 12:43:55,873 - INFO - Routers.tasks - Открываем страницу редактирования подзадачи ID=1
+2025-06-06 12:43:55,889 - INFO - requests - Ответ: GET /subtasks/edit/ - статус 200
+2025-06-06 12:43:56,966 - INFO - requests - Запрос: POST /subtasks/edit_form
+2025-06-06 12:43:56,969 - INFO - Routers.tasks - Редактируем подзадачу ID=1
+2025-06-06 12:43:56,973 - INFO - Crud.tasks - Start uploading files for subtask_id=1, task_id=1, subtask_number=1
+2025-06-06 12:43:56,981 - INFO - Crud.tasks - Initial file count: 0
+2025-06-06 12:43:56,982 - INFO - Crud.tasks - Saved file task_1_sub_1_file1.
+2025-06-06 12:43:56,990 - INFO - Crud.tasks - Uploaded files: ['']
+2025-06-06 12:43:56,999 - INFO - requests - Ответ: POST /subtasks/edit_form - статус 303
+2025-06-06 12:43:57,002 - INFO - requests - Запрос: GET /tasks/1
+2025-06-06 12:43:57,007 - INFO - requests - Ответ: GET /tasks/1 - статус 200
+2025-06-06 12:43:57,023 - INFO - requests - Запрос: GET /tasks/api/1
+2025-06-06 12:43:57,023 - INFO - requests - Запрос: GET /subtasks/api/TaskID/1
+2025-06-06 12:43:57,030 - INFO - requests - Ответ: GET /tasks/api/1 - статус 200
+2025-06-06 12:43:57,036 - INFO - requests - Ответ: GET /subtasks/api/TaskID/1 - статус 200
+2025-06-06 12:43:58,239 - INFO - requests - Запрос: GET /subtasks/1
+2025-06-06 12:43:58,247 - INFO - requests - Ответ: GET /subtasks/1 - статус 200
+2025-06-06 12:43:58,266 - INFO - requests - Запрос: GET /subtasks/api/1
+2025-06-06 12:43:58,269 - INFO - requests - Ответ: GET /subtasks/api/1 - статус 200
+2025-06-06 12:43:59,896 - INFO - requests - Запрос: GET /subtasks/edit/
+2025-06-06 12:43:59,899 - INFO - Routers.tasks - Открываем страницу с редактированием задачи
+2025-06-06 12:43:59,899 - INFO - Routers.tasks - Открываем страницу редактирования подзадачи ID=1
+2025-06-06 12:43:59,901 - INFO - requests - Ответ: GET /subtasks/edit/ - статус 200
+2025-06-06 12:44:06,856 - INFO - requests - Запрос: POST /subtasks/edit_form
+2025-06-06 12:44:06,858 - INFO - Routers.tasks - Редактируем подзадачу ID=1
+2025-06-06 12:44:06,859 - INFO - Crud.tasks - Start uploading files for subtask_id=1, task_id=1, subtask_number=1
+2025-06-06 12:44:06,859 - INFO - Crud.tasks - Initial file count: 1
+2025-06-06 12:44:06,860 - INFO - Crud.tasks - Saved file task_1_sub_1_file2.lic
+2025-06-06 12:44:06,868 - INFO - Crud.tasks - Uploaded files: ['license (12).lic']
+2025-06-06 12:44:06,871 - INFO - requests - Ответ: POST /subtasks/edit_form - статус 303
+2025-06-06 12:44:06,874 - INFO - requests - Запрос: GET /tasks/1
+2025-06-06 12:44:06,877 - INFO - requests - Ответ: GET /tasks/1 - статус 200
+2025-06-06 12:44:06,887 - INFO - requests - Запрос: GET /tasks/api/1
+2025-06-06 12:44:06,888 - INFO - requests - Запрос: GET /subtasks/api/TaskID/1
+2025-06-06 12:44:06,892 - INFO - requests - Ответ: GET /tasks/api/1 - статус 200
+2025-06-06 12:44:06,893 - INFO - requests - Ответ: GET /subtasks/api/TaskID/1 - статус 200
+2025-06-06 12:44:39,202 - INFO - requests - Запрос: GET /subtasks/1
+2025-06-06 12:44:39,215 - INFO - requests - Ответ: GET /subtasks/1 - статус 200
+2025-06-06 12:44:39,236 - INFO - requests - Запрос: GET /subtasks/api/1
+2025-06-06 12:44:39,241 - INFO - requests - Ответ: GET /subtasks/api/1 - статус 200
+2025-06-06 12:44:45,716 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-06 12:44:45,719 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-06 12:44:45,724 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:2, CompletionStatus:None TaskID:None  SortColumn:StudentTaskID SortDirection: ASC Description: None
+2025-06-06 12:44:45,747 - WARNING - root - ПАРАМЕТРЫ: StudentID=2
+2025-06-06 12:44:45,764 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-06 12:44:47,862 - INFO - requests - Запрос: GET /students_subtasks/T/3
+2025-06-06 12:44:47,863 - INFO - requests - Ответ: GET /students_subtasks/T/3 - статус 307
+2025-06-06 12:44:47,866 - INFO - requests - Запрос: GET /students_subtasks/T/3/
+2025-06-06 12:44:47,868 - WARNING - root - Вызываем роут read_student_all_subtasks с параметрами: StudentTaskID=3
+2025-06-06 12:44:47,881 - INFO - requests - Ответ: GET /students_subtasks/T/3/ - статус 200
+2025-06-06 12:44:47,893 - INFO - requests - Запрос: GET /Uploads/StudentSolutions/taskID_1_student_2.png
+2025-06-06 12:44:47,895 - INFO - requests - Ответ: GET /Uploads/StudentSolutions/taskID_1_student_2.png - статус 404
+2025-06-06 12:48:14,578 - INFO - requests - Запрос: GET /students_subtasks/StudentTasksByLogin/
+2025-06-06 12:48:14,587 - INFO - Routers.students - Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin
+2025-06-06 12:48:14,594 - INFO - root - Запускаем функцию с вызовом хранимки. StudentID:2, CompletionStatus:None TaskID:None  SortColumn:StudentTaskID SortDirection: ASC Description: None
+2025-06-06 12:48:14,616 - WARNING - root - ПАРАМЕТРЫ: StudentID=2
+2025-06-06 12:48:14,621 - INFO - requests - Ответ: GET /students_subtasks/StudentTasksByLogin/ - статус 200
+2025-06-06 12:48:16,612 - INFO - requests - Запрос: GET /subtasks/
+2025-06-06 12:48:16,619 - INFO - requests - Ответ: GET /subtasks/ - статус 200
+2025-06-06 12:48:16,644 - INFO - requests - Запрос: GET /subtasks/api/
+2025-06-06 12:48:16,659 - INFO - requests - Ответ: GET /subtasks/api/ - статус 200
+2025-06-06 12:48:18,038 - INFO - requests - Запрос: GET /subtasks/1
+2025-06-06 12:48:18,046 - INFO - requests - Ответ: GET /subtasks/1 - статус 200
+2025-06-06 12:48:18,129 - INFO - requests - Запрос: GET /subtasks/api/1
+2025-06-06 12:48:18,139 - INFO - requests - Ответ: GET /subtasks/api/1 - статус 200
+2025-06-06 12:48:22,007 - INFO - requests - Запрос: GET /subtasks/edit/
+2025-06-06 12:48:22,012 - INFO - Routers.tasks - Открываем страницу с редактированием задачи
+2025-06-06 12:48:22,012 - INFO - Routers.tasks - Открываем страницу редактирования подзадачи ID=1
+2025-06-06 12:48:22,016 - INFO - requests - Ответ: GET /subtasks/edit/ - статус 200
+2025-06-06 12:48:44,250 - INFO - requests - Запрос: POST /subtasks/edit_form
+2025-06-06 12:48:44,252 - INFO - Routers.tasks - Редактируем подзадачу ID=1
+2025-06-06 12:48:44,255 - INFO - Crud.tasks - Start uploading files for subtask_id=1, task_id=1, subtask_number=1
+2025-06-06 12:48:44,262 - INFO - Crud.tasks - Initial file count: 2
+2025-06-06 12:48:44,263 - INFO - Crud.tasks - Saved file task_1_sub_1_file3.
+2025-06-06 12:48:44,268 - INFO - Crud.tasks - Uploaded files: ['']
+2025-06-06 12:48:44,272 - INFO - requests - Ответ: POST /subtasks/edit_form - статус 303
+2025-06-06 12:48:44,274 - INFO - requests - Запрос: GET /tasks/1
+2025-06-06 12:48:44,279 - INFO - requests - Ответ: GET /tasks/1 - статус 200
+2025-06-06 12:48:44,291 - INFO - requests - Запрос: GET /tasks/api/1
+2025-06-06 12:48:44,292 - INFO - requests - Запрос: GET /subtasks/api/TaskID/1
+2025-06-06 12:48:44,297 - INFO - requests - Ответ: GET /tasks/api/1 - статус 200
+2025-06-06 12:48:44,300 - INFO - requests - Ответ: GET /subtasks/api/TaskID/1 - статус 200
+2025-06-06 12:49:09,983 - INFO - root - Логирование по дням инициализировано.
+2025-06-06 12:49:17,338 - INFO - requests - Запрос: GET /tasks/1
+2025-06-06 12:49:17,447 - INFO - requests - Ответ: GET /tasks/1 - статус 200
+2025-06-06 12:49:17,461 - INFO - requests - Запрос: GET /tasks/api/1
+2025-06-06 12:49:17,462 - INFO - requests - Запрос: GET /subtasks/api/TaskID/1
+2025-06-06 12:49:17,466 - INFO - requests - Ответ: GET /tasks/api/1 - статус 200
+2025-06-06 12:49:17,474 - INFO - requests - Ответ: GET /subtasks/api/TaskID/1 - статус 200
+2025-06-06 12:49:18,148 - INFO - requests - Запрос: GET /subtasks/1
+2025-06-06 12:49:18,154 - INFO - requests - Ответ: GET /subtasks/1 - статус 200
+2025-06-06 12:49:18,174 - INFO - requests - Запрос: GET /subtasks/api/1
+2025-06-06 12:49:18,179 - INFO - requests - Ответ: GET /subtasks/api/1 - статус 200
+2025-06-06 12:49:19,449 - INFO - requests - Запрос: GET /subtasks/edit/
+2025-06-06 12:49:19,453 - INFO - Routers.tasks - Открываем страницу с редактированием задачи
+2025-06-06 12:49:19,453 - INFO - Routers.tasks - Открываем страницу редактирования подзадачи ID=1
+2025-06-06 12:49:19,463 - INFO - requests - Ответ: GET /subtasks/edit/ - статус 200
+2025-06-06 12:49:59,391 - INFO - requests - Запрос: POST /subtasks/edit_form
+2025-06-06 12:49:59,395 - INFO - Routers.tasks - Редактируем подзадачу ID=1
+2025-06-06 12:49:59,398 - INFO - Crud.tasks - Start uploading files for subtask_id=1, task_id=1, subtask_number=1
+2025-06-06 12:49:59,399 - INFO - Crud.tasks - Initial file count: 0
+2025-06-06 12:49:59,402 - INFO - Crud.tasks - Saved file task_1_sub_1_file1.png
+2025-06-06 12:49:59,403 - INFO - Crud.tasks - Saved file task_1_sub_1_file2.png
+2025-06-06 12:49:59,411 - INFO - Crud.tasks - Uploaded files: ['solution_task_180_sub_7.png', 'solution_task_173_sub_7.png']
+2025-06-06 12:49:59,419 - INFO - requests - Ответ: POST /subtasks/edit_form - статус 303
+2025-06-06 12:49:59,421 - INFO - requests - Запрос: GET /tasks/1
+2025-06-06 12:49:59,425 - INFO - requests - Ответ: GET /tasks/1 - статус 200
+2025-06-06 12:49:59,436 - INFO - requests - Запрос: GET /tasks/api/1
+2025-06-06 12:49:59,439 - INFO - requests - Ответ: GET /tasks/api/1 - статус 200
+2025-06-06 12:49:59,441 - INFO - requests - Запрос: GET /subtasks/api/TaskID/1
+2025-06-06 12:49:59,446 - INFO - requests - Ответ: GET /subtasks/api/TaskID/1 - статус 200
+2025-06-06 12:50:12,145 - INFO - requests - Запрос: GET /subtasks/1
+2025-06-06 12:50:12,148 - INFO - requests - Ответ: GET /subtasks/1 - статус 200
+2025-06-06 12:50:12,168 - INFO - requests - Запрос: GET /subtasks/api/1
+2025-06-06 12:50:12,171 - INFO - requests - Ответ: GET /subtasks/api/1 - статус 200
+2025-06-06 12:50:13,565 - INFO - requests - Запрос: GET /subtasks/edit/
+2025-06-06 12:50:13,568 - INFO - Routers.tasks - Открываем страницу с редактированием задачи
+2025-06-06 12:50:13,568 - INFO - Routers.tasks - Открываем страницу редактирования подзадачи ID=1
+2025-06-06 12:50:13,574 - INFO - requests - Ответ: GET /subtasks/edit/ - статус 200
+2025-06-06 12:50:23,669 - INFO - requests - Запрос: POST /subtasks/edit_form
+2025-06-06 12:50:23,671 - INFO - Routers.tasks - Редактируем подзадачу ID=1
+2025-06-06 12:50:23,672 - INFO - Crud.tasks - Start uploading files for subtask_id=1, task_id=1, subtask_number=1
+2025-06-06 12:50:23,673 - INFO - Crud.tasks - Initial file count: 2
+2025-06-06 12:50:23,674 - INFO - Crud.tasks - Saved file task_1_sub_1_file3.
+2025-06-06 12:50:23,678 - INFO - Crud.tasks - Uploaded files: ['']
+2025-06-06 12:50:23,683 - INFO - requests - Ответ: POST /subtasks/edit_form - статус 303
+2025-06-06 12:50:23,686 - INFO - requests - Запрос: GET /tasks/1
+2025-06-06 12:50:23,689 - INFO - requests - Ответ: GET /tasks/1 - статус 200
+2025-06-06 12:50:23,702 - INFO - requests - Запрос: GET /tasks/api/1
+2025-06-06 12:50:23,704 - INFO - requests - Ответ: GET /tasks/api/1 - статус 200
+2025-06-06 12:50:23,706 - INFO - requests - Запрос: GET /subtasks/api/TaskID/1
+2025-06-06 12:50:23,714 - INFO - requests - Ответ: GET /subtasks/api/TaskID/1 - статус 200
+2025-06-06 12:50:50,499 - INFO - requests - Запрос: GET /subtasks/1
+2025-06-06 12:50:50,506 - INFO - requests - Ответ: GET /subtasks/1 - статус 200
+2025-06-06 12:50:50,532 - INFO - requests - Запрос: GET /subtasks/api/1
+2025-06-06 12:50:50,538 - INFO - requests - Ответ: GET /subtasks/api/1 - статус 200
+2025-06-06 12:50:51,631 - INFO - requests - Запрос: GET /subtasks/edit/
+2025-06-06 12:50:51,637 - INFO - Routers.tasks - Открываем страницу с редактированием задачи
+2025-06-06 12:50:51,638 - INFO - Routers.tasks - Открываем страницу редактирования подзадачи ID=1
+2025-06-06 12:50:51,644 - INFO - requests - Ответ: GET /subtasks/edit/ - статус 200
+2025-06-06 12:51:04,062 - INFO - requests - Запрос: POST /subtasks/edit_form
+2025-06-06 12:51:04,064 - INFO - Routers.tasks - Редактируем подзадачу ID=1
+2025-06-06 12:51:04,069 - INFO - Crud.tasks - Start uploading files for subtask_id=1, task_id=1, subtask_number=1
+2025-06-06 12:51:04,071 - INFO - Crud.tasks - Initial file count: 3
+2025-06-06 12:51:04,071 - INFO - Crud.tasks - Saved file task_1_sub_1_file4.
+2025-06-06 12:51:04,075 - INFO - Crud.tasks - Uploaded files: ['']
+2025-06-06 12:51:04,080 - INFO - requests - Ответ: POST /subtasks/edit_form - статус 303
+2025-06-06 12:51:04,082 - INFO - requests - Запрос: GET /tasks/1
+2025-06-06 12:51:04,086 - INFO - requests - Ответ: GET /tasks/1 - статус 200
+2025-06-06 12:51:04,101 - INFO - requests - Запрос: GET /tasks/api/1
+2025-06-06 12:51:04,107 - INFO - requests - Ответ: GET /tasks/api/1 - статус 200
+2025-06-06 12:51:04,108 - INFO - requests - Запрос: GET /subtasks/api/TaskID/1
+2025-06-06 12:51:04,112 - INFO - requests - Ответ: GET /subtasks/api/TaskID/1 - статус 200
+2025-06-06 12:52:41,001 - INFO - root - Логирование по дням инициализировано.
+2025-06-06 12:52:50,129 - INFO - requests - Запрос: GET /subtasks/1
+2025-06-06 12:52:50,234 - INFO - requests - Ответ: GET /subtasks/1 - статус 200
+2025-06-06 12:52:50,247 - INFO - requests - Запрос: GET /subtasks/api/1
+2025-06-06 12:52:50,252 - INFO - requests - Ответ: GET /subtasks/api/1 - статус 200
+2025-06-06 12:52:51,483 - INFO - requests - Запрос: GET /subtasks/edit/
+2025-06-06 12:52:51,487 - INFO - Routers.tasks - Открываем страницу с редактированием задачи
+2025-06-06 12:52:51,487 - INFO - Routers.tasks - Открываем страницу редактирования подзадачи ID=1
+2025-06-06 12:52:51,498 - INFO - requests - Ответ: GET /subtasks/edit/ - статус 200
+2025-06-06 12:53:02,448 - INFO - requests - Запрос: POST /subtasks/edit_form
+2025-06-06 12:53:02,453 - INFO - Routers.tasks - Редактируем подзадачу ID=1
+2025-06-06 12:53:02,457 - INFO - Crud.tasks - Start uploading files for subtask_id=1, task_id=1, subtask_number=1
+2025-06-06 12:53:02,459 - INFO - Crud.tasks - Initial file count: 4
+2025-06-06 12:53:02,460 - INFO - Crud.tasks - Saved file task_1_sub_1_file5..png
+2025-06-06 12:53:02,461 - INFO - Crud.tasks - Saved file task_1_sub_1_file6..png
+2025-06-06 12:53:02,474 - INFO - Crud.tasks - Uploaded files: ['solution_task_180_sub_7.png', 'solution_task_173_sub_7.png']
+2025-06-06 12:53:02,484 - INFO - requests - Ответ: POST /subtasks/edit_form - статус 303
+2025-06-06 12:53:02,487 - INFO - requests - Запрос: GET /tasks/1
+2025-06-06 12:53:02,496 - INFO - requests - Ответ: GET /tasks/1 - статус 200
+2025-06-06 12:53:02,513 - INFO - requests - Запрос: GET /tasks/api/1
+2025-06-06 12:53:02,514 - INFO - requests - Запрос: GET /subtasks/api/TaskID/1
+2025-06-06 12:53:02,522 - INFO - requests - Ответ: GET /tasks/api/1 - статус 200
+2025-06-06 12:53:02,530 - INFO - requests - Ответ: GET /subtasks/api/TaskID/1 - статус 200
+2025-06-06 12:53:04,349 - INFO - requests - Запрос: GET /subtasks/1
+2025-06-06 12:53:04,354 - INFO - requests - Ответ: GET /subtasks/1 - статус 200
+2025-06-06 12:53:04,367 - INFO - requests - Запрос: GET /subtasks/api/1
+2025-06-06 12:53:04,373 - INFO - requests - Ответ: GET /subtasks/api/1 - статус 200
+2025-06-06 12:53:05,473 - INFO - requests - Запрос: GET /subtasks/edit/
+2025-06-06 12:53:05,476 - INFO - Routers.tasks - Открываем страницу с редактированием задачи
+2025-06-06 12:53:05,476 - INFO - Routers.tasks - Открываем страницу редактирования подзадачи ID=1
+2025-06-06 12:53:05,480 - INFO - requests - Ответ: GET /subtasks/edit/ - статус 200
+2025-06-06 12:53:10,883 - INFO - requests - Запрос: POST /subtasks/edit_form
+2025-06-06 12:53:10,886 - INFO - Routers.tasks - Редактируем подзадачу ID=1
+2025-06-06 12:53:10,887 - INFO - Crud.tasks - Start uploading files for subtask_id=1, task_id=1, subtask_number=1
+2025-06-06 12:53:10,888 - INFO - Crud.tasks - Initial file count: 6
+2025-06-06 12:53:10,889 - INFO - Crud.tasks - Saved file task_1_sub_1_file7..lic
+2025-06-06 12:53:10,895 - INFO - Crud.tasks - Uploaded files: ['license (12).lic']
+2025-06-06 12:53:10,900 - INFO - requests - Ответ: POST /subtasks/edit_form - статус 303
+2025-06-06 12:53:10,902 - INFO - requests - Запрос: GET /tasks/1
+2025-06-06 12:53:10,906 - INFO - requests - Ответ: GET /tasks/1 - статус 200
+2025-06-06 12:53:10,920 - INFO - requests - Запрос: GET /tasks/api/1
+2025-06-06 12:53:10,924 - INFO - requests - Запрос: GET /subtasks/api/TaskID/1
+2025-06-06 12:53:10,924 - INFO - requests - Ответ: GET /tasks/api/1 - статус 200
+2025-06-06 12:53:10,932 - INFO - requests - Ответ: GET /subtasks/api/TaskID/1 - статус 200

@@ -44,7 +44,7 @@ class SubTask(Base):
 
     # Связь с моделью Task
     task = relationship('Task', backref='subtasks')
-
+    files = relationship("SubTaskFiles", back_populates="subtask")
 # Модель для таблицы StudentTasks
 class StudentTask(Base):
     __tablename__ = 'StudentTasks'
@@ -60,4 +60,16 @@ class StudentTask(Base):
 
     # Связь с пользователем (студентом)
     student = relationship('Student', backref='student_tasks')
+
+class SubTaskFiles(Base):
+    __tablename__ = "SubTaskFiles"
+
+    ID = Column(Integer, primary_key=True, index=True)
+    SubTaskID = Column(Integer, ForeignKey("SubTasks.SubTaskID"))
+    FileName = Column(String)
+    FilePath = Column(String)
+    UploadDate = Column(DateTime, nullable=True)
+
+    subtask = relationship("SubTask", back_populates="files")
+
 

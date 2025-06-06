@@ -25,6 +25,9 @@ students_router = APIRouter(prefix="/students", tags=["students"])
 students_subtasks_router = APIRouter(prefix="/students_subtasks", tags=["students_subtasks"])
 templates = Jinja2Templates(directory="templates")
 
+UPLOAD_STUDENTS_IMAGE_DIR = Path("Uploads/StudentSolutions")
+UPLOAD_STUDENTS_IMAGE_DIR.mkdir(parents=True, exist_ok=True)
+
 # /students/api/
 ''' Эндпоинт: Получить список пользователей'''
 @students_router.get(
@@ -283,8 +286,7 @@ def check_answer (request: AnswerInput, db: Session = Depends(get_db)):
     db.commit()
     return {"status": new_status}
 
-UPLOAD_STUDENTS_IMAGE_DIR = Path("Uploads/StudentSolutions")
-UPLOAD_STUDENTS_IMAGE_DIR.mkdir(parents=True, exist_ok=True)
+
 
 '''Отправка Решения  пользователя'''
 # /students_subtasks/submit-solution/

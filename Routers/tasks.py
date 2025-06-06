@@ -7,7 +7,8 @@ from dependencies import get_db
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from Crud.auth import get_current_student
-from Models import Student
+from Models import Student, SubTaskFiles
+from typing import List
 from pathlib import Path
 import shutil
 from Crud.auth import get_current_student, admin_required, verify_password, get_current_student_or_redirect
@@ -24,6 +25,14 @@ subtask_router  = APIRouter(prefix="/subtasks", tags=["subtasks"])
 task_js_router = APIRouter(prefix="/js", tags=["js"])
 #task_ji_router = APIRouter(prefix="/html", tags=["html"])
 templates = Jinja2Templates(directory="templates")
+
+
+UPLOAD_IMAGE_DIR = Path("Uploads/images")
+UPLOAD_SOLUTION_DIR = Path("Uploads/solutions")
+UPLOAD_IMAGE_DIR.mkdir(parents=True, exist_ok=True)
+UPLOAD_SOLUTION_DIR.mkdir(parents=True, exist_ok=True)
+UPLOAD_FILES_DIR = Path("Uploads/files")
+UPLOAD_FILES_DIR.mkdir(parents=True, exist_ok=True)
 
 # /tasks/api/   (GET)
 ''' Эндпоинт: Получить список КАТЕГОРИЙ'''
@@ -90,12 +99,7 @@ def create_new_subtask(subtask: SubTaskCreate, db: Session = Depends(get_db)):
     logger.info("Выполнили роут с добавлением задачи")
     return {"message": "Подзадача успешно добавлена", "SubTaskID": new_id}
 
-#UPLOAD_DIR = Path("Uploads")
-#UPLOAD_DIR.mkdir(exist_ok=True)
-UPLOAD_IMAGE_DIR = Path("Uploads/images")
-UPLOAD_SOLUTION_DIR = Path("Uploads/solutions")
-UPLOAD_IMAGE_DIR.mkdir(parents=True, exist_ok=True)
-UPLOAD_SOLUTION_DIR.mkdir(parents=True, exist_ok=True)
+
 
 
 # /subtasks/new/  (GET)
@@ -169,6 +173,7 @@ def post_edit_subtask_form(
     Description: str = Form(""),
     Answer: str = Form(""),
     ImageFile: UploadFile = File(None),
+    Files: List[UploadFile] = File(...),
     SolutionFile: UploadFile = File(None),
     db: Session = Depends(get_db)
 ):
@@ -194,8 +199,8 @@ def post_edit_subtask_form(
                 text("SELECT MAX(SubTaskNumber) FROM SubTasks WHERE TaskID = :task_id"),
                 {"task_id": TaskID}
             ).scalar()
-            subtask_number = (int(result) if result else 0) + 1
-            filename = f"task_{TaskID}_sub_{subtask_number}.{ext}"
+            SubTaskNumber = (int(result) if result else 0) + 1
+            filename = f"task_{TaskID}_sub_{SubTaskNumber}.{ext}"
             image_path = f"Uploads/images/{filename}"
 
         filepath = UPLOAD_IMAGE_DIR / filename
@@ -226,8 +231,8 @@ def post_edit_subtask_form(
                 text("SELECT MAX(SubTaskNumber) FROM SubTasks WHERE TaskID = :task_id"),
                 {"task_id": TaskID}
             ).scalar()
-            subtask_number = (int(result) if result else 0) + 1
-            filename = f"solution_task_{TaskID}_sub_{subtask_number}.{ext}"
+            SubTaskNumber = (int(result) if result else 0) + 1
+            filename = f"solution_task_{TaskID}_sub_{SubTaskNumber}.{ext}"
             solution_path = f"Uploads/solutions/{filename}"
 
         filepath = UPLOAD_SOLUTION_DIR / filename
@@ -243,6 +248,12 @@ def post_edit_subtask_form(
             # И раньше не было файла — путь остаётся пустым
             solution_path = None
 
+    print(f"SubTaskID:{type(SubTaskID)} TaskID:{type(TaskID)} SubTaskNumber:{type(SubTaskNumber)}")
+    print(f"Files: {Files}, type: {type(Files)}")
+    for f in Files:
+        print(f"File: filename={f.filename}, content_type={f.content_type}, type={type(f)}")
+    uploaded_files = task_crud.upload_file(SubTaskID, TaskID, SubTaskNumber, Files, db)
+    print(uploaded_files)
     subtask_data = SubTaskUpdate(
         TaskID=TaskID,
         SubTaskNumber=SubTaskNumber,
@@ -296,6 +307,7 @@ def read_subtasks_subtask_id(request: Request, subtask_id: int, current_student 
 @subtask_router.get("/api/TaskID/{task_id}", response_model=list[SubTaskRead],summary="Получить подзадачу по TaskID")
 def read_subtasks_TaskID(task_id: int, db: Session = Depends(get_db)):
     return task_crud.get_subtasks_TaskID(db, task_id)
+
 
 
 
