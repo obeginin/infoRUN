@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import text
 from Schemas.students import StudentsRead, StudentTaskRead,StudentTaskDetails, AnswerInput, SolutionInput
 from Crud import students
+from Routers.tasks import get_files_for_subtask
 from dependencies import get_db  # Зависимость для подключения к базе данных
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
@@ -172,6 +173,9 @@ def read_student_all_subtasks_by_login(
     #print(f"TASK VALUE: {tasks1[0]}")
     #print(tasks1)
 
+
+
+
     # Если никаких задач нет — делаем redirect обратно на страницу без параметров
     '''if not tasks1:
         # Перенаправляем на тот же путь, но без query-параметров
@@ -203,6 +207,10 @@ def read_student_all_subtasks(
         db: Session = Depends(get_db)):
     logging.warning(f"Вызываем роут read_student_all_subtasks с параметрами: StudentTaskID={StudentTaskID}")  # логирование
     Task = students.Get_Student_TaskDetails_By_ID(db, StudentTaskID)
+    print(Task)
+    files = get_files_for_subtask(int(Task['SubTaskID']), db)
+    Task['files'] = files
+
     user_answer = None
     if Task:
         user_answer = Task['StudentAnswer']  # или как у тебя поле называется

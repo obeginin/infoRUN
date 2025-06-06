@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional
-
+from datetime import datetime
 # Schemas\tasks.py
 ''' 
 Данные схемы описывают структуру данных, которые мы получаем или отправляем через API
@@ -51,3 +51,12 @@ class SubTaskUpdate(BaseModel):
     Description: str | None = None
     Answer: str | None = None
     SolutionPath: str | None = None
+
+class FileSchema(BaseModel):
+    ID: int
+    FileName: str
+    FilePath: str
+    UploadDate: Optional[datetime] = None
+
+    class Config:
+        orm_mode = True

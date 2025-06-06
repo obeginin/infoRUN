@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, Request, Form, UploadFile, File, Query, HTTPException
 from sqlalchemy import text
 from sqlalchemy.orm import Session
-from Schemas.tasks import TaskRead, SubTaskRead, SubTaskCreate, SubTaskUpdate
+from Schemas.tasks import TaskRead, SubTaskRead, SubTaskCreate, SubTaskUpdate, FileSchema
 from Crud import tasks as task_crud
 from dependencies import get_db
 from fastapi.responses import HTMLResponse
@@ -289,6 +289,8 @@ def list_tasks(request: Request, current_student = Depends(get_current_student_o
 def read_subtasks_subtask_id(subtask_id: int, db: Session = Depends(get_db)):
     return task_crud.get_subtasks_id(db, subtask_id)
 
+
+
 # /subtasks/files/{file_id}/download   (GET)
 '''Скачивание файла прикрепленного к задаче'''
 @subtask_router.get("/files/{file_id}/download")
@@ -298,6 +300,17 @@ def download_file(file_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Файл не найден")
 
     return FileResponse(path=db_file.FilePath, filename=db_file.FileName)
+
+'''получение всех файлов задачи'''
+@subtask_router.get("/api/files/{subtask_id}", response_model=List[FileSchema])
+def get_files_for_subtask(subtask_id: int, db: Session = Depends(get_db)):
+    files = db.execute(text("""
+        SELECT ID, FileName, FilePath, UploadDate
+        FROM SubTaskFiles
+        WHERE SubTaskID = :subtask_id
+    """), {"subtask_id": subtask_id}).mappings().all()
+    return list(files)
+
 
 # /subtasks/{subtask_id}   (GET)
 '''Вывод страницы html с задачей'''
