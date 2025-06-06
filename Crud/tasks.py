@@ -303,12 +303,3 @@ def upload_file(
         raise
 
 
-# /subtasks/files/{file_id}/download   (GET)
-'''Скачивание файла прикрепленного к задаче'''
-'''@subtask_router.get("/files/{file_id}/download")
-def download_file(file_id: int, db: Session = Depends(get_db)):
-    db_file = db.query(TaskFile).filter(TaskFile.ID == file_id).first()
-    if not db_file:
-        raise HTTPException(status_code=404, detail="Файл не найден")
-
-    return FileResponse(path=db_file.FilePath, filename=db_file.FileName)'''

@@ -140,7 +140,7 @@
         </div>
         {% endif %}
 
-        <pre>${{subtask}}</pre>>
+        <!--<pre>${{subtask}}</pre>>-->
         <h3>Файлы к задаче:</h3>
 
         <!-- Загрузка дополнительных файлов для задания -->
@@ -157,8 +157,9 @@
         <div id="file-list"></div>
         <ul>
           {% for file in subtask.files %}
-            <li><a href="/tasks/files/{{ file.ID }}/download">{{ file.FileName }}</a></li>
+            <li><a href="/subtasks/files/{{ file.ID }}/download">{{ file.FileName }}</a></li>
           {% endfor %}
+
         </ul>
 
         <input type="submit" value="Сохранить изменения">

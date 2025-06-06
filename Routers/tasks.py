@@ -6,6 +6,7 @@ from Crud import tasks as task_crud
 from dependencies import get_db
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+from starlette.responses import FileResponse
 from Crud.auth import get_current_student
 from Models import Student, SubTaskFiles
 from typing import List
@@ -288,7 +289,15 @@ def list_tasks(request: Request, current_student = Depends(get_current_student_o
 def read_subtasks_subtask_id(subtask_id: int, db: Session = Depends(get_db)):
     return task_crud.get_subtasks_id(db, subtask_id)
 
+# /subtasks/files/{file_id}/download   (GET)
+'''Скачивание файла прикрепленного к задаче'''
+@subtask_router.get("/files/{file_id}/download")
+def download_file(file_id: int, db: Session = Depends(get_db)):
+    db_file = db.query(SubTaskFiles).filter(SubTaskFiles.ID == file_id).first()
+    if not db_file:
+        raise HTTPException(status_code=404, detail="Файл не найден")
 
+    return FileResponse(path=db_file.FilePath, filename=db_file.FileName)
 
 # /subtasks/{subtask_id}   (GET)
 '''Вывод страницы html с задачей'''
