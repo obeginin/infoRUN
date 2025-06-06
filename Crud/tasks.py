@@ -66,21 +66,33 @@ def get_all_subtasks(db: Session):
 
 ''' функция-SQL для вывода подзадачи по её id (SubTaskID)'''
 def get_subtasks_id(db: Session, subtasks_id: int):
-    query = text("SELECT * FROM SubTasks WHERE SubTaskID = :id")
-    result = db.execute(query, {"id": subtasks_id}).fetchone()
+    result = db.execute(text(f"""
+                SELECT sb.*, stf.ID AS FileID, stf.FileName, stf.FilePath, stf.UploadDate FROM SubTasks sb
+                LEFT JOIN SubTaskFiles stf on stf.SubTaskID=sb.SubTaskID 
+                WHERE sb.SubTaskID = :id"""),
+                {"id": subtasks_id}).mappings().all()
     if not result:
         raise HTTPException(status_code=404, detail=f"Задача с ID {subtasks_id} не найдена")
+    first = result[0]
     subtask = {
-        "SubTaskID": result.SubTaskID,
-        "TaskID": result.TaskID,
-         "SubTaskNumber": result.SubTaskNumber,
-         "ImagePath": result.ImagePath,
-         "Description": result.Description,
-         "Answer": result.Answer,
-         "SolutionPath": result.SolutionPath
+        "SubTaskID": first["SubTaskID"],
+        "TaskID": first["TaskID"],
+        "SubTaskNumber": first["SubTaskNumber"],
+        "ImagePath": first["ImagePath"],
+        "Description": first["Description"],
+        "Answer": first["Answer"],
+        "files": [],
     }
-
-    if not result:
+    # Добавляем файлы, если есть
+    for row in result:
+        if row["FileID"] is not None:
+            subtask["files"].append({
+                "ID": row["FileID"],
+                "FileName": row["FileName"],
+                "FilePath": row["FilePath"],
+                "UploadDate": row["UploadDate"]
+            })
+    if not first:
         raise HTTPException(status_code=404, detail=f"Задача с ID {subtasks_id} не найдена")
     return subtask
 

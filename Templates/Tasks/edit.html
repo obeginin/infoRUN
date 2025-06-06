@@ -140,6 +140,8 @@
         </div>
         {% endif %}
 
+        <pre>${{subtask}}</pre>>
+        <h3>Файлы к задаче:</h3>
 
         <!-- Загрузка дополнительных файлов для задания -->
         <label for="newFilesInput" id="drop-area" style="
@@ -153,11 +155,18 @@
             <input type="file" id="newFilesInput" name="Files" multiple style="display:none;">
         </label>
         <div id="file-list"></div>
+        <ul>
+          {% for file in subtask.files %}
+            <li><a href="/tasks/files/{{ file.ID }}/download">{{ file.FileName }}</a></li>
+          {% endfor %}
+        </ul>
+
         <input type="submit" value="Сохранить изменения">
     </form>
 </div>
 
 <script>
+
     function handlePaste(event, inputId, previewId) {
         const items = event.clipboardData.items;
         for (let i = 0; i < items.length; i++) {
@@ -189,7 +198,7 @@
             }
         }
     }
-
+    //console.log("subtask", subtask); //Вывод в консоль браузера
     // Обработка для области подзадачи
     document.getElementById("paste-area").addEventListener("paste", function (event) {
         handlePaste(event, "imageFileInput", "preview");
