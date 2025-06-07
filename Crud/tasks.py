@@ -277,6 +277,12 @@ def upload_file(
 
         uploaded_files = []
         for idx, file in enumerate(files, start=1):
+            pos = file.file.tell()
+            file_content = file.file.read()
+            if not file_content:
+                logger.warning(f"Пропущен пустой файл: {file.filename}")
+                continue
+            file.file.seek(pos)  # вернуться обратно
             ext = Path(file.filename).suffix  # с точкой или пустая строка
             filename = f"task_{task_id}_sub_{subtask_number}_file{start_index + idx}{ext}"
             filepath = UPLOAD_FILES_DIR / filename
