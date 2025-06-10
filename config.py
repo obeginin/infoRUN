@@ -23,3 +23,10 @@ UPLOAD_FILES_DIR.mkdir(parents=True, exist_ok=True)
 UPLOAD_STUDENTS_IMAGE_DIR.mkdir(parents=True, exist_ok=True)
 
 TEMPLATES_DIR = "templates"
+
+LOG_DIR = Path(os.getenv("LOG_DIR"))
+LOG_FILE = Path(os.getenv("LOG_FILE")) #имя лог-файла.
+ARCHIVE_DIR = Path(os.getenv("ARCHIVE_DIR"))
+os.makedirs(LOG_DIR, exist_ok=True) # создает каталог, если его нет.
+os.makedirs(ARCHIVE_DIR, exist_ok=True)
+LOG_PATH = os.path.join(LOG_DIR, LOG_FILE)

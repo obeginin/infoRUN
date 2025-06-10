@@ -3,13 +3,8 @@ import logging
 from logging.handlers import TimedRotatingFileHandler
 import os
 import datetime
+from config import LOG_DIR, ARCHIVE_DIR, LOG_FILE, LOG_PATH
 
-LOG_DIR = "logs"  # каталог для логов.
-ARCHIVE_DIR = "logs/archive" # каталог для архивов.
-LOG_FILE = "app.log" #имя лог-файла.
-os.makedirs(LOG_DIR, exist_ok=True) # создает каталог, если его нет.
-os.makedirs(ARCHIVE_DIR, exist_ok=True)
-LOG_PATH = os.path.join(LOG_DIR, LOG_FILE)
 
 class ArchiveHandler(TimedRotatingFileHandler):
     def doRollover(self):
