@@ -1,4 +1,4 @@
---Создаем Хранимку, которая создает таблицу с задачами--
+--пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ--
 IF EXISTS(SELECT 1 FROM sys.procedures WHERE OBJECT_SCHEMA_NAME([object_id]) = 'dbo' and name = 'Create_Table_SubTasks')
 	DROP PROCEDURE dbo.Create_Table_SubTasks
 GO
@@ -9,14 +9,14 @@ BEGIN
 	IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'SubTasks')
 	BEGIN
 		CREATE TABLE SubTasks (
-		SubTaskID INT IDENTITY(1,1) PRIMARY KEY, --id подзадачи (первичный ключ)
-		TaskID INT NOT NULL,  -- Связь с задачей
-		SubTaskNumber INT NOT NULL,  -- Номер подзадачи (1.1, 1.2, ...)
-		ImagePath NVARCHAR(255), --фото задачи
-		Description NVARCHAR(MAX),  -- Описание подзадачи
-		Answer NVARCHAR(32), --Ответ
-		SolutionPath NVARCHAR(255), --Решение задачи
-		FOREIGN KEY (TaskID) REFERENCES Tasks(TaskID) ON UPDATE CASCADE -- Внешний ключ
+		SubTaskID INT IDENTITY(1,1) PRIMARY KEY, --id пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ)
+		TaskID INT NOT NULL,  -- пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+		SubTaskNumber INT NOT NULL,  -- пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (1.1, 1.2, ...)
+		ImagePath NVARCHAR(255), --пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+		Description NVARCHAR(MAX),  -- пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+		Answer NVARCHAR(32), --пїЅпїЅпїЅпїЅпїЅ
+		SolutionPath NVARCHAR(255), --пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+		FOREIGN KEY (TaskID) REFERENCES Tasks(TaskID) ON UPDATE CASCADE -- пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
 		);
 	END
 END;
@@ -24,7 +24,7 @@ END;
 
 /*
 exec dbo.Create_Table_SubTasks
-INSERT INTO SubTasks (TaskID, SubTaskNumber, Description) VALUES (1,'1.1','1 задача');
+INSERT INTO SubTasks (TaskID, SubTaskNumber, Description) VALUES (1,'1.1','1 пїЅпїЅпїЅпїЅпїЅпїЅ');
 select * from SubTasks
 DROP PROCEDURE dbo.Create_Table_SubTasks
 drop table SubTasks

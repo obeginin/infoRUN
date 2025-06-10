@@ -1,9 +1,7 @@
 # log.py
 import logging
-from logging.handlers import RotatingFileHandler
 from logging.handlers import TimedRotatingFileHandler
 import os
-import time
 import datetime
 
 LOG_DIR = "logs"  # каталог для логов.

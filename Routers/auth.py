@@ -1,3 +1,4 @@
+from config import TEMPLATES_DIR
 from fastapi import APIRouter, Depends,Form, Request, HTTPException
 from sqlalchemy.orm import Session
 from Models import Student
@@ -16,7 +17,7 @@ logger = logging.getLogger(__name__)
 home_router = APIRouter() # страница для пользователей
 auth_router = APIRouter(prefix="/home", tags=["home"]) # страница для пользователей
 admin_router = APIRouter(prefix="/admin", tags=["admin"]) # страница для админа
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(directory=TEMPLATES_DIR)
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
 # /

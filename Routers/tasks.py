@@ -1,3 +1,4 @@
+from config import UPLOAD_IMAGE_DIR, UPLOAD_SOLUTION_DIR, UPLOAD_FILES_DIR, TEMPLATES_DIR
 from fastapi import APIRouter, Depends, Request, Form, UploadFile, File, Query, HTTPException
 from sqlalchemy import text
 from sqlalchemy.orm import Session
@@ -14,26 +15,26 @@ from pathlib import Path
 import shutil
 from Crud.auth import get_current_student, admin_required, verify_password, get_current_student_or_redirect
 from fastapi.responses import RedirectResponse
+from dotenv import load_dotenv
 import os
 import logging
-logger = logging.getLogger(__name__)
+
 # Routers\tasks.py
 ''' Маршруты и Эндпоинты'''
+
+load_dotenv() # загружаем переменные из файла .env
+logger = logging.getLogger(__name__) # создание логгера для текущего модуля
+
 
 '''Маршруты добавляются к основному адресу сайта localhost:9000/'''
 task_router  = APIRouter(prefix="/tasks", tags=["tasks"])
 subtask_router  = APIRouter(prefix="/subtasks", tags=["subtasks"])
 task_js_router = APIRouter(prefix="/js", tags=["js"])
 #task_ji_router = APIRouter(prefix="/html", tags=["html"])
-templates = Jinja2Templates(directory="templates")
+
+templates = Jinja2Templates(directory=TEMPLATES_DIR)
 
 
-UPLOAD_IMAGE_DIR = Path("Uploads/images")
-UPLOAD_SOLUTION_DIR = Path("Uploads/solutions")
-UPLOAD_IMAGE_DIR.mkdir(parents=True, exist_ok=True)
-UPLOAD_SOLUTION_DIR.mkdir(parents=True, exist_ok=True)
-UPLOAD_FILES_DIR = Path("Uploads/files")
-UPLOAD_FILES_DIR.mkdir(parents=True, exist_ok=True)
 
 # /tasks/api/   (GET)
 ''' Эндпоинт: Получить список КАТЕГОРИЙ'''

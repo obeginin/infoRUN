@@ -11,7 +11,8 @@ logger = logging.getLogger(__name__)
 # /Routers/files.py
 '''Загрузка файла'''
 
-router = APIRouter(prefix="/files", tags=["Files"])
+'''Не используется!!!!!!!'''
+'''router = APIRouter(prefix="/files", tags=["Files"])
 UPLOAD_DIR = Path("Uploads")
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)  # Создаём папку, если нет
 
@@ -47,4 +48,4 @@ async def upload_file(
     return {
         "filename": unique_name,
         "path": str(file_path)
-    }
+    }'''

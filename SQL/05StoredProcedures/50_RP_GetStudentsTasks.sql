@@ -1,5 +1,5 @@
 /*
-С помощью данного скрипта находм подробную информацию о выбранной задачи студента по StudentTaskID
+пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ StudentTaskID
 
 exec GetStudentsTasks @StudentTaskID=1
 EXEC dbo.GetStudentTaskDetails 1
@@ -15,12 +15,12 @@ CREATE PROCEDURE GetStudentsTasks
     @SubTaskID INT					= NULL,
     @TaskID INT						= NULL,
     @CompletionStatus NVARCHAR(20)  = NULL, 
-	@SortColumn NVARCHAR(50)		= NULL, -- Выбор поля для сортировки
-    @SortDirection NVARCHAR(4)		= 'ASC', -- выбор сортировки (по умолчанию ASC по возрастанию) DESC -по убыванию
+	@SortColumn NVARCHAR(50)		= NULL, -- пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+    @SortDirection NVARCHAR(4)		= 'ASC', -- пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ ASC пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ) DESC -пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	@Description  NVARCHAR(MAX)		= NULL
 AS
 BEGIN
-	/*отладочный вывод в сообщения SSMS
+	/*пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ SSMS
 	PRINT 'Params:';
 	PRINT 'StudentTaskID: ' + ISNULL(CAST(@StudentTaskID AS NVARCHAR), 'NULL');
 	PRINT 'StudentID: ' + ISNULL(CAST(@StudentID AS NVARCHAR), 'NULL');
@@ -45,9 +45,9 @@ BEGIN
         s.Description,
         s.Answer,
         s.SolutionPath,
-		(SELECT COUNT(*) FROM StudentTasks where StudentID= @StudentID) AS TotalSubTasks, --Количество задач студента
-		(SELECT COUNT(*) FROM StudentTasks where StudentID=@StudentID and CompletionStatus='Выполнено') AS CompletedSubTasks, --Количество решеных задач студента
-		COUNT(*) OVER() AS TotalCount --  Добавлено общее количество всех найденных записей
+		(SELECT COUNT(*) FROM StudentTasks where StudentID= @StudentID) AS TotalSubTasks, --пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+		(SELECT COUNT(*) FROM StudentTasks where StudentID=@StudentID and CompletionStatus='пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ') AS CompletedSubTasks, --пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+		COUNT(*) OVER() AS TotalCount --  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     FROM StudentTasks st
         JOIN Students sd ON sd.ID = st.StudentID 
         JOIN SubTasks s ON s.SubTaskID = st.SubTaskID
@@ -129,26 +129,26 @@ GO
 
 /*SELECT DISTINCT CompletionStatus FROM StudentTasks;
 
-EXEC GetStudentsTasks; Вывод всех задач всех студентов
-EXEC GetStudentsTasks @StudentID = 2; Вывод всех задач студента с id=2
-EXEC GetStudentsTasks @StudentID = 2, @Description = N'Крылов Вариант №14'; Вывод всех задач студента с id=2
-EXEC GetStudentsTasks @TaskID = 2; по категории задания
-EXEC GetStudentsTasks @SubTaskID = 2, @CompletionStatus = N'Не приступал';
-EXEC GetStudentsTasks @CompletionStatus = N'Выполнено'; по статусу выполнения
-EXEC GetStudentsTasks @StudentTaskID = 2; конкретная задача
-EXEC GetStudentsTasks @Description = N'Крылов Вариант №14'; конкретная задача
+EXEC GetStudentsTasks; пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+EXEC GetStudentsTasks @StudentID = 2; пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ id=2
+EXEC GetStudentsTasks @StudentID = 2, @Description = N'пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ14'; пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ id=2
+EXEC GetStudentsTasks @TaskID = 2; пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+EXEC GetStudentsTasks @SubTaskID = 2, @CompletionStatus = N'пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ';
+EXEC GetStudentsTasks @CompletionStatus = N'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ'; пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+EXEC GetStudentsTasks @StudentTaskID = 2; пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+EXEC GetStudentsTasks @Description = N'пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ14'; пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 
 
-С сортировкой 
+пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 
 EXEC GetStudentsTasks @SortColumn = 'StudentTaskID', @SortDirection = 'ASC';
 EXEC GetStudentsTasks @SortColumn = 'StudentTaskID', @SortDirection = 'DESC';
 EXEC GetStudentsTasks @SortColumn = 'TaskID', @SortDirection = 'ASC';
 EXEC GetStudentsTasks @SortColumn = 'TaskID', @SortDirection = 'DESC';
 
-EXEC GetStudentsTasks @SortColumn = 'CompletionDate', @SortDirection = 'ASC'; Сортировка по дате по убыванию:
-EXEC GetStudentsTasks @SortColumn = 'CompletionDate', @SortDirection = 'DESC'; Сортировка по дате по убыванию:
+EXEC GetStudentsTasks @SortColumn = 'CompletionDate', @SortDirection = 'ASC'; пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ:
+EXEC GetStudentsTasks @SortColumn = 'CompletionDate', @SortDirection = 'DESC'; пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ:
 
-Сортировка не отрабатывает
+пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 EXEC GetStudentsTasks @SortColumn = 'StudentID', @SortDirection = 'ASC';
 EXEC GetStudentsTasks @SortColumn = 'StudentID', @SortDirection = 'DESC';
 EXEC GetStudentsTasks @SortColumn = 'Login', @SortDirection = 'ASC';
@@ -167,6 +167,7 @@ select distinct Description from SubTasks
 SELECT TaskTitle FROM Tasks
 */
 
-select* from StudentTasks where StudentID=2 and CompletionStatus='Выполнено'
-SELECT COUNT(*) FROM StudentTasks where StudentID=2 and CompletionStatus='Выполнено'
-SELECT COUNT(*) FROM StudentTasks where  CompletionStatus='Выполнено'
+select* from StudentTasks where StudentID=2 and CompletionStatus='пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ'
+SELECT COUNT(*) FROM StudentTasks where StudentID=2 and CompletionStatus='пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ'
+SELECT COUNT(*) FROM StudentTasks where  CompletionStatus='пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ'
+select * from SubTaskFiles

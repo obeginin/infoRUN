@@ -1,3 +1,4 @@
+from config import UPLOAD_IMAGE_DIR, UPLOAD_SOLUTION_DIR, UPLOAD_FILES_DIR
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 from Schemas.tasks import SubTaskCreate, SubTaskUpdate
@@ -6,22 +7,20 @@ from typing import Optional
 from Models import SubTaskFiles
 import shutil
 from pathlib import Path
+
 import logging
 from typing import List
-logger = logging.getLogger(__name__)
+
 # Crud\tasks.py
-
-
-UPLOAD_IMAGE_DIR = Path("Uploads/images")
-UPLOAD_SOLUTION_DIR = Path("Uploads/solutions")
-UPLOAD_IMAGE_DIR.mkdir(parents=True, exist_ok=True)
-UPLOAD_SOLUTION_DIR.mkdir(parents=True, exist_ok=True)
-UPLOAD_FILES_DIR = Path("Uploads/files")
-UPLOAD_FILES_DIR.mkdir(parents=True, exist_ok=True)
 ''' 
 CRUD - основная логика работы запроса
-описываем функции, которые выполняют SQL запросы к БД, результат возвращается в виде кортежа
+Основные функции для задач
 '''
+
+
+logger = logging.getLogger(__name__) # создание логгера для текущего модуля
+
+
 
 ''' функция-SQL запрос к БД для вывода всех задач'''
 def get_all_tasks(db: Session):

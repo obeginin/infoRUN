@@ -1,13 +1,8 @@
 from datetime import datetime, timedelta
 from jose import JWTError, jwt
 from typing import Optional
-
+from config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES # импорт из конфига токена
 """Функции для генерации JWT-токена"""
-
-# Секретный ключ для кодирования JWT
-SECRET_KEY = "secret_key_olezhka"  # Замените на реальный секрет
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 300
 
 # Функция для создания JWT токена
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):

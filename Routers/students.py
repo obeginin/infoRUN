@@ -1,5 +1,6 @@
+from config import TEMPLATES_DIR
 from http.client import HTTPException
-
+from config import UPLOAD_IMAGE_DIR, UPLOAD_SOLUTION_DIR, UPLOAD_FILES_DIR, UPLOAD_STUDENTS_IMAGE_DIR
 from fastapi import APIRouter, Depends, Request, Query, Form,  UploadFile, File
 from sqlalchemy.orm import Session
 from sqlalchemy import text
@@ -13,21 +14,21 @@ from typing import Literal
 from Crud.auth import get_current_student, admin_required, verify_password, get_current_student_or_redirect
 from fastapi.responses import RedirectResponse
 from starlette.responses import JSONResponse
-from pathlib import Path
 import shutil
-import traceback
 from typing import Optional
+
 import logging
-logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__) # создание логгера для текущего модуля
+
 # Routers\Students.py
 ''' Маршруты и Эндпоинты'''
 
+
+
 students_router = APIRouter(prefix="/students", tags=["students"])
 students_subtasks_router = APIRouter(prefix="/students_subtasks", tags=["students_subtasks"])
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(directory=TEMPLATES_DIR)
 
-UPLOAD_STUDENTS_IMAGE_DIR = Path("Uploads/StudentSolutions")
-UPLOAD_STUDENTS_IMAGE_DIR.mkdir(parents=True, exist_ok=True)
 
 # /students/api/
 ''' Эндпоинт: Получить список пользователей'''
@@ -148,11 +149,11 @@ def read_student_all_subtasks_by_login(
             "error": "Студент не найден"
         })
 
-# ищем список категорий
+    # ищем список категорий
     list_of_tasks = db.execute(text("SELECT TaskID, TaskTitle FROM Tasks")).fetchall()
-# ищем всех студентов
+    # ищем всех студентов
     students_id = db.execute(text("select ID, Login from Students")).fetchall()
-# ищем все варианты
+    # ищем все варианты
     variants = db.execute(text("select distinct Description from SubTasks")).fetchall()
 
 # по его id ищем все его задачи

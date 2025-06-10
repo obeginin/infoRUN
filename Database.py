@@ -1,7 +1,10 @@
-from sqlalchemy import create_engine,text
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 import os
 from dotenv import load_dotenv
+# Database.py
+'''файл снастройкой подключения к базе'''
+
 
 load_dotenv()  # загрузить .env в окружение
 
@@ -16,7 +19,10 @@ DATABASE_URL = (
     "&TrustServerCertificate=yes")
 engine = create_engine(DATABASE_URL) # функция create_engine создаёт объект соединения с базой данных.
 
+#фабрика для создания сессий подключения к базе (через неё мы будем выполнять запросы).
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
+Base = declarative_base() # базовый класс, от которого будут наследоваться все модели таблиц в SQLAlchemy.
 
 
 
@@ -31,7 +37,3 @@ except Exception as e:
     print("❌ Ошибка подключения:", e)
 
 '''
-#фабрика для создания сессий подключения к базе (через неё мы будем выполнять запросы).
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-Base = declarative_base() # базовый класс, от которого будут наследоваться все модели таблиц в SQLAlchemy.

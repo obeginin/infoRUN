@@ -1,3 +1,4 @@
+from config import *
 from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordBearer
@@ -11,7 +12,15 @@ from fastapi.responses import RedirectResponse
 from starlette.status import HTTP_401_UNAUTHORIZED
 from typing import Optional
 import logging
-logger = logging.getLogger(__name__)
+
+# Crud\auth.py
+''' 
+CRUD - основная логика работы запроса
+Основные функции для авторизации
+'''
+
+logger = logging.getLogger(__name__) # создание логгера для текущего модуля
+
 
 # шифрование пароля
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
