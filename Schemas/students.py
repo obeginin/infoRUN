@@ -7,8 +7,8 @@ from pydantic import ConfigDict
 сериализация (преобразование в JSON и обратно)
 '''
 
-class StudentsRead(BaseModel):
-    ID: int
+# Базовая модель студента
+class StudentBase(BaseModel):
     Login: str
     Last_Name: str
     First_Name: str
@@ -18,19 +18,33 @@ class StudentsRead(BaseModel):
     BirthDate: datetime
     Comment: str
 
+
+class StudentsRead(StudentBase):
+    ID: int
+
     class Config:
         from_attributes = True
 
-class StudentTaskRead(BaseModel):
+
+# Базовая модель StudentTask
+class StudentTaskBase(BaseModel):
     StudentTaskID: int
     StudentID: int
-    Login: Optional[str] = None
-    Role: Optional[str] = None
     SubTaskID: int
-    CompletionStatus: str
+    CompletionStatus: Optional[str] = None
     Score: Optional[float] = None
     CompletionDate: Optional[datetime] = None
     StudentAnswer: Optional[str] = None
+
+    model_config = ConfigDict(
+        from_attributes=True,
+        json_encoders={datetime: lambda v: v.isoformat() if v else None}
+    )
+
+# 🔍 Расширение для отображения задачи с деталями (наследуем от StudentTaskBase)
+class StudentTaskRead(StudentTaskBase):
+    Login: Optional[str] = None
+    Role: Optional[str] = None
     TaskID: Optional[int] = None
     TaskTitle: Optional[str] = None
     SubTaskNumber: Optional[int] = None
@@ -41,30 +55,11 @@ class StudentTaskRead(BaseModel):
     TotalSubTasks: Optional[int] = None
     CompletedSubTasks: Optional[int] = None
     TotalCount: Optional[int] = None
-    model_config = ConfigDict(
-        from_attributes=True,
-        json_encoders={datetime: lambda v: v.isoformat() if v else None}
-    )
 
+#  (наследуем от StudentTaskRead)
+class StudentTaskDetails(StudentTaskRead):
+    SolutionStudentPath: Optional[str] = None
 
-
-class StudentTaskDetails(BaseModel):
-    StudentTaskID: int
-    StudentID: int
-    SubTaskID: int
-    StudentAnswer: Optional[str]
-    CompletionStatus: Optional[str]
-    Score: Optional[int]
-    CompletionDate: Optional[datetime]
-    Login: str
-    Role: str
-    TaskID: int
-    SubTaskNumber: int
-    ImagePath: Optional[str]
-    Description: Optional[str]
-    Answer: Optional[str]
-    SolutionPath: Optional[str]
-    SolutionStudentPath: Optional[str] = None  # Новое поле
 
 
 class AnswerInput(BaseModel):
