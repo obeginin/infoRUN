@@ -7,7 +7,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse
 from log import setup_logging
 from middlewares import LoggingMiddleware
-
+import logging
 # main.py
 '''главный файл проекта'''
 

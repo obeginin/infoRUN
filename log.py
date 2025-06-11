@@ -3,7 +3,7 @@ import logging
 from logging.handlers import TimedRotatingFileHandler
 import os
 import datetime
-from config import LOG_DIR, ARCHIVE_DIR, LOG_FILE, LOG_PATH
+from config import LOG_DIR, ARCHIVE_DIR, LOG_FILE, LOG_PATH, LOG_LEVEL
 
 
 class ArchiveHandler(TimedRotatingFileHandler):
@@ -29,9 +29,11 @@ def setup_logging():
 
     handler.suffix = "%Y-%m-%d"  # добавит дату к файлу, например: app.log.2025-05-19
 
+    # Конвертируем строку уровня логов в числовое значение
+    log_level = getattr(logging, LOG_LEVEL.upper(), logging.INFO)
 # настраивает логирование:
     logging.basicConfig(
-        level = logging.INFO,
+        level = log_level,
         encoding="utf-8",
         format = "%(asctime)s - %(levelname)s - %(name)s - %(message)s",
         handlers = [
@@ -40,4 +42,4 @@ def setup_logging():
             ]
         )
 
-    logging.info("Логирование по дням инициализировано.")
+    logging.info(f"Логирование по дням инициализировано. Уровень: {LOG_LEVEL.upper()}")

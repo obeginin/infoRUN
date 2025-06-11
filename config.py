@@ -30,3 +30,6 @@ ARCHIVE_DIR = Path(os.getenv("ARCHIVE_DIR"))
 os.makedirs(LOG_DIR, exist_ok=True) # создает каталог, если его нет.
 os.makedirs(ARCHIVE_DIR, exist_ok=True)
 LOG_PATH = os.path.join(LOG_DIR, LOG_FILE)
+
+'''Уровень логирования'''
+LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
