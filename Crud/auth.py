@@ -6,7 +6,7 @@ from dependencies import get_db
 from Models import Student
 from Security.token import SECRET_KEY, ALGORITHM
 from fastapi import Depends, HTTPException, status, Request
-from Crud.students import get_student_by_login
+#from Crud.students import get_student_by_login
 from passlib.context import CryptContext # объект, который помогает удобно хешировать и проверять пароли.
 from fastapi.responses import RedirectResponse
 from starlette.status import HTTP_401_UNAUTHORIZED
@@ -111,7 +111,7 @@ def get_current_student(request: Request, db: Session = Depends(get_db)) -> Stud
 # Функция для аутентификации студента
 '''вроде сейчас используется только в swagger'''
 def authenticate_student(db: Session, login: str, password: str):
-    student = get_student_by_login(db, login)
+    student = db.query(Student).filter(Student.Login == login).first()
     if not student:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

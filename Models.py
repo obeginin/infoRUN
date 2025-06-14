@@ -3,7 +3,9 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
 # Models.py
-'''В данном файле описываем все таблицы аналогично таблица из базы данных'''
+'''В данном файле описываем все таблицы аналогично таблица из базы данных
+данные модели используются для ORM работы
+'''
 
 Base = declarative_base()
 # Модель для таблицы Students

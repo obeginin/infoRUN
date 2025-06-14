@@ -41,12 +41,12 @@ templates = Jinja2Templates(directory=TEMPLATES_DIR)
 # через @ указываем какому маршруту принадлежит Эндпоинт
 @task_router.get(
     "/api/",                    # добавляем префикс к адресу
-    response_model=list[TaskRead],   # указываем какой схеме должны соответсвовать данные
+    response_model=list[TaskRead],   # указываем какой схеме должны соответствовать данные
     summary="Получить список задач",
     description="Выводит список всех задач имеющихся в БД"
 )
 def read_all_tasks(db: Session = Depends(get_db)):
-    return task_crud.get_all_tasks(db) # качестве результата запукаем функцию get_all_tasks из файла Crud\tasks.py
+    return task_crud.get_all_tasks(db) # качестве результата запускаем функцию get_all_tasks из файла Crud\tasks.py
 
 
 

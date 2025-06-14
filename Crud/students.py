@@ -159,8 +159,8 @@ def get_task_student(db: Session, student_id: int, SubTaskID: int) -> list[Stude
     return task_student
 
 # Функция для получения студента по логину
-def get_student_by_login(db: Session, login: str):
-    return db.query(Student).filter(Student.Login == login).first()
+'''def get_student_by_login(db: Session, login: str):
+    return db.query(Student).filter(Student.Login == login).first()'''
 
 
 '''все данные задачи выбранного студента по StudentTaskID'''
