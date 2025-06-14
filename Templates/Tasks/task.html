@@ -1,97 +1,15 @@
-<!-- Templates/Tasks/create.html -->
+<!-- Templates/Tasks/task.html -->
 {% extends "base.html" %}
 
 {% block title %}Добавление задачи{% endblock %}
 {% block title_1 %}Добавление задачи!{% endblock %}
 {% block content %}
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f5f7fa;
-            margin: 40px;
-            color: #333;
-        }
-
-        .subtask-info-container {
-            max-width: auto;
-            min-height: 400px;
-            margin: 40px auto;
-            padding: 20px 30px;
-            background: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .info-block {
-            margin-bottom: 20px;
-        }
-
-        .info-block label {
-            font-weight: bold;
-            display: block;
-            margin-bottom: 6px;
-        }
-
-        .info-block .value {
-            background: #f1f1f1;
-            padding: 10px;
-            border-radius: 5px;
-        }
-
-        .image-block img {
-            max-width: 100%;
-            border-radius: 6px;
-            margin-top: 10px;
-        }
-
-        .back-button {
-            display: inline-block;
-
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            text-decoration: none;
-            border-radius: 6px;
-            transition: background-color 0.3s ease;
-        }
-
-        .back-button:hover {
-            background-color: #0056b3;
-        }
 
 
-        <!-- Стиль для кнопки (Надо вынести в общий файл) -->
-        .center-wrapper {
-            display: flex;
-            justify-content: left;   /* по горизонтали */
-            align-items: center;       /* по вертикали */
-        }
-        .btn-primary {
-            /*margin-top: 30px;*/
-            background-color: #d63384;
-            color: white;
-            font-weight: 600;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 16px;
-            width: 200px;
-            transition: background-color 0.3s ease;
-        }
-
-        .btn-primary:hover {
-            background-color: #0056b3;
-        }
     </style>
-    <a href="/subtasks" class="back-button">Назад к списку</a>
 
+    <button id="back-button" onclick="goBack()" class="btn btn-back">⬅ Назад</button>
    <div id="subtask-info-container"></div>
 
     </div>
@@ -99,7 +17,7 @@
             <form action="/subtasks/edit/" method="get">
                 <input type="hidden" name="SubTaskID" id="SubTaskID-input">
                 {% if student.Role == "admin" %}
-                <button type="submit" class="btn-primary">Редактировать задачу</button>
+                <button type="submit" class="btn btn-edit">Редактировать задачу</button>
                 {% endif %}
             </form>
         </div>
@@ -107,6 +25,10 @@
 
     <!-- с помощью JS получаем задачу -->
     <script>
+        // для кнопки
+        function goBack() {
+            window.history.back();
+          }
         const baseImageUrl = "/";
         // Получаем subtask_id из URL
         const urlParts = window.location.pathname.split("/");

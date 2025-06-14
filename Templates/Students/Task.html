@@ -184,7 +184,7 @@
 
                 <label for="userAnswer">Ваш ответ:</label>
                 <input type="text" class="value" id="userAnswer" name="userAnswer" value="{{ user_answer or '' }}" required>
-                <button type="button" id="submitBtn" class="btn-primary">Проверить ответ</button>
+                <button type="button" id="submitBtn" class="btn">Проверить ответ</button>
                 <!--<label for="solution_file">Файл решения:</label>
                 <input type="file" id="solution_file" name="solution_file" />
                     <pre>Путь к решению студента: {{ subtask.SolutionStudentPath or "Путь не задан" }}</pre>-->
@@ -200,7 +200,7 @@
             </div>
             <input type="file" name="StudentSolutionFile" id="StudentSolutionFileInput" style="display:none;">
             <div id="StudentSolution-preview" style="margin-top: 10px;"></div>
-            <button type="submit" id="submitBtn2" class="btn-primary">Отправить решение</button>
+            <button type="submit" id="submitBtn2" class="btn">Отправить решение</button>
                 {% if subtask.SolutionStudentPath %}
                     <div class="field image-preview">
                         <label>Ваше текущее решение:</label>

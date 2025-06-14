@@ -49,7 +49,6 @@ def read_all_tasks(db: Session = Depends(get_db)):
     return task_crud.get_all_tasks(db) # качестве результата запускаем функцию get_all_tasks из файла Crud\tasks.py
 
 
-
 # /tasks/api/{task_id}  (GET)
 ''' Эндпоинт: Получить категорию по id'''
 @task_router.get("/api/{task_id}", response_model=list[TaskRead],summary="Получить задачу по id")
