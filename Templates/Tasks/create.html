@@ -23,11 +23,10 @@
 
             <!-- Изображение подзадачи -->
             <label>Изображение:</label>
-            <div id="paste-area"
-                 style="paste-area">
+            <div id="paste-area" style="paste-area">
                 Нажмите сюда и вставьте скриншот (Ctrl+V)
             </div>
-                <input type="file" name="ImageFile" id="imageFileInput" style="display:none;">
+            <input type="file" name="ImageFile" id="imageFileInput" style="display:none;">
             <div id="preview" style="margin-top: 10px;"></div>
 
 
@@ -44,14 +43,15 @@
             <input type="submit" value="Добавить подзадачу"><br>
         </form>
     </div>
-<!-- Скрипт для вставки картинки из буфера-->
+
     <script>
+<!-- Функция для вставки картинки из буфера-->
         function handlePaste(event, inputId, previewId) {
-    const items = event.clipboardData.items;
-    for (let i = 0; i < items.length; i++) {
-        const item = items[i];
-        if (item.type.indexOf("image") !== -1) {
-            const file = item.getAsFile();
+            const items = event.clipboardData.items;
+            for (let i = 0; i < items.length; i++) {
+                const item = items[i];
+                if (item.type.indexOf("image") !== -1) {
+                    const file = item.getAsFile();
 
             // Помещаем файл в input[type=file]
             const dataTransfer = new DataTransfer();
@@ -63,12 +63,7 @@
             const preview = document.getElementById(previewId);
             const img = document.createElement("img");
             img.src = URL.createObjectURL(file);
-            img.style.maxWidth = "500px";
-            img.style.maxHeight = "400px";
-            img.style.display = "block";
-            img.style.border = "1px solid #ccc";
-            img.style.marginTop = "10px";
-            img.style.borderRadius = "6px";
+            img.className = "pasted-image-preview";
             preview.innerHTML = '';
             preview.appendChild(img);
 

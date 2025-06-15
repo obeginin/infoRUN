@@ -326,6 +326,15 @@ label {
     cursor: text;
 }
 
+.pasted-image-preview {
+    max-width: 500px;
+    max-height: 400px;
+    display: block;
+    border: 1px solid #ccc;
+    margin-top: 10px;
+    border-radius: 6px;
+}
+
 /**/
 /*Выравнивание*/
 .center-wrapper {
