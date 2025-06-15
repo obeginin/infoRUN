@@ -12,94 +12,82 @@ HTML страница раздела "Мои задачи" с выводом с�
     {% endif %}
 {% endblock %}
 {% block content %}
-<style>
-        .back-button {
-            display: inline-block;
 
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            text-decoration: none;
-            border-radius: 6px;
-            transition: background-color 0.3s ease;
-        }
-
-        .back-button:hover {
-            background-color: #0056b3;
-        }
-</style>
     {% if tasks %}
         <p>Моих задач:{{ tasks[0].TotalSubTasks }}</p>
         <p>Решено задач: {{ tasks[0].CompletedSubTasks }}</p>
     {% endif %}
-    <form method="get" id="filter-form" action="/students_subtasks/StudentTasksByLogin/">
-        {% if student.Role == "admin" %}
-          <label>Студент:</label>
-          <select name="StudentID" id="select-student">
-            <!-- Эта опция disabled, поэтому не попадёт в запрос -->
-            <option value=""  {% if request.query_params.get('StudentID') is none %}selected{% endif %}}>-- выбери студента --</option>
-            {% for _student in students_id %}
-              <option value="{{ _student.ID }}"{% if request.query_params.get('StudentID') == _student.ID|string %} selected{% endif %}>{{ _student.Login }}</option>
-            {% endfor %}
-          </select>
-        {% endif %}
-<!--
-        <label>Задача (SubTaskID):</label>
-        <input
-          type="number"
-          name="SubTaskID"
-          placeholder="Введите ID"
-          value="{{ request.query_params.get('SubTaskID', '') }}"
-          style="width: 6em;"
-        >
--->
-        <label>Статус:</label>
-        <select name="status">
-            <option value=""  {% if request.query_params.get('status') is none %}selected{% endif %}>-- любой --</option>
-            <option value="Не приступал" {% if request.query_params.get('status') == 'Не приступал' %}selected{% endif %}>Не приступал</option>
-            <option value="В процессе" {% if request.query_params.get('status') == 'В процессе' %}selected{% endif %}>В процессе</option>
-            <option value="Выполнено" {% if request.query_params.get('status') == 'Выполнено' %}selected{% endif %}>Выполнено</option>
-        </select>
+    <form method="get" id="filter-form" class="form form-filter" action="/students_subtasks/StudentTasksByLogin/">
+        <div class="row-filter">
+            {% if student.Role == "admin" %}
+              <label class="label-filter">Студент:</label>
+              <select name="StudentID" id="select-student" class="select-filter">
+                <!-- Эта опция disabled, поэтому не попадёт в запрос -->
+                <option value=""  {% if request.query_params.get('StudentID') is none %}selected{% endif %}}>-- выбери студента --</option>
+                {% for _student in students_id %}
+                  <option value="{{ _student.ID }}"{% if request.query_params.get('StudentID') == _student.ID|string %} selected{% endif %}>{{ _student.Login }}</option>
+                {% endfor %}
+              </select>
+            {% endif %}
+    <!--
+            <label>Задача (SubTaskID):</label>
+            <input
+              type="number"
+              name="SubTaskID"
+              placeholder="Введите ID"
+              value="{{ request.query_params.get('SubTaskID', '') }}"
+              style="width: 6em;"
+            >
+    -->
+            <label class="label-filter">Статус:</label>
+            <select name="status" class="select-filter">
+                <option value=""  {% if request.query_params.get('status') is none %}selected{% endif %}>-- любой --</option>
+                <option value="Не приступал" {% if request.query_params.get('status') == 'Не приступал' %}selected{% endif %}>Не приступал</option>
+                <option value="В процессе" {% if request.query_params.get('status') == 'В процессе' %}selected{% endif %}>В процессе</option>
+                <option value="Выполнено" {% if request.query_params.get('status') == 'Выполнено' %}selected{% endif %}>Выполнено</option>
+            </select>
 
-        <label>Категория:</label>
-            <select name="TaskID" id="select-task">
-              <option value="" {% if request.query_params.get('TaskID') in (None, '') %}selected{% endif %}>-- любой --</option>
-              {% for tid, title in TasksID %}
-                <option value="{{ tid }}"{% if request.query_params.get('TaskID') == tid|string %}selected{% endif %}>{{ title }}</option>
+            <label class="label-filter">Сортировать по:</label>
+            <select name="SortColumn" class="select-filter">
+                <option value="StudentTaskID" {% if request.query_params.get('SortColumn') == "StudentTaskID" %}selected{% endif %}>Мои задачи</option>
+                {% if student.Role == "admin" %}
+                    <option value="Login" {% if request.query_params.get('SortColumn') == "Login" %}selected{% endif %}>Логин</option>
+                {% endif %}
+                <option value="CompletionDate" {% if request.query_params.get('SortColumn') == "CompletionDate" %}selected{% endif %}>Статус Выполнения</option>
+                <option value="TaskID" {% if request.query_params.get('SortColumn') == "TaskID" %}selected{% endif %}>Категория</option>
+                <!-- Добавь другие поля, если нужно -->
+            </select>
+
+            <label class="label-filter">Порядок:</label>
+            <select name="SortDirection"  class="select-filter">
+                <option value="ASC" {% if request.query_params.get('SortDirection') == "ASC" %}selected{% endif %}>По возрастанию</option>
+                <option value="DESC" {% if request.query_params.get('SortDirection') == "DESC" %}selected{% endif %}>По убыванию</option>
+            </select>
+
+            <label class="label-filter">Категория:</label>
+                <select name="TaskID" id="select-task" class="select-filter">
+                  <option value="" {% if request.query_params.get('TaskID') in (None, '') %}selected{% endif %}>-- любой --</option>
+                  {% for tid, title in TasksID %}
+                    <option value="{{ tid }}"{% if request.query_params.get('TaskID') == tid|string %}selected{% endif %}>{{ title }}</option>
+                  {% endfor %}
+                </select>
+
+            <label class="label-filter">Вариант:</label>
+            <select name="variant" class="select-filter">
+              <!-- «– любой –» будем делать disabled+selected, чтобы пустоту не отправлять -->
+              <option value="" {% if request.query_params.get('variant') in (None, '') %}selected{% endif %}>-- любой --</option>
+              {% for var in variants %}
+                <option value="{{ var[0] }}"  {% if request.query_params.get('variant') == var[0] %}selected{% endif %}>{{ var[0] }}</option>
               {% endfor %}
             </select>
 
-        <label>Вариант:</label>
-        <select name="variant">
-          <!-- «– любой –» будем делать disabled+selected, чтобы пустоту не отправлять -->
-          <option value="" {% if request.query_params.get('variant') in (None, '') %}selected{% endif %}>-- любой --</option>
-          {% for var in variants %}
-            <option value="{{ var[0] }}"  {% if request.query_params.get('variant') == var[0] %}selected{% endif %}>{{ var[0] }}</option>
-          {% endfor %}
-        </select>
 
-        <label>Сортировать по:</label>
-        <select name="SortColumn">
-            <option value="StudentTaskID" {% if request.query_params.get('SortColumn') == "StudentTaskID" %}selected{% endif %}>Мои задачи</option>
-            {% if student.Role == "admin" %}
-                <option value="Login" {% if request.query_params.get('SortColumn') == "Login" %}selected{% endif %}>Логин</option>
-            {% endif %}
-            <option value="CompletionDate" {% if request.query_params.get('SortColumn') == "CompletionDate" %}selected{% endif %}>Статус Выполнения</option>
-            <option value="TaskID" {% if request.query_params.get('SortColumn') == "TaskID" %}selected{% endif %}>Категория</option>
-            <!-- Добавь другие поля, если нужно -->
-        </select>
-
-        <label>Порядок:</label>
-        <select name="SortDirection">
-            <option value="ASC" {% if request.query_params.get('SortDirection') == "ASC" %}selected{% endif %}>По возрастанию</option>
-            <option value="DESC" {% if request.query_params.get('SortDirection') == "DESC" %}selected{% endif %}>По убыванию</option>
-        </select>
-        <!--<button type="submit">Показать</button>-->
-        <!-- Кнопка-ссылка для сброса всех фильтров -->
-      <a href="/students_subtasks/StudentTasksByLogin/" style="margin-left: 1em; text-decoration: none;">
-        <button type="button">Сбросить фильтры</button>
-      </a>
+            <!--<button type="submit">Показать</button>-->
+            <!-- Кнопка-ссылка для сброса всех фильтров -->
+            <a href="/students_subtasks/StudentTasksByLogin/">
+                <button type="button" class="button button-edit">Сбросить фильтры</button>
+            </a>
+        </div>
     </form>
     <p>Количество найденных задач: {{ tasks[0].TotalCount if tasks else 0 }}</p></p>
     <!--<a href="/students/List/" class="back-button">Назад к списку</a>-->

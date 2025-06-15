@@ -3,11 +3,10 @@
 {% block title %}Категория №{% endblock %}
 {% block title_1 %}{% endblock %}
 {% block content %}
-<style>
 
-</style>
-    <button id="back-button" onclick="goBack()" class="btn btn-back">⬅ Назад</button>
+    <a href="#" id="back-button" class="back-link">⬅ Вернуться к списку</a>
     <div id="subtask-list"></div>
+
     <script>
         // Получаем task_id из URL (например, /tasks/js/3 - берется тройка)
         const urlParts = window.location.pathname.split("/");
@@ -54,7 +53,9 @@
         loadSubTasks();
 
         // Кнопка назад
-        document.getElementById("back-button").addEventListener("click", function () {
+        document.getElementById("back-button").addEventListener("click", function (event) {
+        event.preventDefault(); // предотвращаем переход по href="#"
+
         const parts = window.location.pathname.split("/").filter(Boolean); // убираем пустые части
         if (parts.length > 1) {
             parts.pop(); // убираем последний сегмент пути

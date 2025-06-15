@@ -4,17 +4,16 @@
 {% block title %}Список Задач{% endblock %}
 {% block title_1 %}Список Задач!{% endblock %}
 {% block content %}
-    <style>
 
-    </style>
     {% if student.Role == "admin" %}
         <div class="center-wrapper-1">
             <form action="/subtasks/new/" method="get">
-                <button type="submit" class="btn">Создать задачу</button>
+                <button type="submit" class="button">Создать задачу</button>
             </form>
         </div>
     {% endif %}
     <ul id="subtask-list"></ul>
+
 <!--Вывод списком (только категории)-->
     <script>
         // Загружаем список задач (данных с API)
@@ -35,8 +34,6 @@
                 console.error("Ошибка при загрузке подзадач", err);
             }
         }
-
-
         loadTaskslist();
     </script>
 {% endblock %}

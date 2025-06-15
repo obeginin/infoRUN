@@ -4,88 +4,8 @@
 {% block title %}Добавление задачи{% endblock %}
 {% block title_1 %}Добавление задачи!{% endblock %}
 {% block content %}
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f5f7fa;
-            margin: 40px;
-            color: #333;
-        }
 
-        .form-wrapper {
-            max-width: 600px;
-            margin: 40px auto; /* авто-центр по горизонтали + отступ сверху */
-            padding: 20px 30px;
-            background: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        form {
-            background: #fff;
-            padding: 20px 30px;
-            max-width: 500px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 6px;
-            margin-top: 20px;
-        }
-        input[type="text"],
-        input[type="number"],
-        textarea,
-        select,
-        input[type="file"] {
-            width: 100%;
-            padding: 10px;
-            font-size: 14px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-sizing: border-box;
-            transition: border-color 0.3s ease;
-        }
-        input[type="text"]:focus,
-        input[type="number"]:focus,
-        textarea:focus,
-        select:focus,
-        input[type="file"]:focus {
-            border-color: #007bff;
-            outline: none;
-        }
-        textarea {
-            resize: vertical;
-            min-height: 15px;
-        }
-        input[type="submit"] {
-            margin-top: 30px;
-            background-color: #007bff;
-            color: white;
-            font-weight: 600;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 16px;
-            width: 100%;
-            transition: background-color 0.3s ease;
-        }
-        input[type="submit"]:hover {
-            background-color: #0056b3;
-        }
-        /* Сообщение для не-админов */
-        .no-access {
-            max-width: 500px;
-            margin-top: 30px;
-            padding: 15px;
-            background-color: #ffe6e6;
-            border: 1px solid #ff4d4d;
-            color: #a80000;
-            border-radius: 6px;
-        }
-    </style>
-    <div class="form-wrapper">
+    <div class="form">
         <form action="/subtasks/create_form" method="post" enctype="multipart/form-data">
             <label for="TaskID">Категория:</label>
              <select name="TaskID" required>
@@ -104,7 +24,7 @@
             <!-- Изображение подзадачи -->
             <label>Изображение:</label>
             <div id="paste-area"
-                 style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc; height: 50px; margin-bottom: 10px; overflow: auto; cursor: text;">
+                 style="paste-area">
                 Нажмите сюда и вставьте скриншот (Ctrl+V)
             </div>
                 <input type="file" name="ImageFile" id="imageFileInput" style="display:none;">
@@ -115,8 +35,7 @@
             <div class="field">
                 <label for="solutionText">Решение:</label>
                 <textarea id="solutionText" name="solutionText" rows="5"
-                          placeholder="Введите решение или вставьте изображение решения сюда"
-                          style="width: 100%; height: 80px; padding: 10px; border-radius: 6px; border: 1px solid #ccc; resize: vertical;"></textarea>
+                          placeholder="Введите решение или вставьте изображение решения сюда"></textarea>
             </div>
             <input type="file" name="SolutionFile" id="solutionFileInput" style="display:none;">
             <div id="solution-preview" style="margin-top: 10px;"></div>

@@ -1,10 +1,10 @@
 /* Простой стиль для списка задач */
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    background-color: #f5f7fa; /*f4f4f4*/
     color: #333;
-    margin: 0;
-    padding: 0;
+    margin: 40px;
+    /*padding: 0;*/
 }
 
 h1 {
@@ -15,6 +15,7 @@ h1 {
 }
 h2 {
     text-align: center;
+    color: #007bff;
     margin-bottom: 20px;
 }
 
@@ -35,21 +36,7 @@ li:hover {
     background-color: #f1f1f1;
 }
 
-.logout-button {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    padding: 8px 12px;
-    background-color: #ff4d4d;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
 
-.logout-button:hover {
-    background-color: #cc0000;
-}
 
 nav ul {
     list-style-type: none;
@@ -95,8 +82,10 @@ nav li button {
 nav li button:hover {
     background-color: #cc0000;
 }
+
+
 /*Базовый стиль для всех кнопок:*/
-.btn {
+.button {
     margin-top: 30px;               /*отступ сверху*/
     background-color: #007bff;      /*цвет фона*/
     color: white;                   /*цвет текста внутри кнопки*/
@@ -111,28 +100,239 @@ nav li button:hover {
     transition: background-color 0.3s ease; /* плавное изменение CSS-свойства.*/
 }
 
+/*кнопка выхода*/
+.button-logout {
+    position: absolute;
+    top: 20px;
+    right: 40px;
+    background-color: #ff4d4d;
+}
+
+.button-logout:hover {
+    background-color: #cc0000;
+}
+
 /*Дополнение для кнопоки назад:*/
-.btn-back {
+.button-back {
     display: inline-block; /* как строчный (inline), но можно задавать ширину, высоту, отступы и padding */
     text-decoration: none; /* убирает подчеркивание */
 }
 
-.btn-edit {
+.button-edit {
     background-color: #d63384;
     width: 250px;
+    margin-top: 0px;
+    padding: 10px 18px;
 }
 
 /* псевдокласс hover: стили применяются когда пользователь наводит курсор*/
-.btn:hover {
+.button:hover {
     background-color: #0056b3;
 }
 
+/*ссылка-кнопка*/
+.back-link {
+    display: block;
+    margin-top: 30px;
+    text-align: center;
+    text-decoration: none;
+    color: #007bff;
+    font-weight: bold;
+}
 
+.back-link:hover {
+    text-decoration: underline;
+}
+
+/*все перечисленные элементы получают единые стили*/
+input[type="text"],         /*Однострочное текстовое поле*/
+input[type="number"],       /*Поле для ввода чисел*/
+textarea,                   /*Многострочное поле ввода*/
+select,                     /*Выпадающий список*/
+input[type="file"] {        /*Кнопка выбора файла*/
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+textarea:focus,
+select:focus,
+input[type="file"]:focus {
+    border-color: #007bff;
+    outline: none;
+}
+/*дополнение (выше основные свойства)*/
+textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.input {
+    width: 250px !important;
+}
+
+input[type="submit"] {
+    margin-top: 30px;
+    background-color: #007bff;
+    color: white;
+    font-weight: 600;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+input[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 6px;
+    margin-top: 20px;
+}
+
+
+/*форма*/
+.form {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 20px 30px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+}
+
+.form-filter {
+    max-width: 100%;
+    box-sizing: border-box;
+    flex-wrap: wrap
+}
+.row-filter{
+    flex-wrap: wrap;
+    display: flex;
+    align-items: center;
+    gap: 10px; /* расстояние между label и select */
+}
+
+.label-filter {
+
+    width: 140px;
+    text-align: right;
+}
+
+.select-filter {
+
+    width: 170px;
+}
+
+/*Вывод сообщения о проверке задачи*/
+#statusMessage {
+    margin-top:10px;
+    color: green;
+}
+
+/* контейнера для одного поля */
+/* включает метку(label) и значение(.value) или input*/
+.field {
+    margin-bottom: 20px;
+}
+
+/* метка для поля формы (для описания текстовых полей, чекбоксов, селектов)
+.field label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+/* класс для отображения значения поля (в отличие от input, который позволяет редактировать).*/
+.field .value {
+    padding: 10px;
+    background: #f1f1f1;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    white-space: pre-wrap;
+}
+
+
+.inline-field {
+    display: flex;
+    align-items: center;
+}
+
+/*разместить label и .value в одной строке*/
+.inline-field label {
+    margin-right: 10px;
+    min-width: 50px; /* можно подстроить под нужную ширину */
+    margin-bottom: 0; /* убираем отступ снизу */
+}
+
+.inline-field .value {
+    text-align: center;
+    max-width: 150px;
+    flex: 1;
+    padding: 0;
+    background: #f1f1f1;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    white-space: pre-wrap;
+    text-overflow: ellipsis;
+}
+
+
+/*Контейнер для изображения*/
+.image-preview {
+    margin-top: 20px;
+}
+
+.image-preview img {
+    max-width: 100%;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.image-preview img:hover {
+    transform: scale(1.02);
+}
+
+.drop-area {
+    border: 2px dashed #aaa;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.paste-area {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    height: 50px;
+    margin-bottom: 10px;
+    overflow: auto;
+    cursor: text;
+}
+
+/**/
+/*Выравнивание*/
 .center-wrapper {
-            display: flex;
-            justify-content: left;   /* по горизонтали */
-            align-items: center;       /* по вертикали */
-        }
+    display: flex;
+    justify-content: left;   /* по горизонтали */
+    align-items: center;       /* по вертикали */
+}
 
 .center-wrapper-1 {
     display: flex;
@@ -173,3 +373,16 @@ nav li button:hover {
     border-radius: 6px;
     margin-top: 10px;
     }
+
+/* Сообщение для не-админов
+пока не используется
+*/
+.no-access {
+    max-width: 500px;
+    margin-top: 30px;
+    padding: 15px;
+    background-color: #ffe6e6;
+    border: 1px solid #ff4d4d;
+    color: #a80000;
+    border-radius: 6px;
+}

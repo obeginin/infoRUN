@@ -4,12 +4,9 @@
 {% block title %}Добавление задачи{% endblock %}
 {% block title_1 %}Добавление задачи!{% endblock %}
 {% block content %}
-    <style>
 
 
-    </style>
-
-    <button id="back-button" onclick="goBack()" class="btn btn-back">⬅ Назад</button>
+    <button id="back-button" onclick="goBack()" class="button button-back">⬅ Назад</button>
    <div id="subtask-info-container"></div>
 
     </div>
@@ -17,7 +14,7 @@
             <form action="/subtasks/edit/" method="get">
                 <input type="hidden" name="SubTaskID" id="SubTaskID-input">
                 {% if student.Role == "admin" %}
-                <button type="submit" class="btn btn-edit">Редактировать задачу</button>
+                <button type="submit" class="button button-edit">Редактировать задачу</button>
                 {% endif %}
             </form>
         </div>
