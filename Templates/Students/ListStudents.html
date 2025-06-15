@@ -5,13 +5,15 @@
 {% block title %}Список учеников{% endblock %}
 {% block title_1 %}Список учеников{% endblock %}
 {% block content %}
+    <a href="#" id="back-button" class="back-link">⬅ Вернуться к списку</a>
     <div id="students-list">
         <p>Загрузка студентов...</p>
     </div>
 
 {% endblock %}
+
 {% block extra_scripts %}
-// Загружаем список студентов
+<!-- Загружаем список студентов -->
     <script>
         document.addEventListener("DOMContentLoaded", () => {
         loadStudents();

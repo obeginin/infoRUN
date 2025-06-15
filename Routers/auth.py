@@ -6,6 +6,9 @@ from Schemas.auth import StudentLogin, StudentOut
 from Security.token import create_access_token
 from dependencies import get_db
 from Crud.auth import get_current_student, admin_required, verify_password, get_current_student_or_redirect
+from fastapi.responses import JSONResponse
+from sqlalchemy import text
+from fastapi.encoders import jsonable_encoder
 from fastapi.templating import Jinja2Templates
 from passlib.context import CryptContext
 from fastapi.responses import RedirectResponse
@@ -107,7 +110,7 @@ def read_students_me(current_student: Student = Depends(get_current_student)):
         "email": current_student.Email if hasattr(current_student, "Email") else None
     }
 
-# /admin/
+# /admin/ @
 '''Роут, доступный только администраторам'''
 @admin_router.get("/", response_class=HTMLResponse)
 def admin_dashboard(
@@ -118,3 +121,43 @@ def admin_dashboard(
         "request": request,
         "student": current_student
     })
+
+
+# /admin/api/students
+@admin_router.get("/api/students")
+def api_get_students(db: Session = Depends(get_db)):
+    result = db.execute(text("SELECT * FROM Students")).fetchall()
+    students = [dict(row._mapping) for row in result]
+    return JSONResponse(content=jsonable_encoder(students))
+
+# /admin/ListStudents @
+'''Возвращем html страницу со списком всех студентов'''
+@admin_router.get("/ListStudents",  response_class=HTMLResponse)
+def admin_read_all_students(
+        request: Request,
+        current_student=Depends(get_current_student_or_redirect),
+        db: Session = Depends(get_db)):
+    logger.debug("Получен запрос на список студентов")
+
+
+    # Проверям что пользователь авторизован и отправляем на страницу с логином
+    if isinstance(current_student, RedirectResponse):
+        return current_student
+
+    #students_list = db.execute(text("SELECT * FROM Students")).fetchall()
+    return templates.TemplateResponse("Students/ListStudents.html", {"request": request, "student": current_student})
+
+# /admin/ListStudents/{StudentID} @
+'''Возвращем страницу со всеми задачами выбранного студента'''
+@admin_router.get("/ListStudents/{StudentID}",  response_class=HTMLResponse)
+def admin_read_student_all_subtasks(
+        request: Request,
+        StudentID: int,
+        current_student=Depends(get_current_student_or_redirect),
+        db: Session = Depends(get_db)):
+    print(type(StudentID))
+    logger.debug(f"Вызван роут admin_read_student_all_subtasks с StudentID={StudentID}")
+    student_tasks = db.execute(text(f"SELECT * FROM Students where ID = :StudentID"),
+                               {"StudentID": StudentID}).fetchall()
+    #print(student_tasks)
+    return templates.TemplateResponse("Students/StudentTask.html", {"request": request, "StudentID": StudentID, "tasks": student_tasks, "student": current_student})

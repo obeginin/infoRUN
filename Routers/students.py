@@ -30,7 +30,8 @@ students_subtasks_router = APIRouter(prefix="/students_subtasks", tags=["student
 templates = Jinja2Templates(directory=TEMPLATES_DIR)
 
 
-# /students/api/
+"""API"""
+# /students/api/ @
 ''' Эндпоинт: Получить список пользователей'''
 @students_router.get(
     "/api/",
@@ -78,18 +79,10 @@ def read_task_student( StudentTaskID: int, db: Session = Depends(get_db)):
     #return students.get_task_student(db, student_id, SubTasksID)
     return students.Get_Student_TaskDetails_By_ID(db, StudentTaskID)
 
-# /students/List/
-'''Возвращем html страницу со списком всех пользователей'''
-@students_router.get("/List/",  response_class=HTMLResponse)
-def read_all_students(
-        request: Request,
-        current_student=Depends(get_current_student_or_redirect),
-        db: Session = Depends(get_db)):
-    students_list = students.get_all_students(db)
-    logger.info("Получен запрос на список студентов")
-    if isinstance(current_student, RedirectResponse):
-        return current_student
-    return templates.TemplateResponse("Students/ListStudents.html", {"request": request, "students": students_list, "student": current_student})
+
+"""HTML"""
+
+
 
 # /students_subtasks/StudentTask/{StudentID}
 '''Возвращем страницу со всеми задачами пользователя'''

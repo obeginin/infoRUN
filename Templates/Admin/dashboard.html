@@ -5,8 +5,8 @@
 {% block title_1 %}Админка!{% endblock %}
 {% block content %}
     <div class="button-container">
-        <button class="admin-button" onclick="location.href='/students/List/'">Список учеников</button>
-        <button class="admin-button" onclick="location.href='/subtasks/'">Список задач</button>
-        <button class="admin-button" onclick="location.href='/admin/stats'">Статистика</button>
+        <a href="/admin/ListStudents" class="button button-edit">Список учеников</a>
+        <a href="/subtasks/" class="button button-edit">Список задач</a>
+        <a href="/admin/stats" class="button button-edit">Статистика</a>
     </div>
 {% endblock %}
