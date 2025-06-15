@@ -1,5 +1,26 @@
 // scripts.js
 
+
+// Кнопка назад back-button
+document.addEventListener("DOMContentLoaded", function () {
+    const backButton = document.getElementById("back-button");
+    if (backButton) {
+        backButton.addEventListener("click", function (event) {
+            event.preventDefault(); // предотвращаем переход по href="#"
+
+            const parts = window.location.pathname.split("/").filter(Boolean); // убираем пустые части
+            if (parts.length > 1) {
+                parts.pop(); // убираем последний сегмент пути
+                const parentPath = "/" + parts.join("/");
+                window.location.href = parentPath;
+            } else {
+                // Если остался только "/", возвращаемся на главную
+                window.location.href = "/";
+            }
+        });
+    }
+});
+
 // Общая функция для загрузки данных для категорий
 async function loadData(url, listId) {
     try {
@@ -50,4 +71,6 @@ async function loadStudents() {
         document.getElementById("students-list").innerHTML = "<p>Ошибка при загрузке студентов.</p>";
     }
 }
+
+
 

@@ -6,7 +6,7 @@
 {% block content %}
 
 
-    <button id="back-button" onclick="goBack()" class="button button-back">⬅ Назад</button>
+   <a href="#" id="back-button" class="back-link">⬅ Вернуться к списку</a>
    <div id="subtask-info-container"></div>
 
     </div>
@@ -22,10 +22,7 @@
 
     <!-- с помощью JS получаем задачу -->
     <script>
-        // для кнопки
-        function goBack() {
-            window.history.back();
-          }
+
         const baseImageUrl = "/";
         // Получаем subtask_id из URL
         const urlParts = window.location.pathname.split("/");
@@ -73,5 +70,6 @@
         }
 
         loadSubTaskDetails();
+
     </script>
 {% endblock %}

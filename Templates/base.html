@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <title>{% block title %}Учебный Кабинет{% endblock %}</title>
     <link rel="stylesheet" type="text/css" href="/static/styles.css">
-    <script src="/static/scripts.js" defer></script>
+    <link rel="stylesheet" href="{{ url_for('static', path='styles.css') }}">
 </head>
 <body>
     <!-- Кнопка "Выйти" -->
@@ -40,6 +40,10 @@
     </div>
 
 
-
+    <!-- Общие скрипты -->
+    <script src="{{ url_for('static', path='scripts.js') }}" defer></script>
+    {% block extra_scripts %}
+    <!-- Страницы могут добавлять свои скрипты -->
+    {% endblock %}
 </body>
 </html>
