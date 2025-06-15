@@ -1,5 +1,5 @@
 
-<!-- Templates/Tasks/tasks.html -->
+<!-- Templates/Admin/ListStudents.html -->
 {% extends "base.html" %}
 
 {% block title %}Список учеников{% endblock %}
@@ -10,13 +10,20 @@
         <p>Загрузка студентов...</p>
     </div>
 
+    <div id="subtasks-container" class="hidden" data-prev="students-section">
+        <p>Выберите студента, чтобы увидеть задачи.</p>
+    </div>
+
 {% endblock %}
 
 {% block extra_scripts %}
-<!-- Загружаем список студентов -->
+
     <script>
+        // Загружаем список студентов вызывая функцию loadStudents()
         document.addEventListener("DOMContentLoaded", () => {
         loadStudents();
     });
+
+
     </script>
 {% endblock %}

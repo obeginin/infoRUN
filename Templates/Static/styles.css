@@ -350,6 +350,16 @@ label {
 }
 
 
+.hidden {
+    display: none;
+}
+.section {
+    display: none;
+}
+
+.section.active {
+    display: block;
+}
 /*непонятно от чего */
 .subtask-info-container {
     max-width: auto;

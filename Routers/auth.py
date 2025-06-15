@@ -123,29 +123,34 @@ def admin_dashboard(
     })
 
 
-# /admin/api/students
+'''вывод списка студентов в формате JSON'''
+# /admin/api/students @
 @admin_router.get("/api/students")
 def api_get_students(db: Session = Depends(get_db)):
     result = db.execute(text("SELECT * FROM Students")).fetchall()
     students = [dict(row._mapping) for row in result]
     return JSONResponse(content=jsonable_encoder(students))
 
+# /admin/api/students/{StudentID}/subtasks
+@admin_router.get("/api/students/{StudentID}/subtasks")
+def api_get_student_subtasks(StudentID: int, db: Session = Depends(get_db)):
+    result = db.execute(text("SELECT * FROM StudentTasks WHERE StudentID = :StudentID"), {"StudentID": StudentID}).fetchall()
+    subtasks = [dict(row._mapping) for row in result]
+    print(subtasks)
+    return JSONResponse(content=jsonable_encoder(subtasks))
+
 # /admin/ListStudents @
 '''Возвращем html страницу со списком всех студентов'''
 @admin_router.get("/ListStudents",  response_class=HTMLResponse)
 def admin_read_all_students(
         request: Request,
-        current_student=Depends(get_current_student_or_redirect),
-        db: Session = Depends(get_db)):
+        current_student=Depends(get_current_student_or_redirect)):
     logger.debug("Получен запрос на список студентов")
-
 
     # Проверям что пользователь авторизован и отправляем на страницу с логином
     if isinstance(current_student, RedirectResponse):
         return current_student
-
-    #students_list = db.execute(text("SELECT * FROM Students")).fetchall()
-    return templates.TemplateResponse("Students/ListStudents.html", {"request": request, "student": current_student})
+    return templates.TemplateResponse("Admin/ListStudents.html", {"request": request, "student": current_student})
 
 # /admin/ListStudents/{StudentID} @
 '''Возвращем страницу со всеми задачами выбранного студента'''

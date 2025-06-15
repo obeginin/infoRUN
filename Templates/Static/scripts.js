@@ -1,25 +1,36 @@
 // scripts.js
 
 
-// Кнопка назад back-button
+// Кнопка назад back-button при переключении вверх по URL
 document.addEventListener("DOMContentLoaded", function () {
     const backButton = document.getElementById("back-button");
+
     if (backButton) {
         backButton.addEventListener("click", function (event) {
-            event.preventDefault(); // предотвращаем переход по href="#"
+            event.preventDefault();
 
-            const parts = window.location.pathname.split("/").filter(Boolean); // убираем пустые части
-            if (parts.length > 1) {
-                parts.pop(); // убираем последний сегмент пути
-                const parentPath = "/" + parts.join("/");
-                window.location.href = parentPath;
+            const subtasksContainer = document.getElementById("subtasks-container");
+            const studentsList = document.getElementById("students-list");
+
+            // Если контейнер с задачами видим — считаем, что можно "откатиться" назад по UI
+            if (subtasksContainer && !subtasksContainer.classList.contains("hidden")) {
+                subtasksContainer.classList.add("hidden");
+                studentsList.classList.remove("hidden");
             } else {
-                // Если остался только "/", возвращаемся на главную
-                window.location.href = "/";
+                // Иначе навигация по URL вверх
+                const parts = window.location.pathname.split("/").filter(Boolean);
+                if (parts.length > 1) {
+                    parts.pop();
+                    window.location.href = "/" + parts.join("/");
+                } else {
+                    window.location.href = "/";
+                }
             }
         });
     }
 });
+
+
 
 // Общая функция для загрузки данных для категорий
 async function loadData(url, listId) {
@@ -57,21 +68,67 @@ async function loadStudents() {
             return;
         }
 
+        // Вешаем обработчики на появившиеся ссылки
         const ul = document.createElement("ul");
         students.forEach(student => {
             const li = document.createElement("li");
             console.log(students);
 
-            li.innerHTML = `Студент: <a href="/admin/ListStudents/${student.ID}">${student.Login}</a> - ${student.First_Name} ${student.Last_Name}`;
+            // обычная ссылка
+            //li.innerHTML = `Студент: <a href="/admin/ListStudents/${student.ID}">${student.Login}</a> - ${student.First_Name} ${student.Last_Name}`;
+            // для динамического обновления
+            li.innerHTML = `Студент: <a href="#" class="student-link" data-id="${student.ID}">${student.Login}</a> - ${student.First_Name} ${student.Last_Name}`;
             ul.appendChild(li);
         });
 
         container.appendChild(ul);
+
+        // Загружаем список задач выбранного студента по клику вызывая функцию loadSubtasksForStudent()
+        document.getElementById("students-list").addEventListener("click", (e) => {
+            if (e.target.classList.contains("student-link")) {
+                e.preventDefault();
+                const studentID = e.target.dataset.id;
+
+                // Скрываем список студентов и показываем подзадачи
+                document.getElementById("students-list").classList.add("hidden");
+                document.getElementById("subtasks-container").classList.remove("hidden");
+
+                loadSubtasksForStudent(studentID);
+            }
+
+    });
     } catch (error) {
         console.error("Ошибка при загрузке студентов", error);
         document.getElementById("students-list").innerHTML = "<p>Ошибка при загрузке студентов.</p>";
     }
 }
 
+
+async function loadSubtasksForStudent(studentID) {
+    try {
+        const response = await fetch(`/admin/api/students/${studentID}/subtasks`);
+        const subtasks = await response.json();
+        console.log(subtasks);
+        const container = document.getElementById("subtasks-container");
+        container.innerHTML = "";
+
+        if (subtasks.length === 0) {
+            container.innerHTML = "<p>Задачи для этого студента не найдены.</p>";
+            return;
+        }
+
+        const ul = document.createElement("ul");
+        subtasks.forEach(subtasks => {
+            const li = document.createElement("li");
+            li.textContent = `Задача: ${subtasks.SubTaskID || subtasks.CompletionStatus || subtasks.TaskID}`; // адаптируй под свои поля
+            ul.appendChild(li);
+        });
+        container.appendChild(ul);
+
+    } catch (error) {
+        console.error("Ошибка при загрузке задач студента", error);
+        document.getElementById("subtasks-container").innerHTML = "<p>Ошибка при загрузке задач.</p>";
+    }
+}
 
 
