@@ -1,3 +1,7 @@
+<!-- Templates/Tasks/subtasks.html
+Вывод списка задач одной категории по id
+/tasks/{id}
+-->
 {% extends "base.html" %}
 
 {% block title %}Категория №{% endblock %}
@@ -6,31 +10,28 @@
 
     <a href="#" id="back-button" class="back-link">⬅ Вернуться к списку</a>
     <div id="subtask-list"></div>
-
+{% endblock %}
+ {% block extra_scripts %}
     <script>
 
 
-        // Получаем task_id из URL (например, /tasks/js/3 - берется тройка)
+        // Получаем task_id из URL (например, /tasks/3 - берется тройка)
         const urlParts = window.location.pathname.split("/");
         const taskId = urlParts[urlParts.length - 1];
-
         console.log("taskId", taskId); //Вывод в консоль браузера
 
-        async function loadTaskDetails() {
-            try {
-                // Загружаем данные самой задачи
-                const taskRes = await fetch(`/tasks/api/${taskId}`);
-                const task = await taskRes.json();
-                console.log("task", task);
-                document.getElementById("subtask-title").textContent = `${task[0].TaskTitle}`;
 
-            } catch (err) {
-                console.error("Ошибка при загрузке задачи", err);
-            }
-        }
+        // вызываем функцию loadSubtasks() -список задач в выбранной категории
+        document.addEventListener("DOMContentLoaded", () => {
+            loadSubtasks(taskId)
+
+        });
+
+
+
 
         // загружаем подзадачи
-        async function loadSubTasks() {
+        async function loadSubTask() {
             try {
                 const response = await fetch(`/subtasks/api/TaskID/${taskId}`);
                 const subtasks = await response.json();
@@ -51,8 +52,8 @@
             }
         }
 
-        loadTaskDetails();
-        loadSubTasks();
+
+
 
 
     </script>

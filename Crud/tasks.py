@@ -22,6 +22,7 @@ logger = logging.getLogger(__name__) # создание логгера для т
 
 
 
+# возможно не нужно! перенес логику в роут
 ''' функция-SQL запрос к БД для вывода всех задач'''
 def get_all_tasks(db: Session):
     query = text("SELECT TaskID, TaskNumber, TaskTitle FROM Tasks ORDER BY TaskNumber")
@@ -29,7 +30,7 @@ def get_all_tasks(db: Session):
     #print(result) # выводит результат запроса в консоль
     return [{"TaskID": row.TaskID, "TaskNumber": row.TaskNumber, "TaskTitle": row.TaskTitle} for row in result]
 
-
+# возможно не нужно! перенес логику в роут
 ''' функция-SQL запрос к БД для вывода задачи по id(категории)'''
 def get_task_id(db: Session, task_id: int):
     query = text(f"SELECT TaskID, TaskNumber, TaskTitle FROM Tasks where TaskID={task_id}")
@@ -95,6 +96,8 @@ def get_subtasks_id(db: Session, subtasks_id: int):
         raise HTTPException(status_code=404, detail=f"Задача с ID {subtasks_id} не найдена")
     return subtask
 
+
+# возможно не нужно! перенес логику в роут
 ''' функция-SQL для вывода подзадач по типу номеру ЕГЭ'''
 def get_subtasks_TaskID(db: Session, task_id: int):
     query = text(f"SELECT * FROM SubTasks where TaskID={task_id} ORDER BY SubTaskNumber")

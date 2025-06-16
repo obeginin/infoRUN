@@ -55,17 +55,22 @@ def read_all_tasks(db: Session = Depends(get_db)):
     return JSONResponse(content=jsonable_encoder(tasks))
 
 
-
-
-
-
-# /tasks/api/{task_id}  (GET)
+# /tasks/api/{task_id}  (GET) @
 ''' Эндпоинт: Получить категорию по id'''
 @task_router.get("/api/{task_id}", response_model=list[TaskRead],summary="Получить задачу по id")
 def read_tasks_id(task_id: int, db: Session = Depends(get_db)):
-    return task_crud.get_task_id(db, task_id)
+    print(type(task_id))
+    result = db.execute(text(f"SELECT TaskID, TaskNumber, TaskTitle FROM Tasks where TaskID = :task_id"),{"task_id": task_id}).fetchall()
+    subtasks = [dict(row._mapping) for row in result]
+    return subtasks
 
-
+# /tasks/api/TaskID/{task_id}    (GET) @
+''' Эндпоинт: Получить список задач с категорией TaskID'''
+@task_router.get("/api/TaskID/{task_id}", response_model=list[SubTaskRead],summary="Получить подзадачу по TaskID")
+def read_subtasks_TaskID(task_id: int, db: Session = Depends(get_db)):
+    result = db.execute(text(f"SELECT * FROM SubTasks where TaskID={task_id} ORDER BY SubTaskNumber"), {task_id: task_id}).fetchall()
+    subtasks = [dict(row._mapping) for row in result]
+    return subtasks
 
 """HTML"""
 
@@ -81,17 +86,12 @@ def read_subtasks_TaskID(request: Request, current_student = Depends(get_current
 # /tasks/{task_id}  (GET)
 '''Подключаем html с конкретной категорией'''
 @task_router.get("/{task_id}", response_class=HTMLResponse)
-def list_tasks(request: Request, current_student = Depends(get_current_student_or_redirect)):
+def list_subtasks(request: Request, current_student = Depends(get_current_student_or_redirect)):
     if isinstance(current_student, RedirectResponse):
         return current_student
-    return templates.TemplateResponse("Tasks/subtask.html", {"request": request, "student": current_student})
+    return templates.TemplateResponse("Tasks/subtasks.html", {"request": request, "student": current_student})
 
 
-'''Вывод страницы html с категориями'''
-'''@task_router.get("/", response_class=HTMLResponse)
-def read_subtasks_TaskID(request: Request, current_student: Student = Depends(get_current_student)):
-    return templates.TemplateResponse("Tasks/tasks.html", {"request": request, "student": current_student})
-'''
 
 # /subtasks/api/columns (GET)
 ''' Эндпоинт: Получить список всех столбцов таблицы subtasks'''
@@ -337,11 +337,7 @@ def read_subtasks_subtask_id(request: Request, subtask_id: int, current_student 
 
 
 
-# /subtasks/api/TaskID/{task_id}    (GET)
-''' Эндпоинт: Получить подзадачу по TaskID'''
-@subtask_router.get("/api/TaskID/{task_id}", response_model=list[SubTaskRead],summary="Получить подзадачу по TaskID")
-def read_subtasks_TaskID(task_id: int, db: Session = Depends(get_db)):
-    return task_crud.get_subtasks_TaskID(db, task_id)
+
 
 
 

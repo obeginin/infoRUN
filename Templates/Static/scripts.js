@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-// Общая функция для загрузки данных для категорий
+// Функция для вывода списка категорий
 async function loadTasks() {
     try {
         // Получаем список категорий
@@ -63,6 +63,28 @@ async function loadTasks() {
             console.error("Ошибка при загрузке задач:", error);
         }
     }
+
+// Функция для вывода списка задач из выбранной категории
+        async function loadSubtasks(taskId) {
+            try {
+                const response = await fetch(`/tasks/api/TaskID/${taskId}`);
+                const subtasks = await response.json();
+                console.log("subtasks", subtasks);
+                document.getElementById("subtask-title").textContent = `${subtasks[0].TaskTitle}`;
+
+                const container = document.getElementById("subtask-list");
+                    subtasks.forEach(subtask => {
+                        const li = document.createElement("li");
+                        console.log("subtask", subtask);
+                        li.innerHTML = `
+                            <strong>${subtask.SubTaskNumber}</strong>: <a href="/subtasks/${subtask.SubTaskID}">${subtask.Description}</a>`;
+
+                        container.appendChild(li);
+                    });
+                } catch (err) {
+                    console.error("Ошибка при загрузке подзадач", err);
+                }
+            }
 
 // Функция для вывода списка студентов
 async function loadStudents() {
@@ -117,6 +139,7 @@ async function loadStudents() {
 }
 
 
+// Функция для вывода списка задач выбранного студента по его id
 async function loadSubtasksForStudent(studentID) {
     try {
         const response = await fetch(`/admin/api/students/${studentID}/subtasks`);
