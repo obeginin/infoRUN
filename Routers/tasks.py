@@ -72,9 +72,16 @@ def read_subtasks_TaskID(task_id: int, db: Session = Depends(get_db)):
     subtasks = [dict(row._mapping) for row in result]
     return subtasks
 
+# /tasks/api/TaskID/subtasks{subtask_id}    (GET)
+''' Эндпоинт: Получить подзадачу по subtask_id'''
+@task_router.get("/api/{TaskID}/subtasks{subtask_id}", response_model=SubTaskRead,summary="Получить подзадачу по id")
+def read_subtasks_subtask_id(subtask_id: int, db: Session = Depends(get_db)):
+    return task_crud.get_subtasks_id(db, subtask_id)
+
+
 """HTML"""
 
-# /tasks/(GET)
+# /tasks/(GET) @
 '''Вывод страницы html с категориями'''
 @task_router.get("/", response_class=HTMLResponse)
 def read_subtasks_TaskID(request: Request, current_student = Depends(get_current_student_or_redirect)):
@@ -83,13 +90,28 @@ def read_subtasks_TaskID(request: Request, current_student = Depends(get_current
     return templates.TemplateResponse("Tasks/tasks.html", {"request": request, "student": current_student})
 
 
-# /tasks/{task_id}  (GET)
+# /tasks/{task_id}  (GET) @
 '''Подключаем html с конкретной категорией'''
 @task_router.get("/{task_id}", response_class=HTMLResponse)
 def list_subtasks(request: Request, current_student = Depends(get_current_student_or_redirect)):
     if isinstance(current_student, RedirectResponse):
         return current_student
     return templates.TemplateResponse("Tasks/subtasks.html", {"request": request, "student": current_student})
+
+
+# /tasks/{task_id}/subtasks{subtask_id}   (GET) @
+'''Вывод страницы html с задачей'''
+@task_router.get("/{task_id}/subtasks{subtask_id}", response_class=HTMLResponse)
+def read_subtasks_subtask_id(request: Request, subtask_id: int, current_student = Depends(get_current_student_or_redirect),):
+    if isinstance(current_student, RedirectResponse):
+        logger.info("Пользователь не авторизован — перенаправляем")
+        return current_student
+
+    return templates.TemplateResponse("Tasks/task.html", {"request": request, "student": current_student,"subtask_id": subtask_id})
+
+
+
+
 
 
 
@@ -296,11 +318,7 @@ def list_tasks(request: Request, current_student = Depends(get_current_student_o
     return templates.TemplateResponse("Tasks/listTasks.html", {"request": request, "student": current_student})
 
 
-# /subtasks/api/{subtask_id}    (GET)
-''' Эндпоинт: Получить подзадачу по subtask_id'''
-@subtask_router.get("/api/{subtask_id}", response_model=SubTaskRead,summary="Получить подзадачу по id")
-def read_subtasks_subtask_id(subtask_id: int, db: Session = Depends(get_db)):
-    return task_crud.get_subtasks_id(db, subtask_id)
+
 
 
 
@@ -325,15 +343,7 @@ def get_files_for_subtask(subtask_id: int, db: Session = Depends(get_db)):
     return list(files)
 
 
-# /subtasks/{subtask_id}   (GET)
-'''Вывод страницы html с задачей'''
-@subtask_router.get("/{subtask_id}", response_class=HTMLResponse)
-def read_subtasks_subtask_id(request: Request, subtask_id: int, current_student = Depends(get_current_student_or_redirect),):
-    if isinstance(current_student, RedirectResponse):
-        logger.info("Пользователь не авторизован — перенаправляем")
-        return current_student
 
-    return templates.TemplateResponse("Tasks/task.html", {"request": request, "student": current_student,"subtask_id": subtask_id})
 
 
 

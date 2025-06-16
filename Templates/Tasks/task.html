@@ -1,4 +1,7 @@
-<!-- Templates/Tasks/task.html -->
+<!-- Templates/Tasks/task.html
+Вывод задачи
+/tasks/{task_id}/subtasks/{subtask_id}
+-->
 {% extends "base.html" %}
 
 {% block title %}Добавление задачи{% endblock %}
@@ -25,8 +28,15 @@
 
         const baseImageUrl = "/";
         // Получаем subtask_id из URL
-        const urlParts = window.location.pathname.split("/");
-        const subtaskId = urlParts[urlParts.length - 1];
+        // Пример URL: /tasks/5/subtasks123
+        const path = window.location.pathname;
+        const match = path.match(/^\/tasks\/(\d+)\/subtasks(\d+)$/);
+
+        const taskId = match ? match[1] : null;
+        const subtaskId = match ? match[2] : null;
+
+        // Проверка
+        console.log("taskId:", taskId, "subtaskId:", subtaskId);
 
     // Подставляем значение в скрытое поле формы (для кнопки редактирования)
         document.getElementById("SubTaskID-input").value = subtaskId;
@@ -34,7 +44,7 @@
 
         async function loadSubTaskDetails() {
             try {
-                const response = await fetch(`/subtasks/api/${subtaskId}`);
+                const response = await fetch(`/tasks/api/${taskId}/subtasks${subtaskId}`);
                 const subtask = await response.json();
 
 

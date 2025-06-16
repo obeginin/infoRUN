@@ -77,7 +77,7 @@ async function loadTasks() {
                         const li = document.createElement("li");
                         console.log("subtask", subtask);
                         li.innerHTML = `
-                            <strong>${subtask.SubTaskNumber}</strong>: <a href="/subtasks/${subtask.SubTaskID}">${subtask.Description}</a>`;
+                            <strong>${subtask.SubTaskNumber}</strong>: <a href="/tasks/${taskId}/subtasks${subtask.SubTaskID}">${subtask.Description}</a>`;
 
                         container.appendChild(li);
                     });

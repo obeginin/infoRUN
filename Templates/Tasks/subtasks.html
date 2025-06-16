@@ -30,31 +30,5 @@
 
 
 
-        // загружаем подзадачи
-        async function loadSubTask() {
-            try {
-                const response = await fetch(`/subtasks/api/TaskID/${taskId}`);
-                const subtasks = await response.json();
-
-                console.log("subtasks", subtasks);
-
-                const list = document.getElementById("subtask-list");
-                subtasks.forEach(subtask => {
-                    const li = document.createElement("li");
-                    console.log("subtask", subtask);
-                    li.innerHTML = `
-                        <strong>${subtask.SubTaskNumber}</strong>: <a href="/subtasks/${subtask.SubTaskID}">${subtask.Description}</a>`;
-
-                    list.appendChild(li);
-                });
-            } catch (err) {
-                console.error("Ошибка при загрузке подзадач", err);
-            }
-        }
-
-
-
-
-
     </script>
 {% endblock %}
