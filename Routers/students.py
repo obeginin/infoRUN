@@ -96,7 +96,7 @@ def read_student_all_subtasks(
     logger.info(f"Вызван роут read_student_all_subtasks с StudentID={StudentID}")
     student_tasks = students.get_student_all_tasks(db, StudentID)
     print(student_tasks)
-    return templates.TemplateResponse("Students/StudentTask.html", {"request": request, "StudentID": StudentID, "tasks": student_tasks, "student": current_student})
+    return templates.TemplateResponse("Students/StudentTasks.html", {"request": request, "StudentID": StudentID, "tasks": student_tasks, "student": current_student})
 
 # /students_subtasks/StudentTasksByLogin
 '''возвращаем страницу со всеми задачами пользователя в личном кабинете по логину из авторизации'''
@@ -138,7 +138,7 @@ def read_student_all_subtasks_by_login(
     StudentID = student_id_int if student_id_int is not None else current_student.ID
 # Проверяет что студент есть в базей
     if not current_student:
-        return templates.TemplateResponse("Students/StudentTask.html", {
+        return templates.TemplateResponse("Students/StudentTasks.html", {
             "request": request,
             "error": "Студент не найден"
         })
@@ -181,7 +181,7 @@ def read_student_all_subtasks_by_login(
     tasks = tasks or []
     logging.warning(f"ПАРАМЕТРЫ: StudentID={StudentID}") # логирование
 
-    return templates.TemplateResponse("Students/StudentTask.html", {
+    return templates.TemplateResponse("Students/StudentTasks.html", {
         "request": request,
         "StudentID": StudentID,
         "students_id": students_id,

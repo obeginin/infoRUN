@@ -78,8 +78,9 @@
         {% endif %}
 
         <a href="{{ request.query_params.get('return_url', '/tasks') }}" class="back-link">← Вернуться к списку</a>
+        <a href="/tasks/{{subtask.TaskID}}/subtasks{{subtask.SubTaskID}} ">Ссылка на задачу</a>
     </div>
-
+    <pre>${{subtask}}</pre>
     <script>
         // Заголовок
         //document.getElementById("title_1").textContent = `Задача №${subtask.SubTaskID} (id=${subtask.TaskID})`;
@@ -99,7 +100,7 @@
                 window.open(imageUrl, "_blank");
             });
         });
-        //console.log('subtask:', subtask);
+
 
 
 
@@ -187,7 +188,7 @@
             if (!block) return;
             block.style.display = (block.style.display === 'none' || block.style.display === '') ? 'block' : 'none';
           }
-
+        //console.log('subtask:', subtask);
 
     </script>
 
