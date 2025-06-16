@@ -132,11 +132,12 @@ def api_get_students(db: Session = Depends(get_db)):
     return JSONResponse(content=jsonable_encoder(students))
 
 # /admin/api/students/{StudentID}/subtasks
+'''Возвращем список задач выбранного студента в формате JSON'''
 @admin_router.get("/api/students/{StudentID}/subtasks")
 def api_get_student_subtasks(StudentID: int, db: Session = Depends(get_db)):
     result = db.execute(text("SELECT * FROM StudentTasks WHERE StudentID = :StudentID"), {"StudentID": StudentID}).fetchall()
     subtasks = [dict(row._mapping) for row in result]
-    print(subtasks)
+    #print(subtasks)
     return JSONResponse(content=jsonable_encoder(subtasks))
 
 # /admin/ListStudents @
@@ -152,17 +153,3 @@ def admin_read_all_students(
         return current_student
     return templates.TemplateResponse("Admin/ListStudents.html", {"request": request, "student": current_student})
 
-# /admin/ListStudents/{StudentID} @
-'''Возвращем страницу со всеми задачами выбранного студента'''
-@admin_router.get("/ListStudents/{StudentID}",  response_class=HTMLResponse)
-def admin_read_student_all_subtasks(
-        request: Request,
-        StudentID: int,
-        current_student=Depends(get_current_student_or_redirect),
-        db: Session = Depends(get_db)):
-    print(type(StudentID))
-    logger.debug(f"Вызван роут admin_read_student_all_subtasks с StudentID={StudentID}")
-    student_tasks = db.execute(text(f"SELECT * FROM Students where ID = :StudentID"),
-                               {"StudentID": StudentID}).fetchall()
-    #print(student_tasks)
-    return templates.TemplateResponse("Students/StudentTask.html", {"request": request, "StudentID": StudentID, "tasks": student_tasks, "student": current_student})

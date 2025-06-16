@@ -6,30 +6,14 @@
 {% block content %}
     <ul id="task-list"></ul>
 <!--Вывод списком (только категории)-->
-    <script>
-        // Загружаем список задач (данных с API)
-        async function loadTasks() {
-            try {
-                const response = await fetch("/tasks/api/");
-                const tasks = await response.json();
 
-                const list = document.getElementById("task-list");
-                list.innerHTML = "";
-
-                for (const task of tasks) {
-                    console.log("task", task);
-                    const li = document.createElement("li");
-                    li.innerHTML = `<a href="/tasks/${task.TaskID}"><strong>${task.TaskNumber}: ${task.TaskTitle}</strong></a>`;
-                    list.appendChild(li);
-
-                }
-            } catch (error) {
-                console.error("Ошибка при загрузке задач:", error);
-            }
-        }
-
-
-        loadTasks();
-    </script>
 {% endblock %}
 
+ {% block extra_scripts %}
+    <script>
+        // Загружаем список студентов вызывая функцию loadTasks()
+        document.addEventListener("DOMContentLoaded", () => {
+        loadTasks();
+    });
+    </script>
+{% endblock %}

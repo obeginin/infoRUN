@@ -16,7 +16,8 @@ from fastapi.responses import RedirectResponse
 from starlette.responses import JSONResponse
 import shutil
 from typing import Optional
-
+from sqlalchemy import text
+from fastapi.encoders import jsonable_encoder
 import logging
 logger = logging.getLogger(__name__) # создание логгера для текущего модуля
 

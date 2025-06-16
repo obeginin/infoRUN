@@ -33,23 +33,36 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 // Общая функция для загрузки данных для категорий
-async function loadData(url, listId) {
+async function loadTasks() {
     try {
-        const response = await fetch(url);
-        const data = await response.json();
+        // Получаем список категорий
+        const response = await fetch(`/tasks/api`);
+        const tasks = await response.json();
+        console.log(tasks); // логирование в консоль
 
-        const list = document.getElementById(listId);
-        list.innerHTML = ""; // Очистить список перед добавлением новых элементов
+        const container = document.getElementById("task-list");
+        container.innerHTML = "";
 
-        data.forEach(item => {
+        if (tasks.length === 0) {
+            container.innerHTML = "<p>Категории не найдены.</p>";
+            return;
+        }
+
+        const ul = document.createElement("ul");
+
+        for (const task of tasks) {
+            console.log("task", task);
             const li = document.createElement("li");
-            li.innerHTML = `<a href="/js/${item.id}"><strong>${item.name}</strong></a>`;
-            list.appendChild(li);
-        });
+            li.innerHTML = `<a href="/tasks/${task.TaskID}"><strong>${task.TaskNumber}: ${task.TaskTitle}</strong></a>`;
+            container.appendChild(li);
+
+        };
+        container.appendChild(ul);
+
     } catch (error) {
-        console.error("Ошибка при загрузке данных:", error);
+            console.error("Ошибка при загрузке задач:", error);
+        }
     }
-}
 
 // Функция для вывода списка студентов
 async function loadStudents() {
@@ -120,7 +133,7 @@ async function loadSubtasksForStudent(studentID) {
         const ul = document.createElement("ul");
         subtasks.forEach(subtasks => {
             const li = document.createElement("li");
-            li.textContent = `Задача: ${subtasks.SubTaskID || subtasks.CompletionStatus || subtasks.TaskID}`; // адаптируй под свои поля
+            li.textContent = `Задача: ${subtasks.SubTaskID} ${subtasks.CompletionStatus}`; // адаптируй под свои поля
             ul.appendChild(li);
         });
         container.appendChild(ul);

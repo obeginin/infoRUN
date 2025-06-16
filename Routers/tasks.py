@@ -16,7 +16,9 @@ import shutil
 from Crud.auth import get_current_student, admin_required, verify_password, get_current_student_or_redirect
 from fastapi.responses import RedirectResponse
 from dotenv import load_dotenv
-import os
+from fastapi.responses import JSONResponse
+from sqlalchemy import text
+from fastapi.encoders import jsonable_encoder
 import logging
 
 # Routers\tasks.py
@@ -35,18 +37,26 @@ task_js_router = APIRouter(prefix="/js", tags=["js"])
 templates = Jinja2Templates(directory=TEMPLATES_DIR)
 
 
+"""API"""
 
-# /tasks/api/   (GET)
+# /tasks/api   (GET) @
 ''' Эндпоинт: Получить список КАТЕГОРИЙ'''
 # через @ указываем какому маршруту принадлежит Эндпоинт
 @task_router.get(
-    "/api/",                    # добавляем префикс к адресу
+    "/api",                    # добавляем префикс к адресу
     response_model=list[TaskRead],   # указываем какой схеме должны соответствовать данные
     summary="Получить список задач",
     description="Выводит список всех задач имеющихся в БД"
 )
 def read_all_tasks(db: Session = Depends(get_db)):
-    return task_crud.get_all_tasks(db) # качестве результата запускаем функцию get_all_tasks из файла Crud\tasks.py
+    result = db.execute(text("SELECT TaskID, TaskNumber, TaskTitle FROM Tasks ORDER BY TaskNumber")).fetchall()
+    tasks = [dict(row._mapping) for row in result]
+    logger.debug(tasks)
+    return JSONResponse(content=jsonable_encoder(tasks))
+
+
+
+
 
 
 # /tasks/api/{task_id}  (GET)
@@ -56,6 +66,9 @@ def read_tasks_id(task_id: int, db: Session = Depends(get_db)):
     return task_crud.get_task_id(db, task_id)
 
 
+
+"""HTML"""
+
 # /tasks/(GET)
 '''Вывод страницы html с категориями'''
 @task_router.get("/", response_class=HTMLResponse)
@@ -63,7 +76,7 @@ def read_subtasks_TaskID(request: Request, current_student = Depends(get_current
     if isinstance(current_student, RedirectResponse):
         return current_student
     return templates.TemplateResponse("Tasks/tasks.html", {"request": request, "student": current_student})
-# /tasks/(GET)
+
 
 # /tasks/{task_id}  (GET)
 '''Подключаем html с конкретной категорией'''
