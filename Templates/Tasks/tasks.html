@@ -7,6 +7,14 @@
 {% block title %}Список категорий{% endblock %}
 {% block title_1 %}Список категорий!{% endblock %}
 {% block content %}
+
+    {% if student.Role == "admin" %}
+        <div class="center-wrapper-1">
+            <form action="/tasks/create" method="get">
+                <button type="submit" class="button">Создать задачу</button>
+            </form>
+        </div>
+    {% endif %}
     <ul id="task-list"></ul>
 <!--Вывод списком (только категории)-->
 

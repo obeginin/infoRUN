@@ -90,13 +90,6 @@ def read_subtasks_TaskID(request: Request, current_student = Depends(get_current
     return templates.TemplateResponse("Tasks/tasks.html", {"request": request, "student": current_student})
 
 
-# /tasks/{task_id}  (GET) @
-'''Подключаем html с конкретной категорией'''
-@task_router.get("/{task_id}", response_class=HTMLResponse)
-def list_subtasks(request: Request, current_student = Depends(get_current_student_or_redirect)):
-    if isinstance(current_student, RedirectResponse):
-        return current_student
-    return templates.TemplateResponse("Tasks/subtasks.html", {"request": request, "student": current_student})
 
 
 # /tasks/{task_id}/subtasks{subtask_id}   (GET) @
@@ -110,7 +103,33 @@ def read_subtasks_subtask_id(request: Request, subtask_id: int, current_student 
     return templates.TemplateResponse("Tasks/task.html", {"request": request, "student": current_student,"subtask_id": subtask_id})
 
 
+# /tasks/create  (GET) @
+'''Вызов страницы с добавлением задачи'''
+@task_router.get("/create", response_class=HTMLResponse)
+def get_subtask_form(request: Request, current_student = Depends(admin_required), db: Session = Depends(get_db)):
+    logger.info("Открываем страницу с созданием задачи")
+    tasks = task_crud.get_all_tasks(db)
+    if isinstance(current_student, RedirectResponse):
+        return current_student
+    return templates.TemplateResponse("Tasks/create.html", {"request": request, "student": current_student,"tasks": tasks})
+# /tasks/{task_id}/create  (GET) @
+'''Два одинаковых роута, для ссылок с разных страниц, чтобы корректно отрабатывала кнопка назад'''
+@task_router.get("/{task_id}/create", response_class=HTMLResponse)
+def get_subtask_form_with_id(request: Request, current_student = Depends(admin_required), db: Session = Depends(get_db)):
+    logger.info("Открываем страницу с созданием задачи")
+    tasks = task_crud.get_all_tasks(db)
+    if isinstance(current_student, RedirectResponse):
+        return current_student
+    return templates.TemplateResponse("Tasks/create.html", {"request": request, "student": current_student,"tasks": tasks})
 
+
+# /tasks/{task_id}  (GET) @
+'''Подключаем html с конкретной категорией'''
+@task_router.get("/{task_id}", response_class=HTMLResponse)
+def list_subtasks(request: Request, task_id: int, current_student = Depends(get_current_student_or_redirect)):
+    if isinstance(current_student, RedirectResponse):
+        return current_student
+    return templates.TemplateResponse("Tasks/subtasks.html", {"request": request, "taskId": task_id, "student": current_student})
 
 
 
@@ -138,15 +157,7 @@ def create_new_subtask(subtask: SubTaskCreate, db: Session = Depends(get_db)):
 
 
 
-# /subtasks/new/  (GET)
-'''Вызов страницы с добавлением задачи'''
-@subtask_router.get("/new", response_class=HTMLResponse)
-def get_subtask_form(request: Request, current_student = Depends(admin_required), db: Session = Depends(get_db)):
-    logger.info("Открываем страницу с созданием задачи")
-    tasks = task_crud.get_all_tasks(db)
-    if isinstance(current_student, RedirectResponse):
-        return current_student
-    return templates.TemplateResponse("Tasks/create.html", {"request": request, "student": current_student,"tasks": tasks})
+
 
 # /subtasks/create_form/    (POST)
 '''Отправка данных с добавленной задачей из формы с html страницы'''
