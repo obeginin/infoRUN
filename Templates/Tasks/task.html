@@ -15,20 +15,20 @@
 
     </div>
         <div class="center-wrapper">
-            <form action="/subtasks/edit/" method="get">
-                <input type="hidden" name="SubTaskID" id="SubTaskID-input">
-                {% if student.Role == "admin" %}
-                <button type="submit" class="button button-edit">Редактировать задачу</button>
-                {% endif %}
-            </form>
+
+            {% if student.Role == "admin" %}
+            <a id="edit-link" class="button button-edit">Редактировать задачу</a>
+            {% endif %}
         </div>
 
 
     <!-- с помощью JS получаем задачу -->
     <script>
+        const form = document.querySelector("form");
+
 
         const baseImageUrl = "/";
-        // Получаем subtask_id из URL
+        // Получаем subtask_id и  task_id из URL
         // Пример URL: /tasks/5/subtasks123
         const path = window.location.pathname;
         const match = path.match(/^\/tasks\/(\d+)\/subtasks(\d+)$/);
@@ -36,12 +36,17 @@
         const taskId = match ? match[1] : null;
         const subtaskId = match ? match[2] : null;
 
+        // подставляем в ссылку их
+        if (taskId && subtaskId) {
+        const link = document.getElementById("edit-link");
+        link.href = `/tasks/${taskId}/subtasks${subtaskId}/edit`;
+    }
         // Проверка
         console.log("taskId:", taskId, "subtaskId:", subtaskId);
 
     // Подставляем значение в скрытое поле формы (для кнопки редактирования)
-        document.getElementById("SubTaskID-input").value = subtaskId;
-        console.log(subtaskId);
+        //document.getElementById("SubTaskID-input").value = subtaskId;
+        //console.log(subtaskId);
 
         async function loadSubTaskDetails() {
             try {

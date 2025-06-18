@@ -4,8 +4,9 @@
 {% block title_1 %}Редактирование задачи{% endblock %}
 {% block content %}
 
-
+<a href="#" id="back-button" class="back-link">⬅ Вернуться к списку</a>
 <div class="form">
+
     <form action="/subtasks/edit_form" method="post" enctype="multipart/form-data">
         <!-- Чтобы знать, какую подзадачу редактируем -->
         <input type="hidden" name="SubTaskID" value="{{ subtask.SubTaskID }}">

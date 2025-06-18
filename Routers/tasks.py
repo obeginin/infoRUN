@@ -81,7 +81,7 @@ def read_subtasks_subtask_id(subtask_id: int, db: Session = Depends(get_db)):
 
 """HTML"""
 
-# /tasks/(GET) @
+# /tasks/   (GET) @
 '''Вывод страницы html с категориями'''
 @task_router.get("/", response_class=HTMLResponse)
 def read_subtasks_TaskID(request: Request, current_student = Depends(get_current_student_or_redirect)):
@@ -130,6 +130,31 @@ def list_subtasks(request: Request, task_id: int, current_student = Depends(get_
     if isinstance(current_student, RedirectResponse):
         return current_student
     return templates.TemplateResponse("Tasks/subtasks.html", {"request": request, "taskId": task_id, "student": current_student})
+
+
+# /tasks/{task_id}/subtasks{subtask_id}/edit  (GET)
+'''Вызов страницы с редактированием задачи'''
+@task_router.get("/{task_id}/subtasks{subtask_id}/edit", response_class=HTMLResponse)
+def get_edit_subtask_form(
+        request: Request,
+        subtask_id: int,
+        current_student = Depends(admin_required),
+        db: Session = Depends(get_db)):
+    logger.info("Открываем страницу с редактированием задачи")
+    if isinstance(current_student, RedirectResponse):
+        logger.info("Пользователь не авторизован — перенаправляем")
+        return current_student
+
+    logger.info(f"Открываем страницу редактирования подзадачи ID={subtask_id}")
+
+    subtask = task_crud.get_subtasks_id(db, subtask_id)
+    tasks = task_crud.get_all_tasks(db)
+
+    return templates.TemplateResponse("Tasks/edit.html", {"request": request, "student": current_student,"subtask": subtask, "tasks": tasks})
+
+
+
+
 
 
 
@@ -190,25 +215,6 @@ def post_subtask_form(
 
 
 
-# /subtasks/edit/  (GET)
-'''Вызов страницы с редактированием задачи'''
-@subtask_router.get("/edit/", response_class=HTMLResponse)
-def get_edit_subtask_form(
-        request: Request,
-        SubTaskID: int = Query(...),
-        current_student = Depends(admin_required),
-        db: Session = Depends(get_db)):
-    logger.info("Открываем страницу с редактированием задачи")
-    if isinstance(current_student, RedirectResponse):
-        logger.info("Пользователь не авторизован — перенаправляем")
-        return current_student
-
-    logger.info(f"Открываем страницу редактирования подзадачи ID={SubTaskID}")
-
-    subtask = task_crud.get_subtasks_id(db, SubTaskID)
-    tasks = task_crud.get_all_tasks(db)
-
-    return templates.TemplateResponse("Tasks/edit.html", {"request": request, "student": current_student,"subtask": subtask, "tasks": tasks})
 
 # /subtasks/edit_form/    (POST)
 '''Отправка данных с добавленной задачей из формы с html страницы'''
