@@ -54,16 +54,6 @@ def read_all_tasks(db: Session = Depends(get_db)):
     logger.debug(tasks)
     return JSONResponse(content=jsonable_encoder(tasks))
 
-
-# /tasks/api/{task_id}  (GET) @
-''' Эндпоинт: Получить категорию по id'''
-@task_router.get("/api/{task_id}", response_model=list[TaskRead],summary="Получить задачу по id")
-def read_tasks_id(task_id: int, db: Session = Depends(get_db)):
-    print(type(task_id))
-    result = db.execute(text(f"SELECT TaskID, TaskNumber, TaskTitle FROM Tasks where TaskID = :task_id"),{"task_id": task_id}).fetchall()
-    subtasks = [dict(row._mapping) for row in result]
-    return subtasks
-
 # /tasks/api/TaskID/{task_id}    (GET) @
 ''' Эндпоинт: Получить список задач с категорией TaskID'''
 @task_router.get("/api/TaskID/{task_id}", response_model=list[SubTaskRead],summary="Получить подзадачу по TaskID")
@@ -78,6 +68,35 @@ def read_subtasks_TaskID(task_id: int, db: Session = Depends(get_db)):
 def read_subtasks_subtask_id(subtask_id: int, db: Session = Depends(get_db)):
     return task_crud.get_subtasks_id(db, subtask_id)
 
+
+# /tasks/api/variants  (GET) @
+''' Получить список вариантов'''
+@task_router.get("/api/variants")
+def read_tasks_id(db: Session = Depends(get_db)):
+    result = db.execute(text(f"select VariantID, Name from Variants")).fetchall()
+    variants = [dict(row._mapping) for row in result]
+    return variants
+
+# /tasks/api/{task_id}  (GET) @
+''' Эндпоинт: Получить категорию по id'''
+@task_router.get("/api/{task_id}", response_model=list[TaskRead],summary="Получить задачу по id")
+def read_tasks_id(task_id: int, db: Session = Depends(get_db)):
+    print(type(task_id))
+    result = db.execute(text(f"SELECT TaskID, TaskNumber, TaskTitle FROM Tasks where TaskID = :task_id"),{"task_id": task_id}).fetchall()
+    subtasks = [dict(row._mapping) for row in result]
+    return subtasks
+
+# /tasks/exec/{VariantID}
+
+'''все данные задачи выбранного студента по StudentTaskID'''
+@task_router.get("/exec/{VariantID}")
+def read_tasks_of_variant (VariantID: int, db: Session = Depends(get_db)):
+    query = text("EXEC dbo.GetStudentTaskDetailsByID :VariantID")
+    result = db.execute(query, {"VariantID": VariantID}).fetchall()
+    if not result:
+            raise HTTPException(status_code=404, detail=f"нет задач с варианте с ID {VariantID}")
+    subtasks = [dict(row._mapping) for row in result]
+    return subtasks
 
 """HTML"""
 
@@ -332,7 +351,7 @@ def post_edit_subtask_form(
 def list_tasks(request: Request, current_student = Depends(get_current_student_or_redirect)):
     if isinstance(current_student, RedirectResponse):
         return current_student
-    return templates.TemplateResponse("Tasks/listTasks.html", {"request": request, "student": current_student})
+    return templates.TemplateResponse("Tasks/variants.html", {"request": request, "student": current_student})
 
 
 

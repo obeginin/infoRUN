@@ -12,14 +12,17 @@ BEGIN
 		SubTaskID INT IDENTITY(1,1) PRIMARY KEY, --id ��������� (��������� ����)
 		TaskID INT NOT NULL,  -- ����� � �������
 		SubTaskNumber INT NOT NULL,  -- ����� ��������� (1.1, 1.2, ...)
+		VariantID INT,
 		ImagePath NVARCHAR(255), --���� ������
 		Description NVARCHAR(MAX),  -- �������� ���������
 		Answer NVARCHAR(32), --�����
 		SolutionPath NVARCHAR(255), --������� ������
-		FOREIGN KEY (TaskID) REFERENCES Tasks(TaskID) ON UPDATE CASCADE -- ������� ����
+		FOREIGN KEY (TaskID) REFERENCES Tasks(TaskID) ON UPDATE CASCADE, -- ������� ����
+		FOREIGN KEY (VariantID) REFERENCES Variants(VariantID) ON UPDATE CASCADE
 		);
 	END
 END;
+
 
 
 /*
