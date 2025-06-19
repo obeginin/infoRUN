@@ -165,7 +165,7 @@ def get_task_student(db: Session, student_id: int, SubTaskID: int) -> list[Stude
 
 '''все данные задачи выбранного студента по StudentTaskID'''
 def Get_Student_TaskDetails_By_ID(db: Session, StudentTaskID: int):
-    query = text("EXEC dbo.GetStudentTaskDetailsByID :student_task_id")
+    query = text("EXEC dbo.GetStudentsTasks @StudentTaskID = :student_task_id")
     result =  db.execute(query, {"student_task_id": StudentTaskID})
     if not result:
             raise HTTPException(status_code=404, detail=f"нет подзадачи с StudentTaskID {StudentTaskID}")

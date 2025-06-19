@@ -11,7 +11,7 @@
 
 <!--Вывод списка вариантов-->
     <script>
-        async function loadVariant() {
+        async function loadVariants() {
             try {
                 const response = await fetch(`/tasks/api/variants`);
                 const variants = await response.json();
@@ -26,7 +26,7 @@
                         const li = document.createElement("li");
                         console.log("variant", variant);
                         li.innerHTML = `
-                            <a href="">${variant.Name}</a>`;
+                            <a href="/variants/${variant.VariantID}">${variant.Name}</a>`;
 
                         container.appendChild(li);
                     });
@@ -34,6 +34,6 @@
                     console.error("Ошибка при загрузке подзадач", err);
                 }
             }
-        loadVariant()
+        loadVariants()
     </script>
 {% endblock %}

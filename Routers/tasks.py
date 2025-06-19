@@ -32,6 +32,7 @@ logger = logging.getLogger(__name__) # создание логгера для т
 task_router  = APIRouter(prefix="/tasks", tags=["tasks"])
 subtask_router  = APIRouter(prefix="/subtasks", tags=["subtasks"])
 task_js_router = APIRouter(prefix="/js", tags=["js"])
+varinant_router = APIRouter(prefix="/variants", tags=["variants"])
 #task_ji_router = APIRouter(prefix="/html", tags=["html"])
 
 templates = Jinja2Templates(directory=TEMPLATES_DIR)
@@ -87,16 +88,18 @@ def read_tasks_id(task_id: int, db: Session = Depends(get_db)):
     return subtasks
 
 # /tasks/exec/{VariantID}
-
-'''все данные задачи выбранного студента по StudentTaskID'''
+'''вызов хранимки с вариантом'''
 @task_router.get("/exec/{VariantID}")
-def read_tasks_of_variant (VariantID: int, db: Session = Depends(get_db)):
-    query = text("EXEC dbo.GetStudentTaskDetailsByID :VariantID")
-    result = db.execute(query, {"VariantID": VariantID}).fetchall()
+def read_tasks_of_variant (VariantID: int, db: Session = Depends(get_db), current_student = Depends(get_current_student_or_redirect)):
+    query = text("EXEC dbo.GetStudentsTasks @VariantID =:VariantID, @StudentID =:StudentID")
+    result = db.execute(query, {"VariantID": VariantID, "StudentID": 2}).fetchall()
+    print(result)
     if not result:
             raise HTTPException(status_code=404, detail=f"нет задач с варианте с ID {VariantID}")
     subtasks = [dict(row._mapping) for row in result]
     return subtasks
+
+
 
 """HTML"""
 
@@ -174,29 +177,27 @@ def get_edit_subtask_form(
 
 
 
+# /varinants/
+'''Вызываем html страницу с вариантами'''
+@varinant_router.get("/", response_class=HTMLResponse)
+def list_tasks_of_varinants(request: Request, current_student = Depends(get_current_student_or_redirect)):
+    if isinstance(current_student, RedirectResponse):
+        return current_student
+    return templates.TemplateResponse("Tasks/variants.html", {"request": request, "student": current_student})
+
+# /varinants/{VariantID}
+'''Вызываем html страницу с конкретным вариантом'''
+@varinant_router.get("/{VariantID}", response_class=HTMLResponse)
+def list_tasks(request: Request, VariantID:int, current_student = Depends(get_current_student_or_redirect)):
+    print(current_student)
+    if isinstance(current_student, RedirectResponse):
+        return current_student
+    print(current_student)
+    StudentID = current_student.ID
+    print(StudentID)
+    return templates.TemplateResponse("Tasks/var.html", {"request": request, "VariantID": VariantID, "student":current_student})
 
 
-
-
-# /subtasks/api/columns (GET)
-''' Эндпоинт: Получить список всех столбцов таблицы subtasks'''
-@subtask_router.get("/api/columns", response_model=list[str],summary="Получить список всех столбцов таблицы 'subtasks'")
-def get_task_columns(db: Session = Depends(get_db)):
-    return task_crud.get_columns_of_table(db)
-
-# /subtasks/api/    (GET)
-''' Эндпоинт: Получить список всех подзадач'''
-@subtask_router.get("/api/", response_model=list[SubTaskRead],summary="Получить список всех подзадач")
-def read_all_subtasks(db: Session = Depends(get_db)):
-    return task_crud.get_all_subtasks(db)
-
-# /subtasks/create/    (POST)
-''' Эндпоинт: Добавление подзадачи (для API)'''
-@subtask_router.post("/create/", status_code=201,summary="Добавление подзадачи")
-def create_new_subtask(subtask: SubTaskCreate, db: Session = Depends(get_db)):
-    new_id = task_crud.create_subtask(db, subtask)
-    logger.info("Выполнили роут с добавлением задачи")
-    return {"message": "Подзадача успешно добавлена", "SubTaskID": new_id}
 
 
 
@@ -345,13 +346,7 @@ def post_edit_subtask_form(
 
 
 
-# /subtasks/
-'''Вызываем html страницу с задачами'''
-@subtask_router.get("/", response_class=HTMLResponse)
-def list_tasks(request: Request, current_student = Depends(get_current_student_or_redirect)):
-    if isinstance(current_student, RedirectResponse):
-        return current_student
-    return templates.TemplateResponse("Tasks/variants.html", {"request": request, "student": current_student})
+
 
 
 
@@ -385,7 +380,25 @@ def get_files_for_subtask(subtask_id: int, db: Session = Depends(get_db)):
 
 
 
+# /subtasks/api/columns (GET)
+''' Эндпоинт: Получить список всех столбцов таблицы subtasks'''
+'''@subtask_router.get("/api/columns", response_model=list[str],summary="Получить список всех столбцов таблицы 'subtasks'")
+def get_task_columns(db: Session = Depends(get_db)):
+    return task_crud.get_columns_of_table(db)'''
 
+# /subtasks/api/    (GET)
+''' Эндпоинт: Получить список всех подзадач'''
+'''@subtask_router.get("/api/", response_model=list[SubTaskRead],summary="Получить список всех подзадач")
+def read_all_subtasks(db: Session = Depends(get_db)):
+    return task_crud.get_all_subtasks(db)'''
+
+# /subtasks/create/    (POST)
+''' Эндпоинт: Добавление подзадачи (для API)'''
+'''@subtask_router.post("/create/", status_code=201,summary="Добавление подзадачи")
+def create_new_subtask(subtask: SubTaskCreate, db: Session = Depends(get_db)):
+    new_id = task_crud.create_subtask(db, subtask)
+    logger.info("Выполнили роут с добавлением задачи")
+    return {"message": "Подзадача успешно добавлена", "SubTaskID": new_id}'''
 
 
 

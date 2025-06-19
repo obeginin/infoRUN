@@ -5,34 +5,41 @@
 {% block title_1 %}Список Задач!{% endblock %}
 {% block content %}
 
-
-    <ul id="variants-list"></ul>
+<p>вариант № {{student}}</p>>
+<pre>
+{{ student.__dict__ }}
+</pre>
+    <ul id="tasks-list"></ul>
 
 <!--Вывод списка вариантов-->
     <script>
         async function loadVariant() {
-            try {
-                const response = await fetch(`/tasks/api/variants`);
-                const variants = await response.json();
+                try {
+                    const urlParts = window.location.pathname.split("/");
+                    const VariantID = urlParts[urlParts.length - 1];
+                    console.log("VariantID", VariantID); //Вывод в консоль браузера
+
+                    const response = await fetch(`/tasks/exec/${VariantID}`);
+                    const variant = await response.json();
 
 
-                // Заголовок
-                console.log("variants", variants);
-                //document.getElementById("subtask-title").textContent = `${}`;
+                    // Заголовок
+                    console.log("variant", variant);
+                    //document.getElementById("subtask-title").textContent = `${}`;
 
-                const container = document.getElementById("variants-list");
-                    variants.forEach(variant => {
-                        const li = document.createElement("li");
-                        console.log("variant", variant);
-                        li.innerHTML = `
-                            <a href="">${variant.Description}</a>`;
+                    const container = document.getElementById("tasks-list");
+                        variant.forEach(subtask => {
+                            const li = document.createElement("li");
+                            console.log("subtask", subtask);
+                            li.innerHTML = `
+                                <a>${subtask.Name}</a>`;
 
-                        container.appendChild(li);
-                    });
-                } catch (err) {
-                    console.error("Ошибка при загрузке подзадач", err);
+                            container.appendChild(li);
+                        });
+                    } catch (err) {
+                        console.error("Ошибка при загрузке подзадач", err);
+                    }
                 }
-            }
-        loadVariant()
+            loadVariant()
     </script>
 {% endblock %}
