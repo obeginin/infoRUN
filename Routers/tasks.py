@@ -188,14 +188,15 @@ def list_tasks_of_varinants(request: Request, current_student = Depends(get_curr
 # /varinants/{VariantID}
 '''Вызываем html страницу с конкретным вариантом'''
 @varinant_router.get("/{VariantID}", response_class=HTMLResponse)
-def list_tasks(request: Request, VariantID:int, current_student = Depends(get_current_student_or_redirect)):
+def list_tasks(request: Request, VariantID:int, current_student = Depends(get_current_student_or_redirect), db: Session = Depends(get_db)):
     print(current_student)
     if isinstance(current_student, RedirectResponse):
         return current_student
     print(current_student)
     StudentID = current_student.ID
     print(StudentID)
-    return templates.TemplateResponse("Tasks/var.html", {"request": request, "VariantID": VariantID, "student":current_student})
+    tasks = read_tasks_of_variant(VariantID, db)
+    return templates.TemplateResponse("Tasks/var.html", {"request": request, "tasks": tasks, "student":current_student})
 
 
 
