@@ -7,6 +7,17 @@ from pydantic import ConfigDict
 сериализация (преобразование в JSON и обратно)
 '''
 
+
+# для передачи информации о авторизованном студенте
+class StudentSafe(BaseModel):
+    ID: int
+    Login: str
+    Last_Name: str
+    First_Name: str
+    Role: str
+
+    model_config = ConfigDict(from_attributes=True)
+
 # Базовая модель студента
 class StudentBase(BaseModel):
     Login: str

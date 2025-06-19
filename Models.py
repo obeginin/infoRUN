@@ -10,16 +10,7 @@ from sqlalchemy.orm import relationship
 Base = declarative_base()
 # Модель для таблицы Students
 
-# для передачи информации о авторизованном студенте
-class StudentSafe(Base):
-    ID: int
-    Login: str
-    First_Name: str
-    Last_Name: str
-    Role: str
 
-    class Config:
-        orm_mode = True
 
 class Student(Base):
     __tablename__ = 'Students'

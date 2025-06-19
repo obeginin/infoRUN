@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordBearer
 from dependencies import get_db
 from Models import Student
+from Schemas.students import StudentSafe
 from Security.token import SECRET_KEY, ALGORITHM
 from fastapi import Depends, HTTPException, status, Request
 #from Crud.students import get_student_by_login
@@ -44,10 +45,13 @@ print("Хешированный пароль:", hashed_password)
 async def get_current_student_or_redirect(
     request: Request,
     db: Session = Depends(get_db)
-) -> Optional[Student]:
+) -> Optional[StudentSafe]:
     try:
+        #print(Student)
+        #print(type(Student))
         #logging.warning(f"Авторизован студент: {Student.Login}")
-        return get_current_student(request, db)
+        student = get_current_student(request, db)
+        return StudentSafe.model_validate(student)
     except HTTPException as e:
         if e.status_code == HTTP_401_UNAUTHORIZED:
             #logging.warning("Редирект, так как студент не авторизован")
