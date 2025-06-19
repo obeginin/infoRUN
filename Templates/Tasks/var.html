@@ -2,13 +2,11 @@
 {% extends "base.html" %}
 <!--страница с вариантом-->
 {% block title %}Список Задач{% endblock %}
-{% block title_1 %}Список Задач!{% endblock %}
+{% block title_1 %}${variant}{% endblock %}
 {% block content %}
 
-<p>вариант № {{student}}</p>>
-<pre>
-{{ student.__dict__ }}
-</pre>
+<p>вариант № {{variant}}</p>>
+<!--<pre>{{ student.__dict__ }}</pre>-->
     <ul id="tasks-list"></ul>
 
 <!--Вывод списка вариантов-->
@@ -17,22 +15,24 @@
                 try {
                     const urlParts = window.location.pathname.split("/");
                     const VariantID = urlParts[urlParts.length - 1];
+                    const StudentID = {{student.ID}}
                     console.log("VariantID", VariantID); //Вывод в консоль браузера
+                    console.log("StudentID", StudentID);
 
-                    const response = await fetch(`/tasks/exec/${VariantID}`);
+                    const response = await fetch(`/tasks/exec/${VariantID}/${StudentID}`);
                     const variant = await response.json();
 
 
                     // Заголовок
                     console.log("variant", variant);
-                    //document.getElementById("subtask-title").textContent = `${}`;
+                    //document.getElementById("title_1").textContent = `${variant}`;
 
                     const container = document.getElementById("tasks-list");
                         variant.forEach(subtask => {
                             const li = document.createElement("li");
                             console.log("subtask", subtask);
                             li.innerHTML = `
-                                <a>${subtask.Name}</a>`;
+                                <a>${subtask.TaskTitle}</a>`;
 
                             container.appendChild(li);
                         });

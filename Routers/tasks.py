@@ -89,7 +89,7 @@ def read_tasks_id(task_id: int, db: Session = Depends(get_db)):
 
 # /tasks/exec/{VariantID}
 '''вызов хранимки с вариантом'''
-@task_router.get("/exec/{VariantID}")
+@task_router.get("/exec/{VariantID}/{StudentID}")
 def read_tasks_of_variant (VariantID: int, db: Session = Depends(get_db), current_student = Depends(get_current_student_or_redirect)):
     query = text("EXEC dbo.GetStudentsTasks @VariantID =:VariantID, @StudentID =:StudentID")
     result = db.execute(query, {"VariantID": VariantID, "StudentID": 2}).fetchall()
