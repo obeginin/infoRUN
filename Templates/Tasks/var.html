@@ -20,6 +20,7 @@
         <div type="button" id="btn-prev" class="button button-small">← Назад</div>
         <div class="form form-var">
             <div id="task-container"></div>
+            <button id="SaveAnswer" class="button button-edit">Сохранить ответы</button>
             <button onclick="submitAnswers()" class="button button-edit">Отправить ответы</button>
         </div>
         <div type="button" id="btn-next" class="button button-small">Вперёд →</div>
@@ -32,27 +33,27 @@
         const answers = {};
 
 
-        // При загрузке страницы пытаемся восстановить индекс
-        let currentTaskIndex = localStorage.getItem('currentTaskIndex');
-        if (currentTaskIndex !== null) {
-            currentTaskIndex = Number(currentTaskIndex);
-        } else {
-            currentTaskIndex = 0;
-        }
 
+
+
+
+        //функция отображения задачи
          function renderTask(index) {
-
+            // Загружаем ответы из localStorage
+        const savedAnswers = localStorage.getItem("userAnswers");
+        const answers = savedAnswers ? JSON.parse(savedAnswers) : {};
             const task = tasks[index];
             const container = document.getElementById("task-container");
             container.innerHTML = ""; // Очищаем
 
+             // Заголовок задачи
             const title = document.createElement("h2");
             title.textContent = `Задача №${index + 1}`;
 
 
+            // Картинка
             const imageBlock = document.createElement("div");
             imageBlock.className = "field image-preview";
-
             const image = document.createElement("img");
             image.src = `/${task.ImagePath}`;
             image.alt = "Изображение подзадачи";
@@ -60,27 +61,39 @@
             image.addEventListener("click", () => {
                 window.open(image.src, "_blank");
             });
+
+             // Поле для ответа
             const input = document.createElement("input");
             input.type = "text";
             input.id = "answer-input";
             //input.value = userAnswer;
             input.placeholder = "Ваш ответ";
 
+            // Заполняем сохранённым ответом, если он есть
+            if (answers[task.SubTaskID]) {
+                input.value = answers[task.SubTaskID];
+            }
+
+            // Добавляем все элементы в контейнер
             imageBlock.appendChild(image);
             container.appendChild(title);
-
             container.appendChild(imageBlock);
             container.appendChild(input);
 
 
-
+            // Обновляем номер задачи на странице
             document.getElementById("task-number").textContent = `${index + 1} из ${tasks.length}`;
+            // Сохраняем текущий индекс в localStorage (если нужно)
             localStorage.setItem('currentTaskIndex', index);
         }
 
         document.getElementById("btn-next").addEventListener("click", function(event) {
             event.preventDefault();
             nextTask();
+        });
+        document.getElementById("SaveAnswer").addEventListener("click", function(event) {
+            event.preventDefault();
+            saveAnswer();
         });
 
         document.getElementById("btn-prev").addEventListener("click", function(event) {
@@ -90,14 +103,19 @@
 
          function saveAnswer() {
             const task = tasks[currentTaskIndex];
+            if (!task) return;
             const input = document.getElementById("answer-input");
-            answers[task.SubTaskID] = input.value;
+            if (!input) return;
+            answers[task.SubTaskID] = input.value.trim();
+
+            // Сохраняем в localStorage
+            localStorage.setItem("userAnswers", JSON.stringify(answers));
         }
 
         function nextTask() {
             //event.preventDefault(); // Отключить действие браузера
             //console.log('nextTask clicked');
-            saveAnswer();
+
             if (currentTaskIndex < tasks.length - 1) {
                 currentTaskIndex++;
                 renderTask(currentTaskIndex);
@@ -106,7 +124,7 @@
 
         function prevTask() {
             event.preventDefault(); // Отключить действие браузера
-            saveAnswer();
+
             if (currentTaskIndex > 0) {
                 currentTaskIndex--;
                 renderTask(currentTaskIndex);
@@ -115,7 +133,7 @@
 
 
         async function submitAnswers() {
-            saveAnswer();
+
             const response = await fetch("/submit_answers", {
                 method: "POST",
                 headers: {
@@ -123,10 +141,20 @@
                 },
                 body: JSON.stringify(answers)
             });
+            // Очистить localStorage после успешной отправки
+        localStorage.removeItem("userAnswers");
             const result = await response.json();
             //alert(result.message || "Ответы отправлены!");
         }
 
+        // При загрузке страницы пытаемся восстановить индекс
+        let currentTaskIndex = localStorage.getItem('currentTaskIndex');
+
+        if (currentTaskIndex !== null) {
+            currentTaskIndex = Number(currentTaskIndex);
+        } else {
+            currentTaskIndex = 0;
+        }
         renderTask(currentTaskIndex);
     </script>
 {% endblock %}
