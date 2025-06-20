@@ -99,7 +99,11 @@ nav li button:hover {
     /*width: 100%;   */                 /*ширина кнопки (на всю ширину родительского контейнера)*/
     transition: background-color 0.3s ease; /* плавное изменение CSS-свойства.*/
 }
-
+.button-small {
+    width: 80px;                  /* уменьшенная ширина */
+    margin: 0;                 /* убираем верхний отступ, чтобы по центру вертикально */
+    padding: 10px 16px;            /* можно чуть уменьшить паддинги */
+}
 /*кнопка выхода*/
 .button-logout {
     position: absolute;
@@ -205,6 +209,7 @@ label {
 
 /*форма*/
 .form {
+    flex: 1 1 auto; /* занимает всё доступное пространство */
     max-width: 600px;
     margin: 40px auto;
     padding: 20px 30px;
@@ -212,6 +217,13 @@ label {
     border-radius: 12px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 
+}
+
+.form-var {
+    max-width: 65%;
+    margin: 0 auto; /* чтобы элемент был по центру */
+    min-height: 400px; /* или подходящее значение */
+    position: relative;
 }
 
 .form-filter {
@@ -404,4 +416,12 @@ label {
     border: 1px solid #ff4d4d;
     color: #a80000;
     border-radius: 6px;
+}
+
+.navigation {
+display: flex;
+    justify-content: space-between; /* Разместить элементы по краям */
+    align-items: center; /* Вертикальное выравнивание по центру */
+    padding: 0 10px; /* Отступы слева и справа при желании */
+    margin-bottom: 20px; /* Отступ снизу, если нужно */
 }

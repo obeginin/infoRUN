@@ -97,7 +97,7 @@ def read_tasks_of_variant (VariantID: int, db: Session = Depends(get_db), curren
     if not result:
             raise HTTPException(status_code=404, detail=f"нет задач с варианте с ID {VariantID}")
     subtasks = [dict(row._mapping) for row in result]
-    return subtasks
+    return jsonable_encoder(subtasks)
 
 
 

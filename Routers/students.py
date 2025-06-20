@@ -333,7 +333,7 @@ async def submit_solution(
 
     # Обновим запись решения Студента
     student_solution_path = None
-    if StudentSolutionFile:
+    if StudentSolutionFile and StudentSolutionFile.filename:
         ext = StudentSolutionFile.filename.split('.')[-1]
         # Сохраняем файл решения на диск (папку можно настроить)
         filename = f"taskID_{SubTaskID}_task_{task_id}_sub_{subtask_number}_student_{StudentID}.{ext}"

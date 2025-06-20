@@ -1,41 +1,92 @@
 {# Templates/Tasks/listTasks.html #}
 {% extends "base.html" %}
 <!--страница с вариантом-->
-{% block title %}Список Задач{% endblock %}
-{% block title_1 %}${}{% endblock %}
+{% block title %}{{tasks[0].Name}}{% endblock %}
+{% block title_1 %}{{tasks[0].Name}}{% endblock %}
 {% block content %}
+<style>
+    .page {
+        display: flex;
+        align-items: center;      /* выравниваем по вертикали */
+        justify-content: center; /* кнопки по краям, форма по центру */
+        gap: 0;                /* отступы между элементами */
+        padding: 10px 0;
+    }
 
-<p>вариант № </p>>
-<pre>{{ tasks }}</pre>
-    <ul id="tasks-list"></ul>
-    <div id="task-container"></div>
-
-    <div class="navigation">
-        <button onclick="prevTask()">← Назад</button>
-        <span id="task-number"></span>
-        <button onclick="nextTask()">Вперёд →</button>
+</style>
+<!--
+<pre>{{ tasks }}</pre>-->
+    <div class="page" >
+        <div type="button" id="btn-prev" class="button button-small">← Назад</div>
+        <div class="form form-var">
+            <div id="task-container"></div>
+            <button onclick="submitAnswers()" class="button button-edit">Отправить ответы</button>
+        </div>
+        <div type="button" id="btn-next" class="button button-small">Вперёд →</div>
     </div>
-
-    <button onclick="submitAnswers()">Отправить ответы</button>
+<div id="task-number" style="text-align: center;"></div>
 <!--Вывод списка вариантов-->
     <script>
         const tasks = {{ tasks | tojson  }};
-        let currentTaskIndex = 0;
+
         const answers = {};
 
+
+        // При загрузке страницы пытаемся восстановить индекс
+        let currentTaskIndex = localStorage.getItem('currentTaskIndex');
+        if (currentTaskIndex !== null) {
+            currentTaskIndex = Number(currentTaskIndex);
+        } else {
+            currentTaskIndex = 0;
+        }
+
          function renderTask(index) {
+
             const task = tasks[index];
             const container = document.getElementById("task-container");
-            const userAnswer = answers[task.SubTaskID] || "";
+            container.innerHTML = ""; // Очищаем
 
-            container.innerHTML = `
-                <h3>Задача №${index + 1}</h3>
-                <p>${task.Description}</p>
-                <input type="text" id="answer-input" value="${userAnswer}" placeholder="Ваш ответ">
-            `;
+            const title = document.createElement("h2");
+            title.textContent = `Задача №${index + 1}`;
 
-            document.getElementById("task-number").textContent = `${index + 1}  ${tasks.length}`;
+
+            const imageBlock = document.createElement("div");
+            imageBlock.className = "field image-preview";
+
+            const image = document.createElement("img");
+            image.src = `/${task.ImagePath}`;
+            image.alt = "Изображение подзадачи";
+            image.className = "image-preview";
+            image.addEventListener("click", () => {
+                window.open(image.src, "_blank");
+            });
+            const input = document.createElement("input");
+            input.type = "text";
+            input.id = "answer-input";
+            //input.value = userAnswer;
+            input.placeholder = "Ваш ответ";
+
+            imageBlock.appendChild(image);
+            container.appendChild(title);
+
+            container.appendChild(imageBlock);
+            container.appendChild(input);
+
+
+
+            document.getElementById("task-number").textContent = `${index + 1} из ${tasks.length}`;
+            localStorage.setItem('currentTaskIndex', index);
         }
+
+        document.getElementById("btn-next").addEventListener("click", function(event) {
+            event.preventDefault();
+            nextTask();
+        });
+
+        document.getElementById("btn-prev").addEventListener("click", function(event) {
+            event.preventDefault();
+            prevTask();
+        });
 
          function saveAnswer() {
             const task = tasks[currentTaskIndex];
@@ -44,6 +95,8 @@
         }
 
         function nextTask() {
+            //event.preventDefault(); // Отключить действие браузера
+            //console.log('nextTask clicked');
             saveAnswer();
             if (currentTaskIndex < tasks.length - 1) {
                 currentTaskIndex++;
@@ -52,6 +105,7 @@
         }
 
         function prevTask() {
+            event.preventDefault(); // Отключить действие браузера
             saveAnswer();
             if (currentTaskIndex > 0) {
                 currentTaskIndex--;
@@ -70,7 +124,7 @@
                 body: JSON.stringify(answers)
             });
             const result = await response.json();
-            alert(result.message || "Ответы отправлены!");
+            //alert(result.message || "Ответы отправлены!");
         }
 
         renderTask(currentTaskIndex);
