@@ -154,7 +154,7 @@ def list_subtasks(request: Request, task_id: int, current_student = Depends(get_
     return templates.TemplateResponse("Tasks/subtasks.html", {"request": request, "taskId": task_id, "student": current_student})
 
 
-# /tasks/{task_id}/subtasks{subtask_id}/edit  (GET)
+# /tasks/{task_id}/subtasks{subtask_id}/edit  (GET) @
 '''Вызов страницы с редактированием задачи'''
 @task_router.get("/{task_id}/subtasks{subtask_id}/edit", response_class=HTMLResponse)
 def get_edit_subtask_form(
@@ -177,7 +177,7 @@ def get_edit_subtask_form(
 
 
 
-# /varinants/
+# /varinants/   @
 '''Вызываем html страницу с вариантами'''
 @varinant_router.get("/", response_class=HTMLResponse)
 def list_tasks_of_varinants(request: Request, current_student = Depends(get_current_student_or_redirect)):
@@ -185,7 +185,7 @@ def list_tasks_of_varinants(request: Request, current_student = Depends(get_curr
         return current_student
     return templates.TemplateResponse("Tasks/variants.html", {"request": request, "student": current_student})
 
-# /varinants/{VariantID}
+# /varinants/{VariantID}    @
 '''Вызываем html страницу с конкретным вариантом'''
 @varinant_router.get("/{VariantID}", response_class=HTMLResponse)
 def list_tasks(request: Request, VariantID:int, current_student = Depends(get_current_student_or_redirect), db: Session = Depends(get_db)):
@@ -206,7 +206,9 @@ def list_tasks(request: Request, VariantID:int, current_student = Depends(get_cu
 
 
 # /subtasks/create_form/    (POST)
-'''Отправка данных с добавленной задачей из формы с html страницы'''
+'''Получаем с html страницы данные из формы и запускаем с этими параметрами функцию create_subtask_from_form
+в ней добавляем новую задачу в базу и возвращаем номер новой задачи и редиректим на неё
+'''
 @subtask_router.post("/create_form")
 def post_subtask_form(
     TaskID: int = Form(...),
@@ -217,7 +219,7 @@ def post_subtask_form(
     db: Session = Depends(get_db)
 ):
 
-    logger.info("Отправляем форму на добавление задачи")
+    logger.debug("Отправляем форму на добавление задачи")
     result = task_crud.create_subtask_from_form(
         TaskID=TaskID,
         Description=Description,
@@ -232,7 +234,7 @@ def post_subtask_form(
         logger.error("Не удалось создать подзадачу")
         raise HTTPException(status_code=400, detail="Не удалось создать подзадачу")
 
-    return RedirectResponse(f"/subtasks/{result}", status_code=303)
+    return RedirectResponse(f"/tasks/{TaskID}/subtasks{result}", status_code=303)
 
 
 
@@ -342,7 +344,7 @@ def post_edit_subtask_form(
         logger.info("Ошибка при обновлении подзадачи")
         return RedirectResponse("/error", status_code=303)
 
-    return RedirectResponse(f"/tasks/{TaskID}", status_code=303)
+    return RedirectResponse(f"/tasks/{TaskID}/subtasks{SubTaskID}", status_code=303)
 
 
 

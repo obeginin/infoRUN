@@ -156,6 +156,7 @@ def create_subtask_from_form(
         SolutionFile: Optional[UploadFile],
         db: Session
 ):
+    logger.debug("Запуск функции create_subtask_from_form")
     try:
         # Генерация SubTaskNumber — последний + 1
         result = db.execute(
@@ -163,6 +164,8 @@ def create_subtask_from_form(
             {"task_id": TaskID}
         ).scalar()
         subtask_number = (int(result) if result else 0) + 1
+
+        logger.debug(f"Новый номер подзадачи: {subtask_number}")
 
         # Сохраняем файл, если есть
         image_path = None
@@ -173,16 +176,19 @@ def create_subtask_from_form(
             with filepath.open("wb") as buffer:
                 shutil.copyfileobj(ImageFile.file, buffer)
             image_path = f"Uploads/images/{filename}"
+            logger.debug(f"filepath: {filepath}")
+            logger.debug(f"image_path: {image_path}")
 
         solution_path = None
         if SolutionFile and SolutionFile.filename:
             ext = SolutionFile.filename.split('.')[-1]
             filename = f"solution_task_{TaskID}_sub_{subtask_number}.{ext}"
-            filepath = UPLOAD_SOLUTION_DIR / filename
-            with filepath.open("wb") as buffer:
+            sol_filepath = UPLOAD_SOLUTION_DIR / filename
+            with sol_filepath.open("wb") as buffer:
                 shutil.copyfileobj(SolutionFile.file, buffer)
             solution_path = f"Uploads/solutions/{filename}"
-
+            logger.debug(f"sol_filepath: {sol_filepath}")
+            logger.debug(f"solution_path: {solution_path}")
         # Вставка подзадачи в БД
         insert_query = (
             text("""

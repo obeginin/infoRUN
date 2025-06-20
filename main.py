@@ -16,7 +16,7 @@ setup_logging()
 
 
 
-app = FastAPI()
+app = FastAPI(debug=True)
 # Регистрируем роутер
 app.include_router(auth.home_router)
 app.include_router(tasks.task_router) # подключает маршруты из routers/tasks.py.
