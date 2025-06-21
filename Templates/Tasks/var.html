@@ -12,36 +12,64 @@
         gap: 0;                /* отступы между элементами */
         padding: 10px 0;
     }
+    .results-box {
+        margin-top: 30px;
+        padding: 15px;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 16px;
+        line-height: 1.6;
+    }
+    .results-box p {
+        margin-bottom: 10px;
+        font-weight: 500;
+    }
+    .results-box a {
+        text-decoration: underline;
+        color: #007bff;
+        cursor: pointer;
+    }
+    .correct {
+        color: green;
+    }
+    .incorrect {
+        color: red;
+    }
+    .missing {
+        color: orange;
+    }
+    .results-box .correct { color: green; }
+    .results-box .incorrect { color: red; }
+    .results-box .missing { color: orange; }
 
 </style>
 <!--
 <pre>{{ tasks }}</pre>-->
-    <div class="page" >
+    <div id = "page" class="page" >
         <div type="button" id="btn-prev" class="button button-small">← Назад</div>
         <div class="form form-var">
             <div id="task-container"></div>
             <button id="SaveAnswer" class="button button-edit">Сохранить ответы</button>
-            <button onclick="submitAnswers()" class="button button-edit">Отправить ответы</button>
+            <button id="submitAnswers" class="button button-edit">Отправить ответы</button>
         </div>
         <div type="button" id="btn-next" class="button button-small">Вперёд →</div>
     </div>
-<div id="task-number" style="text-align: center;"></div>
+
+    <div id="task-number" style="text-align: center;"></div>
+
+    <div id="results" class="results-box"></div>
 <!--Вывод списка вариантов-->
     <script>
-        const tasks = {{ tasks | tojson  }};
-
-        const answers = {};
-
-
-
-
+        const tasks = {{ tasks | tojson  }}; // получения задач с сервера (jinja)
+        const answers = {}; //переменная для хранения ответов
 
 
         //функция отображения задачи
          function renderTask(index) {
             // Загружаем ответы из localStorage
-        const savedAnswers = localStorage.getItem("userAnswers");
-        const answers = savedAnswers ? JSON.parse(savedAnswers) : {};
+            const savedAnswers = localStorage.getItem("userAnswers");
+            const answers = savedAnswers ? JSON.parse(savedAnswers) : {};
             const task = tasks[index];
             const container = document.getElementById("task-container");
             container.innerHTML = ""; // Очищаем
@@ -49,7 +77,6 @@
              // Заголовок задачи
             const title = document.createElement("h2");
             title.textContent = `Задача №${index + 1}`;
-
 
             // Картинка
             const imageBlock = document.createElement("div");
@@ -80,13 +107,129 @@
             container.appendChild(imageBlock);
             container.appendChild(input);
 
-
             // Обновляем номер задачи на странице
             document.getElementById("task-number").textContent = `${index + 1} из ${tasks.length}`;
             // Сохраняем текущий индекс в localStorage (если нужно)
             localStorage.setItem('currentTaskIndex', index);
         }
 
+
+
+        //Функция сохранения ответа
+         function saveAnswer() {
+            const task = tasks[currentTaskIndex];
+            if (!task) return;
+            const input = document.getElementById("answer-input");
+            if (!input) return;
+            answers[task.SubTaskID] = input.value.trim();
+            console.log("userAnswers:", JSON.stringify(answers));
+            // Сохраняем в localStorage
+            localStorage.setItem("userAnswers", JSON.stringify(answers));
+        }
+
+        //Функция переключения задачи вперед
+        function nextTask() {
+            //event.preventDefault(); // Отключить действие браузера
+
+
+            if (currentTaskIndex < tasks.length - 1) {
+                currentTaskIndex++;
+                renderTask(currentTaskIndex);
+            }
+        }
+
+        //Функция переключения задачи назад
+        function prevTask() {
+            event.preventDefault(); // Отключить действие браузера
+
+            if (currentTaskIndex > 0) {
+                currentTaskIndex--;
+                renderTask(currentTaskIndex);
+            }
+        }
+
+        //Функция для отправки всех ответов
+        async function submitAnswers() {
+
+            // Проходимся по всем задачам, даже если на них не было ответа
+            tasks.forEach(task => {
+                const subtaskId = task.SubTaskID;
+                if (!(subtaskId in answers)) {
+                    answers[subtaskId] = null;  // Если ответа нет — null
+                }
+            });
+            const response = await fetch("/variants/check_answers", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(answers)  // словарь: { SubTaskID: "ответ" }
+            });
+
+            // Скрыть интерфейс ввода задач
+
+            document.getElementById("page").style.display = "none";
+            document.getElementById("task-number").style.display = "none";
+
+            let index=0
+            const result = await response.json();
+            console.log("Ответ от сервера:", result);
+
+            // Показать результаты
+            const resultsContainer = document.getElementById("results");
+            resultsContainer.innerHTML = ""; // Очистить предыдущие результаты
+            console.log("Ответ от сервера:", result);
+
+            if (!result.results || !Array.isArray(result.results)) {
+                console.error("Нет массива results в ответе сервера:", result);
+                return;
+            }
+
+            result.results.forEach((r, index) => {
+                const number = index + 1;
+                const p = document.createElement("p");
+                // Номер как ссылка
+                const link = document.createElement("a");
+                link.href = "#";
+                link.textContent = `Задача №${number}`;
+                link.style.marginRight = "10px";
+                link.onclick = (e) => {
+                    e.preventDefault();
+                    // Показать снова задачу по индексу
+                    currentTaskIndex = index;
+                    renderTask(currentTaskIndex);
+
+                    // Скрыть блок результатов, показать задачу
+                    resultsContainer.innerHTML = "";
+                    document.getElementById("page").style.display = "";
+                    document.getElementById("task-number").style.display = "";
+                };
+                p.appendChild(link);
+
+                if (r.UserAnswer === null) {
+                    p.appendChild(document.createTextNode(`: ⚠️ Ответ не был дан`));
+                    //p.textContent = `Задача №${number}: ⚠️ Ответ не был дан`;
+                    console.log(`Задача №${number}: ⚠️ Ответ не был дан`);
+                    p.className = "missing";
+
+                } else if (r.IsCorrect) {
+                    p.appendChild(document.createTextNode( `: ✅ Верно (Правильный: ${r.CorrectAnswer}`));
+                    console.log(`Задача №${number}: ✅ Верно (Правильный: ${r.CorrectAnswer}`);
+                    p.className = "correct";
+                } else {
+                    p.appendChild(document.createTextNode( `: ❌ Неверно`));
+                    console.log(`Задача №${number}: ❌ Неверно`);
+                    p.className = "incorrect";
+                }
+                resultsContainer.appendChild(p);
+            });
+
+            // Очистить localStorage после успешной отправки
+            localStorage.removeItem("userAnswers");
+        }
+
+
+        //
         document.getElementById("btn-next").addEventListener("click", function(event) {
             event.preventDefault();
             nextTask();
@@ -101,60 +244,19 @@
             prevTask();
         });
 
-         function saveAnswer() {
-            const task = tasks[currentTaskIndex];
-            if (!task) return;
-            const input = document.getElementById("answer-input");
-            if (!input) return;
-            answers[task.SubTaskID] = input.value.trim();
+        document.getElementById("submitAnswers").addEventListener("click", function(event) {
+            event.preventDefault();
+            submitAnswers();
+        });
 
-            // Сохраняем в localStorage
-            localStorage.setItem("userAnswers", JSON.stringify(answers));
-        }
-
-        function nextTask() {
-            //event.preventDefault(); // Отключить действие браузера
-            //console.log('nextTask clicked');
-
-            if (currentTaskIndex < tasks.length - 1) {
-                currentTaskIndex++;
-                renderTask(currentTaskIndex);
-            }
-        }
-
-        function prevTask() {
-            event.preventDefault(); // Отключить действие браузера
-
-            if (currentTaskIndex > 0) {
-                currentTaskIndex--;
-                renderTask(currentTaskIndex);
-            }
-        }
-
-
-        async function submitAnswers() {
-
-            const response = await fetch("/submit_answers", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(answers)
-            });
-            // Очистить localStorage после успешной отправки
-        localStorage.removeItem("userAnswers");
-            const result = await response.json();
-            //alert(result.message || "Ответы отправлены!");
-        }
-
-        // При загрузке страницы пытаемся восстановить индекс
+        // При загрузке страницы пытаемся восстановить индекс (если задача уже была открыта до этого)
         let currentTaskIndex = localStorage.getItem('currentTaskIndex');
-
         if (currentTaskIndex !== null) {
             currentTaskIndex = Number(currentTaskIndex);
         } else {
             currentTaskIndex = 0;
         }
-        renderTask(currentTaskIndex);
+
+        renderTask(currentTaskIndex); // изначально запускаем функцию для отображения задачи
     </script>
 {% endblock %}

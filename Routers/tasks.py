@@ -12,6 +12,7 @@ from Crud.auth import get_current_student
 from Models import Student, SubTaskFiles
 from typing import List
 from pathlib import Path
+from typing import Dict, Optional
 import shutil
 from Crud.auth import get_current_student, admin_required, verify_password, get_current_student_or_redirect
 from fastapi.responses import RedirectResponse
@@ -177,7 +178,9 @@ def get_edit_subtask_form(
 
 
 
-# /varinants/   @
+
+
+# /variants/   @
 '''Вызываем html страницу с вариантами'''
 @varinant_router.get("/", response_class=HTMLResponse)
 def list_tasks_of_varinants(request: Request, current_student = Depends(get_current_student_or_redirect)):
@@ -185,7 +188,43 @@ def list_tasks_of_varinants(request: Request, current_student = Depends(get_curr
         return current_student
     return templates.TemplateResponse("Tasks/variants.html", {"request": request, "student": current_student})
 
-# /varinants/{VariantID}    @
+
+# /variants/check_answers
+@varinant_router.post("/check_answers")
+def check_answers(user_answers: Dict[int, Optional[str]], db: Session = Depends(get_db)):
+    results = []
+    print(user_answers)
+    for i, (subtask_id, user_answer) in enumerate(user_answers.items()):
+        if user_answer is None:
+            results.append({
+                "SubTaskID": subtask_id,
+                "IsCorrect": False,
+                "CorrectAnswer": "...",  # можно не указывать
+                "UserAnswer": None
+            })
+            continue
+        correct = db.execute(
+            text("SELECT Answer FROM SubTasks WHERE SubTaskID = :id"),
+            {"id": subtask_id}
+        ).scalar()
+
+        is_correct = str(user_answer).strip().lower() == str(correct).strip().lower()
+        #print(i, subtask_id, correct, is_correct)
+        results.append({
+            "SubTaskID": subtask_id,
+            "UserAnswer": user_answer,
+            "CorrectAnswer": correct,
+            "IsCorrect": is_correct
+        })
+    print(results)
+    return {
+        "results": results,
+        "correct_count": sum(r["IsCorrect"] for r in results),
+        "total": len(results),
+        "message": f"Верно: {sum(r['IsCorrect'] for r in results)} из {len(results)}"
+    }
+
+# /variants/{VariantID}    @
 '''Вызываем html страницу с конкретным вариантом'''
 @varinant_router.get("/{VariantID}", response_class=HTMLResponse)
 def list_tasks(request: Request, VariantID:int, current_student = Depends(get_current_student_or_redirect), db: Session = Depends(get_db)):
@@ -345,14 +384,6 @@ def post_edit_subtask_form(
         return RedirectResponse("/error", status_code=303)
 
     return RedirectResponse(f"/tasks/{TaskID}/subtasks{SubTaskID}", status_code=303)
-
-
-
-
-
-
-
-
 
 
 
