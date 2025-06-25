@@ -43,6 +43,11 @@
     .results-box .incorrect { color: red; }
     .results-box .missing { color: orange; }
 
+    input[readonly] {
+        background-color: #f0f0f0;
+        color: #555;
+        cursor: default;
+    }
 </style>
 <!--
 <pre>{{ tasks }}</pre>-->
@@ -59,17 +64,19 @@
     <div id="task-number" style="text-align: center;"></div>
 
     <div id="results" class="results-box"></div>
+
+
 <!--Вывод списка вариантов-->
     <script>
         const tasks = {{ tasks | tojson  }}; // получения задач с сервера (jinja)
         const answers = {}; //переменная для хранения ответов
-
+        let lastCheckResults = null;
 
         //функция отображения задачи
-         function renderTask(index) {
+         function renderTask(index, readOnly = false) {
             // Загружаем ответы из localStorage
             const savedAnswers = localStorage.getItem("userAnswers");
-            const answers = savedAnswers ? JSON.parse(savedAnswers) : {};
+            Object.assign(answers, savedAnswers ? JSON.parse(savedAnswers) : {});
             const task = tasks[index];
             const container = document.getElementById("task-container");
             container.innerHTML = ""; // Очищаем
@@ -101,15 +108,57 @@
                 input.value = answers[task.SubTaskID];
             }
 
+            //который отключает редактирование и скрывает кнопки, а также показывает кнопку “Назад к результатам”.
+            if (readOnly) {
+                input.readOnly = true;
+                input.style.backgroundColor = "#f0f0f0";
+                input.style.cursor = "default";
+            }
+
             // Добавляем все элементы в контейнер
             imageBlock.appendChild(image);
             container.appendChild(title);
             container.appendChild(imageBlock);
             container.appendChild(input);
 
+            // Кнопки “Сохранить” и “Отправить”
+            const saveBtn = document.getElementById("SaveAnswer");
+            const submitBtn = document.getElementById("submitAnswers");
+            if (readOnly) {
+                if (saveBtn) saveBtn.style.display = "none";
+                if (submitBtn) submitBtn.style.display = "none";
+            } else {
+                if (saveBtn) saveBtn.style.display = "";
+                if (submitBtn) submitBtn.style.display = "";
+            }
+
             // Обновляем номер задачи на странице
             document.getElementById("task-number").textContent = `${index + 1} из ${tasks.length}`;
             // Сохраняем текущий индекс в localStorage (если нужно)
+
+            // Кнопка "Назад к ответам"
+            let backBtn = document.getElementById("back-to-results");
+            if (readOnly) {
+                if (!backBtn) {
+                    backBtn = document.createElement("button");
+                    backBtn.id = "back-to-results";
+                    backBtn.className = "button button-edit";
+                    backBtn.textContent = "← Назад к результатам";
+                    backBtn.onclick = () => {
+                        document.getElementById("page").style.display = "none";
+                        document.getElementById("results").style.display = "";
+                        backBtn.remove();
+                    };
+                    container.appendChild(backBtn);
+                }
+            } else if (backBtn) {
+                backBtn.remove();
+                // Показать блок задач, спрятать результаты
+                document.getElementById("page").style.display = "";
+                document.getElementById("results").style.display = "none";
+            }
+
+
             localStorage.setItem('currentTaskIndex', index);
         }
 
@@ -174,6 +223,7 @@
             let index=0
             const result = await response.json();
             console.log("Ответ от сервера:", result);
+            lastCheckResults = result.results; // ← сохраняем
 
             // Показать результаты
             const resultsContainer = document.getElementById("results");
@@ -197,7 +247,7 @@
                     e.preventDefault();
                     // Показать снова задачу по индексу
                     currentTaskIndex = index;
-                    renderTask(currentTaskIndex);
+                    renderTask(currentTaskIndex, true);  // readOnly режим
 
                     // Скрыть блок результатов, показать задачу
                     resultsContainer.innerHTML = "";
@@ -256,7 +306,7 @@
         } else {
             currentTaskIndex = 0;
         }
-
+        console.log("Загружаемые задачи:", tasks);
         renderTask(currentTaskIndex); // изначально запускаем функцию для отображения задачи
     </script>
 {% endblock %}
