@@ -2,12 +2,13 @@ from config import TEMPLATES_DIR
 from fastapi import APIRouter, Depends,Form, Request, HTTPException
 from sqlalchemy.orm import Session
 from Models import Student
-from Schemas.auth import StudentLogin, StudentOut
+from Schemas.auth import StudentLogin, StudentOut, RoleRead
 from Security.token import create_access_token
 from dependencies import get_db
 from Crud.auth import get_current_student, admin_required, verify_password, get_current_student_or_redirect
 from fastapi.responses import JSONResponse
 from sqlalchemy import text
+from typing import List
 from fastapi.encoders import jsonable_encoder
 from fastapi.templating import Jinja2Templates
 from passlib.context import CryptContext
@@ -153,3 +154,32 @@ def admin_read_all_students(
         return current_student
     return templates.TemplateResponse("Admin/ListStudents.html", {"request": request, "student": current_student})
 
+
+# /admin/roles (GET)
+"""роут который возвращает список ролей"""
+@admin_router.get("/roles", summary="Получить список ролей",)
+def read_roles(db: Session = Depends(get_db)):
+    roles = db.execute(text("SELECT * FROM Roles")).mappings().all()
+    return roles
+
+# /admin/students/{student_id}/assign-role (POST)
+"""роут который назначает роль студенту"""
+@admin_router.post("/students/{student_id}/assign-role", summary="Назначить роль студенту",)
+def assign_role_to_student(student_id: int, role_id: int, db: Session = Depends(get_db)):
+    role_exists = db.execute(text("SELECT * FROM Roles where RoleID = :role_id"), {"role_id": role_id}).mappings().fetchone()
+    if not role_exists:
+        raise HTTPException(status_code=404, detail="Роль не найдена")
+    student_exists = db.execute(text("select * from students where id = :student_id"), {"student_id": student_id}).mappings().fetchone()
+    if not student_exists:
+        raise HTTPException(status_code=404, detail="Студент не найден")
+    db.execute(text("update students set RoleID = :role_id where ID = :student_id"), {"role_id":role_id, "student_id": student_id})
+    db.commit()
+    return  {"message": f" Студенту {student_exists['Login']} успешно назначена роль {role_exists['Name']} "}
+
+
+# /admin/
+'''
+роут которые назначает разрешения
+@admin_router.post("/assign-permission/", summary="Назначить разрешение роли")
+
+'''

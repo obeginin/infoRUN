@@ -69,7 +69,9 @@ def get_token_from_header(authorization: str = Depends(oauth2_scheme)) -> str:
 def get_current_student(request: Request, db: Session = Depends(get_db)) -> Student:
     token = request.cookies.get("access_token")
     print("ACCESS TOKEN >>>", token)
+
     if not token:
+        print("Нет access_token в cookies!")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Not authenticated",
