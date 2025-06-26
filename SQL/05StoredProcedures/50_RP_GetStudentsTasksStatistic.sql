@@ -1,4 +1,4 @@
- -- Хранимка для подсчета выполненных заданий по вариантам
+ -- РҐСЂР°РЅРёРјРєР° РґР»СЏ РїРѕРґСЃС‡РµС‚Р° РІС‹РїРѕР»РЅРµРЅРЅС‹С… Р·Р°РґР°РЅРёР№ РїРѕ РІР°СЂРёР°РЅС‚Р°Рј
  IF EXISTS(SELECT 1 FROM sys.procedures WHERE OBJECT_SCHEMA_NAME([object_id]) = 'dbo' and name = 'GetStudentsTasksStatistic')
 	DROP PROCEDURE dbo.GetStudentsTasksStatistic
 GO
@@ -10,19 +10,19 @@ BEGIN
 		st.StudentID,
 		s.Description,
 		
-		--(SELECT COUNT(*) FROM StudentTasks where Description='PRO100EGE Вариант №7' and StudentID =@StudentID) as TotalSubVar,
-		COUNT(CASE WHEN  st.CompletionStatus = 'Выполнено' THEN 1 END) AS Done, --суммируем выполненные
-		COUNT(CASE WHEN  st.CompletionStatus = 'В Процессе' THEN 1 END) AS inProgress, --суммируем в процессе
-		COUNT(CASE WHEN  st.CompletionStatus = 'Не приступал' THEN 1 END) AS NoStart, --суммируем не пристумал
-		COUNT (*) as TotalSubVar	-- находим количество задач данного варианта
+		--(SELECT COUNT(*) FROM StudentTasks where Description='PRO100EGE Р’Р°СЂРёР°РЅС‚ в„–7' and StudentID =@StudentID) as TotalSubVar,
+		COUNT(CASE WHEN  st.CompletionStatus = 'Р’С‹РїРѕР»РЅРµРЅРѕ' THEN 1 END) AS Done, --СЃСѓРјРјРёСЂСѓРµРј РІС‹РїРѕР»РЅРµРЅРЅС‹Рµ
+		COUNT(CASE WHEN  st.CompletionStatus = 'Р’ РџСЂРѕС†РµСЃСЃРµ' THEN 1 END) AS inProgress, --СЃСѓРјРјРёСЂСѓРµРј РІ РїСЂРѕС†РµСЃСЃРµ
+		COUNT(CASE WHEN  st.CompletionStatus = 'РќРµ РїСЂРёСЃС‚СѓРїР°Р»' THEN 1 END) AS NoStart, --СЃСѓРјРјРёСЂСѓРµРј РЅРµ РїСЂРёСЃС‚СѓРјР°Р»
+		COUNT (*) as TotalSubVar	-- РЅР°С…РѕРґРёРј РєРѕР»РёС‡РµСЃС‚РІРѕ Р·Р°РґР°С‡ РґР°РЅРЅРѕРіРѕ РІР°СЂРёР°РЅС‚Р°
 		/*CASE 
 			WHEN COUNT(*) = 
-				COUNT(CASE WHEN st.CompletionStatus = 'Выполнено' THEN 1 END) +
-				COUNT(CASE WHEN st.CompletionStatus = 'В Процессе' THEN 1 END) +
-				COUNT(CASE WHEN st.CompletionStatus = 'Не приступал' THEN 1 END)
+				COUNT(CASE WHEN st.CompletionStatus = 'Р’С‹РїРѕР»РЅРµРЅРѕ' THEN 1 END) +
+				COUNT(CASE WHEN st.CompletionStatus = 'Р’ РџСЂРѕС†РµСЃСЃРµ' THEN 1 END) +
+				COUNT(CASE WHEN st.CompletionStatus = 'РќРµ РїСЂРёСЃС‚СѓРїР°Р»' THEN 1 END)
 			THEN CAST(1 AS BIT)
 			ELSE CAST(0 AS BIT)
-		END AS StatusMatch -- проверка подсчета
+		END AS StatusMatch -- РїСЂРѕРІРµСЂРєР° РїРѕРґСЃС‡РµС‚Р°
 		*/
     FROM StudentTasks st
         JOIN Students sd ON sd.ID = st.StudentID 
@@ -32,11 +32,11 @@ BEGIN
         (@StudentID IS NULL OR st.StudentID = @StudentID) 
 	group BY st.StudentID, s.Description
 
-	-- Итоговая строка по всем вариантам студента
+	-- РС‚РѕРіРѕРІР°СЏ СЃС‚СЂРѕРєР° РїРѕ РІСЃРµРј РІР°СЂРёР°РЅС‚Р°Рј СЃС‚СѓРґРµРЅС‚Р°
 	UNION ALL
     SELECT
         @StudentID AS StudentID,
-        'ИТОГО' AS Description,
+        'РРўРћР“Рћ' AS Description,
         SUM(Done) AS Done,
         SUM(InProgress) AS InProgress,
         SUM(NoStart) AS NoStart,
@@ -45,9 +45,9 @@ BEGIN
     FROM
     (
         SELECT 
-            COUNT(CASE WHEN st.CompletionStatus = 'Выполнено' THEN 1 END) AS Done,
-            COUNT(CASE WHEN st.CompletionStatus = 'В Процессе' THEN 1 END) AS InProgress,
-            COUNT(CASE WHEN st.CompletionStatus = 'Не приступал' THEN 1 END) AS NoStart,
+            COUNT(CASE WHEN st.CompletionStatus = 'Р’С‹РїРѕР»РЅРµРЅРѕ' THEN 1 END) AS Done,
+            COUNT(CASE WHEN st.CompletionStatus = 'Р’ РџСЂРѕС†РµСЃСЃРµ' THEN 1 END) AS InProgress,
+            COUNT(CASE WHEN st.CompletionStatus = 'РќРµ РїСЂРёСЃС‚СѓРїР°Р»' THEN 1 END) AS NoStart,
             COUNT(*) AS TotalSubVar
         FROM StudentTasks st
         WHERE (@StudentID IS NULL OR st.StudentID = @StudentID)
