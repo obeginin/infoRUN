@@ -1,5 +1,6 @@
 from config import TEMPLATES_DIR
 from fastapi import APIRouter, Depends,Form, Request, HTTPException, status
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from sqlalchemy.orm import Session
 from Models import Student
 from Schemas.auth import StudentLogin, AssignPermissionsRequest, ChangePasswordRequest, AdminChangePasswordRequest
@@ -24,6 +25,23 @@ admin_router = APIRouter(prefix="/admin", tags=["admin"]) # страница д�
 templates = Jinja2Templates(directory=TEMPLATES_DIR)
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
+
+
+
+security = HTTPBasic()
+
+def get_swagger_user(
+    credentials: HTTPBasicCredentials = Depends(security),
+    db: Session = Depends(get_db),
+):
+    user = db.query(Student).filter(Student.Login == credentials.username).first()
+    if not user or not verify_password(credentials.password, user.Password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Неверные учетные данные",
+            headers={"WWW-Authenticate": "Basic"},
+        )
+    return user
 # /
 '''страница home без префикса'''
 @home_router.get("/")

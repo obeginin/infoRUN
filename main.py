@@ -1,7 +1,9 @@
 from config import TEMPLATES_DIR
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from Routers import tasks,students,auth,files  # Импортируем роутер задач
+from fastapi.openapi.docs import get_swagger_ui_html, get_redoc_html
 from fastapi.staticfiles import StaticFiles
+from Routers.auth import get_swagger_user
 import uvicorn
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse
@@ -16,7 +18,7 @@ setup_logging()
 
 
 
-app = FastAPI(debug=True)
+app = FastAPI(debug=True, docs_url=None, redoc_url=None)
 # Регистрируем роутер
 app.include_router(auth.home_router)
 app.include_router(tasks.task_router) # подключает маршруты из routers/tasks.py.
@@ -39,6 +41,15 @@ templates = Jinja2Templates(directory=TEMPLATES_DIR)
 @app.get("/")
 def read():
     return RedirectResponse(url="/home/login_in/")
+
+"""Swagger"""
+@app.get("/docs", dependencies=[Depends(get_swagger_user)])
+async def get_documentation():
+    return get_swagger_ui_html(openapi_url=app.openapi_url, title="Документация API")
+
+@app.get("/redoc", dependencies=[Depends(get_swagger_user)])
+async def get_redoc_documentation():
+    return get_redoc_html(openapi_url=app.openapi_url, title="Документация API")
 
 """запуск сервера"""
 if __name__ == "__main__":
