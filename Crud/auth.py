@@ -128,6 +128,7 @@ def get_current_student(request: Request, db: Session = Depends(get_db)) -> Stud
     student["permissions"] = permissions
     return student
 
+
 def permission_required(permission_name: str):
     def decorator(current_student=Depends(get_current_student)):
         if permission_name not in current_student["permissions"]:
@@ -155,7 +156,7 @@ def authenticate_student(db: Session, login: str, password: str):
     return student  # Возвращаем студента, если логин и пароль верны
 
 
-# Проверка на роль "admin"
+# Проверка на роль "admin" (заменил на permission_required("admin_panel"))
 def admin_required(
     current_student=Depends(get_current_student),
 ):

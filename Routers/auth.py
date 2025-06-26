@@ -5,7 +5,7 @@ from Models import Student
 from Schemas.auth import StudentLogin, AssignPermissionsRequest
 from Security.token import create_access_token
 from dependencies import get_db
-from Crud.auth import get_current_student, admin_required, verify_password, get_current_student_or_redirect
+from Crud.auth import get_current_student, permission_required, verify_password, get_current_student_or_redirect
 from fastapi.responses import JSONResponse
 from sqlalchemy import text
 from fastapi.encoders import jsonable_encoder
@@ -115,7 +115,7 @@ def read_students_me(current_student: Student = Depends(get_current_student)):
 @admin_router.get("/", response_class=HTMLResponse)
 def admin_dashboard(
     request: Request,
-    current_student=Depends(admin_required)
+    current_student=Depends(permission_required("admin_panel")) #admin_required
 ):
     return templates.TemplateResponse("Admin/dashboard.html", {
         "request": request,

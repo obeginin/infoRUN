@@ -14,7 +14,7 @@ from typing import List
 from pathlib import Path
 from typing import Dict, Optional
 import shutil
-from Crud.auth import get_current_student, admin_required, permission_required, get_current_student_or_redirect
+from Crud.auth import get_current_student, permission_required, permission_required, get_current_student_or_redirect
 from fastapi.responses import RedirectResponse
 from dotenv import load_dotenv
 from fastapi.responses import JSONResponse
@@ -138,7 +138,7 @@ def get_subtask_form(request: Request, current_student = Depends(permission_requ
 # /tasks/{task_id}/create  (GET) @
 '''Два одинаковых роута, для ссылок с разных страниц, чтобы корректно отрабатывала кнопка назад'''
 @task_router.get("/{task_id}/create", response_class=HTMLResponse)
-def get_subtask_form_with_id(request: Request, current_student = Depends(admin_required), db: Session = Depends(get_db)):
+def get_subtask_form_with_id(request: Request, current_student = Depends(permission_required("create_tasks")), db: Session = Depends(get_db)):
     logger.info("Открываем страницу с созданием задачи")
     tasks = task_crud.get_all_tasks(db)
     if isinstance(current_student, RedirectResponse):
@@ -161,7 +161,7 @@ def list_subtasks(request: Request, task_id: int, current_student = Depends(get_
 def get_edit_subtask_form(
         request: Request,
         subtask_id: int,
-        current_student = Depends(admin_required),
+        current_student = Depends(permission_required("edit_tasks")),
         db: Session = Depends(get_db)):
     logger.info("Открываем страницу с редактированием задачи")
     if isinstance(current_student, RedirectResponse):

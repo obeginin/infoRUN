@@ -11,7 +11,7 @@ from dependencies import get_db  # Зависимость для подключ�
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from typing import Literal
-from Crud.auth import get_current_student, admin_required, verify_password, get_current_student_or_redirect
+from Crud.auth import get_current_student, verify_password, get_current_student_or_redirect
 from fastapi.responses import RedirectResponse
 from starlette.responses import JSONResponse
 import shutil
