@@ -1,4 +1,4 @@
---Создаем Хранимку на создание таблицы для логирования--
+--вЂ”РѕР·РґР°РµРј вЂ™СЂР°РЅРёРјРєСѓ РЅР° СЃРѕР·РґР°РЅРёРµ С‚Р°Р±Р»РёС†С‹ РґР»В¤ Р»РѕРіРёСЂРѕРІР°РЅРёВ¤--
 IF EXISTS(SELECT 1 FROM sys.procedures WHERE OBJECT_SCHEMA_NAME([object_id]) = 'dbo' and name = 'Create_Table_ActionLogs')
     DROP PROCEDURE dbo.Create_Table_ActionLogs
 GO
@@ -9,10 +9,10 @@ BEGIN
     IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'ActionLogs')
     BEGIN
         CREATE TABLE ActionLogs (
-            LogID INT IDENTITY(1,1) PRIMARY KEY,  -- уникальный идентификатор записи лога
-            ActionType NVARCHAR(100),  -- тип действия (например, "Создание задачи")
-            Description NVARCHAR(MAX),  -- описание действия
-            LogDate DATETIME DEFAULT GETDATE()  -- дата и время действия
+            LogID INT IDENTITY(1,1) PRIMARY KEY,  -- СѓРЅРёРєР°Р»СЊРЅС‹Р№ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ Р·Р°РїРёСЃРё Р»РѕРіР°
+            ActionType NVARCHAR(100),  -- С‚РёРї РґРµР№СЃС‚РІРёВ¤ (РЅР°РїСЂРёРјРµСЂ, "вЂ”РѕР·РґР°РЅРёРµ Р·Р°РґР°С‡Рё")
+            Description NVARCHAR(MAX),  -- РѕРїРёСЃР°РЅРёРµ РґРµР№СЃС‚РІРёВ¤
+            LogDate DATETIME DEFAULT GETDATE()  -- РґР°С‚Р° Рё РІСЂРµРјВ¤ РґРµР№СЃС‚РІРёВ¤
         );
     END
 END;

@@ -1,11 +1,11 @@
 /*
-Создаем Хранимку, которая будет создавать задачи для каждого пользователя (автоматичкски).--
-в данном случае работает в двух состояних:
-если передать параметр в виде пользователя, то создаст для конкретного student
-если запусить хранимку без параметров, значит выполнится для всех пользователей, что есть в базе
+РЎРѕР·РґР°РµРј РҐСЂР°РЅРёРјРєСѓ, РєРѕС‚РѕСЂР°СЏ Р±СѓРґРµС‚ СЃРѕР·РґР°РІР°С‚СЊ Р·Р°РґР°С‡Рё РґР»СЏ РєР°Р¶РґРѕРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ (Р°РІС‚РѕРјР°С‚РёС‡РєСЃРєРё).--
+РІ РґР°РЅРЅРѕРј СЃР»СѓС‡Р°Рµ СЂР°Р±РѕС‚Р°РµС‚ РІ РґРІСѓС… СЃРѕСЃС‚РѕСЏРЅРёС…:
+РµСЃР»Рё РїРµСЂРµРґР°С‚СЊ РїР°СЂР°РјРµС‚СЂ РІ РІРёРґРµ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ, С‚Рѕ СЃРѕР·РґР°СЃС‚ РґР»СЏ РєРѕРЅРєСЂРµС‚РЅРѕРіРѕ student
+РµСЃР»Рё Р·Р°РїСѓСЃРёС‚СЊ С…СЂР°РЅРёРјРєСѓ Р±РµР· РїР°СЂР°РјРµС‚СЂРѕРІ, Р·РЅР°С‡РёС‚ РІС‹РїРѕР»РЅРёС‚СЃСЏ РґР»СЏ РІСЃРµС… РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№, С‡С‚Рѕ РµСЃС‚СЊ РІ Р±Р°Р·Рµ
 
-exec dbo.AssignSubTasksToStudent @StudentID = 7 --запуск хранимки с параметром (для одного пользователя)
-EXEC dbo.AssignSubTasksToStudent;  --запуск хранимки БЕЗ параметров (для всех имеющихся пользователя)
+exec dbo.AssignSubTasksToStudent @StudentID = 7 --Р·Р°РїСѓСЃРє С…СЂР°РЅРёРјРєРё СЃ РїР°СЂР°РјРµС‚СЂРѕРј (РґР»СЏ РѕРґРЅРѕРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ)
+EXEC dbo.AssignSubTasksToStudent;  --Р·Р°РїСѓСЃРє С…СЂР°РЅРёРјРєРё Р‘Р•Р— РїР°СЂР°РјРµС‚СЂРѕРІ (РґР»СЏ РІСЃРµС… РёРјРµСЋС‰РёС…СЃСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ)
 AssignSubTasksToStudent
 */
 IF EXISTS(SELECT 1 FROM sys.procedures WHERE OBJECT_SCHEMA_NAME([object_id]) = 'dbo' AND name = 'AssignSubTasksToStudent')
@@ -13,23 +13,23 @@ IF EXISTS(SELECT 1 FROM sys.procedures WHERE OBJECT_SCHEMA_NAME([object_id]) = '
 GO
 
 CREATE PROCEDURE dbo.AssignSubTasksToStudent
-    @StudentID BIGINT = NULL  -- Параметр: ID пользователя (если NULL — обрабатываем всех)
+    @StudentID BIGINT = NULL  -- РџР°СЂР°РјРµС‚СЂ: ID РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ (РµСЃР»Рё NULL вЂ” РѕР±СЂР°Р±Р°С‚С‹РІР°РµРј РІСЃРµС…)
 AS
 BEGIN
     SET NOCOUNT ON;
 
-    -- Массовое добавление: если @StudentID IS NULL
+    -- РњР°СЃСЃРѕРІРѕРµ РґРѕР±Р°РІР»РµРЅРёРµ: РµСЃР»Рё @StudentID IS NULL
     IF @StudentID IS NULL
     BEGIN
         INSERT INTO StudentTasks (StudentID, SubTaskID, CompletionStatus)
         SELECT 
             sd.ID AS StudentID,
             s.SubTaskID,
-            'Не приступал'
+            'РќРµ РїСЂРёСЃС‚СѓРїР°Р»'
         FROM Students sd
         CROSS JOIN SubTasks s
         WHERE 
-		NOT EXISTS ( -- Проверка на то, что данных записей ещё нет 
+		NOT EXISTS ( -- РџСЂРѕРІРµСЂРєР° РЅР° С‚Рѕ, С‡С‚Рѕ РґР°РЅРЅС‹С… Р·Р°РїРёСЃРµР№ РµС‰С‘ РЅРµС‚ 
             SELECT 1 
             FROM StudentTasks st 
             WHERE st.StudentID = sd.ID AND st.SubTaskID = s.SubTaskID
@@ -37,14 +37,14 @@ BEGIN
     END
     ELSE
     BEGIN
-        -- Добавление задач только для одного пользователя
+        -- Р”РѕР±Р°РІР»РµРЅРёРµ Р·Р°РґР°С‡ С‚РѕР»СЊРєРѕ РґР»СЏ РѕРґРЅРѕРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
         INSERT INTO StudentTasks (StudentID, SubTaskID, CompletionStatus)
         SELECT 
             @StudentID,
             s.SubTaskID,
-            'Не приступал'
+            'РќРµ РїСЂРёСЃС‚СѓРїР°Р»'
         FROM SubTasks s
-        WHERE NOT EXISTS ( -- Проверка на то, что данных записей ещё нет 
+        WHERE NOT EXISTS ( -- РџСЂРѕРІРµСЂРєР° РЅР° С‚Рѕ, С‡С‚Рѕ РґР°РЅРЅС‹С… Р·Р°РїРёСЃРµР№ РµС‰С‘ РЅРµС‚ 
             SELECT 1 
             FROM StudentTasks st 
             WHERE st.StudentID = @StudentID AND st.SubTaskID = s.SubTaskID

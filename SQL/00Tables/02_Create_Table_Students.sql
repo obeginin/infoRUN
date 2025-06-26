@@ -1,19 +1,19 @@
 /*
-exec Create_Table_Students --Выполнить хранимку
+exec Create_Table_Students --Р’С‹РїРѕР»РЅРёС‚СЊ С…СЂР°РЅРёРјРєСѓ
 */
 IF EXISTS(SELECT 1 FROM sys.procedures WHERE OBJECT_SCHEMA_NAME([object_id]) = 'dbo' and name = 'Create_Table_Students')
 	DROP PROCEDURE dbo.Create_Table_Students
 GO
 
---Создаем Хранимку, которая создает таблицу Students--
+--РЎРѕР·РґР°РµРј РҐСЂР°РЅРёРјРєСѓ, РєРѕС‚РѕСЂР°СЏ СЃРѕР·РґР°РµС‚ С‚Р°Р±Р»РёС†Сѓ Students--
 CREATE PROCEDURE Create_Table_Students
 AS
 BEGIN
     IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Students')
 	BEGIN
 		CREATE TABLE Students (
-			ID bigint IDENTITY(1,1) PRIMARY KEY, -- id пользователя (первичный ключ)
-			Login nvarchar(50) UNIQUE, -- логин пользователя (уникальный)
+			ID bigint IDENTITY(1,1) PRIMARY KEY, -- id РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ (РїРµСЂРІРёС‡РЅС‹Р№ РєР»СЋС‡)
+			Login nvarchar(50) UNIQUE, -- Р»РѕРіРёРЅ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ (СѓРЅРёРєР°Р»СЊРЅС‹Р№)
 			Last_Name nvarchar(50),
 			First_Name nvarchar(50),
 			Middle_Name nvarchar(50),
@@ -21,11 +21,17 @@ BEGIN
 			Sex nvarchar(2),
 			BirthDate datetime,
 			Comment nvarchar(MAX),
-			Password VARCHAR(255),-- Хеш пароля (надо сделать NOT NULL)
-			Role nvarchar(15) -- роль (админс, user)
+			Password VARCHAR(255),-- РҐРµС€ РїР°СЂРѕР»СЏ (РЅР°РґРѕ СЃРґРµР»Р°С‚СЊ NOT NULL)
+			Role nvarchar(15), -- СЂРѕР»СЊ (Р°РґРјРёРЅСЃ, user) РЎРўРђР РћР• РЈР”РђР›РРўР¬!!!!
+			RoleID INT NOT NULL, -- id СЂРѕР»Рё
+			FOREIGN KEY (RoleID) REFERENCES Roles(RoleID)
 		);
 	END
 END;
+
+--РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ РїСЂРѕСЃС‚Р°РІР»СЏРµРј СЂРѕР»СЊ "РЈС‡РµРЅРёРє"
+ALTER TABLE Students
+ADD CONSTRAINT DF_Students_RoleID DEFAULT 3 FOR RoleID;
 
 /*
 
@@ -38,12 +44,12 @@ INSERT INTO Students (Login, Last_Name, First_Name, Middle_Name, Email, Sex, Bir
 	VALUES 
 
 INSERT INTO Students (Login, Last_Name, First_Name, Middle_Name, Email, Sex, BirthDate, Comment,Password,Role)
-	VALUES ('obeginin', 'Бегинин', 'Олег', 'Вячеславович', 'lezhik.from@gmail.com', 'M', '', 'Комментарий','$pbkdf2-sha256$29000$3zunFMK4955zjpEyxngPYQ$nECQLRTK9OFP8I6QErp5iVHRy6D4j4/mC7IgkxDGTEY','admin'),
-	('jkochetova', 'Кочетова', 'Юлия', 'Вячеславовна', 'petrov@example.com', 'Ж', '', 'Комментарий','$pbkdf2-sha256$29000$3zunFMK4955zjpEyxngPYQ$nECQLRTK9OFP8I6QErp5iVHRy6D4j4/mC7IgkxDGTEY','admin'),
-		('petr', 'Петров', 'Петр', 'Петрович', 'petrov@example.com', 'M', '', 'Комментарий','$pbkdf2-sha256$29000$N4bwvvceQ2gtBaD03htDyA$BLHTA0T4Q.f1kZMSLoQjTm1.Pr7hUMpK/dFKMtDdAkk','student'),
-		('stepa', 'Степанов', 'Степан', 'Степанович', 'sidorova@example.com', 'М', '', 'Комментарий','$pbkdf2-sha256$29000$N4bwvvceQ2gtBaD03htDyA$BLHTA0T4Q.f1kZMSLoQjTm1.Pr7hUMpK/dFKMtDdAkk','student'),
-		('ivan', 'Иванов', 'Иван', 'Иванович', 'smirnov@example.com', 'M', '', 'Комментарий','$pbkdf2-sha256$29000$N4bwvvceQ2gtBaD03htDyA$BLHTA0T4Q.f1kZMSLoQjTm1.Pr7hUMpK/dFKMtDdAkk','student'),
-		('rustam', 'Рустамов', 'Рустам', 'Рустамович', 'andreev@example.com', 'M', '', 'Комментарий','$pbkdf2-sha256$29000$N4bwvvceQ2gtBaD03htDyA$BLHTA0T4Q.f1kZMSLoQjTm1.Pr7hUMpK/dFKMtDdAkk','student'),
-		('test', 'Тестов', 'Тест', 'Тестович', 'test@gmail.com', 'M', '', 'Комментарий','$pbkdf2-sha256$29000$N4bwvvceQ2gtBaD03htDyA$BLHTA0T4Q.f1kZMSLoQjTm1.Pr7hUMpK/dFKMtDdAkk','student');
+	VALUES ('obeginin', 'Р‘РµРіРёРЅРёРЅ', 'РћР»РµРі', 'Р’СЏС‡РµСЃР»Р°РІРѕРІРёС‡', 'lezhik.from@gmail.com', 'M', '', 'РљРѕРјРјРµРЅС‚Р°СЂРёР№','$pbkdf2-sha256$29000$3zunFMK4955zjpEyxngPYQ$nECQLRTK9OFP8I6QErp5iVHRy6D4j4/mC7IgkxDGTEY','admin'),
+	('jkochetova', 'РљРѕС‡РµС‚РѕРІР°', 'Р®Р»РёСЏ', 'Р’СЏС‡РµСЃР»Р°РІРѕРІРЅР°', 'petrov@example.com', 'Р–', '', 'РљРѕРјРјРµРЅС‚Р°СЂРёР№','$pbkdf2-sha256$29000$3zunFMK4955zjpEyxngPYQ$nECQLRTK9OFP8I6QErp5iVHRy6D4j4/mC7IgkxDGTEY','admin'),
+		('petr', 'РџРµС‚СЂРѕРІ', 'РџРµС‚СЂ', 'РџРµС‚СЂРѕРІРёС‡', 'petrov@example.com', 'M', '', 'РљРѕРјРјРµРЅС‚Р°СЂРёР№','$pbkdf2-sha256$29000$N4bwvvceQ2gtBaD03htDyA$BLHTA0T4Q.f1kZMSLoQjTm1.Pr7hUMpK/dFKMtDdAkk','student'),
+		('stepa', 'РЎС‚РµРїР°РЅРѕРІ', 'РЎС‚РµРїР°РЅ', 'РЎС‚РµРїР°РЅРѕРІРёС‡', 'sidorova@example.com', 'Рњ', '', 'РљРѕРјРјРµРЅС‚Р°СЂРёР№','$pbkdf2-sha256$29000$N4bwvvceQ2gtBaD03htDyA$BLHTA0T4Q.f1kZMSLoQjTm1.Pr7hUMpK/dFKMtDdAkk','student'),
+		('ivan', 'РРІР°РЅРѕРІ', 'РРІР°РЅ', 'РРІР°РЅРѕРІРёС‡', 'smirnov@example.com', 'M', '', 'РљРѕРјРјРµРЅС‚Р°СЂРёР№','$pbkdf2-sha256$29000$N4bwvvceQ2gtBaD03htDyA$BLHTA0T4Q.f1kZMSLoQjTm1.Pr7hUMpK/dFKMtDdAkk','student'),
+		('rustam', 'Р СѓСЃС‚Р°РјРѕРІ', 'Р СѓСЃС‚Р°Рј', 'Р СѓСЃС‚Р°РјРѕРІРёС‡', 'andreev@example.com', 'M', '', 'РљРѕРјРјРµРЅС‚Р°СЂРёР№','$pbkdf2-sha256$29000$N4bwvvceQ2gtBaD03htDyA$BLHTA0T4Q.f1kZMSLoQjTm1.Pr7hUMpK/dFKMtDdAkk','student'),
+		('test', 'РўРµСЃС‚РѕРІ', 'РўРµСЃС‚', 'РўРµСЃС‚РѕРІРёС‡', 'test@gmail.com', 'M', '', 'РљРѕРјРјРµРЅС‚Р°СЂРёР№','$pbkdf2-sha256$29000$N4bwvvceQ2gtBaD03htDyA$BLHTA0T4Q.f1kZMSLoQjTm1.Pr7hUMpK/dFKMtDdAkk','student');
 
 */

@@ -2,7 +2,7 @@ IF EXISTS(SELECT 1 FROM sys.procedures WHERE OBJECT_SCHEMA_NAME([object_id]) = '
 	DROP PROCEDURE dbo.Create_Table_StudentTasks
 GO
 
---Создаем Хранимку, которая создает таблицу с задачами--
+--РЎРѕР·РґР°РµРј РҐСЂР°РЅРёРјРєСѓ, РєРѕС‚РѕСЂР°СЏ СЃРѕР·РґР°РµС‚ С‚Р°Р±Р»РёС†Сѓ СЃ Р·Р°РґР°С‡Р°РјРё--
 CREATE PROCEDURE Create_Table_StudentTasks
 AS
 BEGIN
@@ -10,16 +10,16 @@ BEGIN
 	BEGIN
 		CREATE TABLE StudentTasks (
 		StudentTaskID INT IDENTITY(1,1) PRIMARY KEY,
-		StudentID bigint NOT NULL,  -- Ученик
-		SubTaskID INT NOT NULL,  -- Подзадача
-		StudentAnswer NVARCHAR(32), --Ответ ученика
-		CompletionStatus NVARCHAR(20) CHECK (CompletionStatus IN ('Не приступал', 'В процессе', 'Выполнено')),
-		Score DECIMAL(5,2) NULL,  -- Баллы за подзадачу
-		SolutionStudentPath NVARCHAR(255), --Решение задачи Студента
-		StartDate DATETIME NULL, -- Дата начала выполнения задания
-		ModifiedDate DATETIME NULL, -- Дата зименения 
-		CompletionDate DATETIME NULL, -- Дата когда был получен правильный ответ
-		Attempts INT DEFAULT 0, -- количество попыток
+		StudentID bigint NOT NULL,  -- РЈС‡РµРЅРёРє
+		SubTaskID INT NOT NULL,  -- РџРѕРґР·Р°РґР°С‡Р°
+		StudentAnswer NVARCHAR(32), --РћС‚РІРµС‚ СѓС‡РµРЅРёРєР°
+		CompletionStatus NVARCHAR(20) CHECK (CompletionStatus IN ('РќРµ РїСЂРёСЃС‚СѓРїР°Р»', 'Р’ РїСЂРѕС†РµСЃСЃРµ', 'Р’С‹РїРѕР»РЅРµРЅРѕ')),
+		Score DECIMAL(5,2) NULL,  -- Р‘Р°Р»Р»С‹ Р·Р° РїРѕРґР·Р°РґР°С‡Сѓ
+		SolutionStudentPath NVARCHAR(255), --Р РµС€РµРЅРёРµ Р·Р°РґР°С‡Рё РЎС‚СѓРґРµРЅС‚Р°
+		StartDate DATETIME NULL, -- Р”Р°С‚Р° РЅР°С‡Р°Р»Р° РІС‹РїРѕР»РЅРµРЅРёСЏ Р·Р°РґР°РЅРёСЏ
+		ModifiedDate DATETIME NULL, -- Р”Р°С‚Р° Р·РёРјРµРЅРµРЅРёСЏ 
+		CompletionDate DATETIME NULL, -- Р”Р°С‚Р° РєРѕРіРґР° Р±С‹Р» РїРѕР»СѓС‡РµРЅ РїСЂР°РІРёР»СЊРЅС‹Р№ РѕС‚РІРµС‚
+		Attempts INT DEFAULT 0, -- РєРѕР»РёС‡РµСЃС‚РІРѕ РїРѕРїС‹С‚РѕРє
 		FOREIGN KEY (StudentID) REFERENCES Students(ID),
 		FOREIGN KEY (SubTaskID) REFERENCES SubTasks(SubTaskID)
 		);
@@ -37,31 +37,31 @@ drop table StudentTasks
 */
 
 /*
-Добавление столбцов в таблицу
+Р”РѕР±Р°РІР»РµРЅРёРµ СЃС‚РѕР»Р±С†РѕРІ РІ С‚Р°Р±Р»РёС†Сѓ
 Alter TABLE StudentTasks 
 ADD
-		StudentAnswer NVARCHAR(32) --Ответ ученика
+		StudentAnswer NVARCHAR(32) --РћС‚РІРµС‚ СѓС‡РµРЅРёРєР°
 GO
 */
 
 /*
-Ошибка:
-Конфликт инструкции UPDATE с ограничением CHECK "CK__StudentTa__Compl__7DCDAAA2". Конфликт произошел в базе данных "BASE", таблица "dbo.StudentTasks", column 'CompletionStatus'.
-Для обновления данных, которое не разрешено по ограничению 
+РћС€РёР±РєР°:
+РљРѕРЅС„Р»РёРєС‚ РёРЅСЃС‚СЂСѓРєС†РёРё UPDATE СЃ РѕРіСЂР°РЅРёС‡РµРЅРёРµРј CHECK "CK__StudentTa__Compl__7DCDAAA2". РљРѕРЅС„Р»РёРєС‚ РїСЂРѕРёР·РѕС€РµР» РІ Р±Р°Р·Рµ РґР°РЅРЅС‹С… "BASE", С‚Р°Р±Р»РёС†Р° "dbo.StudentTasks", column 'CompletionStatus'.
+Р”Р»СЏ РѕР±РЅРѕРІР»РµРЅРёСЏ РґР°РЅРЅС‹С…, РєРѕС‚РѕСЂРѕРµ РЅРµ СЂР°Р·СЂРµС€РµРЅРѕ РїРѕ РѕРіСЂР°РЅРёС‡РµРЅРёСЋ 
 SELECT name 
 FROM sys.check_constraints 
 WHERE parent_object_id = OBJECT_ID('dbo.StudentTasks');
 
-снимаем ограничение
+СЃРЅРёРјР°РµРј РѕРіСЂР°РЅРёС‡РµРЅРёРµ
 ALTER TABLE StudentTasks
 DROP CONSTRAINT CK_StudentTasks_CompletionStatus;
 
-обновляем данные
+РѕР±РЅРѕРІР»СЏРµРј РґР°РЅРЅС‹Рµ
 
-update StudentTasks set CompletionStatus='Выполнено' where StudentTaskID=1
+update StudentTasks set CompletionStatus='Р’С‹РїРѕР»РЅРµРЅРѕ' where StudentTaskID=1
 
-ставим новое ограничение
+СЃС‚Р°РІРёРј РЅРѕРІРѕРµ РѕРіСЂР°РЅРёС‡РµРЅРёРµ
 ALTER TABLE StudentTasks
 ADD CONSTRAINT CK_StudentTasks_CompletionStatus
-CHECK (CompletionStatus IN ('Не приступал', 'В процессе', 'Выполнено'));
+CHECK (CompletionStatus IN ('РќРµ РїСЂРёСЃС‚СѓРїР°Р»', 'Р’ РїСЂРѕС†РµСЃСЃРµ', 'Р’С‹РїРѕР»РЅРµРЅРѕ'));
 */

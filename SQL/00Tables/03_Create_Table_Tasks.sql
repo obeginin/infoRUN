@@ -1,7 +1,7 @@
 IF EXISTS(SELECT 1 FROM sys.procedures WHERE OBJECT_SCHEMA_NAME([object_id]) = 'dbo' and name = 'Create_Table_Tasks')
 	DROP PROCEDURE dbo.Create_Table_Tasks
 GO
---exec Create_Table_Tasks --Выполнить хранимку
+--exec Create_Table_Tasks --Р’С‹РїРѕР»РЅРёС‚СЊ С…СЂР°РЅРёРјРєСѓ
 
 CREATE PROCEDURE Create_Table_Tasks
 AS
@@ -9,9 +9,9 @@ BEGIN
     IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Tasks')
 	BEGIN
 		CREATE TABLE Tasks (
-			TaskID INT IDENTITY(1,1) PRIMARY KEY, -- id задачи (первичный ключ)
-			TaskNumber INT NOT NULL UNIQUE,  -- Номер задачи (1, 2, 3... 27) не должен быть нулевым и уникальным
-			TaskTitle NVARCHAR(255) NOT NULL -- Название задачи
+			TaskID INT IDENTITY(1,1) PRIMARY KEY, -- id Р·Р°РґР°С‡Рё (РїРµСЂРІРёС‡РЅС‹Р№ РєР»СЋС‡)
+			TaskNumber INT NOT NULL UNIQUE,  -- РќРѕРјРµСЂ Р·Р°РґР°С‡Рё (1, 2, 3... 27) РЅРµ РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ РЅСѓР»РµРІС‹Рј Рё СѓРЅРёРєР°Р»СЊРЅС‹Рј
+			TaskTitle NVARCHAR(255) NOT NULL -- РќР°Р·РІР°РЅРёРµ Р·Р°РґР°С‡Рё
 		);
 	END
 END;
@@ -23,31 +23,31 @@ END;
 
 
 /*
-DROP PROCEDURE Create_Table_Tasks --удалить хранимку
+DROP PROCEDURE Create_Table_Tasks --СѓРґР°Р»РёС‚СЊ С…СЂР°РЅРёРјРєСѓ
 
-drop table Tasks --удалить таблицу (вместе с данными)
-SELECT name FROM sys.tables; --вывод всех таблиц БД
+drop table Tasks --СѓРґР°Р»РёС‚СЊ С‚Р°Р±Р»РёС†Сѓ (РІРјРµСЃС‚Рµ СЃ РґР°РЅРЅС‹РјРё)
+SELECT name FROM sys.tables; --РІС‹РІРѕРґ РІСЃРµС… С‚Р°Р±Р»РёС† Р‘Р”
 
-вставляем данные в таблицу
+РІСЃС‚Р°РІР»СЏРµРј РґР°РЅРЅС‹Рµ РІ С‚Р°Р±Р»РёС†Сѓ
 INSERT INTO Tasks (TaskNumber, TaskTitle) 
 VALUES 
-	(1,'ЕГЭ_1'),(2,'ЕГЭ_2'),(3,'ЕГЭ_3'),(4,'ЕГЭ_4'),(5,'ЕГЭ_5'),(6,'ЕГЭ_6'),(7,'ЕГЭ_7'),(8,'ЕГЭ_8');
+	(1,'Р•Р“Р­_1'),(2,'Р•Р“Р­_2'),(3,'Р•Р“Р­_3'),(4,'Р•Р“Р­_4'),(5,'Р•Р“Р­_5'),(6,'Р•Р“Р­_6'),(7,'Р•Р“Р­_7'),(8,'Р•Р“Р­_8');
 
-INSERT INTO Tasks (TaskNumber, TaskTitle) VALUES (1,'первое задание'),(2,'второе задание'),(3,'третье задание'),(4,'четвертое задание');
+INSERT INTO Tasks (TaskNumber, TaskTitle) VALUES (1,'РїРµСЂРІРѕРµ Р·Р°РґР°РЅРёРµ'),(2,'РІС‚РѕСЂРѕРµ Р·Р°РґР°РЅРёРµ'),(3,'С‚СЂРµС‚СЊРµ Р·Р°РґР°РЅРёРµ'),(4,'С‡РµС‚РІРµСЂС‚РѕРµ Р·Р°РґР°РЅРёРµ');
 
-Автоматическая втавка строк от 1 до 27
+РђРІС‚РѕРјР°С‚РёС‡РµСЃРєР°СЏ РІС‚Р°РІРєР° СЃС‚СЂРѕРє РѕС‚ 1 РґРѕ 27
 WITH Numbers AS (
     SELECT 1 AS n
     UNION ALL
     SELECT n + 1 FROM Numbers WHERE n < 27
 )
 INSERT INTO Tasks (TaskNumber, TaskTitle)
-SELECT n, CONCAT('ЕГЭ_', n)
+SELECT n, CONCAT('Р•Р“Р­_', n)
 FROM Numbers
 OPTION (MAXRECURSION 0);
 
-update Tasks set TaskTitle='четвертое задание' where TaskID=4
-delete Tasks where TaskID in (1,2,3,4) --удаляем строки
+update Tasks set TaskTitle='С‡РµС‚РІРµСЂС‚РѕРµ Р·Р°РґР°РЅРёРµ' where TaskID=4
+delete Tasks where TaskID in (1,2,3,4) --СѓРґР°Р»СЏРµРј СЃС‚СЂРѕРєРё
 
 
 ALTER TABLE Tasks

@@ -1,4 +1,4 @@
---������� ��������, ������� ������� ������� � ��������--
+﻿--������� ��������, ������� ������� ������� � ��������--
 IF EXISTS(SELECT 1 FROM sys.procedures WHERE OBJECT_SCHEMA_NAME([object_id]) = 'dbo' and name = 'Create_Table_SubTasks')
 	DROP PROCEDURE dbo.Create_Table_SubTasks
 GO

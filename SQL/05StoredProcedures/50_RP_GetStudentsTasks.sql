@@ -1,5 +1,5 @@
 /*
-� ������� ������� ������� ������ ��������� ���������� � ��������� ������ �������� �� StudentTaskID
+ StudentTaskID
 
 exec GetStudentsTasks @StudentTaskID=1
 EXEC dbo.GetStudentTaskDetails 1
@@ -15,12 +15,13 @@ CREATE PROCEDURE GetStudentsTasks
     @SubTaskID INT					= NULL,
     @TaskID INT						= NULL,
     @CompletionStatus NVARCHAR(20)  = NULL, 
-	@SortColumn NVARCHAR(50)		= NULL, -- ����� ���� ��� ����������
-    @SortDirection NVARCHAR(4)		= 'ASC', -- ����� ���������� (�� ��������� ASC �� �����������) DESC -�� ��������
-	@Description  NVARCHAR(MAX)		= NULL
+	@SortColumn NVARCHAR(50)		= NULL, -- Выбор колонки для сортировки
+    @SortDirection NVARCHAR(4)		= 'ASC', -- Сортировка (по возрастанию ASC ) DESC -по убыванию
+	@Description  NVARCHAR(MAX)		= NULL,
+	@VariantID INT					= NULL
 AS
 BEGIN
-	/*���������� ����� � ��������� SSMS
+	/*вывод параметров в консоль SSMS
 	PRINT 'Params:';
 	PRINT 'StudentTaskID: ' + ISNULL(CAST(@StudentTaskID AS NVARCHAR), 'NULL');
 	PRINT 'StudentID: ' + ISNULL(CAST(@StudentID AS NVARCHAR), 'NULL');
@@ -37,28 +38,32 @@ BEGIN
         st.Score,
         st.CompletionDate,
         sd.Login,
-        sd.Role,
+        --sd.Role, Надо возможно заменить
         s.TaskID,
 		t.TaskTitle,
         s.SubTaskNumber,
         s.ImagePath,
         s.Description,
+		v.VariantID,
+		v.Name,
         s.Answer,
         s.SolutionPath,
-		(SELECT COUNT(*) FROM StudentTasks where StudentID= @StudentID) AS TotalSubTasks, --���������� ����� ��������
-		(SELECT COUNT(*) FROM StudentTasks where StudentID=@StudentID and CompletionStatus='���������') AS CompletedSubTasks, --���������� ������� ����� ��������
-		COUNT(*) OVER() AS TotalCount --  ��������� ����� ���������� ���� ��������� �������
+		(SELECT COUNT(*) FROM StudentTasks where StudentID= @StudentID) AS TotalSubTasks, -- --Количество задач студента
+		(SELECT COUNT(*) FROM StudentTasks where StudentID=@StudentID and CompletionStatus='Выполнено') AS CompletedSubTasks, --Количество выполненных задач
+		COUNT(*) OVER() AS TotalCount --  Общее количество задач
     FROM StudentTasks st
         JOIN Students sd ON sd.ID = st.StudentID 
         JOIN SubTasks s ON s.SubTaskID = st.SubTaskID
 		JOIN Tasks t on t.TaskID = s.TaskID
+		JOIN Variants v on v.VariantID = s.VariantID 
     WHERE 
 		(@StudentTaskID IS NULL OR st.StudentTaskID = @StudentTaskID) AND
         (@StudentID IS NULL OR st.StudentID = @StudentID) AND
         (@SubTaskID IS NULL OR st.SubTaskID = @SubTaskID) AND
         (@TaskID IS NULL OR s.TaskID = @TaskID) AND
         (@CompletionStatus IS NULL OR st.CompletionStatus = @CompletionStatus) AND
-		(@Description IS NULL OR s.Description = @Description)
+		(@Description IS NULL OR s.Description = @Description) AND 
+		(@VariantID IS NULL OR v.VariantID = @VariantID)
 	ORDER BY
     CASE 
         WHEN @SortDirection = 'ASC' THEN 
@@ -70,6 +75,7 @@ BEGIN
                 WHEN @SortColumn = 'CompletionDate' THEN st.CompletionDate
                 WHEN @SortColumn = 'Description' THEN s.Description
                 WHEN @SortColumn = 'Score' THEN st.Score
+				WHEN @SortColumn = 'VariantID' THEN v.VariantID
             END
     END ASC,
     CASE 
@@ -82,6 +88,7 @@ BEGIN
                 WHEN @SortColumn = 'CompletionDate' THEN st.CompletionDate
                 WHEN @SortColumn = 'Description' THEN s.Description
                 WHEN @SortColumn = 'Score' THEN st.Score
+				WHEN @SortColumn = 'VariantID' THEN v.VariantID
             END
     END DESC
 END
@@ -129,26 +136,26 @@ GO
 
 /*SELECT DISTINCT CompletionStatus FROM StudentTasks;
 
-EXEC GetStudentsTasks; ����� ���� ����� ���� ���������
-EXEC GetStudentsTasks @StudentID = 2; ����� ���� ����� �������� � id=2
-EXEC GetStudentsTasks @StudentID = 2, @Description = N'������ ������� �14'; ����� ���� ����� �������� � id=2
-EXEC GetStudentsTasks @TaskID = 2; �� ��������� �������
-EXEC GetStudentsTasks @SubTaskID = 2, @CompletionStatus = N'�� ���������';
-EXEC GetStudentsTasks @CompletionStatus = N'���������'; �� ������� ����������
-EXEC GetStudentsTasks @StudentTaskID = 2; ���������� ������
-EXEC GetStudentsTasks @Description = N'������ ������� �14'; ���������� ������
+EXEC GetStudentsTasks; 
+EXEC GetStudentsTasks @StudentID = 2;  id=2
+EXEC GetStudentsTasks @StudentID = 2, @Description = N'; id=2
+EXEC GetStudentsTasks @TaskID = 2;
+EXEC GetStudentsTasks @SubTaskID = 2, @CompletionStatus = N'';
+EXEC GetStudentsTasks @CompletionStatus = N''; 
+EXEC GetStudentsTasks @StudentTaskID = 2;
+EXEC GetStudentsTasks @Description = N'';
 
 
-� ����������� 
+
 EXEC GetStudentsTasks @SortColumn = 'StudentTaskID', @SortDirection = 'ASC';
 EXEC GetStudentsTasks @SortColumn = 'StudentTaskID', @SortDirection = 'DESC';
 EXEC GetStudentsTasks @SortColumn = 'TaskID', @SortDirection = 'ASC';
 EXEC GetStudentsTasks @SortColumn = 'TaskID', @SortDirection = 'DESC';
 
-EXEC GetStudentsTasks @SortColumn = 'CompletionDate', @SortDirection = 'ASC'; ���������� �� ���� �� ��������:
-EXEC GetStudentsTasks @SortColumn = 'CompletionDate', @SortDirection = 'DESC'; ���������� �� ���� �� ��������:
+EXEC GetStudentsTasks @SortColumn = 'CompletionDate', @SortDirection = 'ASC'; 
+EXEC GetStudentsTasks @SortColumn = 'CompletionDate', @SortDirection = 'DESC'; 
 
-���������� �� ������������
+
 EXEC GetStudentsTasks @SortColumn = 'StudentID', @SortDirection = 'ASC';
 EXEC GetStudentsTasks @SortColumn = 'StudentID', @SortDirection = 'DESC';
 EXEC GetStudentsTasks @SortColumn = 'Login', @SortDirection = 'ASC';
@@ -165,9 +172,11 @@ select* from SubTasks
 select ID, Login from Students
 select distinct Description from SubTasks
 SELECT TaskTitle FROM Tasks
-*/
 
-select* from StudentTasks where StudentID=2 and CompletionStatus='���������'
-SELECT COUNT(*) FROM StudentTasks where StudentID=2 and CompletionStatus='���������'
-SELECT COUNT(*) FROM StudentTasks where  CompletionStatus='���������'
+
+select* from StudentTasks where StudentID=2 and CompletionStatus='Выполнено'
+SELECT COUNT(*) FROM StudentTasks where StudentID=2 and CompletionStatus='Выполнено'
+SELECT COUNT(*) FROM StudentTasks where  CompletionStatus='Выполнено'
 select * from SubTaskFiles
+select * from Variants
+select * from SubTasks*/

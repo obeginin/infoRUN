@@ -1,4 +1,4 @@
-﻿
+
 IF EXISTS(SELECT 1 FROM sys.procedures WHERE OBJECT_SCHEMA_NAME([object_id]) = 'dbo' and name = 'Create_Table_Variants')
 	DROP PROCEDURE dbo.Create_Table_Variants
 GO
@@ -32,11 +32,11 @@ ALTER TABLE Variants ADD Comment INT;
 
 */
 
-
+/*
 select * FROM SubTasks S
 JOIN Variants V ON S.Description = V.Name;
 
-/*
+
 переносим данные в новую таблицу
 INSERT INTO Variants (Name)
 SELECT DISTINCT Description
