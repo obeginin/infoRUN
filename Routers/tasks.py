@@ -14,7 +14,7 @@ from typing import List
 from pathlib import Path
 from typing import Dict, Optional
 import shutil
-from Crud.auth import get_current_student, admin_required, verify_password, get_current_student_or_redirect
+from Crud.auth import get_current_student, admin_required, permission_required, get_current_student_or_redirect
 from fastapi.responses import RedirectResponse
 from dotenv import load_dotenv
 from fastapi.responses import JSONResponse
@@ -129,8 +129,8 @@ def read_subtasks_subtask_id(request: Request, subtask_id: int, current_student 
 # /tasks/create  (GET) @
 '''Вызов страницы с добавлением задачи'''
 @task_router.get("/create", response_class=HTMLResponse)
-def get_subtask_form(request: Request, current_student = Depends(admin_required), db: Session = Depends(get_db)):
-    logger.info("Открываем страницу с созданием задачи")
+def get_subtask_form(request: Request, current_student = Depends(permission_required("create_tasks")), db: Session = Depends(get_db)):
+    logger.info(f"Открываем страницу с созданием задачи {current_student}")
     tasks = task_crud.get_all_tasks(db)
     if isinstance(current_student, RedirectResponse):
         return current_student

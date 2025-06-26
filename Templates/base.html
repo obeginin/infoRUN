@@ -19,13 +19,13 @@
         }
     </script>
     <p>Пользователь: <strong>{{student.Login}}</strong></p>
-    <p>Ваша роль: <strong>{{student.Role}}</strong></p>
+    <p>Ваша роль: <strong>{{student.RoleName}}</strong></p>
     <h1 id="subtask-title">{% block title_1 %}Добро пожаловать в личный кабинет!{% endblock %}</h1>
 
     <!-- Общая навигация -->
     <nav>
         <ul>
-            {% if student.Role == "admin" %}
+            {% if student.RoleName == "Админ"%}
             <li><a href="/admin/">Админка</a></li>
             {% endif %}
             <li><a href="/home/">Home</a></li>

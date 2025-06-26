@@ -8,7 +8,7 @@
 {% block title_1 %}Список категорий!{% endblock %}
 {% block content %}
 
-    {% if student.Role == "admin" %}
+    {% if student.RoleName == "Админ" %}
         <div class="center-wrapper-1">
             <form action="/tasks/create" method="get">
                 <button type="submit" class="button">Создать задачу</button>

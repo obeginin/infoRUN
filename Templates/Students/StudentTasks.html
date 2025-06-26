@@ -19,7 +19,7 @@ HTML страница раздела "Мои задачи" с выводом с�
     {% endif %}
     <form method="get" id="filter-form" class="form form-filter" action="/students_subtasks/StudentTasksByLogin/">
         <div class="row-filter">
-            {% if student.Role == "admin" %}
+            {% if student.RoleName == "Админ"%}
               <label class="label-filter">Студент:</label>
               <select name="StudentID" id="select-student" class="select-filter">
                 <!-- Эта опция disabled, поэтому не попадёт в запрос -->
@@ -50,7 +50,7 @@ HTML страница раздела "Мои задачи" с выводом с�
             <label class="label-filter">Сортировать по:</label>
             <select name="SortColumn" class="select-filter">
                 <option value="StudentTaskID" {% if request.query_params.get('SortColumn') == "StudentTaskID" %}selected{% endif %}>Мои задачи</option>
-                {% if student.Role == "admin" %}
+                {% if student.RoleName == "Админ"%}
                     <option value="Login" {% if request.query_params.get('SortColumn') == "Login" %}selected{% endif %}>Логин</option>
                 {% endif %}
                 <option value="CompletionDate" {% if request.query_params.get('SortColumn') == "CompletionDate" %}selected{% endif %}>Статус Выполнения</option>

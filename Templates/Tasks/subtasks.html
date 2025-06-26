@@ -9,7 +9,7 @@
 {% block content %}
 
     <a href="#" id="back-button" class="back-link">⬅ Вернуться к списку</a>
-    {% if student.Role == "admin" %}
+    {% if student.RoleName == "Админ"%}
         <div class="center-wrapper-1">
             <form action="/tasks/{{taskId}}/create" method="get">
                 <button type="submit" class="button">Создать задачу</button>

@@ -25,12 +25,11 @@ class Student(Base):
     BirthDate = Column(DateTime)  # Дата рождения
     Comment = Column(String)  # Комментарий
     Password = Column(String) # пароль
-    Role = Column(String, default="student")
     '''ID = Column(BigInteger, primary_key=True, autoincrement=True)  # ID пользователя. autoincrement=True (автоназначение)
     Login = Column(String(50), unique=True, index=True)  # Логин пользователя
     Email = Column(String(50))  # Email
     Role = Column(String, default="student")'''
-    RoleID = Column(Integer)  # Подзадача
+    RoleID = Column(Integer, default=3)  # Подзадача
     #RoleName = Column(String(50))
 
 # Модель для таблицы Tasks

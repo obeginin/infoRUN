@@ -69,7 +69,7 @@
         </form>
 
         <!--Проверка на роль админа (при условии что данное поле имеется в subtask-->
-        {% if subtask.Role == "admin" %}
+        {% if subtask.RoleName == "Админ" %}
         <button type="button" onclick="toggleVisibility('answer-block')">Показать/Скрыть ответ</button>
         <div class="field" id="answer-block" style="display:none;">
             <label>Ответ:</label>

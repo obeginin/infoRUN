@@ -106,12 +106,7 @@ def get_current_student(request: Request, db: Session = Depends(get_db)) -> Stud
         )
 
     #student = db.query(Student).filter(Student.Login == login).first()
-    """student = db.execute(text(select s.ID, s.Login, s.Password, s.Role, r.RoleID, r.Name as RoleName 
-                                from Students s 
-                                left join Roles r on s.RoleID = r.RoleID
-                                where s.Login = :login),
-                         {"login": login}).mappings().fetchone()"""
-    student = db.execute(text("""select s.ID, s.Login,  s.Role, r.RoleID, r.Name as RoleName 
+    student = db.execute(text("""select s.ID, s.Login, r.RoleID, r.Name as RoleName 
                                     from Students s 
                                     left join Roles r on s.RoleID = r.RoleID
                                     where s.Login = :login"""),
@@ -124,7 +119,24 @@ def get_current_student(request: Request, db: Session = Depends(get_db)) -> Stud
             headers={"WWW-Authenticate": "Bearer"},
         )
 
+    permissions = db.execute(text("""SELECT p.Name
+        FROM RolePermissions rp
+        JOIN Permissions p ON rp.PermissionID = p.PermissionID
+        WHERE rp.RoleID = :role_id
+    """), {"role_id": student["RoleID"]}).scalars().all()
+    student = dict(student)
+    student["permissions"] = permissions
     return student
+
+def permission_required(permission_name: str):
+    def decorator(current_student=Depends(get_current_student)):
+        if permission_name not in current_student["permissions"]:
+            raise HTTPException(
+                status_code=403,
+                detail="Недостаточно прав"
+            )
+        return current_student
+    return decorator
 
 # Функция для аутентификации студента
 '''вроде сейчас используется только в swagger'''
@@ -147,7 +159,7 @@ def authenticate_student(db: Session, login: str, password: str):
 def admin_required(
     current_student=Depends(get_current_student),
 ):
-    if current_student.Role != "admin":
+    if current_student.RoleName != "Админ":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Недостаточно прав"

@@ -14,7 +14,7 @@ class StudentSafe(BaseModel):
     Login: str
     #Last_Name: str
     #First_Name: str
-    Role: str
+    RoleName: str
 
     model_config = ConfigDict(from_attributes=True)
 
