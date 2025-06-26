@@ -12,8 +12,8 @@ from pydantic import ConfigDict
 class StudentSafe(BaseModel):
     ID: int
     Login: str
-    Last_Name: str
-    First_Name: str
+    #Last_Name: str
+    #First_Name: str
     Role: str
 
     model_config = ConfigDict(from_attributes=True)

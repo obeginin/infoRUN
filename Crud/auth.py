@@ -12,6 +12,7 @@ from passlib.context import CryptContext # объект, который помо
 from fastapi.responses import RedirectResponse
 from starlette.status import HTTP_401_UNAUTHORIZED
 from typing import Optional
+from sqlalchemy import text
 import logging
 
 # Crud\auth.py
@@ -104,7 +105,18 @@ def get_current_student(request: Request, db: Session = Depends(get_db)) -> Stud
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    student = db.query(Student).filter(Student.Login == login).first()
+    #student = db.query(Student).filter(Student.Login == login).first()
+    """student = db.execute(text(select s.ID, s.Login, s.Password, s.Role, r.RoleID, r.Name as RoleName 
+                                from Students s 
+                                left join Roles r on s.RoleID = r.RoleID
+                                where s.Login = :login),
+                         {"login": login}).mappings().fetchone()"""
+    student = db.execute(text("""select s.ID, s.Login,  s.Role, r.RoleID, r.Name as RoleName 
+                                    from Students s 
+                                    left join Roles r on s.RoleID = r.RoleID
+                                    where s.Login = :login"""),
+                             {"login": login}).mappings().fetchone()
+    print(student)
     if student is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

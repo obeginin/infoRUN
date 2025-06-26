@@ -49,6 +49,7 @@ def home_page(request: Request, current_student = Depends(get_current_student_or
     # Проверим: если редирект, то возвращаем его
     client_ip = request.client.host
     path = request.url.path
+    print(current_student.__dict__)
     if isinstance(current_student, RedirectResponse):
         logger.info(f"[{client_ip}] Неавторизованный доступ к {path} — выполняется редирект на страницу входа")
         return current_student
@@ -59,7 +60,6 @@ def home_page(request: Request, current_student = Depends(get_current_student_or
 '''Страница входа (отправка данных)'''
 @auth_router.post("/login_in/")
 async def login_in(
-        request: Request,
         login: str = Form(...),
         password: str = Form(...),
         next: str = Form("/"),
