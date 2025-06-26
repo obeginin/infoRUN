@@ -33,25 +33,25 @@ templates = Jinja2Templates(directory=TEMPLATES_DIR)
 
 """API"""
 # /students/api/ @
-''' Эндпоинт: Получить список пользователей'''
+''' Эндпоинт: Получить список студентов'''
 @students_router.get(
     "/api/",
     response_model=list[StudentsRead],
-    summary="Получить список пользователей",
+    summary="Получить список студентов",
     description="."
 )
 def read_all_students(db: Session = Depends(get_db)):
     return students.get_all_students(db)
 
 # /students/api{student_id}
-''' Эндпоинт: Получить пользователей по id (/students/{student_id})'''
-@students_router.get("/api/{student_id}", response_model=list[StudentsRead],summary="Получить пользователя по ID")
+''' Эндпоинт: Получить студента по id (/students/{student_id})'''
+@students_router.get("/api/{student_id}", response_model=list[StudentsRead], summary="Получить студента по его ID")
 def read_student_id(student_id: int, db: Session = Depends(get_db)):
     return students.get_student_id(db, student_id)
 
 # /students/{value}
 ''' Эндпоинт: Получить пользователей по параметру '''
-@students_router.get("/{value}", response_model=list[StudentsRead],summary="Получить пользователя по выбранному полю")
+@students_router.get("/{value}", response_model=list[StudentsRead], summary="Получить студента по выбранному полю")
 def read_student_by_field(
         value: str,
         #by: str = 'id', # значение по умолчанию

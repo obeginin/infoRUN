@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import List
 
 class StudentLogin(BaseModel):
     Login: str
@@ -25,3 +26,7 @@ class TokenData(BaseModel):
 
     class Config:
         from_attributes = True
+
+# для валидности отправленного списка с выбранными разрешеними с фронта на бэк
+class AssignPermissionsRequest(BaseModel):
+    permission_ids: List[int]

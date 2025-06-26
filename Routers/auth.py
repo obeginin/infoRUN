@@ -2,13 +2,12 @@ from config import TEMPLATES_DIR
 from fastapi import APIRouter, Depends,Form, Request, HTTPException
 from sqlalchemy.orm import Session
 from Models import Student
-from Schemas.auth import StudentLogin, StudentOut, RoleRead
+from Schemas.auth import StudentLogin, AssignPermissionsRequest
 from Security.token import create_access_token
 from dependencies import get_db
 from Crud.auth import get_current_student, admin_required, verify_password, get_current_student_or_redirect
 from fastapi.responses import JSONResponse
 from sqlalchemy import text
-from typing import List
 from fastapi.encoders import jsonable_encoder
 from fastapi.templating import Jinja2Templates
 from passlib.context import CryptContext
@@ -155,16 +154,16 @@ def admin_read_all_students(
     return templates.TemplateResponse("Admin/ListStudents.html", {"request": request, "student": current_student})
 
 
+"""Роли и разрешения"""
+
 # /admin/roles (GET)
-"""роут который возвращает список ролей"""
-@admin_router.get("/roles", summary="Получить список ролей",)
+@admin_router.get("/roles", summary="Получить список всех ролей",)
 def read_roles(db: Session = Depends(get_db)):
     roles = db.execute(text("SELECT * FROM Roles")).mappings().all()
     return roles
 
 # /admin/students/{student_id}/assign-role (POST)
-"""роут который назначает роль студенту"""
-@admin_router.post("/students/{student_id}/assign-role", summary="Назначить роль студенту",)
+@admin_router.post("/students/{student_id}/assign-role", summary="Назначить роль студенту по его id")
 def assign_role_to_student(student_id: int, role_id: int, db: Session = Depends(get_db)):
     role_exists = db.execute(text("SELECT * FROM Roles where RoleID = :role_id"), {"role_id": role_id}).mappings().fetchone()
     if not role_exists:
@@ -177,9 +176,72 @@ def assign_role_to_student(student_id: int, role_id: int, db: Session = Depends(
     return  {"message": f" Студенту {student_exists['Login']} успешно назначена роль {role_exists['Name']} "}
 
 
-# /admin/
-'''
-роут которые назначает разрешения
-@admin_router.post("/assign-permission/", summary="Назначить разрешение роли")
+# /admin/permission
+@admin_router.get("/permission", summary="Получить список всех разрешений ")
+def read_permission(db: Session = Depends(get_db)):
+    permission = db.execute(text("select * from Permissions")).mappings().all()
+    return permission
 
-'''
+# /admin/roles/{role_id}/assign-permission
+@admin_router.get("/roles/{role_id}/assign-permission" , summary="Получить список разрешения для роли по её id")
+def exists_permissions_role(role_id: int, db: Session = Depends(get_db)):
+    role_exists = db.execute(text("SELECT * FROM Roles where RoleID = :role_id"),
+                             {"role_id": role_id}).mappings().fetchone()
+    if not role_exists:
+        return HTTPException(status_code=404, detail="Роль не найдена")
+
+    role_permissions = db.execute(text("""SELECT r.RoleID, r.Name as RoleName, p.PermissionID, p.Name as PermissionName
+                                            FROM RolePermissions rp
+                                            JOIN Roles r ON rp.RoleID = r.RoleID
+                                            JOIN Permissions p ON rp.PermissionID = p.PermissionID
+                                            WHERE r.RoleID = 1
+                                            ORDER BY r.RoleID"""),
+                             {"role_id": role_id}).mappings().all()
+    if not role_permissions:
+        return HTTPException(status_code=404, detail="Разрешений у выбранной роли не найдено")
+
+    # Формируем результат, для выбранно роли выводим
+    role_info = {
+        "role_id": role_permissions[0]["RoleID"], # её id
+        "role_name": role_permissions[0]["RoleName"], # её имя
+        "permission_ids": [row["PermissionID"] for row in role_permissions], # генератором перебираем все строки из результата запроса и добавляем все разрешения для неё
+        "permission_names": [row["PermissionName"] for row in role_permissions], # тоже самое только с именами
+    }
+    return role_info
+
+
+
+
+# /admin/roles/{role_id}/assign-permission
+@admin_router.post("/roles/{role_id}/assign-permission", summary="Назначить разрешения для роли")
+def assign_permission_for_role (role_id: int, data: AssignPermissionsRequest, db: Session = Depends(get_db)):
+    # проверяем что такая роль существует
+    role_exists = db.execute(text("SELECT * FROM Roles where RoleID = :role_id"),
+                             {"role_id": role_id}).mappings().fetchone()
+    if not role_exists:
+        return  HTTPException(status_code=404, detail="Роль не найдена")
+
+    # находим текущие разраешения для данной роли
+    current_permission =  db.execute(text("SELECT PermissionID FROM RolePermissions where RoleID = :role_id"),
+                                     {"role_id": role_id}).scalars().all()
+
+    current_permission_set = set(current_permission)
+    new_permissions_set = set(data.permission_ids)
+    to_add = new_permissions_set - current_permission_set # роли для добавления
+    to_delete = current_permission_set - new_permissions_set # роли для удаления
+
+    # удаляем разрешения, которые больше не нужны
+    for permission in to_delete:
+        db.execute(text("delete RolePermissions where RoleID = :role_id and PermissionID = :permission"),
+                   {"role_id": role_id, "permission": permission})
+    # добавляем новые разрешения
+    for permission in to_add:
+        db.execute(text("insert into RolePermissions (RoleID, PermissionID) values (:role_id, :permission)"),
+                   {"role_id": role_id, "permission": permission})
+    db.commit()
+
+    return {
+        "message": f"Роль '{role_exists['Name']}' обновлена",
+        "added": list(to_add),
+        "removed": list(to_delete)
+    }
