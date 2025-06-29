@@ -22,6 +22,8 @@ class TaskRead(BaseModel):
 class SubTaskRead(BaseModel):
     SubTaskID: int
     TaskID: int
+    VariantID: Optional[int] = None
+    VariantName: Optional[str] = None
     SubTaskNumber: int
     ImagePath: Optional[str] = None
     Description: Optional[str] = None

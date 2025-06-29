@@ -59,7 +59,8 @@ def read_all_tasks(db: Session = Depends(get_db)):
 ''' Эндпоинт: Получить список задач с категорией TaskID'''
 @task_router.get("/api/TaskID/{task_id}", response_model=list[SubTaskRead],summary="Получить подзадачу по TaskID")
 def read_subtasks_TaskID(task_id: int, db: Session = Depends(get_db)):
-    result = db.execute(text(f"""SELECT * FROM SubTasks 
+    result = db.execute(text(f"""SELECT * FROM SubTasks s
+                            LEFT JOIN Variants v on s.VariantID = v.VariantID
                             where TaskID={task_id} ORDER BY SubTaskNumber"""), {task_id: task_id}).fetchall()
     subtasks = [dict(row._mapping) for row in result]
     return subtasks
@@ -75,7 +76,7 @@ def read_subtasks_subtask_id(subtask_id: int, db: Session = Depends(get_db)):
 ''' Получить список вариантов'''
 @task_router.get("/api/variants")
 def read_tasks_id(db: Session = Depends(get_db)):
-    result = db.execute(text(f"select VariantID, Name from Variants order by Name")).fetchall()
+    result = db.execute(text(f"select VariantID, VariantName from Variants order by VariantName")).fetchall()
     variants = [dict(row._mapping) for row in result]
     return variants
 
