@@ -95,29 +95,29 @@ def get_all_students_tasks(db: Session):
     return student_tasks
 '''
 '''функция которая работает по хранимке'''
-def get_students_all_tasks(db, StudentID=None, CompletionStatus=None, TaskID=None, SortColumn=None, SortDirection=None, Description =None):
+def get_students_all_tasks(db, StudentID=None, CompletionStatus=None, TaskID=None, VariantID=None, SortColumn=None, SortDirection=None):
     '''if CompletionStatus is None:
         CompletionStatus = 'Не приступал'
         '''
     logging.info(
-        f"Запускаем функцию с вызовом хранимки. StudentID:{StudentID}, CompletionStatus:{CompletionStatus} TaskID:{TaskID}  SortColumn:{SortColumn} SortDirection: {SortDirection} Description: {Description}")
+        f"Запускаем функцию с вызовом хранимки. StudentID:{StudentID}, CompletionStatus:{CompletionStatus} TaskID:{TaskID}  VariantID: {VariantID} SortColumn:{SortColumn} SortDirection: {SortDirection}")
 
     query = text("""
         EXEC GetStudentsTasks 
             @StudentID = :StudentID,
             @CompletionStatus = :CompletionStatus,
             @TaskID = :TaskID,
+            @VariantID = :VariantID,
             @SortColumn = :SortColumn,
-            @SortDirection = :SortDirection,
-            @Description = :Description
+            @SortDirection = :SortDirection
     """)
     result = db.execute(query, {
         "StudentID": StudentID,
         "CompletionStatus": CompletionStatus,
         "TaskID": TaskID,
+        "VariantID": VariantID,
         "SortColumn": SortColumn,
-        "SortDirection": SortDirection,
-        "Description": Description
+        "SortDirection": SortDirection
     })
     rows = result.mappings().all()  # получаем все строки как словари
     #for row in rows:

@@ -57,6 +57,7 @@ class StudentTaskRead(StudentTaskBase):
     Login: Optional[str] = None
     Role: Optional[str] = None
     TaskID: Optional[int] = None
+    VariantName: Optional[str] = None
     TaskTitle: Optional[str] = None
     SubTaskNumber: Optional[int] = None
     ImagePath: Optional[str] = None

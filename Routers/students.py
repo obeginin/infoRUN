@@ -108,7 +108,7 @@ def read_student_all_subtasks_by_login(
     StudentID: Optional[str] = Query(default=None),
     status: str = Query(default=None),
     TaskID: str | None = Query(None),
-    variant: str | None = Query(None),
+    variant: int | None = Query(None),
     SortColumn: str = Query(default="StudentTaskID"),
     SortDirection: str = Query(default="ASC")
 ):
@@ -148,21 +148,21 @@ def read_student_all_subtasks_by_login(
     # ищем всех студентов
     students_id = db.execute(text("select ID, Login from Students")).fetchall()
     # ищем все варианты
-    variants = db.execute(text("select distinct Description from SubTasks")).fetchall()
+    variants = db.execute(text("select distinct VariantID, VariantName from Variants")).fetchall()
 
 # по его id ищем все его задачи
 
     '''Была проблема с типами str и none и фильтры не отрабатывали'''
-    print(f" Вызов Хранимки с параметрами StudentID:{StudentID}, CompletionStatus:{(status)} TaskID:{(task_id_int)} SortColumn:{(SortColumn)} SortDirection: {(SortDirection)} Description: {(variant)}")
-    print(f" Вызов Хранимки с параметрами StudentID:{StudentID}, CompletionStatus:{type(status)} TaskID:{type(task_id_int)} SortColumn:{type(SortColumn)} SortDirection: {type(SortDirection)} Description: {type(variant)}")
+    print(f" Вызов Хранимки с параметрами StudentID:{StudentID}, CompletionStatus:{(status)} TaskID:{(task_id_int)} SortColumn:{(SortColumn)} SortDirection: {(SortDirection)} VariantID: {(variant)}")
+    print(f" Вызов Хранимки с параметрами StudentID:{StudentID}, CompletionStatus:{type(status)} TaskID:{type(task_id_int)} SortColumn:{type(SortColumn)} SortDirection: {type(SortDirection)} VariantID: {type(variant)}")
     tasks1 = students.get_students_all_tasks(
         db=db,
         StudentID=StudentID,
         CompletionStatus=status or None,
         TaskID=task_id_int,
+        VariantID=variant,
         SortColumn=SortColumn if SortColumn else None,
-        SortDirection=SortDirection if SortDirection else None,
-        Description=variant or None
+        SortDirection=SortDirection if SortDirection else None
     )
     #print(f"TASK TYPE: {type(tasks1[0])}")
     #print(f"TASK VALUE: {tasks1[0]}")

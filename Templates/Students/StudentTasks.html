@@ -77,7 +77,7 @@ HTML страница раздела "Мои задачи" с выводом с�
               <!-- «– любой –» будем делать disabled+selected, чтобы пустоту не отправлять -->
               <option value="" {% if request.query_params.get('variant') in (None, '') %}selected{% endif %}>-- любой --</option>
               {% for var in variants %}
-                <option value="{{ var[0] }}"  {% if request.query_params.get('variant') == var[0] %}selected{% endif %}>{{ var[0] }}</option>
+                <option value="{{ var[0] }}"  {% if request.query_params.get('variant') == var[1] %}selected{% endif %}>{{ var[1] }}</option>
               {% endfor %}
             </select>
 
@@ -111,7 +111,7 @@ HTML страница раздела "Мои задачи" с выводом с�
         } else {
             tasks.forEach(task => {
                 const li = document.createElement("li");
-                li.innerHTML = `Задача: <a href="http://${location.host}/students_subtasks/T/${task.StudentTaskID}?return_url={{ request.url | urlencode }}">${task.SubTaskID}</a> - ${task.CompletionStatus} <b>${task.Description}</b> ${task.TaskTitle}`;
+                li.innerHTML = `Задача: <a href="http://${location.host}/students_subtasks/T/${task.StudentTaskID}?return_url={{ request.url | urlencode }}">${task.SubTaskID}</a> - ${task.CompletionStatus} <b>${task.VariantName}</b> ${task.TaskTitle}`;
                 ul.appendChild(li);
             });
         }
