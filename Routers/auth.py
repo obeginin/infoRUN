@@ -1,11 +1,13 @@
 from config import TEMPLATES_DIR
-from fastapi import APIRouter, Depends,Form, Request, HTTPException
+from fastapi import APIRouter, Depends,Form, Request, HTTPException, status
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from sqlalchemy.orm import Session
 from Models import Student
-from Schemas.auth import StudentLogin, AssignPermissionsRequest
+from Schemas.auth import StudentLogin, AssignPermissionsRequest, ChangePasswordRequest, AdminChangePasswordRequest
+from Crud.auth import get_current_student, permission_required, verify_password, hash_password, get_current_student_or_redirect
 from Security.token import create_access_token
 from dependencies import get_db
-from Crud.auth import get_current_student, permission_required, verify_password, get_current_student_or_redirect
+
 from fastapi.responses import JSONResponse
 from sqlalchemy import text
 from fastapi.encoders import jsonable_encoder
@@ -23,6 +25,23 @@ admin_router = APIRouter(prefix="/admin", tags=["admin"]) # страница д�
 templates = Jinja2Templates(directory=TEMPLATES_DIR)
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
+
+
+
+security = HTTPBasic()
+
+def get_swagger_user(
+    credentials: HTTPBasicCredentials = Depends(security),
+    db: Session = Depends(get_db),
+):
+    user = db.query(Student).filter(Student.Login == credentials.username).first()
+    if not user or not verify_password(credentials.password, user.Password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Неверные учетные данные",
+            headers={"WWW-Authenticate": "Basic"},
+        )
+    return user
 # /
 '''страница home без префикса'''
 @home_router.get("/")
@@ -115,7 +134,7 @@ def read_students_me(current_student: Student = Depends(get_current_student)):
 @admin_router.get("/", response_class=HTMLResponse)
 def admin_dashboard(
     request: Request,
-    current_student=Depends(permission_required("admin_panel")) #admin_required
+    current_student=Depends(permission_required("admin_panel"))
 ):
     return templates.TemplateResponse("Admin/dashboard.html", {
         "request": request,
@@ -245,3 +264,44 @@ def assign_permission_for_role (role_id: int, data: AssignPermissionsRequest, db
         "added": list(to_add),
         "removed": list(to_delete)
     }
+
+# /home/change-password
+@auth_router.post("/change-password", summary = "Сменить пароль текущего пользователя")
+def change_password(data: ChangePasswordRequest, db: Session = Depends(get_db), current_student =  Depends(get_current_student)):
+    # Получаем текущий хеш пароля из базы
+    stored_password = db.execute(text("select Password from students where ID = :id"), {"id": current_student["ID"]}).scalar()
+
+
+    # Проверка старого пароля
+    if not verify_password(data.old_password, stored_password):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Старый пароль неверен"
+        )
+
+    # хешуруем новый пароль
+    new_hashed_password = hash_password(data.new_password)
+    db.execute(text("update Students set Password = :new_hashed_password where ID = :id" ), {"new_hashed_password": new_hashed_password, "id": current_student["ID"]})
+    db.commit()
+    return {"message": "Пароль успешно изменён"}
+
+
+# /admin/students/{student_id}/change-password
+@admin_router.post("/students/{student_id}/change-password", summary = "Сменить пароль выбранного студента по его id")
+def admin_change_password(
+        student_id: int,
+        data: AdminChangePasswordRequest, # новый пароль
+        db: Session = Depends(get_db),
+        current_user=Depends(permission_required("edit_students")) # Проверка на разрешение
+):
+    # Проверим, существует ли студент
+    student = db.execute(text("select * from Students where id = :id"), {"id": student_id}).mappings().fetchone()
+    print(student)
+    if not student:
+        raise  HTTPException(status_code=404, detail="Студент не найден")
+
+    # хешуруем новый пароль
+    new_hashed_password = hash_password(data.new_password)
+    db.execute(text("update Students set Password = :new_hashed_password where ID = :id" ), {"new_hashed_password": new_hashed_password, "id": student_id})
+    db.commit()
+    return  {"message": f"Пароль студента {student["Login"]} успешно изменён"}
