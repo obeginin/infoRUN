@@ -14,6 +14,8 @@
                 {% endfor %}
             </select>
 
+            <input type="text" id="variant-select" name="VariantName" placeholder="Выберите или введите вариант" style="marging-top:10px"/>
+
             <label for="Description">Описание:</label>
             <textarea name="Description"></textarea><br>
 
@@ -45,6 +47,22 @@
     </div>
 
     <script>
+
+        // для поля с вариантом
+        async function loadVariants() {
+          const response = await fetch('/tasks/api/variants');
+          const variants = await response.json();
+
+          $('#variant-select').selectize({
+            options: variants.map(v => ({
+              value: v.VariantID,
+              text: v.Name
+            })),
+            create: true,
+            persist: false
+          });
+        }
+
 <!-- Функция для вставки картинки из буфера-->
         function handlePaste(event, inputId, previewId) {
             const items = event.clipboardData.items;
@@ -82,6 +100,8 @@
         document.getElementById("solutionText").addEventListener("paste", function (event) {
             handlePaste(event, "solutionFileInput", "solution-preview");
         });
-
+        document.addEventListener("DOMContentLoaded", () => {
+            loadVariants();
+          });
     </script>
 {% endblock %}

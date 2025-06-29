@@ -143,13 +143,30 @@ def create_subtask(db: Session, subtask_data: SubTaskCreate):
     return {"SubTaskID": new_id}
 
 
+''' Проверка на наличие или добавление варианта'''
+def get_or_create_variant(db: Session, VariantName: str) -> int:
+    variant = db.execute(
+        text("SELECT VariantID FROM Variants WHERE Name = :name"),
+        {"name": VariantName}
+    ).scalar()
 
-
+    if variant:
+        return variant
+    else:
+        # OUTPUT INSERTED.VariantID сразу возвращает новое значнеи VariantID
+        result = db.execute(
+            text("INSERT INTO Variants (Name) OUTPUT INSERTED.VariantID VALUES (:name)"),
+            {"name": VariantName}
+        )
+        db.commit()
+        new_id = result.fetchone()[0]
+        return new_id
 
 
 ''' Добавление новой подзадачи (через форму)'''
 def create_subtask_from_form(
         TaskID: int,
+        VariantName: str,
         Description: str,
         Answer: str,
         ImageFile: Optional[UploadFile],
@@ -157,7 +174,9 @@ def create_subtask_from_form(
         db: Session
 ):
     logger.debug("Запуск функции create_subtask_from_form")
+    logger.debug(f"Передали параметры: TaskID:{TaskID} VariantName:{VariantName} Description: {Description} Answer:{Answer} ImageFile{ImageFile} SolutionFile: {SolutionFile} db:{db}")
     try:
+        variant_id = get_or_create_variant(db, VariantName)
         # Генерация SubTaskNumber — последний + 1
         result = db.execute(
             text("SELECT MAX(SubTaskNumber) FROM SubTasks WHERE TaskID = :task_id"),
@@ -192,9 +211,9 @@ def create_subtask_from_form(
         # Вставка подзадачи в БД
         insert_query = (
             text("""
-                INSERT INTO SubTasks (TaskID, SubTaskNumber, ImagePath, SolutionPath, Description, Answer)
+                INSERT INTO SubTasks (TaskID, SubTaskNumber, ImagePath, SolutionPath, Description, Answer, VariantID)
                 OUTPUT INSERTED.SubTaskID
-                VALUES (:task_id, :subtask_number, :image_path, :solution_path, :description, :answer)
+                VALUES (:task_id, :subtask_number, :image_path, :solution_path, :description, :answer, :variant_id)
             """))
         result = db.execute(insert_query, {
             "task_id": TaskID,
@@ -203,6 +222,7 @@ def create_subtask_from_form(
             "solution_path": solution_path or "",
             "description": Description,
             "answer": Answer,
+            "variant_id":variant_id
         }
                    )
         new_SubTaskID = result.scalar_one() # Получаем единственное значение - новый SubTaskID

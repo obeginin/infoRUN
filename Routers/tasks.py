@@ -8,13 +8,12 @@ from dependencies import get_db
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from starlette.responses import FileResponse
-from Crud.auth import get_current_student
 from Models import Student, SubTaskFiles
 from typing import List
 from pathlib import Path
 from typing import Dict, Optional
 import shutil
-from Crud.auth import get_current_student, permission_required, permission_required, get_current_student_or_redirect
+from Crud.auth import get_current_student, permission_required, get_current_student_or_redirect
 from fastapi.responses import RedirectResponse
 from dotenv import load_dotenv
 from fastapi.responses import JSONResponse
@@ -75,7 +74,7 @@ def read_subtasks_subtask_id(subtask_id: int, db: Session = Depends(get_db)):
 ''' Получить список вариантов'''
 @task_router.get("/api/variants")
 def read_tasks_id(db: Session = Depends(get_db)):
-    result = db.execute(text(f"select VariantID, Name from Variants")).fetchall()
+    result = db.execute(text(f"select VariantID, Name from Variants order by Name")).fetchall()
     variants = [dict(row._mapping) for row in result]
     return variants
 
@@ -99,6 +98,7 @@ def read_tasks_of_variant (VariantID: int, db: Session = Depends(get_db), curren
             raise HTTPException(status_code=404, detail=f"нет задач с варианте с ID {VariantID}")
     subtasks = [dict(row._mapping) for row in result]
     return jsonable_encoder(subtasks)
+
 
 
 
@@ -251,6 +251,7 @@ def list_tasks(request: Request, VariantID:int, current_student = Depends(get_cu
 @subtask_router.post("/create_form")
 def post_subtask_form(
     TaskID: int = Form(...),
+    VariantName: str = Form(""),
     Description: str = Form(""),
     Answer: str = Form(""),
     ImageFile: UploadFile = File(None),
@@ -261,6 +262,7 @@ def post_subtask_form(
     logger.debug("Отправляем форму на добавление задачи")
     result = task_crud.create_subtask_from_form(
         TaskID=TaskID,
+        VariantName=VariantName,
         Description=Description,
         Answer=Answer,
         ImageFile=ImageFile,

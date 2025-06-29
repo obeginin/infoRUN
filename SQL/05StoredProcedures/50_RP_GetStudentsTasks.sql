@@ -14,11 +14,12 @@ CREATE PROCEDURE GetStudentsTasks
     @StudentID INT					= NULL,
     @SubTaskID INT					= NULL,
     @TaskID INT						= NULL,
+	@VariantID INT					= NULL,
     @CompletionStatus NVARCHAR(20)  = NULL, 
 	@SortColumn NVARCHAR(50)		= NULL, -- Выбор колонки для сортировки
     @SortDirection NVARCHAR(4)		= 'ASC', -- Сортировка (по возрастанию ASC ) DESC -по убыванию
-	@Description  NVARCHAR(MAX)		= NULL,
-	@VariantID INT					= NULL
+	@Description  NVARCHAR(MAX)		= NULL
+	
 AS
 BEGIN
 	/*вывод параметров в консоль SSMS
@@ -137,7 +138,7 @@ GO
 /*SELECT DISTINCT CompletionStatus FROM StudentTasks;
 
 EXEC GetStudentsTasks; 
-EXEC GetStudentsTasks @StudentID = 2;  id=2
+EXEC GetStudentsTasks @StudentID = 3;  id=2
 EXEC GetStudentsTasks @StudentID = 2, @Description = N'; id=2
 EXEC GetStudentsTasks @TaskID = 2;
 EXEC GetStudentsTasks @SubTaskID = 2, @CompletionStatus = N'';
