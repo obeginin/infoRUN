@@ -59,7 +59,8 @@ def read_all_tasks(db: Session = Depends(get_db)):
 ''' Эндпоинт: Получить список задач с категорией TaskID'''
 @task_router.get("/api/TaskID/{task_id}", response_model=list[SubTaskRead],summary="Получить подзадачу по TaskID")
 def read_subtasks_TaskID(task_id: int, db: Session = Depends(get_db)):
-    result = db.execute(text(f"SELECT * FROM SubTasks where TaskID={task_id} ORDER BY SubTaskNumber"), {task_id: task_id}).fetchall()
+    result = db.execute(text(f"""SELECT * FROM SubTasks 
+                            where TaskID={task_id} ORDER BY SubTaskNumber"""), {task_id: task_id}).fetchall()
     subtasks = [dict(row._mapping) for row in result]
     return subtasks
 

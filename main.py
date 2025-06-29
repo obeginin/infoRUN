@@ -9,6 +9,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse
 from log import setup_logging
 from middlewares import LoggingMiddleware
+from fastapi.middleware.cors import CORSMiddleware
 import logging
 # main.py
 '''главный файл проекта'''
@@ -36,6 +37,15 @@ app.add_middleware(LoggingMiddleware) # Middleware для логов всех з
 app.mount("/static", StaticFiles(directory="Templates/Static"), name="static") # для CSS файлов
 app.mount("/Uploads", StaticFiles(directory="Uploads"), name="uploads") # для файлов
 templates = Jinja2Templates(directory=TEMPLATES_DIR)
+
+# для запросов с фронта
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],  # ✅ разрешаешь запросы с фронта
+    allow_credentials=True,                  # ✅ разрешаешь куки / авторизацию
+    allow_methods=["*"],                     # ✅ разрешаешь любые HTTP-методы (GET, POST, PUT и т.д.)
+    allow_headers=["*"],                     # ✅ разрешаешь любые заголовки (например, Authorization)
+)
 
 # Перенаправление на страницу логина при открытии корня (Основной адрес сайта)
 @app.get("/")
