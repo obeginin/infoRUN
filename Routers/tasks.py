@@ -175,7 +175,9 @@ def get_edit_subtask_form(
     subtask = task_crud.get_subtasks_id(db, subtask_id)
     tasks = task_crud.get_all_tasks(db)
 
-    return templates.TemplateResponse("Tasks/edit.html", {"request": request, "student": current_student,"subtask": subtask, "tasks": tasks})
+    variants = db.execute(text("SELECT VariantName FROM Variants order by VariantName")).scalars().all()
+
+    return templates.TemplateResponse("Tasks/edit.html", {"request": request, "student": current_student,"subtask": subtask, "tasks": tasks, "variants": variants})
 
 
 
@@ -288,6 +290,7 @@ def post_subtask_form(
 def post_edit_subtask_form(
     SubTaskID: int = Form(...),
     TaskID: int = Form(...),
+    VariantName: str = Form(...),
     SubTaskNumber: int = Form(...),
     Description: str = Form(""),
     Answer: str = Form(""),
@@ -297,6 +300,16 @@ def post_edit_subtask_form(
     db: Session = Depends(get_db)
 ):
     logger.info(f"Редактируем подзадачу ID={SubTaskID}")
+
+    current_variant_id = db.execute(text("SELECT VariantID FROM SubTasks WHERE SubTaskID = :id"),
+                                    {"id": SubTaskID}).scalar()
+    # Получаем имя текущего варианта
+    current_variant_name = db.execute(text("SELECT VariantName FROM Variants WHERE VariantID = :id"),
+                                      {"id": current_variant_id}).scalar()
+    if VariantName != current_variant_name:
+        variant_id = task_crud.get_or_create_variant(db, VariantName)
+    else:
+        variant_id = current_variant_id
 
     # Получаем текущую подзадачу из базы
     subtask = task_crud.get_subtasks_id(db,SubTaskID)
@@ -375,6 +388,7 @@ def post_edit_subtask_form(
     print(uploaded_files)
     subtask_data = SubTaskUpdate(
         TaskID=TaskID,
+        VariantID=variant_id,
         SubTaskNumber=SubTaskNumber,
         Description=Description,
         Answer=Answer,

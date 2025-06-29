@@ -11,6 +11,7 @@
         <!-- Чтобы знать, какую подзадачу редактируем -->
         <input type="hidden" name="SubTaskID" value="{{ subtask.SubTaskID }}">
         <input type="hidden" name="TaskID_old" value="{{ subtask.TaskID }}">
+        <input type="hidden" name="TaskID_old" value="{{ subtask.TaskID }}">
         <input type="hidden" name="SubTaskNumber" value="{{ subtask.SubTaskNumber }}">
 
         <label for="TaskID">Категория:</label>
@@ -22,7 +23,7 @@
             {% endfor %}
         </select>
 
-        <input type="text" id="variant-select" name="VariantName" placeholder="Выберите или введите вариант" style="marging-top:10px"/>
+        <input type="text" id="variant-select" name="VariantName" value="{{ subtask.VariantName }}" placeholder="Выберите или введите вариант" style="margin-top:10px"/>
 
         <label for="Description">Описание:</label>
         <textarea name="Description">{{ subtask.Description }}</textarea>
@@ -84,6 +85,15 @@
 </div>
 
 <script>
+
+    document.addEventListener("DOMContentLoaded", () => {
+    const existingVariants = {{ variants | tojson }};
+    $('#variant-select').selectize({
+      options: existingVariants.map(v => ({ value: v, text: v })),
+      create: true,
+      persist: false,
+    });
+  });
 
     function handlePaste(event, inputId, previewId) {
         const items = event.clipboardData.items;

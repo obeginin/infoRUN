@@ -48,6 +48,7 @@ class SubTaskCreate(BaseModel):
 
 class SubTaskUpdate(BaseModel):
     TaskID: int
+    VariantID: int
     SubTaskNumber: int
     ImagePath: str | None = None
     Description: str | None = None

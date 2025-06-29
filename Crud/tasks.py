@@ -67,8 +67,9 @@ def get_all_subtasks(db: Session):
 ''' функция-SQL для вывода подзадачи по её id (SubTaskID)'''
 def get_subtasks_id(db: Session, subtasks_id: int):
     result = db.execute(text(f"""
-                SELECT sb.*, stf.ID AS FileID, stf.FileName, stf.FilePath, stf.UploadDate FROM SubTasks sb
+                SELECT sb.*, v.VariantName, stf.ID AS FileID, stf.FileName, stf.FilePath, stf.UploadDate FROM SubTasks sb
                 LEFT JOIN SubTaskFiles stf on stf.SubTaskID=sb.SubTaskID 
+                LEFT JOIN Variants v on sb.VariantID = v.VariantID 
                 WHERE sb.SubTaskID = :id"""),
                 {"id": subtasks_id}).mappings().all()
     if not result:
@@ -77,6 +78,7 @@ def get_subtasks_id(db: Session, subtasks_id: int):
     subtask = {
         "SubTaskID": first["SubTaskID"],
         "TaskID": first["TaskID"],
+
         "SubTaskNumber": first["SubTaskNumber"],
         "ImagePath": first["ImagePath"],
         "Description": first["Description"],
@@ -146,7 +148,7 @@ def create_subtask(db: Session, subtask_data: SubTaskCreate):
 ''' Проверка на наличие или добавление варианта'''
 def get_or_create_variant(db: Session, VariantName: str) -> int:
     variant = db.execute(
-        text("SELECT VariantID FROM Variants WHERE Name = :name"),
+        text("SELECT VariantID FROM Variants WHERE VariantName = :name"),
         {"name": VariantName}
     ).scalar()
 
@@ -251,6 +253,7 @@ def update_subtask(
     update_query = text("""
             UPDATE SubTasks SET
                 TaskID = :task_id,
+                VariantID = :VariantID,
                 SubTaskNumber = :subtask_number,
                 ImagePath = :image_path,
                 Description = :description,
@@ -260,6 +263,7 @@ def update_subtask(
         """)
     db.execute(update_query, {
         "task_id": subtask_data.TaskID,
+        "VariantID": subtask_data.VariantID,
         "subtask_number": subtask_data.SubTaskNumber,
         "image_path": subtask_data.ImagePath,
         "description": subtask_data.Description,
