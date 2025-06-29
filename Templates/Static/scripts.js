@@ -53,7 +53,7 @@ async function loadTasks() {
         for (const task of tasks) {
             console.log("task", task);
             const li = document.createElement("li");
-            li.innerHTML = `<a href="/tasks/${task.TaskID}"><strong>${task.TaskNumber}: ${task.TaskTitle}</strong></a>`;
+            li.innerHTML = `<a href="/tasks/${task.TaskID}"><strong>${task.TaskTitle}</strong></a>`;
             container.appendChild(li);
 
         };
