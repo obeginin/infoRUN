@@ -1,19 +1,21 @@
 
--- таблица с ролями ()
+-- таблица с ролями 
 CREATE TABLE Roles (
     RoleID INT PRIMARY KEY IDENTITY(1,1),
     Name NVARCHAR(50) NOT NULL UNIQUE,
 );
 --insert into Roles (Name) Values ('Админ'), ('Учитель'), ('Ученик')
 
+-- Таблица с разрешениями
 CREATE TABLE Permissions (
     PermissionID INT PRIMARY KEY IDENTITY(1,1),
     Name NVARCHAR(50) NOT NULL UNIQUE,
     Description NVARCHAR(255)
 );
---insert into Permissions (Name, Description) Values ('view_tasks','Просмотр задач'),('creat_tasks','Создание задач'),('edit_tasks','Редактирование  задач'),('admin_panel','Административная панель')
+--insert into Permissions (Name, Description) Values ('view_tasks','Просмотр задач'),('create_tasks','Создание задач'),('edit_tasks','Редактирование  задач'),('edit_students','Управление студентами'),('admin_panel','Административная панель')
 
-
+-- Таблица связи Ролей и Разрешений
+update Permissions set Name='create_tasks' where PermissionID=2
 CREATE TABLE RolePermissions (
     RoleID INT NOT NULL,
     PermissionID INT NOT NULL,
@@ -41,6 +43,7 @@ SELECT
 FROM RolePermissions rp
 JOIN Roles r ON rp.RoleID = r.RoleID
 JOIN Permissions p ON rp.PermissionID = p.PermissionID
+WHERE r.RoleID = 1
 ORDER BY r.RoleID
 
 
@@ -56,3 +59,10 @@ JOIN Roles r ON rp.RoleID = r.RoleID
 JOIN Permissions p ON rp.PermissionID = p.PermissionID
 GROUP BY r.RoleID, r.Name
 */
+select s.id, s.Login, s.Password, s.Role, r.RoleID, r.Name as RoleName from Students s 
+left join Roles r on s.RoleID = r.RoleID
+
+select s.id, s.Login,  s.Role, r.RoleID, r.Name as RoleName 
+                                    from Students s 
+                                    left join Roles r on s.RoleID = r.RoleID
+                                    where s.Login = 'obeginin'

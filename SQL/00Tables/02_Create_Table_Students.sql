@@ -29,13 +29,13 @@ BEGIN
 	END
 END;
 
-
+/*
 EXEC sp_help 'Students';
 --по умолчанию проставляем роль "Ученик"
 ALTER TABLE Students
 ADD CONSTRAINT DF_Students_RoleID DEFAULT 3 FOR RoleID;
 update Students set RoleID=1 where id in (2, 8)
-/*
+
 select * from students
 Добавить новый столбец
 ALTER TABLE Students ADD RoleID INT;
@@ -63,6 +63,7 @@ INSERT INTO Students (Login, Last_Name, First_Name, Middle_Name, Email, Sex, Bir
 		('rustam', 'Рустамов', 'Рустам', 'Рустамович', 'andreev@example.com', 'M', '', 'Комментарий','$pbkdf2-sha256$29000$N4bwvvceQ2gtBaD03htDyA$BLHTA0T4Q.f1kZMSLoQjTm1.Pr7hUMpK/dFKMtDdAkk','student'),
 		('test', 'Тестов', 'Тест', 'Тестович', 'test@gmail.com', 'M', '', 'Комментарий','$pbkdf2-sha256$29000$N4bwvvceQ2gtBaD03htDyA$BLHTA0T4Q.f1kZMSLoQjTm1.Pr7hUMpK/dFKMtDdAkk','student');
 
-*/
+
 INSERT INTO Students (Login, Last_Name, First_Name, Middle_Name, Email, Sex, BirthDate, Comment,Password,Role) 
 VALUES ('test1', 'Тестов', 'Тест', 'Тестович', 'test@gmail.com', 'M', '', 'Комментарий','$pbkdf2-sha256$29000$N4bwvvceQ2gtBaD03htDyA$BLHTA0T4Q.f1kZMSLoQjTm1.Pr7hUMpK/dFKMtDdAkk','student');
+*/
