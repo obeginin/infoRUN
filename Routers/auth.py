@@ -7,7 +7,7 @@ from Schemas.auth import StudentLogin, StudentAuth, AssignPermissionsRequest, Ch
 from Crud.auth import get_current_student, permission_required, verify_password, hash_password, get_current_student_or_redirect
 from Security.token import create_access_token
 from dependencies import get_db
-from kafka_producer import send_log
+from kafka_producer import send_log, producer
 from fastapi.responses import JSONResponse
 from sqlalchemy import text
 from fastapi.encoders import jsonable_encoder
@@ -53,7 +53,8 @@ def home_page(request: Request, current_student = Depends(get_current_student_or
         logger.info(f"[{client_ip}] Неавторизованный доступ к {path} — выполняется редирект на страницу входа")
         return current_student
     logger.info(f"[{client_ip}] Студент {current_student.Login} открыл корневую страницу")
-    send_log("login", current_student.ID, {"ip": request.client.host})
+    send_log(producer, current_student.ID, "login", {"ip": request.client.host})
+    #send_log("login", current_student.ID, {"ip": request.client.host})
     return templates.TemplateResponse("home.html", {"request": request, "student": current_student})
 
 # /home/login_in (GET)

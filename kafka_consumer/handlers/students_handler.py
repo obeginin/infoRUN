@@ -1,0 +1,27 @@
+# Работа с пользователеми
+from sqlalchemy import text
+
+
+def handle_student_action(db, message: dict):
+    print(1)
+    query = text("""
+            INSERT INTO StudentActionLogs (StudentID, EventType, DescriptionEvent, EventTime, IPAddress, UserAgent, Metadata)
+            VALUES (:student_id, :event_type, :description, GETDATE(), :ip_address, :user_agent, :metadata)
+        """)
+
+    db.execute(query, {
+        "student_id": message.get("StudentID"),
+        "event_type": message.get("EventType"),
+        "description": message.get("DescriptionEvent"),
+        "ip_address": message.get("IPAddress"),
+        "user_agent": message.get("UserAgent"),
+        "metadata": message.get("Metadata"),
+    })
+    db.commit()
+    print(f"Успешно добавлено в таблицу LogDB")
+    # Здесь логика обработки действий пользователя
+
+def handle_system_event(message: dict):
+    event = message.get('event')
+    print(f"Обработка системного события: {event}")
+    # Здесь логика обработки системных событий
