@@ -5,12 +5,14 @@ from fastapi.openapi.docs import get_swagger_ui_html, get_redoc_html
 from fastapi.staticfiles import StaticFiles
 from Routers.auth import get_swagger_user
 import uvicorn
+from sqlalchemy import text
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse
 from log import setup_logging
 from middlewares import LoggingMiddleware
 from fastapi.middleware.cors import CORSMiddleware
 import logging
+from Database import engine, log_engine
 # main.py
 '''главный файл проекта'''
 
@@ -46,6 +48,21 @@ app.add_middleware(
     allow_methods=["*"],                     # ✅ разрешаешь любые HTTP-методы (GET, POST, PUT и т.д.)
     allow_headers=["*"],                     # ✅ разрешаешь любые заголовки (например, Authorization)
 )
+
+
+def check_db_connection(engine, name):
+    try:
+        with engine.connect() as conn:
+            conn.execute(text("SELECT 1"))
+        logging.info(f"✅ Подключение к базе данных '{name}' установлено.")
+    except Exception as e:
+        logging.error(f"❌ Ошибка подключения к базе '{name}': {e}")
+
+@app.on_event("startup")
+def startup_event():
+    logging.info("🚀 Проверка подключений к базам данных...")
+    check_db_connection(engine, "infoDB")
+    check_db_connection(log_engine, "LogDB")
 
 # Перенаправление на страницу логина при открытии корня (Основной адрес сайта)
 @app.get("/")
