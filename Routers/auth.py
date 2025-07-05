@@ -6,7 +6,7 @@ from Models import Student
 from Schemas.auth import StudentLogin, StudentAuth, AssignPermissionsRequest, ChangePasswordRequest, AdminChangePasswordRequest
 from Crud.auth import get_current_student, permission_required, verify_password, hash_password, get_current_student_or_redirect
 from Security.token import create_access_token
-from dependencies import get_db
+from dependencies import get_db,get_log_db
 from kafka_producer import send_log, producer
 from fastapi.responses import JSONResponse
 from sqlalchemy import text
@@ -47,14 +47,26 @@ def get_swagger_user(
 '''страница home без префикса'''
 @home_router.get("/")
 def home_page(request: Request, current_student = Depends(get_current_student_or_redirect)):
-    client_ip = request.client.host
+    client_ip = request.headers.get("X-Forwarded-For") or request.client.host
     path = request.url.path
+
     if isinstance(current_student, RedirectResponse):
         logger.info(f"[{client_ip}] Неавторизованный доступ к {path} — выполняется редирект на страницу входа")
         return current_student
+
+    # kafka + логирование
     logger.info(f"[{client_ip}] Студент {current_student.Login} открыл корневую страницу")
-    send_log(producer, current_student.ID, "login", {"ip": request.client.host})
-    #send_log("login", current_student.ID, {"ip": request.client.host})
+    send_log(
+        producer,
+        StudentID=current_student.ID,
+        StudentLogin=current_student.Login,
+        action="login",
+        details={
+            "DescriptionEvent": "Пользователь успешно вошёл в систему",
+            "IPAddress": client_ip,
+            "UserAgent": request.headers.get("user-agent"),
+            "Metadata":"пока просто текст"})
+
     return templates.TemplateResponse("home.html", {"request": request, "student": current_student})
 
 # /home/login_in (GET)
@@ -69,14 +81,22 @@ def login_form(request: Request):
 @auth_router.get("/")
 def home_page(request: Request, current_student = Depends(get_current_student_or_redirect)):
     # Проверим: если редирект, то возвращаем его
-    client_ip = request.client.host
+    client_ip = request.headers.get("X-Forwarded-For") or request.client.host
     path = request.url.path
     print(current_student.__dict__)
     if isinstance(current_student, RedirectResponse):
         logger.info(f"[{client_ip}] Неавторизованный доступ к {path} — выполняется редирект на страницу входа")
         return current_student
+
+    # kafka + логирование
     logger.info(f"[{client_ip}] Студент {current_student.Login} открыл главную страницу")
-    send_log("login", current_student.ID, {"ip": request.client.host})
+    send_log(
+        producer,
+        current_student.Login, "login",
+        {
+            "DescriptionEvent": "Пользователь успешно вошёл в систему", "IPAddress": client_ip,
+            "UserAgent": request.headers.get("user-agent"), "Metadata": "пока просто текст"})
+
     return templates.TemplateResponse("home.html", {"request": request, "student": current_student})
 
 # /home/login_in/ (POST)
@@ -327,3 +347,19 @@ def admin_change_password(
     db.execute(text("update Students set Password = :new_hashed_password where ID = :id" ), {"new_hashed_password": new_hashed_password, "id": student_id})
     db.commit()
     return  {"message": f"Пароль студента {student["Login"]} успешно изменён"}
+
+"""роут с историей пользователя (его надо перенести либо доработать) и надо сделать такой же
+только id берется от текущего пользователя"""
+# /admin/logs
+@admin_router.get("/logs", summary = "Вывод истории входов пользователя по его ID")
+#def get_logs(current_user: Student = Depends(get_current_student), db_log: Session = Depends(get_log_db)):
+def get_logs(studentID: int, db_log: Session = Depends(get_log_db)):
+    result = db_log.execute(text("""
+        SELECT TOP 50 * FROM StudentActionLogs
+        WHERE StudentID = :student_id
+        ORDER BY EventTime DESC
+    """), {'student_id': studentID})
+
+    logs = result.mappings().all()
+    return JSONResponse(content=jsonable_encoder(logs))
+

@@ -5,12 +5,13 @@ from sqlalchemy import text
 def handle_student_action(db, message: dict):
     print(1)
     query = text("""
-            INSERT INTO StudentActionLogs (StudentID, EventType, DescriptionEvent, EventTime, IPAddress, UserAgent, Metadata)
-            VALUES (:student_id, :event_type, :description, GETDATE(), :ip_address, :user_agent, :metadata)
+            INSERT INTO StudentActionLogs (StudentID, StudentLogin, EventType, DescriptionEvent, EventTime, IPAddress, UserAgent, Metadata)
+            VALUES (:StudentID, :StudentLogin, :event_type, :description, GETDATE(), :ip_address, :user_agent, :metadata)
         """)
 
     db.execute(query, {
-        "student_id": message.get("StudentID"),
+        "StudentID": message.get("StudentID"),
+        "StudentLogin": message.get("StudentLogin"),
         "event_type": message.get("EventType"),
         "description": message.get("DescriptionEvent"),
         "ip_address": message.get("IPAddress"),
