@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends,Form, Request, HTTPException, status
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from sqlalchemy.orm import Session
 from Models import Student
-from Schemas.auth import StudentLogin, AssignPermissionsRequest, ChangePasswordRequest, AdminChangePasswordRequest
+from Schemas.auth import StudentLogin, StudentAuth, AssignPermissionsRequest, ChangePasswordRequest, AdminChangePasswordRequest
 from Crud.auth import get_current_student, permission_required, verify_password, hash_password, get_current_student_or_redirect
 from Security.token import create_access_token
 from dependencies import get_db
@@ -30,6 +30,7 @@ pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
 security = HTTPBasic()
 
+"""функция для проверки парлоля в swagger"""
 def get_swagger_user(
     credentials: HTTPBasicCredentials = Depends(security),
     db: Session = Depends(get_db),
@@ -106,18 +107,36 @@ async def logout():
 @auth_router.post("/login",  summary="Аутентификация",)
 def login(student_login: StudentLogin, db: Session = Depends(get_db)):
     # Поиск студента по логину
-    student = db.query(Student).filter(Student.Login == student_login.Login).first()
-
+    #student = db.query(Student).filter(Student.Login == student_login.Login).first()
+    student = db.execute(text("""SELECT s.*, r.Name as RoleName FROM Students s
+                                                LEFT JOIN Roles r ON s.RoleID = r.RoleID
+                                                Where s.Login = :login"""), {"login": student_login.Login}).mappings().first()
+    logger.info(student)
     if not student:
         raise HTTPException(status_code=400, detail="Invalid credentials")
 
     # Проверяем пароль
-    if not verify_password(student_login.Password, student.Password):
+    if not verify_password(student_login.Password, student["Password"]):
         raise HTTPException(status_code=400, detail="Invalid credentials")
 
     # Создаём токен
-    access_token = create_access_token(data={"sub": student.Login})
-    return {"access_token": access_token, "token_type": "bearer"}
+    access_token = create_access_token(data={"sub": student["Login"]})
+
+    # Создаём Pydantic-модель из словаря (Селеризация)
+    student_short = StudentAuth(
+        ID=student["ID"],
+        Login=student["Login"],
+        last_name=student["Last_Name"],
+        first_name=student["First_Name"],
+        email=student["Email"],
+        role_name=student["RoleName"]
+    )
+
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "student": student_short
+    }
 
 # /login/me
 '''Доступ только для пользователей'''
