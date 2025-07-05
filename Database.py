@@ -18,7 +18,6 @@ DATABASE_URL = (
     #f"mssql+pyodbc://{DB_HOST}/{DB_NAME}"
     "?driver=ODBC+Driver+18+for+SQL+Server"
     #"&trusted_connection=yes"
-
     "&TrustServerCertificate=yes")
 engine = create_engine(DATABASE_URL) # функция create_engine создаёт объект соединения с базой данных.
 
@@ -27,16 +26,12 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base() # базовый класс, от которого будут наследоваться все модели таблиц в SQLAlchemy.
 
-
-
-'''
-Стандартная проверка подключения к БД
-Пример запроса для проверки подключения
-try:
-    with engine.connect() as conn:
-        result = conn.execute(text("SELECT 1"))
-        print("Успешное подключение! ✅ Результат:", result.scalar())
-except Exception as e:
-    print("❌ Ошибка подключения:", e)
-
-'''
+DB_NAME_LOG = os.getenv("DB_NAME_LOG")
+DB_HOST_LOG = os.getenv("DB_HOST_LOG")
+DB_USER_LOG = os.getenv("DB_USER_LOG")
+DB_PASS_LOG = os.getenv("DB_PASS_LOG")
+LOG_DATABASE_URL = (f"mssql+pyodbc://{DB_USER_LOG}:{DB_PASS_LOG}@{DB_HOST_LOG}/{DB_NAME_LOG}"
+                    f"?driver=ODBC+Driver+18+for+SQL+Server"
+                    "&TrustServerCertificate=yes")
+log_engine = create_engine(LOG_DATABASE_URL)
+LogSessionLocal = sessionmaker(bind=log_engine)
