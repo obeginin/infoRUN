@@ -21,3 +21,5 @@ BEGIN
     END
 END;
 GO
+exec Create_Table_StudentActionLogs
+select * from StudentActionLogs

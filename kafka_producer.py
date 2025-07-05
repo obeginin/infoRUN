@@ -10,11 +10,12 @@ producer = KafkaProducer(
 )
 
 # Функция логирования действий
-def send_log(producer, StudentID: int, action: str, details: dict = None):
+def send_log(producer, StudentID: int, StudentLogin: str, action: str, details: dict = None):
     data = {
         "action_type": "student_action",   # Лучше использовать четкий тип для логов
         "data": {
             "StudentID": StudentID,
+            "StudentLogin": StudentLogin,
             "EventType": action,             # в consumer ты ожидаешь EventType, а не просто action
             "DescriptionEvent": details.get("DescriptionEvent") if details else None,
             "IPAddress": details.get("IPAddress") if details else None,
