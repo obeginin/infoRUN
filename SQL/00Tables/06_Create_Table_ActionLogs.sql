@@ -11,6 +11,7 @@ BEGIN
         CREATE TABLE StudentActionLogs (
 			LogID INT IDENTITY PRIMARY KEY,
 			StudentID INT NOT NULL,
+			StudentLogin NVARCHAR(50) NOT NULL,
 			EventType NVARCHAR(50) NOT NULL,            -- тип действия: login_success, task_viewed, profile_updated
 			DescriptionEvent NVARCHAR(100),				-- описание действия
 			EventTime DATETIME DEFAULT GETDATE(),
@@ -21,5 +22,9 @@ BEGIN
     END
 END;
 GO
+/*
 exec Create_Table_StudentActionLogs
+
+drop table StudentActionLogs
+*/
 select * from StudentActionLogs
