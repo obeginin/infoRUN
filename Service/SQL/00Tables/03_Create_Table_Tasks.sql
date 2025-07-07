@@ -10,11 +10,48 @@ BEGIN
 	BEGIN
 		CREATE TABLE Tasks (
 			TaskID INT IDENTITY(1,1) PRIMARY KEY, -- id задачи (первичный ключ)
+			SubjectID INT NOT NULL,
 			TaskNumber INT NOT NULL UNIQUE,  -- Номер задачи (1, 2, 3... 27) не должен быть нулевым и уникальным
 			TaskTitle NVARCHAR(255) NOT NULL -- Название задачи
+			CONSTRAINT FK_Tasks_Subjects FOREIGN KEY (SubjectID) REFERENCES Subjects(ID)
 		);
 	END
 END;
+
+
+IF EXISTS(SELECT 1 FROM sys.procedures WHERE OBJECT_SCHEMA_NAME([object_id]) = 'dbo' and name = 'Create_Table_Subjects')
+	DROP PROCEDURE dbo.Create_Table_Subjects
+GO
+--exec Create_Table_Subjects --Выполнить хранимку
+
+CREATE PROCEDURE Create_Table_Subjects
+AS
+BEGIN
+    IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Subjects')
+	BEGIN
+		CREATE TABLE Subjects (
+			ID INT IDENTITY(1,1) PRIMARY KEY, 
+			Name NVARCHAR(100) NOT NULL UNIQUE,  
+			Description NVARCHAR(MAX) NULL
+		);
+	END
+END;
+
+/*
+SELECT * FROM Subjects
+
+INSERT INTO Subjects (Name, Description) VALUES
+  (N'Математика', N'Подготовка к ЕГЭ по математике'),
+  (N'Русский язык', N'Подготовка к ЕГЭ по русскому языку'),
+  (N'Физика', N'Подготовка к ЕГЭ по физике'),
+  (N'Химия', N'Подготовка к ЕГЭ по химии'),
+  (N'Биология', N'Подготовка к ЕГЭ по биологии'),
+  (N'История', N'Подготовка к ЕГЭ по истории'),
+  (N'Обществознание', N'Подготовка к ЕГЭ по обществознанию'),
+  (N'Литература', N'Подготовка к ЕГЭ по литературе'),
+  (N'Английский язык', N'Подготовка к ЕГЭ по английскому языку'),
+  (N'Информатика', N'Подготовка к ЕГЭ по информатике');
+  */
 
 
 
