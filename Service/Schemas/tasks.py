@@ -65,3 +65,8 @@ class FileSchema(BaseModel):
         model_config = {
             "from_attributes": True
         }
+
+class SubjectOut(BaseModel):
+    ID: int
+    Name: str
+    Description: str | None = None
