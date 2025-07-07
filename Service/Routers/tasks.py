@@ -1,24 +1,22 @@
-from config import UPLOAD_IMAGE_DIR, UPLOAD_SOLUTION_DIR, UPLOAD_FILES_DIR, TEMPLATES_DIR
+from Service.config import UPLOAD_IMAGE_DIR, UPLOAD_SOLUTION_DIR, UPLOAD_FILES_DIR, TEMPLATES_DIR
+from Service.Schemas.tasks import TaskRead, SubTaskRead, SubTaskCreate, SubTaskUpdate, FileSchema
+from Service.Crud import tasks as task_crud
+from Service.dependencies import get_db
+from Service.Models import Student, SubTaskFiles
+from Service.Crud.auth import get_current_student, permission_required, get_current_student_or_redirect
+
 from fastapi import APIRouter, Depends, Request, Form, UploadFile, File, Query, HTTPException
+from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
+from fastapi.templating import Jinja2Templates
+from fastapi.encoders import jsonable_encoder
+from starlette.responses import FileResponse
 from sqlalchemy import text
 from sqlalchemy.orm import Session
-from Schemas.tasks import TaskRead, SubTaskRead, SubTaskCreate, SubTaskUpdate, FileSchema
-from Crud import tasks as task_crud
-from dependencies import get_db
-from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
-from starlette.responses import FileResponse
-from Models import Student, SubTaskFiles
 from typing import List
 from pathlib import Path
 from typing import Dict, Optional
-import shutil
-from Crud.auth import get_current_student, permission_required, get_current_student_or_redirect
-from fastapi.responses import RedirectResponse
 from dotenv import load_dotenv
-from fastapi.responses import JSONResponse
-from sqlalchemy import text
-from fastapi.encoders import jsonable_encoder
+import shutil
 import logging
 
 # Routers\tasks.py

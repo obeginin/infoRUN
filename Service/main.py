@@ -1,18 +1,20 @@
-from config import TEMPLATES_DIR
-from fastapi import FastAPI, Depends
-from Routers import tasks,students,auth,files  # Импортируем роутер задач
-from fastapi.openapi.docs import get_swagger_ui_html, get_redoc_html
+from Service.Database import engine, log_engine
+from Service.config import TEMPLATES_DIR
+from Service.Routers import tasks,students,auth,files  # Импортируем роутер задач
+from Service.Routers.auth import get_swagger_user
+from Service.log import setup_logging
+from Service.middlewares import LoggingMiddleware
+
 from fastapi.staticfiles import StaticFiles
-from Routers.auth import get_swagger_user
-import uvicorn
-from sqlalchemy import text
+from fastapi.openapi.docs import get_swagger_ui_html, get_redoc_html
+from fastapi import FastAPI, Depends
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse
-from log import setup_logging
-from middlewares import LoggingMiddleware
-from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import text
+import uvicorn
 import logging
-from Database import engine, log_engine
+
 # main.py
 '''главный файл проекта'''
 

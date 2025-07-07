@@ -1,11 +1,16 @@
 from kafka import KafkaProducer
+from dotenv import load_dotenv
 import json
 import logging
+import os
 logger = logging.getLogger(__name__)
+
+load_dotenv()
+KAFKA_BOOTSTRAP_SERVERS = os.getenv("KAFKA_BOOTSTRAP_SERVERS")
 
 # Создание Kafka Producer'а
 producer = KafkaProducer(
-    bootstrap_servers='10.0.2.4:9092',
+    bootstrap_servers=KAFKA_BOOTSTRAP_SERVERS,
     value_serializer=lambda v: json.dumps(v).encode('utf-8')
 )
 

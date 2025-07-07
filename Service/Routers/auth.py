@@ -1,20 +1,21 @@
-from config import TEMPLATES_DIR
+from Service.config import TEMPLATES_DIR
+from Service.Models import Student
+from Service.Schemas.auth import StudentLogin, StudentAuth, AssignPermissionsRequest, ChangePasswordRequest, AdminChangePasswordRequest
+from Service.Crud.auth import get_current_student, permission_required, verify_password, hash_password, get_current_student_or_redirect
+from Service.Security.token import create_access_token
+from Service.dependencies import get_db,get_log_db
+from Kafka_producer.producer import send_log, producer
+
 from fastapi import APIRouter, Depends,Form, Request, HTTPException, status
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from sqlalchemy.orm import Session
-from Models import Student
-from Schemas.auth import StudentLogin, StudentAuth, AssignPermissionsRequest, ChangePasswordRequest, AdminChangePasswordRequest
-from Crud.auth import get_current_student, permission_required, verify_password, hash_password, get_current_student_or_redirect
-from Security.token import create_access_token
-from dependencies import get_db,get_log_db
-from kafka_producer import send_log, producer
 from fastapi.responses import JSONResponse
 from sqlalchemy import text
 from fastapi.encoders import jsonable_encoder
 from fastapi.templating import Jinja2Templates
 from passlib.context import CryptContext
-from fastapi.responses import RedirectResponse
-from fastapi.responses import HTMLResponse
+from fastapi.responses import RedirectResponse, HTMLResponse
+
 import logging
 logger = logging.getLogger(__name__)
 

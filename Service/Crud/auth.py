@@ -1,13 +1,12 @@
-from config import *
+from Service.config import *
+from Service.dependencies import get_db
+from Service.Models import Student
+from Service.Schemas.students import StudentSafe
+
 from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordBearer
-from dependencies import get_db
-from Models import Student
-from Schemas.students import StudentSafe
-from Security.token import SECRET_KEY, ALGORITHM
 from fastapi import Depends, HTTPException, status, Request
-#from Crud.students import get_student_by_login
 from passlib.context import CryptContext # объект, который помогает удобно хешировать и проверять пароли.
 from fastapi.responses import RedirectResponse
 from starlette.status import HTTP_401_UNAUTHORIZED

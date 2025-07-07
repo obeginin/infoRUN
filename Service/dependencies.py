@@ -1,4 +1,4 @@
-from Database import SessionLocal, LogSessionLocal # ссылаемся на файл с конфигом БД
+from Service.Database import SessionLocal, LogSessionLocal # ссылаемся на файл с конфигом БД
 
 # Dependency.py
 '''файл с зависимостями '''

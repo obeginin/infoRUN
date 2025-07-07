@@ -1,15 +1,15 @@
-from config import UPLOAD_IMAGE_DIR, UPLOAD_SOLUTION_DIR, UPLOAD_FILES_DIR
+from Service.config import UPLOAD_IMAGE_DIR, UPLOAD_SOLUTION_DIR, UPLOAD_FILES_DIR
+from Service.Schemas.tasks import SubTaskCreate, SubTaskUpdate
+from Service.Models import SubTaskFiles
+
 from sqlalchemy.orm import Session
 from sqlalchemy import text
-from Schemas.tasks import SubTaskCreate, SubTaskUpdate
 from fastapi import HTTPException, UploadFile, File
-from typing import Optional
-from Models import SubTaskFiles
-import shutil
+from typing import Optional, List
 from pathlib import Path
-
+import shutil
 import logging
-from typing import List
+
 
 # Crud\tasks.py
 ''' 

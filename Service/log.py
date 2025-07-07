@@ -1,9 +1,10 @@
 # log.py
+from Service.config import LOG_DIR, ARCHIVE_DIR, LOG_FILE, LOG_PATH, LOG_LEVEL
 import logging
 from logging.handlers import TimedRotatingFileHandler
 import os
 import datetime
-from config import LOG_DIR, ARCHIVE_DIR, LOG_FILE, LOG_PATH, LOG_LEVEL
+
 
 
 class ArchiveHandler(TimedRotatingFileHandler):

@@ -1,8 +1,9 @@
+from Service.Models import Student
+from Service.Schemas.students import StudentTaskRead
+
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy import text
-from Models import Student
-from Schemas.students import StudentTaskRead
-from fastapi import HTTPException
 import logging
 
 # Crud\Students.py
