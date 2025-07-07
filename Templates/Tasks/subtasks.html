@@ -1,0 +1,41 @@
+<!-- Templates/Tasks/subtasks.html
+Вывод списка задач одной категории по id
+/tasks/{id}
+-->
+{% extends "base.html" %}
+
+{% block title %}Категория №{% endblock %}
+{% block title_1 %}{% endblock %}
+{% block content %}
+
+    <a href="#" id="back-button" class="back-link">⬅ Вернуться к списку</a>
+    {% if student.RoleName == "Админ"%}
+        <div class="center-wrapper-1">
+            <form action="/tasks/{{taskId}}/create" method="get">
+                <button type="submit" class="button">Создать задачу</button>
+            </form>
+        </div>
+    {% endif %}
+    <div id="subtask-list"></div>
+{% endblock %}
+ {% block extra_scripts %}
+    <script>
+
+
+        // Получаем task_id из URL (например, /tasks/3 - берется тройка)
+        const urlParts = window.location.pathname.split("/");
+        const taskId = urlParts[urlParts.length - 1];
+        console.log("taskId", taskId); //Вывод в консоль браузера
+
+
+        // вызываем функцию loadSubtasks() -список задач в выбранной категории
+        document.addEventListener("DOMContentLoaded", () => {
+            loadSubtasks(taskId)
+
+        });
+
+
+
+
+    </script>
+{% endblock %}

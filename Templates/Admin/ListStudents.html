@@ -1,0 +1,31 @@
+<!-- Templates/Admin/ListStudents.html
+список студентов в админке
+/admin/listStudents
+-->
+{% extends "base.html" %}
+
+{% block title %}Список учеников{% endblock %}
+{% block title_1 %}Список учеников{% endblock %}
+{% block content %}
+    <a href="#" id="back-button" class="back-link">⬅ Вернуться к списку</a>
+    <div id="students-list">
+        <p>Загрузка студентов...</p>
+    </div>
+
+    <div id="subtasks-container" class="hidden" data-prev="students-section">
+        <p>Выберите студента, чтобы увидеть задачи.</p>
+    </div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+
+    <script>
+        // Загружаем список студентов вызывая функцию loadStudents()
+        document.addEventListener("DOMContentLoaded", () => {
+        loadStudents();
+    });
+
+
+    </script>
+{% endblock %}

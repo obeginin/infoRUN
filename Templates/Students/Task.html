@@ -1,0 +1,195 @@
+<!-- Templates/Students/Task.html -->
+{% extends "base.html" %}
+
+{% block title %}Задача{% endblock %}
+{% block title_1 %}Информация о задаче №{{subtask.SubTaskID}}{% endblock %}
+{% block content %}
+
+    <div class="form">
+        <h2>{{ subtask.TaskTitle }} {{ subtask.VariantName }}</h2>
+        <div class="inline-field">
+            <label>Статус:</label>
+            <div class="value">{{ subtask.CompletionStatus }}</div>
+        </div>
+        {% if subtask.ImagePath %}
+        <div class="field image-preview">
+            <label>id={{subtask.SubTaskID}}</label>
+            <!--<img id="image" src="{{ request.base_url }}{{ subtask.ImagePath }}" alt="Изображение подзадачи">-->
+            <img id="image" src="/{{ subtask.ImagePath }}" alt="Изображение подзадачи">
+        </div>
+        {% endif %}
+
+
+
+        {% if subtask.SolutionPath and subtask.Role == "admin"%}
+        <button type="button" onclick="toggleVisibility('solution-block')">Показать / Скрыть решение</button>
+        <div id="solution-block" class="field image-preview" style="display:none;">
+            <label>Решение</label>
+            <img class="clickable-image" src="/{{ subtask.SolutionPath }}" alt="Изображение решения">
+        </div>
+        {% endif %}
+
+        <form action="/students_subtasks/submit-solution/" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="StudentID" value="{{ student.ID }}">
+            <input type="hidden" name="SubTaskID" value="{{ subtask.SubTaskID }}">
+            <input type="hidden" name="StudentTaskID" value="{{subtask.StudentTaskID}}" />
+
+            <!--дополнительный файлы к задаче-->
+            <p>
+              {% for file in subtask.files %}
+                <a href="/subtasks/files/{{ file.ID }}/download" style="margin-right: 10px;">{{ file.FileName }}</a>{% if not loop.last %} {% endif %}
+              {% endfor %}
+            </p>
+            <div class="field">
+
+                <label for="userAnswer" >Ваш ответ:</label>
+                <input type="text" class="input" id="userAnswer" name="userAnswer" value="{{ user_answer or '' }}" required>
+                <button type="button" id="submitBtn" class="button button-edit">Проверить ответ</button>
+                <!--<label for="solution_file">Файл решения:</label>
+                <input type="file" id="solution_file" name="solution_file" />
+                    <pre>Путь к решению студента: {{ subtask.SolutionStudentPath or "Путь не задан" }}</pre>-->
+                <!-- Решение -->
+            </div>
+            <div id="statusMessage"></div>
+
+            <div class="field">
+                    <label for="StudentSolutionText">Решение:</label>
+                    <textarea id="StudentSolutionText" name="StudentSolutionText" rows="5"
+                              placeholder="Введите решение или вставьте изображение решения сюда"></textarea>
+            </div>
+            <input type="file" name="StudentSolutionFile" id="StudentSolutionFileInput" style="display:none;">
+            <div id="StudentSolution-preview" style="margin-top: 10px;"></div>
+            <button type="submit" id="submitBtn2" class="button button-edit">Отправить решение</button>
+                {% if subtask.SolutionStudentPath %}
+                    <div class="field image-preview">
+                        <label>Ваше текущее решение:</label>
+                        <img src="/{{ subtask.SolutionStudentPath }}" alt="Решение студента" class="clickable-image">
+                    </div>
+                {% endif %}
+        </form>
+
+        <!--Проверка на роль админа (при условии что данное поле имеется в subtask-->
+        {% if subtask.RoleName == "Админ" %}
+        <button type="button" onclick="toggleVisibility('answer-block')">Показать/Скрыть ответ</button>
+        <div class="field" id="answer-block" style="display:none;">
+            <label>Ответ:</label>
+            <div class="value">{{ subtask.Answer }}</div>
+        </div>
+        {% endif %}
+
+        <a href="{{ request.query_params.get('return_url', '/tasks') }}" class="back-link">← Вернуться к списку</a>
+        <a href="/tasks/{{subtask.TaskID}}/subtasks{{subtask.SubTaskID}} ">Ссылка на задачу</a>
+    </div>
+    <pre>${{subtask}}</pre>
+    <script>
+        // Заголовок
+        //document.getElementById("title_1").textContent = `Задача №${subtask.SubTaskID} (id=${subtask.TaskID})`;
+
+
+        // Работа с изображением
+        const image = document.getElementById("image");
+        if (image) {
+            image.addEventListener("click", () => {
+                const imageUrl = image.getAttribute("src");
+                window.open(imageUrl, "_blank");
+            });
+        }
+        document.querySelectorAll(".clickable-image").forEach(image => {
+            image.addEventListener("click", () => {
+                const imageUrl = image.getAttribute("src");
+                window.open(imageUrl, "_blank");
+            });
+        });
+
+
+
+
+   // Скрипт для кнопки проверки ответа
+        document.getElementById("submitBtn").addEventListener("click", async () => {
+        const answer = document.getElementById("userAnswer").value;
+        const subtaskId = {{ subtask.SubTaskID }};
+        const studentId = {{ student.ID }}; // если нужно
+        console.log('subtaskId:', subtaskId);
+        console.log('studentId:', studentId);
+        console.log('answer:', answer);
+        try {
+            const response = await fetch("/students_subtasks/check-answer/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    studentId: studentId,
+                    subtaskId: subtaskId,
+                    student_answer: answer
+                })
+            });
+
+            const statusEl = document.getElementById("statusMessage");
+
+            if (response.ok) {
+
+                const result = await response.json();
+                console.log('result:', result.status);
+                alert("Результат: " + result.status);
+                if (statusEl) statusEl.textContent = "Ответ проверен.";
+            } else {
+                const text = await response.text();
+                console.error("Ошибка при проверке ответа:", text);
+                if (statusEl) statusEl.textContent = "Ошибка на сервере.";
+                alert("Ошибка на сервере: " + text);
+            }
+        } catch (error) {
+            console.error("Ошибка при отправке:", error);
+            alert("Произошла ошибка при отправке запроса.");
+        }
+    });
+    //console.log('subtask:', subtask);
+
+     function handlePaste(event, inputId, previewId) {
+    const items = event.clipboardData.items;
+    for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        if (item.type.indexOf("image") !== -1) {
+            const file = item.getAsFile();
+
+            // Помещаем файл в input[type=file]
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            const input = document.getElementById(inputId);
+            input.files = dataTransfer.files;
+
+            // Отображаем превью
+            const preview = document.getElementById(previewId);
+            const img = document.createElement("img");
+            img.src = URL.createObjectURL(file);
+            img.style.maxWidth = "500px";
+            img.style.maxHeight = "400px";
+            img.style.display = "block";
+            img.style.border = "1px solid #ccc";
+            img.style.marginTop = "10px";
+            img.style.borderRadius = "6px";
+            preview.innerHTML = '';
+            preview.appendChild(img);
+
+            event.preventDefault(); // не вставлять в текст
+            break;
+            }
+        }
+    }
+        // Обработка для поля "Решение"
+        document.getElementById("StudentSolutionText").addEventListener("paste", function (event) {
+            handlePaste(event, "StudentSolutionFileInput", "StudentSolution-preview");
+        });
+
+// функция для переключения режима скрыть/раскрыть
+        function toggleVisibility(id) {
+            const block = document.getElementById(id);
+            if (!block) return;
+            block.style.display = (block.style.display === 'none' || block.style.display === '') ? 'block' : 'none';
+          }
+        //console.log('subtask:', subtask);
+
+    </script>
+
+ {% endblock %}
