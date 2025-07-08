@@ -1,0 +1,17 @@
+.auth__form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.auth__form__content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    box-shadow: 0px 0px 200px 0px #0000001a;
+    border-radius: 32px;
+    background-color: var(--bg);
+    padding: 50px
+}

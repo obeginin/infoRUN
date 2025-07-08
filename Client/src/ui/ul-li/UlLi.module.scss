@@ -1,0 +1,25 @@
+
+
+.list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+    transition: all .3s ease-in-out;
+
+    font-size: var(--base);
+    font-weight: var(--fw_light);
+    font-family: Lato sans-serif;
+
+    &:hover {
+        color: var(--primary);
+        text-decoration: underline var(--primary);
+        text-underline-offset: 4px;
+    }
+
+    &:active {
+        color: var(--text);
+        text-decoration: underline var(--text);
+        text-underline-offset: 6px;
+    }
+}

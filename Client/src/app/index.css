@@ -1,0 +1,67 @@
+@font-face {
+  font-family: 'Lato sans-serif';
+  src: url(/src/assets/font//Lato/Lato-Light.ttf) format('truetype');
+}
+
+:root {
+  font-family: 'Lato sans-serif', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+
+  background-color: var(--bg);
+  color: var(--text);
+
+  --fw_light: 300;
+  --fw_extra_bold: 800;
+
+  --primary: #639aff;
+
+  --text: #1d1d1d;
+  --bg: #ecf1ff;
+
+  --large: 64px;
+  --medium: 40px;
+  --base: 24px;
+  --small: 20px;
+  --tiny: 16px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.app {
+  margin: 0;
+  min-width: 320px;
+  max-width: 1440px;
+}
+
+.p-component-overlay, .p-dialog-mask {
+  background: rgba(0, 0, 0, 0.5) !important;
+  z-index: 1000 !important;
+}
+
+.p-dialog {
+  border-radius: 32px !important;
+  overflow: hidden;
+}
+
+.p-dialog .p-dialog-header .p-dialog-header-icon {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 2;
+  background: none;
+  border: none;
+  box-shadow: none;
+  color: var(--text);
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.p-dialog .p-dialog-header {
+  position: relative;
+  padding-right: 48px;
+}

@@ -1,0 +1,11 @@
+.profile__dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 40px
+}
+
+.profile__dashboard__content {
+  display: flex;
+  flex-direction: row;
+  gap: 40px
+}

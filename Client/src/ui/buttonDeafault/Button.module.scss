@@ -1,0 +1,26 @@
+.button {
+  padding: 10px 25px;
+  border: 1px solid var(--primary);
+  border-radius: 32px;
+  background-color: var(--bg);
+  font-size: var(--base);
+  font-weight: var(--fw_light);
+  font-family: Lato sans-serif;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+
+  &.disabled {
+    pointer-events: none;
+    color: var(--text);
+  }
+
+  &:hover {
+    background-color: var(--primary);
+    color: var(--bg);
+  }
+
+  &:active {
+    transform: scale(1.05);
+  }
+}
