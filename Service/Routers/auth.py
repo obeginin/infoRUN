@@ -46,7 +46,7 @@ def get_swagger_user(
     return user
 # /
 '''страница home без префикса'''
-@home_router.get("/")
+'''@home_router.get("/")
 def home_page(request: Request, current_student = Depends(get_current_student_or_redirect)):
     client_ip = request.headers.get("X-Forwarded-For") or request.client.host
     path = request.url.path
@@ -68,7 +68,7 @@ def home_page(request: Request, current_student = Depends(get_current_student_or
             "UserAgent": request.headers.get("user-agent"),
             "Metadata":"пока просто текст"})
 
-    return templates.TemplateResponse("home.html", {"request": request, "student": current_student})
+    return templates.TemplateResponse("home.html", {"request": request, "student": current_student})'''
 
 # /home/login_in (GET)
 '''Страница входа (вывод страницы с ввдом логина)'''
