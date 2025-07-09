@@ -2,7 +2,7 @@ from config import UPLOAD_IMAGE_DIR, UPLOAD_SOLUTION_DIR, UPLOAD_FILES_DIR, TEMP
 from fastapi import APIRouter, Depends, Request, Form, UploadFile, File, Query, HTTPException
 from sqlalchemy import text
 from sqlalchemy.orm import Session
-from Schemas.tasks import TaskRead, SubTaskRead, SubTaskCreate, SubTaskUpdate, FileSchema
+from Schemas.tasks import TaskRead, SubTaskRead, SubTaskCreate, SubTaskUpdate, FileSchema, SubjectOut
 from Crud import tasks as task_crud
 from dependencies import get_db
 from fastapi.responses import HTMLResponse
@@ -33,6 +33,7 @@ task_router  = APIRouter(prefix="/tasks", tags=["tasks"])
 subtask_router  = APIRouter(prefix="/subtasks", tags=["subtasks"])
 task_js_router = APIRouter(prefix="/js", tags=["js"])
 varinant_router = APIRouter(prefix="/variants", tags=["variants"])
+subject_router  = APIRouter(prefix="/subject", tags=["subject"])
 #task_ji_router = APIRouter(prefix="/html", tags=["html"])
 
 templates = Jinja2Templates(directory=TEMPLATES_DIR)
@@ -102,7 +103,11 @@ def read_tasks_of_variant (VariantID: int, db: Session = Depends(get_db), curren
     return jsonable_encoder(subtasks)
 
 
-
+@subject_router.get("/api", summary="Вывод списка предметов")
+def read_subject (db: Session = Depends(get_db), response_model=List[SubjectOut]):
+    subjects = db.execute(text("SELECT * FROM Subjects")).mappings().all()
+    #subjects = [dict(row) for row in result]
+    return subjects
 
 """HTML"""
 

@@ -28,6 +28,7 @@ app.include_router(tasks.task_router) # подключает маршруты и
 app.include_router(tasks.subtask_router)  # Регистрируем роутер для подзадач
 app.include_router(tasks.task_js_router) # Регистрируем роутер для html файлов с js
 app.include_router(tasks.varinant_router) # Регистрируем роутер для html файлов с jinja2
+app.include_router(tasks.subject_router)  # маршрут для предметов
 app.include_router(students.students_router)  # Регистрируем роутер для студентов
 app.include_router(students.students_subtasks_router) # Регистрируем роутер для задач студентов
 app.include_router(auth.auth_router) # Регистрируем роутер Аутентификации
