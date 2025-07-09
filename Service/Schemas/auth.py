@@ -32,6 +32,10 @@ class StudentOut(StudentAuth):
     class Config:
         from_attributes = True # для моделей без orm_mode в Pydantic v2
 
+class TokenWithStudent(BaseModel):
+    access_token: str
+    token_type: str
+    student: StudentAuth
 
 # Модель данных для токена
 class TokenData(BaseModel):
@@ -40,6 +44,8 @@ class TokenData(BaseModel):
 
     class Config:
         from_attributes = True
+
+
 
 # для валидности отправленного списка с выбранными разрешеними с фронта на бэк
 class AssignPermissionsRequest(BaseModel):
