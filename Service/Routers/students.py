@@ -1,17 +1,15 @@
-from config import TEMPLATES_DIR
-from http.client import HTTPException
-from config import UPLOAD_IMAGE_DIR, UPLOAD_SOLUTION_DIR, UPLOAD_FILES_DIR, UPLOAD_STUDENTS_IMAGE_DIR
+from Service.config import UPLOAD_IMAGE_DIR, UPLOAD_SOLUTION_DIR, UPLOAD_FILES_DIR, UPLOAD_STUDENTS_IMAGE_DIR, TEMPLATES_DIR
+from Service.Schemas.students import StudentsRead, StudentTaskRead,StudentTaskDetails, AnswerInput, SolutionInput
+from Service.Crud import students
+from Service.Routers.tasks import get_files_for_subtask
+from Service.dependencies import get_db  # Зависимость для подключения к базе данных
+from Service.Crud.auth import get_current_student, verify_password, get_current_student_or_redirect
+
 from fastapi import APIRouter, Depends, Request, Query, Form,  UploadFile, File
 from sqlalchemy.orm import Session
-from sqlalchemy import text
-from Schemas.students import StudentsRead, StudentTaskRead,StudentTaskDetails, AnswerInput, SolutionInput
-from Crud import students
-from Routers.tasks import get_files_for_subtask
-from dependencies import get_db  # Зависимость для подключения к базе данных
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from typing import Literal
-from Crud.auth import get_current_student, verify_password, get_current_student_or_redirect
 from fastapi.responses import RedirectResponse
 from starlette.responses import JSONResponse
 import shutil
