@@ -13,11 +13,17 @@ from middlewares import LoggingMiddleware
 from fastapi.middleware.cors import CORSMiddleware
 import logging
 from Database import engine, log_engine
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+import os
+
 # main.py
 '''главный файл проекта'''
 
 # Настроим логирование при запуске приложения
 setup_logging()
+
+
 
 
 
@@ -37,9 +43,14 @@ app.add_middleware(LoggingMiddleware) # Middleware для логов всех з
 #app.include_router(files.router)
 
 #app.include_router(web_auth.router) # подключаем home
-app.mount("/static", StaticFiles(directory="Templates/Static"), name="static") # для CSS файлов
+#app.mount("/static", StaticFiles(directory="Templates/Static"), name="static") # для CSS файлов
 app.mount("/Uploads", StaticFiles(directory="Uploads"), name="uploads") # для файлов
 templates = Jinja2Templates(directory=TEMPLATES_DIR)
+
+# Путь до билд-фронта
+frontend_path = os.path.join(os.path.dirname(__file__), "..", "Client", "dist")
+# Подключаем статику
+app.mount("/assets", StaticFiles(directory=os.path.join(frontend_path, "assets")), name="assets")
 
 # для запросов с фронта
 app.add_middleware(
@@ -65,10 +76,22 @@ def startup_event():
     check_db_connection(engine, "infoDB")
     check_db_connection(log_engine, "LogDB")
 
-# Перенаправление на страницу логина при открытии корня (Основной адрес сайта)
+
+# Главная страница
 @app.get("/")
+def read_index():
+    return FileResponse(os.path.join(frontend_path, "index.html"))
+
+# Обработка остальных маршрутов (если SPA)
+@app.get("/{full_path:path}")
+def read_spa(full_path: str):
+    return FileResponse(os.path.join(frontend_path, "index.html"))
+
+
+# Перенаправление на страницу логина при открытии корня (Основной адрес сайта)
+'''@app.get("/")
 def read():
-    return RedirectResponse(url="/home/login_in/")
+    return RedirectResponse(url="/home/login_in/")'''
 
 """Swagger"""
 @app.get("/docs", dependencies=[Depends(get_swagger_user)])
