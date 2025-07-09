@@ -1,7 +1,8 @@
+from Service.Models import Student
+from Service.Schemas.students import StudentTaskRead
+
 from sqlalchemy.orm import Session
 from sqlalchemy import text
-from Models import Student
-from Schemas.students import StudentTaskRead
 from fastapi import HTTPException
 import logging
 
@@ -105,17 +106,19 @@ def get_students_all_tasks(db, StudentID=None, CompletionStatus=None, TaskID=Non
     query = text("""
         EXEC GetStudentsTasks 
             @StudentID = :StudentID,
-            @CompletionStatus = :CompletionStatus,
+
             @TaskID = :TaskID,
             @VariantID = :VariantID,
+            @CompletionStatus = :CompletionStatus,
             @SortColumn = :SortColumn,
             @SortDirection = :SortDirection
     """)
     result = db.execute(query, {
         "StudentID": StudentID,
-        "CompletionStatus": CompletionStatus,
+
         "TaskID": TaskID,
         "VariantID": VariantID,
+        "CompletionStatus": CompletionStatus,
         "SortColumn": SortColumn,
         "SortDirection": SortDirection
     })
