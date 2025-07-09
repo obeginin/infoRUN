@@ -2,7 +2,7 @@ from Service.config import UPLOAD_IMAGE_DIR, UPLOAD_SOLUTION_DIR, UPLOAD_FILES_D
 from Service.Schemas.students import StudentsRead, StudentTaskRead,StudentTaskDetails, AnswerInput, SolutionInput
 from Service.Crud import students
 from Service.Routers.tasks import get_files_for_subtask
-from Service.dependencies import get_db  # Зависимость для подключения к базе данных
+from dependencies import get_db  # Зависимость для подключения к базе данных
 from Service.Crud.auth import get_current_student, verify_password, get_current_student_or_redirect
 
 from fastapi import APIRouter, Depends, Request, Query, Form,  UploadFile, File
