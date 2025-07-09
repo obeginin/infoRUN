@@ -1,5 +1,5 @@
 from Database import SessionLocal, LogSessionLocal # ссылаемся на файл с конфигом БД
-from main import kafka_producer
+from producer import get_kafka_producer
 
 # Dependency.py
 '''файл с зависимостями '''
@@ -21,4 +21,4 @@ def get_log_db():
         db.close()
 
 def get_producer_dep():
-    return kafka_producer
+    return get_kafka_producer()

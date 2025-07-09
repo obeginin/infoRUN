@@ -28,8 +28,8 @@ setup_logging()
 
 
 
-app = FastAPI(debug=True, docs_url=None, redoc_url=None)
-kafka_producer = get_kafka_producer()
+app = FastAPI(debug=True, redoc_url=None)
+producer = get_kafka_producer()
 # Регистрируем роутер
 app.include_router(auth.home_router)
 app.include_router(tasks.task_router) # подключает маршруты из routers/tasks.py.
@@ -81,7 +81,7 @@ def startup_event():
 # корректное завершение соединения kafka
 @app.on_event("shutdown")
 def shutdown_event():
-    kafka_producer.close()
+    producer.close()
 
 # Главная страница
 @app.get("/")
@@ -99,7 +99,7 @@ def read_spa(full_path: str):
 def read():
     return RedirectResponse(url="/home/login_in/")'''
 
-"""Swagger"""
+"""Swagger
 @app.get("/docs", dependencies=[Depends(get_swagger_user)])
 async def get_documentation():
     return get_swagger_ui_html(openapi_url=app.openapi_url, title="Документация API")
@@ -107,7 +107,7 @@ async def get_documentation():
 @app.get("/redoc", dependencies=[Depends(get_swagger_user)])
 async def get_redoc_documentation():
     return get_redoc_html(openapi_url=app.openapi_url, title="Документация API")
-
+"""
 """запуск сервера"""
 if __name__ == "__main__":
     uvicorn.run("main:app", host="localhost", port=9000)

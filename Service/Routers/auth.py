@@ -31,11 +31,13 @@ pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 # /auth/login
 @auth_router.post("/login", response_model=TokenWithStudent,  summary="Аутентификация (запрос токена для пользователя)",)
 def login(
-        student_login: StudentLogin,
-        db: Session = Depends(get_db),
-        kafka_producer = Depends(get_producer_dep),
-        request = Request
+    request: Request,
+    student_login: StudentLogin,
+    db: Session = Depends(get_db),
+    kafka_producer = Depends(get_producer_dep)
 ):
+    ip = request.headers.get("X-Forwarded-For") or request.client.host
+    user_agent = request.headers.get("User-Agent")
     # Поиск студента по логину
     student = db.execute(text("""SELECT s.*, r.Name as RoleName FROM Students s
                                                 LEFT JOIN Roles r ON s.RoleID = r.RoleID
@@ -71,8 +73,8 @@ def login(
         action="login_success",
         details={
             "DescriptionEvent": "Успешный вход",
-            "IPAddress": request.headers.get("X-Forwarded-For") or request.client.host,
-            "UserAgent": request.headers.get("User-Agent"),
+            "IPAddress": ip,
+            "UserAgent": user_agent,
             "Metadata": {"extra": "value"}  # по желанию
         }
     )
