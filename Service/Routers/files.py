@@ -4,8 +4,8 @@ import os
 from sqlalchemy.orm import Session
 from uuid import uuid4
 from pathlib import Path
-from dependencies import get_db
-from Crud.tasks import get_subtasks_id
+from Service.dependencies import get_db
+from Service.Crud.tasks import get_subtasks_id
 import logging
 logger = logging.getLogger(__name__)
 # /Routers/files.py

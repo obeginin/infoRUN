@@ -1,13 +1,13 @@
-from config import UPLOAD_IMAGE_DIR, UPLOAD_SOLUTION_DIR, UPLOAD_FILES_DIR
+from Service.config import UPLOAD_IMAGE_DIR, UPLOAD_SOLUTION_DIR, UPLOAD_FILES_DIR
+from Service.Schemas.tasks import SubTaskCreate, SubTaskUpdate
+from Service.Models import SubTaskFiles
+
 from sqlalchemy.orm import Session
 from sqlalchemy import text
-from Schemas.tasks import SubTaskCreate, SubTaskUpdate
 from fastapi import HTTPException, UploadFile, File
 from typing import Optional
-from Models import SubTaskFiles
 import shutil
 from pathlib import Path
-
 import logging
 from typing import List
 
@@ -148,7 +148,7 @@ def create_subtask(db: Session, subtask_data: SubTaskCreate):
 ''' Проверка на наличие или добавление варианта'''
 def get_or_create_variant(db: Session, VariantName: str) -> int:
     variant = db.execute(
-        text("SELECT VariantID FROM Variants WHERE VariantName = :name"),
+        text("SELECT VariantID FROM Variants WHERE Name = :name"),
         {"name": VariantName}
     ).scalar()
 
