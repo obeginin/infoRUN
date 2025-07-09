@@ -1,28 +1,42 @@
-from config import *
-from jose import JWTError, jwt
-from sqlalchemy.orm import Session
-from fastapi.security import OAuth2PasswordBearer
-from dependencies import get_db
-from Models import Student
-from Schemas.students import StudentSafe
-from Security.token import SECRET_KEY, ALGORITHM
+from Service.config import *
+from Service.dependencies import get_db
+from Service.Models import Student
+from Service.Schemas.students import StudentSafe
+from Service.Security.token import SECRET_KEY, ALGORITHM
+#from Service.Crud.students import get_student_by_login
 from fastapi import Depends, HTTPException, status, Request
-#from Crud.students import get_student_by_login
+from fastapi.security import OAuth2PasswordBearer, HTTPBasic, HTTPBasicCredentials
+
 from passlib.context import CryptContext # объект, который помогает удобно хешировать и проверять пароли.
 from fastapi.responses import RedirectResponse
 from starlette.status import HTTP_401_UNAUTHORIZED
 from typing import Optional
 from sqlalchemy import text
+from jose import JWTError, jwt
+from sqlalchemy.orm import Session
 import logging
 
 # Crud\auth.py
-''' 
-CRUD - основная логика работы запроса
-Основные функции для авторизации
-'''
+
 
 logger = logging.getLogger(__name__) # создание логгера для текущего модуля
 
+
+
+security = HTTPBasic()
+"""функция для проверки пароля в swagger"""
+def get_swagger_user(
+    credentials: HTTPBasicCredentials = Depends(security),
+    db: Session = Depends(get_db),
+):
+    user = db.query(Student).filter(Student.Login == credentials.username).first()
+    if not user or not verify_password(credentials.password, user.Password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Неверные учетные данные",
+            headers={"WWW-Authenticate": "Basic"},
+        )
+    return user
 
 # шифрование пароля
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
