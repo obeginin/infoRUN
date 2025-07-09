@@ -1,13 +1,12 @@
 from Service.config import TEMPLATES_DIR
 from Service.Models import Student
-from Service.Schemas.auth import StudentLogin, StudentAuth, AssignPermissionsRequest, ChangePasswordRequest, AdminChangePasswordRequest
+from Service.Schemas.auth import StudentLogin, StudentAuth, AssignPermissionsRequest, ChangePasswordRequest, AdminChangePasswordRequest, TokenWithStudent
 from Service.Crud.auth import get_current_student, permission_required, verify_password, hash_password, get_current_student_or_redirect
 from Service.Security.token import create_access_token
-from Service.dependencies import get_db,get_log_db
-from kafka_producer.producer import send_log, producer
+from Service.dependencies import get_db,get_log_db, get_producer_dep
+from Service.producer import send_log
 
 from fastapi import APIRouter, Depends,Form, Request, HTTPException, status
-from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from sqlalchemy.orm import Session
 from fastapi.responses import JSONResponse
 from sqlalchemy import text
@@ -21,29 +20,70 @@ logger = logging.getLogger(__name__)
 
 # Routers\auth.py
 home_router = APIRouter() # страница для пользователей
-auth_router = APIRouter(prefix="/home", tags=["home"]) # страница для пользователей
+auth_router = APIRouter(prefix="/auth", tags=["auth"]) # страница для пользователей
 admin_router = APIRouter(prefix="/admin", tags=["admin"]) # страница для админа
 templates = Jinja2Templates(directory=TEMPLATES_DIR)
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
 
 
-
-security = HTTPBasic()
-
-"""функция для проверки парлоля в swagger"""
-def get_swagger_user(
-    credentials: HTTPBasicCredentials = Depends(security),
-    db: Session = Depends(get_db),
+"""Роут с аутентификацией (логирование в kafka)"""
+# /auth/login
+@auth_router.post("/login", response_model=TokenWithStudent,  summary="Аутентификация (запрос токена для пользователя)",)
+def login(
+        student_login: StudentLogin,
+        db: Session = Depends(get_db),
+        kafka_producer = Depends(get_producer_dep),
+        request = Request
 ):
-    user = db.query(Student).filter(Student.Login == credentials.username).first()
-    if not user or not verify_password(credentials.password, user.Password):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Неверные учетные данные",
-            headers={"WWW-Authenticate": "Basic"},
-        )
-    return user
+    # Поиск студента по логину
+    student = db.execute(text("""SELECT s.*, r.Name as RoleName FROM Students s
+                                                LEFT JOIN Roles r ON s.RoleID = r.RoleID
+                                                Where s.Login = :login"""), {"login": student_login.Login}).mappings().first()
+    # Ищем студента в базе
+    if not student:
+        logger.warning(f"Попытка входа с несуществующим логином: {student_login.Login}")
+        raise HTTPException(status_code=400, detail="Invalid credentials")
+    logger.info(f"Аутентифицирован студент: ({student['ID']}) {student['Login']} ")
+
+    # Проверяем пароль
+    if not verify_password(student_login.Password, student["Password"]):
+        logger.warning(f"Попытка входа {student_login.Login} с неправильным паролем!")
+        raise HTTPException(status_code=400, detail="Invalid credentials")
+
+    # Создаём токен
+    access_token = create_access_token(data={"sub": student["Login"]})
+
+    # Создаём Pydantic-модель из словаря (Селеризация)
+    student_short = StudentAuth(
+        ID=student["ID"],
+        Login=student["Login"],
+        last_name=student["Last_Name"],
+        first_name=student["First_Name"],
+        email=student["Email"],
+        role_name=student["RoleName"]
+    )
+    # отправляем лог в kafka
+    send_log(
+        producer=kafka_producer,
+        StudentID=student["ID"],
+        StudentLogin=student["Login"],
+        action="login_success",
+        details={
+            "DescriptionEvent": "Успешный вход",
+            "IPAddress": request.headers.get("X-Forwarded-For") or request.client.host,
+            "UserAgent": request.headers.get("User-Agent"),
+            "Metadata": {"extra": "value"}  # по желанию
+        }
+    )
+    return TokenWithStudent (
+        access_token = access_token,
+        token_type = "bearer",
+        student = student_short
+    )
+
+
+
 # /
 '''страница home без префикса'''
 '''@home_router.get("/")
@@ -70,12 +110,7 @@ def home_page(request: Request, current_student = Depends(get_current_student_or
 
     return templates.TemplateResponse("home.html", {"request": request, "student": current_student})'''
 
-# /home/login_in (GET)
-'''Страница входа (вывод страницы с ввдом логина)'''
-@auth_router.get("/login_in/")
-def login_form(request: Request):
-    logger.info("Выводим страницу с логином")
-    return templates.TemplateResponse("General/login.html", {"request": request})
+
 
 # /home/
 '''Домашняя страница (после авторизации)'''
@@ -126,41 +161,7 @@ async def logout():
     response.delete_cookie(key="access_token", path="/")
     return response
 
-# /login/
-'''Маршрут для аутентификации, запрос токена для пользователя'''
-@auth_router.post("/login",  summary="Аутентификация",)
-def login(student_login: StudentLogin, db: Session = Depends(get_db)):
-    # Поиск студента по логину
-    #student = db.query(Student).filter(Student.Login == student_login.Login).first()
-    student = db.execute(text("""SELECT s.*, r.Name as RoleName FROM Students s
-                                                LEFT JOIN Roles r ON s.RoleID = r.RoleID
-                                                Where s.Login = :login"""), {"login": student_login.Login}).mappings().first()
-    logger.info(student)
-    if not student:
-        raise HTTPException(status_code=400, detail="Invalid credentials")
 
-    # Проверяем пароль
-    if not verify_password(student_login.Password, student["Password"]):
-        raise HTTPException(status_code=400, detail="Invalid credentials")
-
-    # Создаём токен
-    access_token = create_access_token(data={"sub": student["Login"]})
-
-    # Создаём Pydantic-модель из словаря (Селеризация)
-    student_short = StudentAuth(
-        ID=student["ID"],
-        Login=student["Login"],
-        last_name=student["Last_Name"],
-        first_name=student["First_Name"],
-        email=student["Email"],
-        role_name=student["RoleName"]
-    )
-
-    return {
-        "access_token": access_token,
-        "token_type": "bearer",
-        "student": student_short
-    }
 
 # /login/me
 '''Доступ только для пользователей'''

@@ -3,7 +3,7 @@ from fastapi import FastAPI, Depends
 from Routers import tasks,students,auth,files  # Импортируем роутер задач
 from fastapi.openapi.docs import get_swagger_ui_html, get_redoc_html
 from fastapi.staticfiles import StaticFiles
-from Routers.auth import get_swagger_user
+from Crud.auth import get_swagger_user
 import uvicorn
 from sqlalchemy import text
 from fastapi.templating import Jinja2Templates
@@ -13,6 +13,7 @@ from middlewares import LoggingMiddleware
 from fastapi.middleware.cors import CORSMiddleware
 import logging
 from Database import engine, log_engine
+from producer import get_kafka_producer
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 import os
@@ -28,6 +29,7 @@ setup_logging()
 
 
 app = FastAPI(debug=True, docs_url=None, redoc_url=None)
+kafka_producer = get_kafka_producer()
 # Регистрируем роутер
 app.include_router(auth.home_router)
 app.include_router(tasks.task_router) # подключает маршруты из routers/tasks.py.
@@ -76,6 +78,10 @@ def startup_event():
     check_db_connection(engine, "infoDB")
     check_db_connection(log_engine, "LogDB")
 
+# корректное завершение соединения kafka
+@app.on_event("shutdown")
+def shutdown_event():
+    kafka_producer.close()
 
 # Главная страница
 @app.get("/")
