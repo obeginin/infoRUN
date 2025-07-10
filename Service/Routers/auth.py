@@ -1,10 +1,11 @@
 from Service.config import TEMPLATES_DIR
 from Service.Models import Student
 from Service.Schemas.auth import StudentLogin, StudentAuth, AssignPermissionsRequest, ChangePasswordRequest, AdminChangePasswordRequest, TokenWithStudent
-from Service.Crud.auth import get_current_student, permission_required, verify_password, hash_password, get_current_student_or_redirect
+from Service.Crud.auth import get_current_student, permission_required, verify_password, hash_password, get_current_student_or_redirect, get_student_by_login
 from Service.Security.token import create_access_token
 from Service.dependencies import get_db,get_log_db, get_producer_dep
 from Service.producer import send_log
+from Service.Crud import errors
 
 from fastapi import APIRouter, Depends,Form, Request, HTTPException, status
 from sqlalchemy.orm import Session
@@ -38,23 +39,25 @@ def login(
 ):
     ip = request.headers.get("X-Forwarded-For") or request.client.host
     user_agent = request.headers.get("User-Agent")
-    # Поиск студента по логину
-    student = db.execute(text("""SELECT s.*, r.Name as RoleName FROM Students s
-                                                LEFT JOIN Roles r ON s.RoleID = r.RoleID
-                                                Where s.Login = :login"""), {"login": student_login.Login}).mappings().first()
-    # Ищем студента в базе
+
+    # Ищем студента в базе по логину
+    student = get_student_by_login(student_login.Login, db)
     if not student:
         logger.warning(f"Попытка входа с несуществующим логином: {student_login.Login}")
-        raise HTTPException(status_code=400, detail="Invalid credentials")
+        raise errors.bad_request(error="InvalidCredentials", message ="Пользователь с таким логином не найден")
     logger.info(f"Аутентифицирован студент: ({student['ID']}) {student['Login']} ")
 
     # Проверяем пароль
     if not verify_password(student_login.Password, student["Password"]):
         logger.warning(f"Попытка входа {student_login.Login} с неправильным паролем!")
-        raise HTTPException(status_code=400, detail="Invalid credentials")
+        raise errors.bad_request(error="Пароль не верный",message= "InvalidCredentials")
 
     # Создаём токен
-    access_token = create_access_token(data={"sub": student["Login"]})
+    try:
+        access_token = create_access_token(data={"sub": student["Login"]})
+    except Exception:
+        logger.exception("Ошибка при создании токена")
+        raise errors.internal_server(error="TokenGenerationError", message="Ошибка при создании токена доступа")
 
     # Создаём Pydantic-модель из словаря (Селеризация)
     student_short = StudentAuth(

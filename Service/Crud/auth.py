@@ -3,6 +3,7 @@ from Service.dependencies import get_db
 from Service.Models import Student
 from Service.Schemas.students import StudentSafe
 from Service.Security.token import SECRET_KEY, ALGORITHM
+from Service.Crud import errors
 #from Service.Crud.students import get_student_by_login
 from fastapi import Depends, HTTPException, status, Request
 from fastapi.security import OAuth2PasswordBearer, HTTPBasic, HTTPBasicCredentials
@@ -14,6 +15,7 @@ from typing import Optional
 from sqlalchemy import text
 from jose import JWTError, jwt
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import SQLAlchemyError
 import logging
 
 # Crud\auth.py
@@ -56,6 +58,21 @@ hashed_password = hash_password(raw_password)
 print("Хешированный пароль:", hashed_password)
 #$pbkdf2-sha256$29000$HWPMube2tnYuZYwRwngPQQ$eSDzbZ3puIYCkdzcU94.2a5.ZvXUWXlIGjuSuM4ij/Y
 
+"""Выбор студента из базы по его логину (Аутентификация)"""
+def get_student_by_login(login: str, db: Session):
+    try:
+        return db.execute(text("""
+            SELECT s.*, r.Name as RoleName FROM Students s
+            LEFT JOIN Roles r ON s.RoleID = r.RoleID
+            WHERE s.Login = :login
+        """), {"login": login}).mappings().first()
+    except SQLAlchemyError:
+        logger.exception("Ошибка при запросе студента из БД")
+        raise errors.internal_server_error()
+
+
+
+
 
 # редирект на страницу логина при неавторизованном доступе
 async def get_current_student_or_redirect(
@@ -80,6 +97,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 # Функция для получения токена из заголовка Authorization
 def get_token_from_header(authorization: str = Depends(oauth2_scheme)) -> str:
     return authorization
+
 
 # функция получения студента по токену
 def get_current_student(request: Request, db: Session = Depends(get_db)) -> Student:
@@ -154,21 +172,7 @@ def permission_required(permission_name: str):
         return current_student
     return decorator
 
-# Функция для аутентификации студента
-'''вроде сейчас используется только в swagger'''
-def authenticate_student(db: Session, login: str, password: str):
-    student = db.query(Student).filter(Student.Login == login).first()
-    if not student:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Студент с таким логином не найден"
-        )
-    if not verify_password(password, student.Password):  # Проверка пароля
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Неверный пароль"
-        )
-    return student  # Возвращаем студента, если логин и пароль верны
+
 
 
 # Проверка на роль "admin" (заменил на permission_required("admin_panel"))
