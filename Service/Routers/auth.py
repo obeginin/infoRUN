@@ -44,12 +44,36 @@ def login(
     student = get_student_by_login(student_login.Login, db)
     if not student:
         logger.warning(f"Попытка входа с несуществующим логином: {student_login.Login}")
+        send_log(
+            producer=kafka_producer,
+            StudentID=None,  # Или 0
+            StudentLogin=student_login.Login,
+            action="login_failed",
+            details={
+                "DescriptionEvent": "Неуспешный вход",
+                "Reason": "InvalidCredentials",
+                "IPAddress": ip,
+                "UserAgent": user_agent
+            }
+        )
         raise errors.bad_request(error="InvalidCredentials", message ="Пользователь с таким логином не найден")
     logger.info(f"Аутентифицирован студент: ({student['ID']}) {student['Login']} ")
 
     # Проверяем пароль
     if not verify_password(student_login.Password, student["Password"]):
         logger.warning(f"Попытка входа {student_login.Login} с неправильным паролем!")
+        send_log(
+            producer=kafka_producer,
+            StudentID=student["ID"],
+            StudentLogin=student_login.Login,
+            action="password_failed",
+            details={
+                "DescriptionEvent": "Неуспешный вход",
+                "Reason": "InvalidCredentials",
+                "IPAddress": ip,
+                "UserAgent": user_agent
+            }
+        )
         raise errors.bad_request(error="Пароль не верный",message= "InvalidCredentials")
 
     # Создаём токен
