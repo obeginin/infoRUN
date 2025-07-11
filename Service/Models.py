@@ -1,4 +1,4 @@
-from sqlalchemy import Column, BigInteger, Integer, String, DateTime, ForeignKey, DECIMAL
+from sqlalchemy import Column, BigInteger, Integer, String, DateTime, ForeignKey, DECIMAL, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
@@ -26,7 +26,8 @@ class Student(Base):
     Comment = Column(String)  # Комментарий
     Password = Column(String) # пароль
     RoleID = Column(Integer, default=3)  # Подзадача
-    #RoleName = Column(String(50))
+    IsActive = Column(Boolean, nullable=False, default=True)
+    IsDeleted = Column(DateTime, nullable=True, default=None)
 
 # Модель для таблицы Tasks
 class Task(Base):
