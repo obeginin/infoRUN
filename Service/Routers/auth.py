@@ -74,7 +74,7 @@ def login(
                 "UserAgent": user_agent
             }
         )
-        raise errors.bad_request(error="Пароль не верный",message= "InvalidCredentials")
+        raise errors.bad_request(error="InvalidCredentials",message= "Пароль не верный")
 
     # Проверяем пользователь на активность
     if not student["IsActive"]:
@@ -88,10 +88,10 @@ def login(
                 "DescriptionEvent": "Неуспешный вход",
                 "Reason": "InvalidCredentials",
                 "IPAddress": ip,
-                "UserAgent": user_agent
+                "UserAgent": user_agent,
             }
         )
-        raise errors.bad_request(error="Пользователь не активен!", message="InvalidCredentials")
+        raise errors.bad_request(error="InvalidCredentials", message="Пользователь не активен!")
 
     # Создаём токен
     try:
@@ -119,7 +119,7 @@ def login(
             "DescriptionEvent": "Успешный вход",
             "IPAddress": ip,
             "UserAgent": user_agent,
-            "Metadata": {"extra": "value"}  # по желанию
+            #"Metadata": {"extra": "value"}  # по желанию
         }
     )
     return TokenWithStudent (
