@@ -76,6 +76,23 @@ def login(
         )
         raise errors.bad_request(error="Пароль не верный",message= "InvalidCredentials")
 
+    # Проверяем пользователь на активность
+    if not student["IsActive"]:
+        logger.warning(f"Попытка входа {student_login.Login} не активного пользователь!")
+        send_log(
+            producer=kafka_producer,
+            StudentID=student["ID"],
+            StudentLogin=student_login.Login,
+            action="UserNoActive",
+            details={
+                "DescriptionEvent": "Неуспешный вход",
+                "Reason": "InvalidCredentials",
+                "IPAddress": ip,
+                "UserAgent": user_agent
+            }
+        )
+        raise errors.bad_request(error="Пользователь не активен!", message="InvalidCredentials")
+
     # Создаём токен
     try:
         access_token = create_access_token(data={"sub": student["Login"]})

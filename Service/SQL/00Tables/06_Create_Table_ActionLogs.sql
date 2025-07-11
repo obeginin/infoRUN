@@ -10,7 +10,7 @@ BEGIN
     BEGIN
         CREATE TABLE StudentActionLogs (
 			LogID INT IDENTITY PRIMARY KEY,
-			StudentID INT NOT NULL,
+			StudentID INT,
 			StudentLogin NVARCHAR(50) NOT NULL,
 			EventType NVARCHAR(50) NOT NULL,            -- тип действия: login_success, task_viewed, profile_updated
 			DescriptionEvent NVARCHAR(100),				-- описание действия
