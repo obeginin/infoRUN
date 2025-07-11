@@ -1,5 +1,7 @@
 # Работа с пользователеми
+"""Логирование действий пользователей"""
 from sqlalchemy import text
+
 
 
 def handle_student_action(db, message: dict):

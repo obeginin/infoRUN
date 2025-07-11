@@ -30,7 +30,9 @@ pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
 """Роут с аутентификацией (логирование в kafka)"""
 # /auth/login
-@auth_router.post("/login", response_model=TokenWithStudent,  summary="Аутентификация (запрос токена для пользователя)",)
+@auth_router.post("/login", response_model=TokenWithStudent,
+                  summary="Аутентификация (запрос токена для пользователя)",
+                  description="Возвращает токен, если логин и пароль пользователя корректны, а так же пользователь активен")
 def login(
     request: Request,
     student_login: StudentLogin,
