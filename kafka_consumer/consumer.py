@@ -7,6 +7,9 @@ from kafka import KafkaConsumer
 from contextlib import contextmanager
 from dotenv import load_dotenv
 import os
+from handlers.deadline_checker import check_deadlines
+import threading
+import time
 
 load_dotenv()
 KAFKA_BOOTSTRAP_SERVERS = os.getenv("KAFKA_BOOTSTRAP_SERVERS")
@@ -22,6 +25,7 @@ DATABASE_URL =f"mssql+pyodbc://{DB_USER_LOG}:{DB_PASS_LOG}@{DB_HOST_LOG}/{DB_NAM
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
+# проверка связи с БД
 def test_db_connection():
     try:
         with engine.connect() as connection:
@@ -39,7 +43,11 @@ def get_db_session():
         db.close()
 
 
-
+def run_deadline_checker():
+    while True:
+        with get_db_session() as db:
+            check_deadlines(db)
+        time.sleep(86400)  # раз в сутки
 
 def consume_messages():
     consumer = KafkaConsumer(
@@ -65,6 +73,10 @@ def consume_messages():
 
 if __name__ == "__main__":
     test_db_connection()
+    # Запуск cron-потока
+    threading.Thread(target=run_deadline_checker, daemon=True).start()
+
+    # Запуск основного Kafka consumer
     consume_messages()
 
 
