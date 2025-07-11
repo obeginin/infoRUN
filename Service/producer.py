@@ -32,6 +32,7 @@ def send_log(producer: KafkaProducer, StudentID: int, StudentLogin: str, action:
             "StudentLogin": StudentLogin,
             "EventType": action,             # в consumer ты ожидаешь EventType, а не просто action
             "DescriptionEvent": details.get("DescriptionEvent") if details else None,
+            "Reason": details.get("Reason") if details else None,
             "IPAddress": details.get("IPAddress") if details else None,
             "UserAgent": details.get("UserAgent") if details else None,
             "Metadata": details.get("Metadata") if details else None,

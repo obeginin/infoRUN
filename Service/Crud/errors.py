@@ -4,7 +4,9 @@ from typing import Optional
 '''
 Аутентификация и доступ:
 + InvalidCredentials — Неверный логин или пароль  
-LoginFailed — Ошибка при входе  
++ LoginFailed — Ошибка при входе  
++ TokenGenerationError - ошибка генерации токена
+
 TokenExpired — Срок действия токена истёк  
 TokenInvalid — Неверный токен  
 Unauthorized — Не авторизован  
@@ -24,7 +26,7 @@ AlreadyExists — Уже существует
 ResourceConflict — Конфликт данных (например, дубликат)
 
 Системные и внутренние ошибки:
-+ TokenGenerationError - ошибка генерации токена
+
 ServerError — Внутренняя ошибка сервера  
 DatabaseError — Ошибка базы данных  
 TokenError — Ошибка при генерации токена  
