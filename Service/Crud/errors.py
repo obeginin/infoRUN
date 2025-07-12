@@ -3,19 +3,17 @@ from typing import Optional
 
 #ActionEvent
 '''
-
 LOGIN_SUCCESS = "LoginSuccess"
 PASSWORD_CHANGED = "PasswordChanged"
-LOGOUT = "Logout"
-
+LOGOUT = "logout"
 '''
-#ErrorEvent
 
 # LOGIN_FAILED = "LoginFailed"
 '''
 LoginNotFound
 PasswordFailed 
 StudentNoActive
+StudentNotFound
 StudentRemoved НЕ РЕАЛИЗОВАНО!
 '''
 
@@ -24,9 +22,10 @@ StudentRemoved НЕ РЕАЛИЗОВАНО!
 TokenExpired (токен истек)
 TokenMissing (токен отсутствует)
 TokenInvalid (Недействительный токен)
+TokenInvalidPayload (токен не содержит логин)
 TokenMalformed (Неправильный формат токена)
 TokenGenerationError (ошибка генерации токена)
-NotAuthenticated (Пользователь не аутентифицирован, не залогинен)
+- NotAuthenticated (Пользователь не аутентифицирован, не залогинен)
 '''
 
 #PERMISSION_DENIED = "PermissionDenied"
