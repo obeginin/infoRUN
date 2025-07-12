@@ -1,40 +1,80 @@
-
 from fastapi import HTTPException
 from typing import Optional
+
+#ActionEvent
 '''
-Аутентификация и доступ:
-+ InvalidCredentials — Неверный логин или пароль  
-+ LoginFailed — Ошибка при входе  
-+ TokenGenerationError - ошибка генерации токена
 
-TokenExpired — Срок действия токена истёк  
-TokenInvalid — Неверный токен  
-Unauthorized — Не авторизован  
-AccessDenied — Доступ запрещён (нет прав)
+LOGIN_SUCCESS = "LoginSuccess"
+PASSWORD_CHANGED = "PasswordChanged"
+LOGOUT = "Logout"
 
+'''
+#ErrorEvent
+
+# LOGIN_FAILED = "LoginFailed"
+'''
+LoginNotFound
+PasswordFailed 
+StudentNoActive
+StudentRemoved НЕ РЕАЛИЗОВАНО!
+'''
+
+# TOKEN_ERROR = "TokenError"
+''' 
+TokenExpired (токен истек)
+TokenMissing (токен отсутствует)
+TokenInvalid (Недействительный токен)
+TokenMalformed (Неправильный формат токена)
+TokenGenerationError (ошибка генерации токена)
+NotAuthenticated (Пользователь не аутентифицирован, не залогинен)
+'''
+
+#PERMISSION_DENIED = "PermissionDenied"
+'''
+AccessDenied (доступ запрещен, нет прав)
+RoleRestricted (действие запрещено для роли)
+'''
+
+# PASSWORD_CHANGED = "PasswordChanged"
+'''
+OldPasswordIncorrect (старый пароль неверный)
+NewPasswordsMismatch (новые пароли не совпадают)
+WeakPassword (слишком простой пароль) НЕ РЕАЛИЗОВАНО!
+SameAsOldPassword (новый пароль совпадает со старым)  НЕ РЕАЛИЗОВАНО!
+'''
+
+# VALIDATION_ERROR = "ValidationError"
+'''
+InvalidFormat (неверный формат ответа)
+InvalidDate (дата в недопустимом формате)
+EmptyAnswer (пустой ответ)
+MissingRequiredField (Отсутствует обязательное поле)
+AlreadyExists (Уже существует) 
+TaskNotFound  (Задание не найдено)
+LateSubmission (просрочена отправка)
+'''
+
+# SERVER_ERROR = "ServerError"
+'''
+UnhandledException (необработанное исключение)
+DatabaseUnavailable (БД недоступна)
+KafkaUnavailable (Kafka недоступна)
+ExternalServiceTimeout (таймаут внешнего сервиса)
+'''
+
+# EMAIL_ERROR = "EmailError"
+''' 
 Ошибки валидации и данных:
-MissingField — Отсутствует обязательное поле  
 InvalidEmail — Некорректный email  
-InvalidFormat — Неверный формат данных  
 ValueTooShort — Значение слишком короткое  
 InvalidInput — Некорректный ввод
-
-Работа с сущностями (ресурсами):
-StudentNotFound — Студент не найден  
-TaskNotFound — Задание не найдено  
-AlreadyExists — Уже существует  
-ResourceConflict — Конфликт данных (например, дубликат)
-
-Системные и внутренние ошибки:
-
-ServerError — Внутренняя ошибка сервера  
-DatabaseError — Ошибка базы данных  
-TokenError — Ошибка при генерации токена  
-KafkaSendFailed — Не удалось отправить сообщение в Kafka  
-UnknownError — Неизвестная ошибка
+MissingField  (Отсутствует обязательное поле)
 '''
+
+
+
 # шаблон
-def _error(status_code: int, error: str, message: str, field: Optional[str] = None):
+def _error(status_code: int, error: str, message: str, field: Optional[str] = None, headers: dict = None):
     detail = {"error": error, "message": message}
     if field:
         detail["field"] = field
@@ -53,7 +93,7 @@ def unauthorized(
     error: str = "Unauthorized",
     message: str = "Пользователь не авторизован"
 ):
-    return _error(401, error, message)
+    return _error(401, error, message, headers={"WWW-Authenticate": "Bearer"})
 
 # 403 — Нет доступа
 def access_denied(
