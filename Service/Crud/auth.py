@@ -74,6 +74,18 @@ def get_student_by_login(login: str, db: Session):
         logger.exception("Ошибка при запросе студента из БД")
         raise errors.internal_server_error()
 
+"""Выбор из базы разрешений для роли по её ID """
+def get_permission_role(RoleID: int, db: Session):
+    try:
+        return db.execute(text("""SELECT p.Name
+                FROM RolePermissions rp
+                JOIN Permissions p ON rp.PermissionID = p.PermissionID
+                WHERE rp.RoleID = :role_id
+            """), {"role_id": RoleID}).scalars().all()
+
+    except SQLAlchemyError:
+        logger.exception("Ошибка при запросе к БД для получения разрешений роли")
+        raise errors.internal_server_error()
 
 '''функция получения студента по токену (токен приходит с фронта в заголовке)'''
 def get_current_student(request: Request, db: Session = Depends(get_db)) -> StudentOut:
@@ -184,16 +196,14 @@ def get_current_student(request: Request, db: Session = Depends(get_db)) -> Stud
             }
         )
         raise errors.unauthorized(error="StudentNotFound", message="Пользователь с таким логином не найден")
+
+
+    #смотрим разрешения для данного студента по его роли
+    permissions = get_permission_role(student["RoleID"], db)
     student = dict(student)
-    #student["BirthDate"] = student["BirthDate"].isoformat()
-    # смотрим разрешения для данного студента по его роли
-    # permissions = db.execute(text("""SELECT p.Name
-    #     FROM RolePermissions rp
-    #     JOIN Permissions p ON rp.PermissionID = p.PermissionID
-    #     WHERE rp.RoleID = :role_id
-    # """), {"role_id": student["RoleID"]}).scalars().all()
-    # student = dict(student)
-    # student["permissions"] = permissions
+    student["permissions"] = permissions
+    # student["BirthDate"] = student["BirthDate"].isoformat()
+
     '''if isinstance(student["BirthDate"], datetime):
         student["BirthDate"] = student["BirthDate"].date()'''
     return StudentOut(**dict(student))
