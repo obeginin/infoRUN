@@ -14,6 +14,7 @@ BEGIN
 			StudentLogin NVARCHAR(50) NOT NULL,
 			EventType NVARCHAR(50) NOT NULL,            -- тип действия: login_success, task_viewed, profile_updated
 			DescriptionEvent NVARCHAR(100),				-- описание действия
+			Reason NVARCHAR(100),	
 			EventTime DATETIME DEFAULT GETDATE(),
 			IPAddress NVARCHAR(45),
 			UserAgent NVARCHAR(MAX),
@@ -28,3 +29,6 @@ exec Create_Table_StudentActionLogs
 drop table StudentActionLogs
 */
 select * from StudentActionLogs
+
+ALTER TABLE StudentActionLogs
+ADD Reason NVARCHAR(100);
