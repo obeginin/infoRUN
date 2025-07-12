@@ -78,6 +78,9 @@ def read_task_student( StudentTaskID: int, db: Session = Depends(get_db)):
     #return students.get_task_student(db, student_id, SubTasksID)
     return students.Get_Student_TaskDetails_By_ID(db, StudentTaskID)
 
+@students_subtasks_router.get("/api2/{StudentID}", response_model=list[StudentTaskDetails])
+def read_task_student( StudentID: int, db: Session = Depends(get_db)):
+    return students.get_students_all_tasks(db, StudentID)
 
 """HTML"""
 
