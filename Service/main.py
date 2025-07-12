@@ -81,7 +81,9 @@ def startup_event():
 # корректное завершение соединения kafka
 @app.on_event("shutdown")
 def shutdown_event():
-    producer.close()
+    producer = get_kafka_producer()
+    if producer:
+        producer.close()
 
 # Главная страница
 @app.get("/")

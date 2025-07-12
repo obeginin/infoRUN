@@ -47,7 +47,6 @@ def login(
     if not student:
         logger.warning(f"Попытка входа с несуществующим логином: {student_login.Login}")
         send_log(
-            producer=kafka_producer,
             StudentID=None,  # Или 0
             StudentLogin=student_login.Login,
             action="login_failed",
@@ -65,7 +64,6 @@ def login(
     if not verify_password(student_login.Password, student["Password"]):
         logger.warning(f"Попытка входа {student_login.Login} с неправильным паролем!")
         send_log(
-            producer=kafka_producer,
             StudentID=student["ID"],
             StudentLogin=student_login.Login,
             action="password_failed",
@@ -82,7 +80,6 @@ def login(
     if not student["IsActive"]:
         logger.warning(f"Попытка входа {student_login.Login} не активного пользователь!")
         send_log(
-            producer=kafka_producer,
             StudentID=student["ID"],
             StudentLogin=student_login.Login,
             action="UserNoActive",
@@ -113,7 +110,6 @@ def login(
     )
     # отправляем лог в kafka
     send_log(
-        producer=kafka_producer,
         StudentID=student["ID"],
         StudentLogin=student["Login"],
         action="login_success",
