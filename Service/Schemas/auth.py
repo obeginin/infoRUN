@@ -16,18 +16,21 @@ class StudentCreate(BaseModel):
 class StudentAuth(BaseModel):
     ID: int
     Login: str
-    last_name: str
-    first_name: str
-    email: str | None
-    role_name: str | None
+    Last_Name: str
+    First_Name: str
+    Email: str | None
+    RoleName: str | None
+    #IsActive
+    #IsDeleted
 
     class Config:
         from_attributes = True # для моделей без orm_mode в Pydantic v2
 
 class StudentOut(StudentAuth):
-    first_name: str
-    last_name: str
-    birth_date: date | None
+    Middle_Name: str
+    Sex: str
+    BirthDate: date | None
+    Comment: str
 
     class Config:
         from_attributes = True # для моделей без orm_mode в Pydantic v2
@@ -56,6 +59,7 @@ class AssignPermissionsRequest(BaseModel):
 class ChangePasswordRequest(BaseModel):
     old_password: constr(min_length=6)
     new_password: constr(min_length=6)
+    repeat_new_password: constr(min_length=6)
 
 # для смены админом
 class AdminChangePasswordRequest(BaseModel):
