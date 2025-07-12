@@ -8,33 +8,6 @@ from pydantic import ConfigDict
 '''
 
 
-# для передачи информации о авторизованном студенте
-class StudentSafe(BaseModel):
-    ID: int
-    Login: str
-    #Last_Name: str
-    #First_Name: str
-    RoleName: str
-
-    model_config = ConfigDict(from_attributes=True)
-
-# Базовая модель студента
-class StudentBase(BaseModel):
-    Login: str
-    Last_Name: str
-    First_Name: str
-    Middle_Name: str
-    Email: str
-    Sex: str
-    BirthDate: datetime
-    Comment: str
-
-
-class StudentsRead(StudentBase):
-    ID: int
-
-    class Config:
-        from_attributes = True
 
 
 # Базовая модель StudentTask
