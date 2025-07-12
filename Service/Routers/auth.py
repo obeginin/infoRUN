@@ -1,6 +1,6 @@
 from Service.config import TEMPLATES_DIR
 from Service.Models import Student
-from Service.Schemas.auth import StudentLogin, StudentAuth, AssignPermissionsRequest, ChangePasswordRequest, AdminChangePasswordRequest, TokenWithStudent
+from Service.Schemas.auth import StudentLogin, StudentAuth, AssignPermissionsRequest, ChangePasswordRequest, AdminChangePasswordRequest, TokenWithStudent, StudentOut
 from Service.Crud.auth import get_current_student, permission_required, verify_password, hash_password, get_current_student_or_redirect, get_student_by_login
 from Service.Security.token import create_access_token
 from Service.dependencies import get_db,get_log_db, get_producer_dep
@@ -37,7 +37,6 @@ def login(
     request: Request,
     student_login: StudentLogin,
     db: Session = Depends(get_db),
-    kafka_producer = Depends(get_producer_dep)
 ):
     ip = request.headers.get("X-Forwarded-For") or request.client.host
     user_agent = request.headers.get("User-Agent")
@@ -49,32 +48,16 @@ def login(
         send_log(
             StudentID=None,  # Или 0
             StudentLogin=student_login.Login,
-            action="login_failed",
+            action="LoginFailed",
             details={
                 "DescriptionEvent": "Неуспешный вход",
-                "Reason": "InvalidCredentials",
+                "Reason": "LoginNotFound",
                 "IPAddress": ip,
                 "UserAgent": user_agent
             }
         )
-        raise errors.bad_request(error="InvalidCredentials", message ="Пользователь с таким логином не найден")
+        raise errors.unauthorized(error="LoginNotFound", message ="Пользователь с таким логином не найден")
     logger.info(f"Аутентифицирован студент: ({student['ID']}) {student['Login']} ")
-
-    # Проверяем пароль
-    if not verify_password(student_login.Password, student["Password"]):
-        logger.warning(f"Попытка входа {student_login.Login} с неправильным паролем!")
-        send_log(
-            StudentID=student["ID"],
-            StudentLogin=student_login.Login,
-            action="password_failed",
-            details={
-                "DescriptionEvent": "Неуспешный вход",
-                "Reason": "InvalidCredentials",
-                "IPAddress": ip,
-                "UserAgent": user_agent
-            }
-        )
-        raise errors.bad_request(error="InvalidCredentials",message= "Пароль не верный")
 
     # Проверяем пользователь на активность
     if not student["IsActive"]:
@@ -82,15 +65,33 @@ def login(
         send_log(
             StudentID=student["ID"],
             StudentLogin=student_login.Login,
-            action="UserNoActive",
+            action="LoginFailed",
             details={
                 "DescriptionEvent": "Неуспешный вход",
-                "Reason": "InvalidCredentials",
+                "Reason": "StudentNoActive",
                 "IPAddress": ip,
                 "UserAgent": user_agent,
             }
         )
-        raise errors.bad_request(error="InvalidCredentials", message="Пользователь не активен!")
+        raise errors.access_denied(error="StudentNoActive", message="Пользователь не активен!")
+
+    # Проверяем пароль
+    if not verify_password(student_login.Password, student["Password"]):
+        logger.warning(f"Попытка входа {student_login.Login} с неправильным паролем!")
+        send_log(
+            StudentID=student["ID"],
+            StudentLogin=student_login.Login,
+            action="LoginFailed",
+            details={
+                "DescriptionEvent": "Неуспешный вход",
+                "Reason": "PasswordFailed",
+                "IPAddress": ip,
+                "UserAgent": user_agent
+            }
+        )
+        raise errors.unauthorized(error="PasswordFailed",message= "Пароль не верный")
+
+
 
     # Создаём токен
     try:
@@ -100,19 +101,13 @@ def login(
         raise errors.internal_server(error="TokenGenerationError", message="Ошибка при создании токена доступа")
 
     # Создаём Pydantic-модель из словаря (Селеризация)
-    student_short = StudentAuth(
-        ID=student["ID"],
-        Login=student["Login"],
-        last_name=student["Last_Name"],
-        first_name=student["First_Name"],
-        email=student["Email"],
-        role_name=student["RoleName"]
-    )
+    student_short = StudentAuth(**student)
+
     # отправляем лог в kafka
     send_log(
         StudentID=student["ID"],
         StudentLogin=student["Login"],
-        action="login_success",
+        action="LoginSuccess",
         details={
             "DescriptionEvent": "Успешный вход",
             "IPAddress": ip,
@@ -125,8 +120,43 @@ def login(
         token_type = "bearer",
         student = student_short
     )
+# /auth/check-token
+@auth_router.get("/check-token", response_model=StudentOut, summary="Проверка данных пользователя по токену")
+def check_token(request: Request, current_student = Depends(get_current_student)):
+    return current_student
+
+# /home/logout/
+'''Реализация выхода (удаления cookie с токеном)'''
+@auth_router.get("/logout/")
+async def logout():
+    print("LOGOUT!!!")
+    response = RedirectResponse(url="/home/login_in/", status_code=303)
+    response.delete_cookie(key="access_token", path="/")
+    return response
 
 
+# /home/change-password
+@auth_router.post("/change-password", summary = "Сменить пароль текущего пользователя (меняет сам пользователь)")
+def change_password(data: ChangePasswordRequest, db: Session = Depends(get_db), current_student =  Depends(get_current_student)):
+    # Получаем текущий хеш пароля из базы
+    stored_password = db.execute(text("select Password from students where ID = :id"), {"id": current_student["ID"]}).scalar()
+
+    # Проверка старого пароля
+    if not verify_password(data.old_password, stored_password):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Старый пароль неверен"
+        )
+    if data.new_password != data.repeat_new_password:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Пароли не совпадают"
+        )
+    # хешуруем новый пароль
+    new_hashed_password = hash_password(data.new_password)
+    db.execute(text("update Students set Password = :new_hashed_password where ID = :id" ), {"new_hashed_password": new_hashed_password, "id": current_student["ID"]})
+    db.commit()
+    return {"message": "Пароль успешно изменён"}
 
 # /
 '''страница home без префикса'''
@@ -157,7 +187,7 @@ def home_page(request: Request, current_student = Depends(get_current_student_or
 
 
 # /home/
-'''Домашняя страница (после авторизации)'''
+'''Домашняя страница (после авторизации)
 @auth_router.get("/")
 def home_page(request: Request, current_student = Depends(get_current_student_or_redirect)):
     # Проверим: если редирект, то возвращаем его
@@ -178,9 +208,9 @@ def home_page(request: Request, current_student = Depends(get_current_student_or
             "UserAgent": request.headers.get("user-agent"), "Metadata": "пока просто текст"})
 
     return templates.TemplateResponse("home.html", {"request": request, "student": current_student})
-
+'''
 # /home/login_in/ (POST)
-'''Страница входа (отправка данных)'''
+'''Страница входа (отправка данных)
 @auth_router.post("/login_in/")
 async def login_in(
         login: str = Form(...),
@@ -195,20 +225,13 @@ async def login_in(
     response = RedirectResponse(url=next, status_code=303)
     response.set_cookie(key="access_token", value=f"Bearer {access_token}", httponly=True, path="/")
     return response
+'''
 
-# /home/logout/
-'''Реализация выхода (удаления cookie с токеном)'''
-@auth_router.get("/logout/")
-async def logout():
-    print("LOGOUT!!!")
-    response = RedirectResponse(url="/home/login_in/", status_code=303)
-    response.delete_cookie(key="access_token", path="/")
-    return response
 
 
 
 # /login/me
-'''Доступ только для пользователей'''
+'''Доступ только для пользователей
 @auth_router.get("/me", summary="Получить информацию о текущем студенте")
 def read_students_me(current_student: Student = Depends(get_current_student)):
     return {
@@ -216,7 +239,7 @@ def read_students_me(current_student: Student = Depends(get_current_student)):
         "login": current_student.Login,
         "email": current_student.Email if hasattr(current_student, "Email") else None
     }
-
+'''
 # /admin/ @
 '''Роут, доступный только администраторам'''
 @admin_router.get("/", response_class=HTMLResponse)
@@ -353,25 +376,6 @@ def assign_permission_for_role (role_id: int, data: AssignPermissionsRequest, db
         "removed": list(to_delete)
     }
 
-# /home/change-password
-@auth_router.post("/change-password", summary = "Сменить пароль текущего пользователя")
-def change_password(data: ChangePasswordRequest, db: Session = Depends(get_db), current_student =  Depends(get_current_student)):
-    # Получаем текущий хеш пароля из базы
-    stored_password = db.execute(text("select Password from students where ID = :id"), {"id": current_student["ID"]}).scalar()
-
-
-    # Проверка старого пароля
-    if not verify_password(data.old_password, stored_password):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Старый пароль неверен"
-        )
-
-    # хешуруем новый пароль
-    new_hashed_password = hash_password(data.new_password)
-    db.execute(text("update Students set Password = :new_hashed_password where ID = :id" ), {"new_hashed_password": new_hashed_password, "id": current_student["ID"]})
-    db.commit()
-    return {"message": "Пароль успешно изменён"}
 
 
 # /admin/students/{student_id}/change-password

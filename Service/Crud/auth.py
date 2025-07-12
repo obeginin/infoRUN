@@ -1,13 +1,17 @@
 from Service.config import *
 from Service.dependencies import get_db
 from Service.Models import Student
-from Service.Schemas.students import StudentSafe
+
+from Service.Schemas.auth import StudentOut, StudentAuth
 from Service.Security.token import SECRET_KEY, ALGORITHM
 from Service.Crud import errors
 #from Service.Crud.students import get_student_by_login
 from fastapi import Depends, HTTPException, status, Request
 from fastapi.security import OAuth2PasswordBearer, HTTPBasic, HTTPBasicCredentials
+from Service.producer import send_log
 
+from datetime import datetime
+from jose.exceptions import ExpiredSignatureError
 from passlib.context import CryptContext # объект, который помогает удобно хешировать и проверять пароли.
 from fastapi.responses import RedirectResponse
 from starlette.status import HTTP_401_UNAUTHORIZED
@@ -71,20 +75,141 @@ def get_student_by_login(login: str, db: Session):
         raise errors.internal_server_error()
 
 
+'''функция получения студента по токену (токен приходит с фронта в заголовке)'''
+def get_current_student(request: Request, db: Session = Depends(get_db)) -> StudentOut:
+    # Получение токена из куки:
+    token = request.headers.get("Authorization") or request.cookies.get("access_token")
+    #print("ACCESS TOKEN >>>", token)
+    ip = request.headers.get("X-Forwarded-For") or request.client.host
+    user_agent = request.headers.get("User-Agent")
+    if not token:
+        logger.warning(f"[AUTH] Отсутствует токен. IP: {ip}, UA: {user_agent}")
+        send_log(
+            StudentID=0,  # Или 0
+            StudentLogin="Unknown",
+            action="TOKEN_ERROR",
+            details={
+                "DescriptionEvent": "Отсутствует токен",
+                "Reason": "TokenMissing",
+                "IPAddress": ip,
+                "UserAgent": user_agent
+            }
+        )
+        raise errors.unauthorized (error="TokenMissing", message="Отсутствует токен")
 
+
+    # Проверка и парсинг схемы: "Bearer <token>"
+    scheme, _, param = token.partition(" ")
+    if scheme.lower() != "bearer" or not param:
+        logger.warning(f"[AUTH] Неверная схема токена. IP: {ip}, UA: {user_agent}, TOKEN: {token}")
+        send_log(
+            StudentID=0,
+            StudentLogin="Unknown",
+            action="TOKEN_ERROR",
+            details={
+                "DescriptionEvent": "Неверная схема токена",
+                "Reason": "TokenMalformed",
+                "IPAddress": ip,
+                "UserAgent": user_agent,
+                #"Metadata": {"raw_token": token}
+            }
+        )
+        raise errors.unauthorized(error="TokenMalformed", message="Неверная схема аутентификации")
+
+    try:
+        #Расшифровка JWT токена и получение логина и проверка срока его действия
+        payload = jwt.decode(param, SECRET_KEY, algorithms=[ALGORITHM], options={"verify_exp": True})
+        login: str = payload.get("sub")
+        if login is None:
+            logger.warning(f"[AUTH] Токен не содержит логин. IP: {ip}, UA: {user_agent}")
+            send_log(
+                StudentID=0,
+                StudentLogin="Unknown",
+                action="TOKEN_ERROR",
+                details={
+                    "DescriptionEvent": "Токен не содержит логин",
+                    "Reason": "TokenInvalidPayload",
+                    "IPAddress": ip,
+                    "UserAgent": user_agent,
+                    #"Metadata": {"payload": payload}
+                }
+            )
+            raise errors.unauthorized(error="TokenInvalidPayload", message="Некорректный токен")
+
+    except ExpiredSignatureError:
+        logger.warning(f"[AUTH] Срок действия токена истёк. IP: {ip}, UA: {user_agent}")
+        send_log(
+            StudentID=0,
+            StudentLogin="Unknown",
+            action="TOKEN_ERROR",
+            details={
+                "DescriptionEvent": "Срок действия токена истёк",
+                "Reason": "TokenExpired",
+                "IPAddress": ip,
+                "UserAgent": user_agent,
+                #"Metadata": {"token": param}
+            }
+        )
+        raise errors.unauthorized(error="TokenExpired", message="Срок действия токена истёк")
+
+    except JWTError as e:
+        logger.warning(f"[AUTH] JWT ошибка. IP: {ip}, UA: {user_agent}, Ошибка: {e}")
+        send_log(
+            StudentID=0,
+            StudentLogin="Unknown",
+            action="TOKEN_ERROR",
+            details={
+                "DescriptionEvent": "Недействительный токен",
+                "Reason": "TokenInvalid",
+                "IPAddress": ip,
+                "UserAgent": user_agent,
+                #"Metadata": {"token": param}
+            }
+        )
+        raise errors.unauthorized(error="TokenInvalid", message="Недействительный токен")
+    # ищем студента в базе по логину
+    student = get_student_by_login(login, db)
+    print(student)
+    if student is None:
+        logger.warning(f"Извлеченный из токена логин не найден в бд: {login}")
+        send_log(
+            StudentID=None,  # Или 0
+            StudentLogin=login,
+            action="LoginFailed",
+            details={
+                "DescriptionEvent": "Неуспешный вход",
+                "Reason": "StudentNotFound",
+                "IPAddress": ip,
+                "UserAgent": user_agent
+            }
+        )
+        raise errors.unauthorized(error="StudentNotFound", message="Пользователь с таким логином не найден")
+    student = dict(student)
+    #student["BirthDate"] = student["BirthDate"].isoformat()
+    # смотрим разрешения для данного студента по его роли
+    # permissions = db.execute(text("""SELECT p.Name
+    #     FROM RolePermissions rp
+    #     JOIN Permissions p ON rp.PermissionID = p.PermissionID
+    #     WHERE rp.RoleID = :role_id
+    # """), {"role_id": student["RoleID"]}).scalars().all()
+    # student = dict(student)
+    # student["permissions"] = permissions
+    '''if isinstance(student["BirthDate"], datetime):
+        student["BirthDate"] = student["BirthDate"].date()'''
+    return StudentOut(**dict(student))
 
 
 # редирект на страницу логина при неавторизованном доступе
 async def get_current_student_or_redirect(
     request: Request,
     db: Session = Depends(get_db)
-) -> Optional[StudentSafe]:
+) -> Optional[StudentAuth]:
     try:
         #print(Student)
         #print(type(Student))
         #logging.warning(f"Авторизован студент: {Student.Login}")
         student = get_current_student(request, db)
-        return StudentSafe.model_validate(student)
+        return StudentAuth.model_validate(student)
     except HTTPException as e:
         if e.status_code == HTTP_401_UNAUTHORIZED:
             #logging.warning("Редирект, так как студент не авторизован")
@@ -99,67 +224,7 @@ def get_token_from_header(authorization: str = Depends(oauth2_scheme)) -> str:
     return authorization
 
 
-# функция получения студента по токену
-def get_current_student(request: Request, db: Session = Depends(get_db)) -> Student:
-    token = request.cookies.get("access_token")
-    print("ACCESS TOKEN >>>", token)
 
-    if not token:
-        print("Нет access_token в cookies!")
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Not authenticated",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-
-    # Если ты сохраняешь токен как "Bearer <token>", нужно его распарсить
-    try:
-        scheme, _, param = token.partition(" ")
-        if scheme.lower() != "bearer":
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Invalid authentication scheme",
-                headers={"WWW-Authenticate": "Bearer"},
-            )
-
-        payload = jwt.decode(param, SECRET_KEY, algorithms=[ALGORITHM])
-        login: str = payload.get("sub")
-        if login is None:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Invalid token payload",
-                headers={"WWW-Authenticate": "Bearer"},
-            )
-
-    except JWTError:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid token",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-
-    #student = db.query(Student).filter(Student.Login == login).first()
-    student = db.execute(text("""select s.ID, s.Login, r.RoleID, r.Name as RoleName 
-                                    from Students s 
-                                    left join Roles r on s.RoleID = r.RoleID
-                                    where s.Login = :login"""),
-                             {"login": login}).mappings().fetchone()
-    print(student)
-    if student is None:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Student not found",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-
-    permissions = db.execute(text("""SELECT p.Name
-        FROM RolePermissions rp
-        JOIN Permissions p ON rp.PermissionID = p.PermissionID
-        WHERE rp.RoleID = :role_id
-    """), {"role_id": student["RoleID"]}).scalars().all()
-    student = dict(student)
-    student["permissions"] = permissions
-    return student
 
 
 def permission_required(permission_name: str):
