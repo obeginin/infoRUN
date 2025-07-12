@@ -17,8 +17,9 @@ BEGIN
 		Score DECIMAL(5,2) NULL,  -- Баллы за подзадачу
 		SolutionStudentPath NVARCHAR(255), --Решение задачи Студента
 		StartDate DATETIME NULL, -- Дата начала выполнения задания
-		ModifiedDate DATETIME NULL, -- Дата зименения 
+		ModifiedDate DATETIME NULL, -- Дата изменения 
 		CompletionDate DATETIME NULL, -- Дата когда был получен правильный ответ
+		DeadlineDate DATETIME NULL, -- Срок выполнения
 		Attempts INT DEFAULT 0, -- количество попыток
 		FOREIGN KEY (StudentID) REFERENCES Students(ID),
 		FOREIGN KEY (SubTaskID) REFERENCES SubTasks(SubTaskID)
@@ -64,4 +65,9 @@ update StudentTasks set CompletionStatus='Выполнено' where StudentTaskI
 ALTER TABLE StudentTasks
 ADD CONSTRAINT CK_StudentTasks_CompletionStatus
 CHECK (CompletionStatus IN ('Не приступал', 'В процессе', 'Выполнено'));
+
+
+ALTER TABLE StudentTasks ADD DeadlineDate DATE NULL
+
 */
+update StudentTasks set DeadlineDate=CAST(GETDATE() AS DATE)  where StudentTaskID=2
