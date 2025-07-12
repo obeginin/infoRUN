@@ -7,7 +7,7 @@ from kafka import KafkaConsumer
 from contextlib import contextmanager
 from dotenv import load_dotenv
 import os
-from handlers.deadline_checker import check_deadlines
+#from handlers.deadline_checker import check_deadlines
 import threading
 import time
 
@@ -74,7 +74,7 @@ def consume_messages():
 if __name__ == "__main__":
     test_db_connection()
     # Запуск cron-потока
-    threading.Thread(target=run_deadline_checker, daemon=True).start()
+    #threading.Thread(target=run_deadline_checker, daemon=True).start()
 
     # Запуск основного Kafka consumer
     consume_messages()
