@@ -10,7 +10,21 @@ load_dotenv()
 KAFKA_BOOTSTRAP_SERVERS = os.getenv("KAFKA_BOOTSTRAP_SERVERS")
 _producer = None
 
+# События (action_type) - категория событий
+'''
+student_action - Событие, совершённое студентом
+auth_event - Всё, что связано с авторизацией/регистрацией
+system_event - Внутреннее системное событие
+email_event - Событие, связанное с отправкой почты
+error_event - общая ошибка
+'''
 
+# Конкретное действие/событие (EventType)
+'''
+описаны в ошибках
+'''
+
+# Причина события или ошибки (Reason)
 
 
 
