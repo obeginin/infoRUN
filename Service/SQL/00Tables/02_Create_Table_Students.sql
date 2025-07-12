@@ -24,6 +24,8 @@ BEGIN
 			Password VARCHAR(255),-- Хеш пароля (надо сделать NOT NULL)
 			--Role nvarchar(15), -- роль (админс, user) СТАРОЕ УДАЛИТЬ!!!!
 			RoleID INT NOT NULL, -- id роли
+			IsActive BIT NOT NULL DEFAULT 1, -- bit - булевый тип
+			IsDeleted datetime NULL,
 			FOREIGN KEY (RoleID) REFERENCES Roles(RoleID)
 		);
 	END
@@ -67,3 +69,11 @@ INSERT INTO Students (Login, Last_Name, First_Name, Middle_Name, Email, Sex, Bir
 INSERT INTO Students (Login, Last_Name, First_Name, Middle_Name, Email, Sex, BirthDate, Comment,Password,Role) 
 VALUES ('test1', 'Тестов', 'Тест', 'Тестович', 'test@gmail.com', 'M', '', 'Комментарий','$pbkdf2-sha256$29000$N4bwvvceQ2gtBaD03htDyA$BLHTA0T4Q.f1kZMSLoQjTm1.Pr7hUMpK/dFKMtDdAkk','student');
 */
+
+ALTER TABLE Students
+ADD IsDeleted datetime NULL;
+ADD IsActive BIT NOT NULL DEFAULT 1;
+
+update Students set IsActive=0 where id=7
+-- standart_password
+select * from Students where Login = 'Rustam'
