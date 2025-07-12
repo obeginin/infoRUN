@@ -121,7 +121,7 @@ def login(
         student = student_short
     )
 # /auth/check-token
-@auth_router.get("/check-token", response_model=StudentOut, summary="Проверка данных пользователя по токену")
+@auth_router.get("/check-token", response_model=StudentOut, summary="Образец получения данных пользователя по токену (с разрешениями)")
 def check_token(request: Request, current_student = Depends(get_current_student)):
     return current_student
 
