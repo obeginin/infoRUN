@@ -1,10 +1,10 @@
 from Service.config import UPLOAD_IMAGE_DIR, UPLOAD_SOLUTION_DIR, UPLOAD_FILES_DIR, UPLOAD_STUDENTS_IMAGE_DIR, TEMPLATES_DIR
-from Service.Schemas.students import StudentsRead, StudentTaskRead,StudentTaskDetails, AnswerInput, SolutionInput
+from Service.Schemas.students import StudentTaskRead,StudentTaskDetails, AnswerInput, SolutionInput
 from Service.Crud import students
 from Service.Routers.tasks import get_files_for_subtask
-from dependencies import get_db  # Зависимость для подключения к базе данных
+from Service.dependencies import get_db  # Зависимость для подключения к базе данных
 from Service.Crud.auth import get_current_student, verify_password, get_current_student_or_redirect
-
+from Service.Schemas.auth import StudentAuth
 from fastapi import APIRouter, Depends, Request, Query, Form,  UploadFile, File
 from sqlalchemy.orm import Session
 from fastapi.responses import HTMLResponse
@@ -34,7 +34,7 @@ templates = Jinja2Templates(directory=TEMPLATES_DIR)
 ''' Эндпоинт: Получить список студентов'''
 @students_router.get(
     "/api/",
-    response_model=list[StudentsRead],
+    response_model=list[StudentAuth],
     summary="Получить список студентов",
     description="."
 )
@@ -43,13 +43,13 @@ def read_all_students(db: Session = Depends(get_db)):
 
 # /students/api{student_id}
 ''' Эндпоинт: Получить студента по id (/students/{student_id})'''
-@students_router.get("/api/{student_id}", response_model=list[StudentsRead], summary="Получить студента по его ID")
+@students_router.get("/api/{student_id}", response_model=list[StudentAuth], summary="Получить студента по его ID")
 def read_student_id(student_id: int, db: Session = Depends(get_db)):
     return students.get_student_id(db, student_id)
 
 # /students/{value}
 ''' Эндпоинт: Получить пользователей по параметру '''
-@students_router.get("/{value}", response_model=list[StudentsRead], summary="Получить студента по выбранному полю")
+@students_router.get("/{value}", response_model=list[StudentAuth], summary="Получить студента по выбранному полю")
 def read_student_by_field(
         value: str,
         #by: str = 'id', # значение по умолчанию

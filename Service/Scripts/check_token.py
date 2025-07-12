@@ -1,18 +1,18 @@
 import requests
 
-# Запрос на получаения токена (admin)
+# Запрос на получаения токена ()
 
-url2 = "http://127.0.0.1:9000/login/"
+url2 = "http://localhost:9000/auth/login"
 data = {
-    "Login": "ivanov",
-    "Password": "default123"
+    "Login": "ivan",
+    "Password": "standart"
 }
 response2 = requests.post(url2, json=data)
 # Печатаем полный ответ для диагностики
 #print("Response status code:", response2.status_code)
 #print("Response content:", response2.text)
 print(response2.json())  # Выведет ответ от сервера
-
+input()
 # Запрос на получаения токена (student)
 
 data2 = {
