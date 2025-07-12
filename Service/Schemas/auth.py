@@ -31,6 +31,7 @@ class StudentOut(StudentAuth):
     Sex: str
     BirthDate: date | None
     Comment: str
+    permissions: List[str] = []
 
     class Config:
         from_attributes = True # для моделей без orm_mode в Pydantic v2
