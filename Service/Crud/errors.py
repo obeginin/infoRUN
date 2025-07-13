@@ -36,8 +36,8 @@ RoleRestricted (действие запрещено для роли)
 
 # PASSWORD_CHANGED = "PasswordChanged"
 '''
-OldPasswordIncorrect (старый пароль неверный)
-NewPasswordsMismatch (новые пароли не совпадают)
+OldPasswordIncorrect (Cтарый пароль неверный)
+NewPasswordsMismatch (Введенные пароли не совпадают)
 WeakPassword (слишком простой пароль) НЕ РЕАЛИЗОВАНО!
 SameAsOldPassword (новый пароль совпадает со старым)  НЕ РЕАЛИЗОВАНО!
 '''

@@ -55,37 +55,77 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
 
 # Создание пароля вручную:
-''''''
+'''
 raw_password = "standart_password"
 raw_password = "standart_password"
 hashed_password = hash_password(raw_password)
 print("Хешированный пароль:", hashed_password)
 #$pbkdf2-sha256$29000$HWPMube2tnYuZYwRwngPQQ$eSDzbZ3puIYCkdzcU94.2a5.ZvXUWXlIGjuSuM4ij/Y
+'''
+
+'''Универсальный шаблон для SQL-запросов'''
+def run_query(
+    db: Session,
+    query: str,
+    params: dict,
+    mode: str = "mappings_first",
+    error_message: str = "Ошибка запроса к БД"
+):
+    try:
+        result = db.execute(text(query), params)
+
+        # Выбор метода извлечения
+        match mode:
+            case "scalar":
+                return result.scalar()              # Первое поле первой строки
+            case "scalars_all":
+                return result.scalars().all()       # Список значений одной колонки
+            case "mappings_first":
+                return result.mappings().first()    # Один словарь (строка)
+            case "mappings_all":
+                return result.mappings().all()      # Список словарей
+            case "one_or_none":
+                return result.one_or_none()         # Один объект или None, выбрасывает ошибку если >1
+            case "first":
+                return result.first()               # Первый результат (обычно ORM объект)
+            case _:
+                raise ValueError(f"Неизвестный режим выборки: {mode}")
+
+    except SQLAlchemyError:
+        logger.exception(f"[DB ERROR] {error_message}")
+        raise errors.internal_server(message=error_message)
+
 
 """Выбор студента из базы по его логину (Аутентификация)"""
 def get_student_by_login(login: str, db: Session):
-    try:
-        return db.execute(text("""
-            SELECT s.*, r.Name as RoleName FROM Students s
-            LEFT JOIN Roles r ON s.RoleID = r.RoleID
-            WHERE s.Login = :login
-        """), {"login": login}).mappings().first()
-    except SQLAlchemyError:
-        logger.exception("Ошибка при запросе студента из БД")
-        raise errors.internal_server_error()
+    return run_query(
+        db,
+        query="""
+                SELECT s.*, r.Name as RoleName
+                FROM Students s
+                LEFT JOIN Roles r ON s.RoleID = r.RoleID
+                WHERE s.Login = :login
+            """,
+        params={"login": login},
+        mode="mappings_first",
+        error_message=f"Ошибка при получении студента: {login}"
+    )
 
 """Выбор из базы разрешений для роли по её ID """
 def get_permission_role(RoleID: int, db: Session):
-    try:
-        return db.execute(text("""SELECT p.Name
+    return run_query(
+        db,
+        query="""
+                SELECT p.Name
                 FROM RolePermissions rp
                 JOIN Permissions p ON rp.PermissionID = p.PermissionID
                 WHERE rp.RoleID = :role_id
-            """), {"role_id": RoleID}).scalars().all()
+                """,
+        params={"role_id": RoleID},
+        mode="scalars_all",
+        error_message=f"Ошибка при получения разрешений для роли с id:{RoleID}"
+    )
 
-    except SQLAlchemyError:
-        logger.exception("Ошибка при запросе к БД для получения разрешений роли")
-        raise errors.internal_server_error()
 
 '''функция получения студента по токену (токен приходит с фронта в заголовке)'''
 def get_current_student(request: Request, db: Session = Depends(get_db)) -> StudentOut:
@@ -108,7 +148,6 @@ def get_current_student(request: Request, db: Session = Depends(get_db)) -> Stud
             }
         )
         raise errors.unauthorized (error="TokenMissing", message="Отсутствует токен")
-
 
     # Проверка и парсинг схемы: "Bearer <token>"
     scheme, _, param = token.partition(" ")
@@ -197,7 +236,6 @@ def get_current_student(request: Request, db: Session = Depends(get_db)) -> Stud
         )
         raise errors.unauthorized(error="StudentNotFound", message="Пользователь с таким логином не найден")
 
-
     #смотрим разрешения для данного студента по его роли
     permissions = get_permission_role(student["RoleID"], db)
     student = dict(student)
@@ -209,29 +247,11 @@ def get_current_student(request: Request, db: Session = Depends(get_db)) -> Stud
     return StudentOut(**dict(student))
 
 
-# редирект на страницу логина при неавторизованном доступе
-async def get_current_student_or_redirect(
-    request: Request,
-    db: Session = Depends(get_db)
-) -> Optional[StudentAuth]:
-    try:
-        #print(Student)
-        #print(type(Student))
-        #logging.warning(f"Авторизован студент: {Student.Login}")
-        student = get_current_student(request, db)
-        return StudentAuth.model_validate(student)
-    except HTTPException as e:
-        if e.status_code == HTTP_401_UNAUTHORIZED:
-            #logging.warning("Редирект, так как студент не авторизован")
-            return RedirectResponse(url=f"/home/login_in/?next={request.url.path}", status_code=302)
-            #return RedirectResponse(url="/home/login_in")
-        raise e
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
-# Функция для получения токена из заголовка Authorization
-def get_token_from_header(authorization: str = Depends(oauth2_scheme)) -> str:
-    return authorization
+
+
+
 
 
 
@@ -248,8 +268,6 @@ def permission_required(permission_name: str):
     return decorator
 
 
-
-
 # Проверка на роль "admin" (заменил на permission_required("admin_panel"))
 def admin_required(
     current_student=Depends(get_current_student),
@@ -261,48 +279,25 @@ def admin_required(
         )
     return current_student
 
-'''def get_current_student(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> Student:
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
+# редирект на страницу логина при неавторизованном доступе
+async def get_current_student_or_redirect(
+    request: Request,
+    db: Session = Depends(get_db)
+) -> Optional[StudentAuth]:
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        login: str = payload.get("sub")
-        if login is None:
-            raise credentials_exception
-    except JWTError:
-        raise credentials_exception
 
-    student = db.query(Student).filter(Student.Login == login).first()
-    if student is None:
-        raise credentials_exception
-    return student
+        student = get_current_student(request, db)
+        return StudentAuth.model_validate(student)
+    except HTTPException as e:
+        if e.status_code == HTTP_401_UNAUTHORIZED:
+            #logging.warning("Редирект, так как студент не авторизован")
+            return RedirectResponse(url=f"/home/login_in/?next={request.url.path}", status_code=302)
+            #return RedirectResponse(url="/home/login_in")
+        raise e
+
 '''
-
-'''# Получаем текущего студента по токену
-def get_current_student_from_cookie(token: str = Cookie(None), db: Session = Depends(get_db)) -> Student:
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Not authenticated",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
-
-    if token is None or not token.startswith("Bearer "):
-        raise credentials_exception
-    token = token[7:]  # Remove 'Bearer '
-
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        login = payload.get("sub")
-        if login is None:
-            raise credentials_exception
-    except JWTError:
-        raise credentials_exception
-
-    student = db.query(Student).filter(Student.Login == login).first()
-    if student is None:
-        raise credentials_exception
-    return student'''
-
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+# Функция для получения токена из заголовка Authorization
+def get_token_from_header(authorization: str = Depends(oauth2_scheme)) -> str:
+    return authorization
+'''
