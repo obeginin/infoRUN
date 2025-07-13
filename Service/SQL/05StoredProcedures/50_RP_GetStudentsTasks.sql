@@ -46,7 +46,7 @@ BEGIN
         s.ImagePath,
         s.Description,
 		v.VariantID,
-		v.Name,
+		v.VariantName,
         s.Answer,
         s.SolutionPath,
 		(SELECT COUNT(*) FROM StudentTasks where StudentID= @StudentID) AS TotalSubTasks, -- --Количество задач студента

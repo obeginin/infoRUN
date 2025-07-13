@@ -9,17 +9,20 @@ load_dotenv()
 BASE_URL = "https://info-run.ru/"
 #BASE_URL = "http://localhost:9000/"
 
+# актуальный пользователь
+login_user = 'ivan'
+pass_user = 'standart'
 
 
 
 def login_wrong_password():
     response = requests.post(f"{BASE_URL}/auth/login", json={
-        "Login": "ivan",
+        "Login": login_user,
         "Password": "wrongpass"
     })
     try:
         data = response.json()
-        print(data)
+        #print(data)
     except Exception as e:
         print("❌ Ошибка при разборе JSON-ответа:", e)
         print("Ответ:", response.text)
@@ -69,8 +72,8 @@ def login_inactive_user():
 
 def login_success():
     response = requests.post(f"{BASE_URL}/auth/login", json={
-        "Login": "ivan",
-        "Password": "standart"
+        "Login": login_user,
+        "Password": pass_user
     })
     try:
         data = response.json()
@@ -86,9 +89,18 @@ def login_success():
         print(f"❌ Тест №4 не пройден. Код: {response.status_code}, Ответ:", data)
         return None
 
+def _login():
+    response = requests.post(f"{BASE_URL}/auth/login", json={
+        "Login": login_user,
+        "Password": pass_user
+    })
+    data = response.json()
+    return data["access_token"]
+
+
 '''Проверка Токена'''
 def check_token():
-    token = login_success()
+    token = _login()
     headers = {
         "Authorization": f"Bearer {token}"
     }
@@ -122,7 +134,7 @@ def invalid_token():
         print("🔁 Ответ сервера:", response.text)
 
 def invalid_schema_token():
-    token = login_success()
+    token = _login()
     headers = {
         "Authorization": f"Token {token}"
     }
@@ -219,6 +231,24 @@ def expired_Token():
     except Exception as e:
         print("Ошибка при разборе ответа:", e)
         print("Ответ сервера:", response.text)
+
+def expired_Token():
+    token = _login()
+
+    headers = {
+        "Authorization": f"Bearer {token}"
+    }
+    response = requests.get(f"{BASE_URL}/auth/check-token", headers=headers)
+    try:
+        data = response.json()
+        if response.status_code == 401 and data.get("detail", {}).get("error") == "TokenExpired":
+            print("Тест №10 Пройден. ✅ ❌ Срок действия токена истёк ", response.status_code, data)
+        else:
+            print("Тест №10. Ошибка!!! ❌ Срок действия токена истёк.  Ответ сервера:", response.status_code, data)
+    except Exception as e:
+        print("Ошибка при разборе ответа:", e)
+        print("Ответ сервера:", response.text)
+
 
 if __name__ == "__main__":
     strat_time = time()
