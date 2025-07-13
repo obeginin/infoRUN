@@ -7,7 +7,8 @@ from Service.dependencies import get_db,get_log_db, get_producer_dep
 from Service.producer import send_log
 from Service.Crud import errors
 
-from fastapi import APIRouter, Depends,Form, Request, HTTPException, status
+from fastapi import APIRouter, Depends,Form, Request, HTTPException, status, Response
+from fastapi.concurrency import run_in_threadpool
 from sqlalchemy.orm import Session
 from fastapi.responses import JSONResponse
 from sqlalchemy import text
@@ -32,7 +33,7 @@ pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 # /auth/login
 @auth_router.post("/login", response_model=TokenWithStudent,
                   summary="Аутентификация (запрос токена для пользователя)",
-                  description="Возвращает токен, если логин и пароль пользователя корректны, а так же пользователь активен")
+                  description="Возвращает токен, тип заколовка и небольшую информацию о пользователе, если логин и пароль корректны и пользователь активен.")
 def login(
     request: Request,
     student_login: StudentLogin,
@@ -91,8 +92,6 @@ def login(
         )
         raise errors.unauthorized(error="PasswordFailed",message= "Пароль не верный")
 
-
-
     # Создаём токен
     try:
         access_token = create_access_token(data={"sub": student["Login"]})
@@ -120,22 +119,49 @@ def login(
         token_type = "bearer",
         student = student_short
     )
+
+
+"""
+После аутентификации фронт будет в заголовке отправлять токен, по нему с помощью функции get_current_student()
+получаем информации о пользователе (данный роут нужен для Backend)
+"""
 # /auth/check-token
 @auth_router.get("/check-token", response_model=StudentOut, summary="Образец получения данных пользователя по токену (с разрешениями)")
 def check_token(request: Request, current_student = Depends(get_current_student)):
     return current_student
 
-# /home/logout/
+# /auth/logout
 '''Реализация выхода (удаления cookie с токеном)'''
-@auth_router.get("/logout/")
-async def logout():
-    print("LOGOUT!!!")
-    response = RedirectResponse(url="/home/login_in/", status_code=303)
-    response.delete_cookie(key="access_token", path="/")
-    return response
+@auth_router.get("/logout", summary="Выход, удаление токена при использовании 'HttpOnly cookie'")
+async def logout(
+        request: Request,
+        response: Response,
+        current_student=Depends(get_current_student)):
+    ip = request.headers.get("X-Forwarded-For") or request.client.host
+    user_agent = request.headers.get("User-Agent")
+    await run_in_threadpool(
+        logger.info,f"Пользователь вышел из системы: {current_student.Login} (ID: {current_student.ID})"
+    )
 
+    # Лог в Kafka
+    await run_in_threadpool(
+        send_log,
+        StudentID=current_student.ID,
+        StudentLogin=current_student.Login,
+        action="LOGOUT",
+        details={
+            "DescriptionEvent": "Пользователь вышел из системы",
+            "IPAddress": ip,
+            "UserAgent": user_agent,
+        }
+    )
+    # Удаление куки (если используется cookie-based auth)
+    response.delete_cookie("access_token")
+    print("detail LOGOUT")
+    logger.info (f"detail LOGOUT")
+    return {"detail": "LOGOUT"}
 
-# /home/change-password
+# /auth/change-password
 @auth_router.post("/change-password", summary = "Сменить пароль текущего пользователя (меняет сам пользователь)")
 def change_password(data: ChangePasswordRequest, db: Session = Depends(get_db), current_student =  Depends(get_current_student)):
     # Получаем текущий хеш пароля из базы
