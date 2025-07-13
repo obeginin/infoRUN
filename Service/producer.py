@@ -1,5 +1,6 @@
 from kafka import KafkaProducer
 from dotenv import load_dotenv
+from kafka.errors import KafkaError
 import json
 from datetime import datetime
 import logging
@@ -69,10 +70,13 @@ def send_log(StudentID: int, StudentLogin: str, action: str, details: dict = Non
     }
 
     try:
-        producer.send("students.actions", value=message)
-        producer.flush()  # Можно опустить, если работает в режиме batch
+        future = producer.send("students.actions", value=message)
+        future.get(timeout=1.0)  # ждём максимум 1 секунду ответа от брокера
+        #producer.flush()  # Можно опустить, если работает в режиме batch
         print(f"[Kafka] Log sent: {message}")
         logging.info(f"[Kafka] Log sent: {message}")
+    except KafkaError as e:
+        logging.warning(f"[Kafka] Failed to send log (KafkaError): {e}")
     except Exception as e:
         print(f"[Kafka] Failed to send log: {e}")
 
