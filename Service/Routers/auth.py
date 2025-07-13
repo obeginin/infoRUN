@@ -169,20 +169,46 @@ def change_password(data: ChangePasswordRequest, db: Session = Depends(get_db), 
 
     # Проверка старого пароля
     if not verify_password(data.old_password, stored_password):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Старый пароль неверен"
+        logger.warning(f"Ошибка смены пароля студента {current_student.Login}! Cтарый пароль неверный!: ")
+        send_log(
+            StudentID=current_student.ID,  # Или 0
+            StudentLogin=current_student.Login,
+            action="PasswordChanged",
+            details={
+                "DescriptionEvent": "Cтарый пароль неверный",
+                "Reason": "OldPasswordIncorrect",
+            }
         )
+        raise errors.bad_request(error="OldPasswordIncorrect", message="Cтарый пароль неверный")
+
     if data.new_password != data.repeat_new_password:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Пароли не совпадают"
+        logger.warning(f"Ошибка смены пароля студента {current_student.Login}! Введенные пароли не совпадают!: ")
+        send_log(
+            StudentID=current_student.ID,  # Или 0
+            StudentLogin=current_student.Login,
+            action="PasswordChanged",
+            details={
+                "DescriptionEvent": "Cтарый пароль неверный",
+                "Reason": "NewPasswordsMismatch",
+            }
         )
+        raise errors.bad_request(error="NewPasswordsMismatch", message="Введенные пароли не совпадают!")
+
     # хешуруем новый пароль
     new_hashed_password = hash_password(data.new_password)
     db.execute(text("update Students set Password = :new_hashed_password where ID = :id" ), {"new_hashed_password": new_hashed_password, "id": current_student["ID"]})
     db.commit()
     return {"message": "Пароль успешно изменён"}
+
+
+
+
+
+
+
+
+
+
 
 # /
 '''страница home без префикса'''
