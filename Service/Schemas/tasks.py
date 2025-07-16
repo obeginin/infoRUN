@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime
 # Schemas\tasks.py
 ''' 
@@ -13,9 +13,15 @@ class TaskRead(BaseModel):
     TaskID: int
     TaskNumber: int
     TaskTitle: str
+    SubjectID: int
 
     class Config:
         from_attributes = True
+
+class TaskListResponse(BaseModel):
+    message: str
+    count: Optional[int] = None
+    tasks: List[TaskRead]
 
 # для подзадач
 # optional значит что поле может быть не заполнено

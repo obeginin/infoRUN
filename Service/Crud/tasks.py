@@ -1,6 +1,7 @@
 from Service.config import UPLOAD_IMAGE_DIR, UPLOAD_SOLUTION_DIR, UPLOAD_FILES_DIR
 from Service.Schemas.tasks import SubTaskCreate, SubTaskUpdate
 from Service.Models import SubTaskFiles
+from Service.Crud import errors,general
 
 from sqlalchemy.orm import Session
 from sqlalchemy import text
@@ -22,13 +23,32 @@ logger = logging.getLogger(__name__) # создание логгера для т
 
 
 
-# возможно не нужно! перенес логику в роут
+
 ''' функция-SQL запрос к БД для вывода всех задач'''
-def get_all_tasks(db: Session):
-    query = text("SELECT TaskID, TaskNumber, TaskTitle FROM Tasks ORDER BY TaskNumber")
-    result = db.execute(query).fetchall()
-    #print(result) # выводит результат запроса в консоль
-    return [{"TaskID": row.TaskID, "TaskNumber": row.TaskNumber, "TaskTitle": row.TaskTitle} for row in result]
+def get_all_tasks(db: Session, subjectID: int | None = None):
+    if subjectID is None:
+        query = """
+                SELECT TaskID, TaskNumber, TaskTitle, SubjectID
+                FROM Tasks
+                ORDER BY TaskNumber
+            """
+        params = {}
+    else:
+        query = """
+                SELECT TaskID, TaskNumber, TaskTitle, SubjectID
+                FROM Tasks
+                WHERE SubjectID = :subjectID
+                ORDER BY TaskNumber
+            """
+        params = {"subjectID": subjectID}
+    return general.run_query_select(
+        db,
+        query= query,
+        mode="mappings_all",
+        params= params,
+        error_message=f"Ошибка при получения категорий из БД"
+    )
+
 
 # возможно не нужно! перенес логику в роут
 ''' функция-SQL запрос к БД для вывода задачи по id(категории)'''
