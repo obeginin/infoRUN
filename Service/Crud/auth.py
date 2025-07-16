@@ -1,10 +1,10 @@
 from Service.config import *
 from Service.dependencies import get_db
 from Service.Models import Student
-
 from Service.Schemas.auth import StudentOut, StudentAuth
 from Service.Security.token import SECRET_KEY, ALGORITHM
-from Service.Crud import errors
+from Service.Crud import errors,general
+
 #from Service.Crud.students import get_student_by_login
 from fastapi import Depends, HTTPException, status, Request
 from fastapi.security import OAuth2PasswordBearer, HTTPBasic, HTTPBasicCredentials
@@ -19,7 +19,7 @@ from typing import Optional
 from sqlalchemy import text
 from jose import JWTError, jwt
 from sqlalchemy.orm import Session
-from sqlalchemy.exc import SQLAlchemyError
+
 import logging
 
 # Crud\auth.py
@@ -35,13 +35,16 @@ def get_swagger_user(
     credentials: HTTPBasicCredentials = Depends(security),
     db: Session = Depends(get_db),
 ):
+    logging.info(f"Swagger auth attempt: username={credentials.username}")
     user = db.query(Student).filter(Student.Login == credentials.username).first()
     if not user or not verify_password(credentials.password, user.Password):
+        logging.warning(f"User {credentials.username} not found in DB or Invalid password")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Неверные учетные данные",
             headers={"WWW-Authenticate": "Basic"},
         )
+    logging.info(f"User {credentials.username} authenticated successfully")
     return user
 
 # шифрование пароля
@@ -63,42 +66,11 @@ print("Хешированный пароль:", hashed_password)
 #$pbkdf2-sha256$29000$HWPMube2tnYuZYwRwngPQQ$eSDzbZ3puIYCkdzcU94.2a5.ZvXUWXlIGjuSuM4ij/Y
 '''
 
-'''Универсальный шаблон для SQL-запросов'''
-def run_query(
-    db: Session,
-    query: str,
-    params: dict,
-    mode: str = "mappings_first",
-    error_message: str = "Ошибка запроса к БД"
-):
-    try:
-        result = db.execute(text(query), params)
-
-        # Выбор метода извлечения
-        match mode:
-            case "scalar":
-                return result.scalar()              # Первое поле первой строки
-            case "scalars_all":
-                return result.scalars().all()       # Список значений одной колонки
-            case "mappings_first":
-                return result.mappings().first()    # Один словарь (строка)
-            case "mappings_all":
-                return result.mappings().all()      # Список словарей
-            case "one_or_none":
-                return result.one_or_none()         # Один объект или None, выбрасывает ошибку если >1
-            case "first":
-                return result.first()               # Первый результат (обычно ORM объект)
-            case _:
-                raise ValueError(f"Неизвестный режим выборки: {mode}")
-
-    except SQLAlchemyError:
-        logger.exception(f"[DB ERROR] {error_message}")
-        raise errors.internal_server(message=error_message)
 
 
 """Выбор студента из базы по его логину (Аутентификация)"""
-def get_student_by_login(login: str, db: Session):
-    return run_query(
+def get_student_by_login(db: Session, login: str):
+    return general.run_query_select(
         db,
         query="""
                 SELECT s.*, r.Name as RoleName
@@ -112,8 +84,8 @@ def get_student_by_login(login: str, db: Session):
     )
 
 """Выбор из базы разрешений для роли по её ID """
-def get_permission_role(RoleID: int, db: Session):
-    return run_query(
+def get_permission_role(db: Session, RoleID: int):
+    return general.run_query_select(
         db,
         query="""
                 SELECT p.Name
@@ -126,6 +98,19 @@ def get_permission_role(RoleID: int, db: Session):
         error_message=f"Ошибка при получения разрешений для роли с id:{RoleID}"
     )
 
+
+"""Смена пароля пользователя"""
+def change_password(db: Session, student_ID: int, new_password: str):
+    return general.run_query_update(
+        db,
+        query="""
+                update Students 
+                set Password = :new_password 
+                where ID = :id
+                """,
+        params={"id": student_ID, "new_password": new_password},
+        error_message=f"Ошибка обновления пароля для студента с id:{student_ID}"
+    )
 
 '''функция получения студента по токену (токен приходит с фронта в заголовке)'''
 def get_current_student(request: Request, db: Session = Depends(get_db)) -> StudentOut:
@@ -219,8 +204,8 @@ def get_current_student(request: Request, db: Session = Depends(get_db)) -> Stud
         )
         raise errors.unauthorized(error="TokenInvalid", message="Недействительный токен")
     # ищем студента в базе по логину
-    student = get_student_by_login(login, db)
-    print(student)
+    student = get_student_by_login(db, login)
+    #print(student)
     if student is None:
         logger.warning(f"Извлеченный из токена логин не найден в бд: {login}")
         send_log(
@@ -237,7 +222,7 @@ def get_current_student(request: Request, db: Session = Depends(get_db)) -> Stud
         raise errors.unauthorized(error="StudentNotFound", message="Пользователь с таким логином не найден")
 
     #смотрим разрешения для данного студента по его роли
-    permissions = get_permission_role(student["RoleID"], db)
+    permissions = get_permission_role(db, student["RoleID"])
     student = dict(student)
     student["permissions"] = permissions
     # student["BirthDate"] = student["BirthDate"].isoformat()
