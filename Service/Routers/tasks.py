@@ -31,11 +31,12 @@ logger = logging.getLogger(__name__) # создание логгера для т
 
 
 '''Маршруты добавляются к основному адресу сайта localhost:9000/'''
+subject_router  = APIRouter(prefix="/api/subjects", tags=["subjects"])
 task_router  = APIRouter(prefix="/api/tasks", tags=["tasks"])
 subtask_router  = APIRouter(prefix="/subtasks", tags=["subtasks"])
 task_js_router = APIRouter(prefix="/js", tags=["js"])
 varinant_router = APIRouter(prefix="/variants", tags=["variants"])
-subject_router  = APIRouter(prefix="/subject", tags=["subject"])
+
 #task_ji_router = APIRouter(prefix="/html", tags=["html"])
 
 templates = Jinja2Templates(directory=TEMPLATES_DIR)
@@ -49,8 +50,14 @@ templates = Jinja2Templates(directory=TEMPLATES_DIR)
 @task_router.get(
     "",                    # добавляем префикс к адресу
     response_model=tasks.TaskListResponse,   # указываем какой схеме должны соответствовать данные
-    summary="Получить список категорий (ЕГЭ_1 ЕГЭ_2, и т.д) по выбранному id предмета (subjectID)",
-    description="subjectID передается как Query-параметр (/tasks?subjectID=10)"
+    summary="Получить список категорий (ЕГЭ_1 ЕГЭ_2, и т.д)",
+    description="""Если передан параметр **subjectID**, то возвращаются категории только для указанного предмета.  
+        Если параметр не передан, возвращаются задачи по всем предметам.  
+        **subjectID** передается как Query-параметр   
+                "`/api/tasks` — все задачи"  
+                "`/api/tasks?subjectID=10` — задачи для предмета с ID 10"  
+                так же необходимо передавать в заголовке **токен** пользователя
+        """
 )
 def read_all_tasks(
         db: Session = Depends(get_db),
@@ -87,6 +94,96 @@ def read_all_tasks(
         "count": count,
         "tasks": tasks
     }
+
+
+# /api/subjects   (GET) @
+@subject_router.get(
+    "",
+    response_model=tasks.SubjectListResponse,   # указываем какой схеме должны соответствовать данные
+    summary="Получить список всех предметов (Информатика, Математика)",
+    description="""так же необходимо передавать в заголовке **токен** пользователя"""
+)
+def read_all_subject(
+        db: Session = Depends(get_db),
+        current_student = Depends(get_current_student)):     # получаем текущего студента по токену
+
+    subjects = task_crud.get_all_subjects(db)  # функция без фильтрации
+    logger.warning(f"subjects:{subjects}")
+
+    if not subjects:
+        logger.warning(f"Не найдено предметов, Возвращаем пустой список")
+        return {
+            "message": f"Предметов не найдено",
+            "subjects": []
+        }
+
+    count = len(subjects)
+    send_log(
+        StudentID=None,  # Или 0
+        StudentLogin=current_student.Login,
+        action="GetSubjects",
+        details={
+            "DescriptionEvent": f"Получение всех предметов",
+            "TasksCount": count
+        }
+    )
+    logger.info(f"Пользователь {current_student.Login} запросил список всех предметов")
+    return {
+        "message": f"Найдено предметов: {count}",
+        "count": count,
+        "subjects": subjects
+    }
+
+
+# /api/subjects/{subjectID}   (GET) @
+@subject_router.get(
+    "/{subjectID}",
+    response_model=tasks.SubjectRead,   # указываем какой схеме должны соответствовать данные
+    summary="Получить предмет по его subjectID ",
+    description="""так же необходимо передавать в заголовке **токен** пользователя"""
+)
+def read_all_subject(
+        subjectID: int,
+        db: Session = Depends(get_db),
+        current_student = Depends(get_current_student)):     # получаем текущего студента по токену
+
+    # ищем предмет по id
+    subject = task_crud.get_subject_by_id(db, subjectID)
+    logger.warning(f"subjects:{subject}")
+
+    if not subject:
+        logger.warning(f"Не найден предмет с id: {subjectID}")
+        send_log(
+            StudentID=None,  # Или 0
+            StudentLogin=current_student.Login,
+            action="SubjectNotFound",
+            details={
+                "DescriptionEvent": "Предмет не найден",
+                "SubjectID": subjectID
+            }
+        )
+        raise errors.not_found(error="SubjectNotFound", message=f"Предмет с id={subjectID} не найден")
+
+
+    send_log(
+        StudentID=None,  # Или 0
+        StudentLogin=current_student.Login,
+        action="GetSubjectForID",
+        details={
+            "DescriptionEvent": f"Получение предмета с id:{subjectID}",
+            "SubjectID": subjectID
+        }
+    )
+    logger.info(f"Пользователь {current_student.Login} запросил предмет с id:{subjectID}")
+    return subject
+
+
+'''@subject_router.get("/api", summary="Вывод списка предметов")
+def read_subject (db: Session = Depends(get_db), response_model=List[tasks.SubjectOut]):
+    subjects = db.execute(text("SELECT * FROM Subjects")).mappings().all()
+    #subjects = [dict(row) for row in result]
+    return subjects'''
+
 
 # /tasks/api/TaskID/{task_id}    (GET) @
 ''' Эндпоинт: Получить список задач с категорией TaskID'''
@@ -135,11 +232,7 @@ def read_tasks_of_variant (VariantID: int, db: Session = Depends(get_db), curren
     return jsonable_encoder(subtasks)
 
 
-@subject_router.get("/api", summary="Вывод списка предметов")
-def read_subject (db: Session = Depends(get_db), response_model=List[tasks.SubjectOut]):
-    subjects = db.execute(text("SELECT * FROM Subjects")).mappings().all()
-    #subjects = [dict(row) for row in result]
-    return subjects
+
 
 """HTML"""
 
