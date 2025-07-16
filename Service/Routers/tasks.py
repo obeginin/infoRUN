@@ -1,9 +1,11 @@
 from Service.config import UPLOAD_IMAGE_DIR, UPLOAD_SOLUTION_DIR, UPLOAD_FILES_DIR, TEMPLATES_DIR
-from Service.Schemas.tasks import TaskRead, SubTaskRead, SubTaskCreate, SubTaskUpdate, FileSchema, SubjectOut
+from Service.Schemas import tasks
 from Service.Crud import tasks as task_crud
+from Service.Crud import errors
 from Service.dependencies import get_db
 from Service.Models import Student, SubTaskFiles
 from Service.Crud.auth import get_current_student, permission_required, get_current_student_or_redirect
+from Service.producer import send_log
 
 from fastapi import APIRouter, Depends, Request, Form, UploadFile, File, Query, HTTPException
 from sqlalchemy import text
@@ -29,7 +31,7 @@ logger = logging.getLogger(__name__) # создание логгера для т
 
 
 '''Маршруты добавляются к основному адресу сайта localhost:9000/'''
-task_router  = APIRouter(prefix="/tasks", tags=["tasks"])
+task_router  = APIRouter(prefix="/api/tasks", tags=["tasks"])
 subtask_router  = APIRouter(prefix="/subtasks", tags=["subtasks"])
 task_js_router = APIRouter(prefix="/js", tags=["js"])
 varinant_router = APIRouter(prefix="/variants", tags=["variants"])
@@ -41,24 +43,54 @@ templates = Jinja2Templates(directory=TEMPLATES_DIR)
 
 """API"""
 
-# /tasks/api   (GET) @
+# /api/tasks/   (GET) @
 ''' Эндпоинт: Получить список КАТЕГОРИЙ'''
 # через @ указываем какому маршруту принадлежит Эндпоинт
 @task_router.get(
-    "/api",                    # добавляем префикс к адресу
-    response_model=list[TaskRead],   # указываем какой схеме должны соответствовать данные
-    summary="Получить список задач",
-    description="Выводит список всех задач имеющихся в БД"
+    "",                    # добавляем префикс к адресу
+    response_model=tasks.TaskListResponse,   # указываем какой схеме должны соответствовать данные
+    summary="Получить список категорий (ЕГЭ_1 ЕГЭ_2, и т.д) по выбранному id предмета (subjectID)",
+    description="subjectID передается как Query-параметр (/tasks?subjectID=10)"
 )
-def read_all_tasks(db: Session = Depends(get_db)):
-    result = db.execute(text("SELECT TaskID, TaskNumber, TaskTitle FROM Tasks ORDER BY TaskNumber")).fetchall()
-    tasks = [dict(row._mapping) for row in result]
-    logger.debug(tasks)
-    return JSONResponse(content=jsonable_encoder(tasks))
+def read_all_tasks(
+        db: Session = Depends(get_db),
+        subjectID: int | None = Query(default=None),         # передаем id предмета (не обязательно, тогда выйдут категории всех предметов)
+        current_student = Depends(get_current_student)):     # получаем текущего студента по токену
+
+    if subjectID is None:
+        tasks = task_crud.get_all_tasks(db)  # функция без фильтрации
+    else:
+        tasks = task_crud.get_all_tasks(db, subjectID)
+    logger.warning(f"tasks:{tasks}")
+
+    if not tasks:
+        logger.warning(f"Не найдено задач с категорией id= {subjectID}, Возвращаем пустой список")
+        return {
+            "message": f"Для предмета с id={subjectID} категорий не найдено",
+            "tasks": []
+        }
+
+    count = len(tasks)
+    send_log(
+        StudentID=None,  # Или 0
+        StudentLogin=current_student.Login,
+        action="GetTasks",
+        details={
+            "DescriptionEvent": f"Получение задач по предмету id:{subjectID}",
+            "SubjectID": subjectID,
+            "TasksCount": count
+        }
+    )
+    logger.info(f"Пользователь {current_student.Login} запросил список категорий для предмета с id:{subjectID}")
+    return {
+        "message": f"Найдено задач: {count}",
+        "count": count,
+        "tasks": tasks
+    }
 
 # /tasks/api/TaskID/{task_id}    (GET) @
 ''' Эндпоинт: Получить список задач с категорией TaskID'''
-@task_router.get("/api/TaskID/{task_id}", response_model=list[SubTaskRead],summary="Получить подзадачу по TaskID")
+@task_router.get("/api/TaskID/{task_id}", response_model=list[tasks.SubTaskRead],summary="Получить подзадачу по TaskID")
 def read_subtasks_TaskID(task_id: int, db: Session = Depends(get_db)):
     result = db.execute(text(f"""SELECT * FROM SubTasks s
                             LEFT JOIN Variants v on s.VariantID = v.VariantID
@@ -68,7 +100,7 @@ def read_subtasks_TaskID(task_id: int, db: Session = Depends(get_db)):
 
 # /tasks/api/TaskID/subtasks{subtask_id}    (GET)
 ''' Эндпоинт: Получить подзадачу по subtask_id'''
-@task_router.get("/api/{TaskID}/subtasks{subtask_id}", response_model=SubTaskRead,summary="Получить подзадачу по id")
+@task_router.get("/api/{TaskID}/subtasks{subtask_id}", response_model=tasks.SubTaskRead,summary="Получить подзадачу по id")
 def read_subtasks_subtask_id(subtask_id: int, db: Session = Depends(get_db)):
     return task_crud.get_subtasks_id(db, subtask_id)
 
@@ -83,7 +115,7 @@ def read_tasks_id(db: Session = Depends(get_db)):
 
 # /tasks/api/{task_id}  (GET) @
 ''' Эндпоинт: Получить категорию по id'''
-@task_router.get("/api/{task_id}", response_model=list[TaskRead],summary="Получить задачу по id")
+@task_router.get("/api/{task_id}", response_model=list[tasks.TaskRead],summary="Получить задачу по id")
 def read_tasks_id(task_id: int, db: Session = Depends(get_db)):
     print(type(task_id))
     result = db.execute(text(f"SELECT TaskID, TaskNumber, TaskTitle FROM Tasks where TaskID = :task_id"),{"task_id": task_id}).fetchall()
@@ -104,7 +136,7 @@ def read_tasks_of_variant (VariantID: int, db: Session = Depends(get_db), curren
 
 
 @subject_router.get("/api", summary="Вывод списка предметов")
-def read_subject (db: Session = Depends(get_db), response_model=List[SubjectOut]):
+def read_subject (db: Session = Depends(get_db), response_model=List[tasks.SubjectOut]):
     subjects = db.execute(text("SELECT * FROM Subjects")).mappings().all()
     #subjects = [dict(row) for row in result]
     return subjects
@@ -113,11 +145,11 @@ def read_subject (db: Session = Depends(get_db), response_model=List[SubjectOut]
 
 # /tasks/   (GET) @
 '''Вывод страницы html с категориями'''
-@task_router.get("/", response_class=HTMLResponse)
+''''@task_router.get("/", response_class=HTMLResponse)
 def read_subtasks_TaskID(request: Request, current_student = Depends(get_current_student_or_redirect)):
     if isinstance(current_student, RedirectResponse):
         return current_student
-    return templates.TemplateResponse("Tasks/tasks.html", {"request": request, "student": current_student})
+    return templates.TemplateResponse("Tasks/tasks.html", {"request": request, "student": current_student})'''
 
 
 
@@ -391,7 +423,7 @@ def post_edit_subtask_form(
         print(f"File: filename={f.filename}, content_type={f.content_type}, type={type(f)}")
     uploaded_files = task_crud.upload_file(SubTaskID, TaskID, SubTaskNumber, Files, db)
     print(uploaded_files)
-    subtask_data = SubTaskUpdate(
+    subtask_data = tasks.SubTaskUpdate(
         TaskID=TaskID,
         VariantID=variant_id,
         SubTaskNumber=SubTaskNumber,
@@ -421,7 +453,7 @@ def download_file(file_id: int, db: Session = Depends(get_db)):
     return FileResponse(path=db_file.FilePath, filename=db_file.FileName)
 
 '''получение всех файлов задачи'''
-@subtask_router.get("/api/files/{subtask_id}", response_model=List[FileSchema])
+@subtask_router.get("/api/files/{subtask_id}", response_model=List[tasks.FileSchema])
 def get_files_for_subtask(subtask_id: int, db: Session = Depends(get_db)):
     files = db.execute(text("""
         SELECT ID, FileName, FilePath, UploadDate
@@ -445,7 +477,7 @@ def get_task_columns(db: Session = Depends(get_db)):
 
 # /subtasks/api/    (GET)
 ''' Эндпоинт: Получить список всех подзадач'''
-'''@subtask_router.get("/api/", response_model=list[SubTaskRead],summary="Получить список всех подзадач")
+'''@subtask_router.get("/api/", response_model=list[tasks.SubTaskRead],summary="Получить список всех подзадач")
 def read_all_subtasks(db: Session = Depends(get_db)):
     return task_crud.get_all_subtasks(db)'''
 
