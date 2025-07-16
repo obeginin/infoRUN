@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__) # создание логгера для т
 
 
 
-''' функция-SQL запрос к БД для вывода всех задач'''
+''' функция-SQL запрос к БД для вывода всех категорий'''
 def get_all_tasks(db: Session, subjectID: int | None = None):
     if subjectID is None:
         query = """
@@ -47,6 +47,27 @@ def get_all_tasks(db: Session, subjectID: int | None = None):
         mode="mappings_all",
         params= params,
         error_message=f"Ошибка при получения категорий из БД"
+    )
+
+
+''' функция-SQL запрос к БД для вывода всех предметов'''
+def get_all_subjects(db: Session):
+    return general.run_query_select(
+        db,
+        query= """SELECT * FROM Subjects""",
+        mode="mappings_all",
+        params= None,
+        error_message=f"Ошибка при получения предметов из БД"
+    )
+
+''' функция-SQL запрос к БД для вывода определенного предмета'''
+def get_subject_by_id(db: Session, subjectID: int):
+    return general.run_query_select(
+        db,
+        query= """SELECT * FROM Subjects WHERE ID = :subjectID""",
+        mode="mappings_first",
+        params= {"subjectID": subjectID},
+        error_message=f"Ошибка при получения предмета из БД"
     )
 
 

@@ -23,6 +23,21 @@ class TaskListResponse(BaseModel):
     count: Optional[int] = None
     tasks: List[TaskRead]
 
+
+class SubjectRead(BaseModel):
+    ID: int
+    Name: str
+    Description: str
+
+    class Config:
+        from_attributes = True
+
+class SubjectListResponse(BaseModel):
+    message: str
+    count: Optional[int] = None
+    subjects: List[SubjectRead]
+
+
 # для подзадач
 # optional значит что поле может быть не заполнено
 class SubTaskRead(BaseModel):

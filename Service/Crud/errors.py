@@ -49,6 +49,8 @@ InvalidDate (дата в недопустимом формате)
 EmptyAnswer (пустой ответ)
 MissingRequiredField (Отсутствует обязательное поле)
 AlreadyExists (Уже существует) 
+SubjectNotFound (Предмет не найден)
+TaskNotFound  (Категория не найдена)
 TaskNotFound  (Задание не найдено)
 LateSubmission (просрочена отправка)
 '''
