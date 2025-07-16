@@ -1,11 +1,12 @@
 from config import TEMPLATES_DIR, LOG_LEVEL
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, Request, HTTPException
 from Routers import tasks,students,auth,files  # Импортируем роутер задач
 from fastapi.openapi.docs import get_swagger_ui_html, get_redoc_html
 from fastapi.staticfiles import StaticFiles
 from Crud.auth import get_swagger_user
 import uvicorn
 from sqlalchemy import text
+from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse
 from log import setup_logging
@@ -28,7 +29,7 @@ setup_logging()
 
 
 
-app = FastAPI(debug=LOG_LEVEL, redoc_url=None)
+app = FastAPI(debug=LOG_LEVEL, docs_url=None, redoc_url=None)
 producer = get_kafka_producer()
 # Регистрируем роутер
 app.include_router(auth.auth_router) # Регистрируем роутер Аутентификации
@@ -55,9 +56,12 @@ frontend_path = os.path.join(os.path.dirname(__file__), "..", "Client", "dist")
 # Подключаем статику
 app.mount("/assets", StaticFiles(directory=os.path.join(frontend_path, "assets")), name="assets")
 
-origins = [
+'''origins = [
     "http://localhost:5174",   # твой frontend (vite)
     "https://info-run.ru",     # если понадобится
+]'''
+origins = [
+    "*"    # если понадобится
 ]
 # для запросов с фронта
 app.add_middleware(
@@ -90,14 +94,45 @@ def shutdown_event():
     if producer:
         producer.close()
 
+# 📄 Отдача index.html при любом неизвестном GET-запросе (кроме /api)
+
+
 # Главная страница
-@app.get("/")
+'''@app.get("/")
 def read_index():
     return FileResponse(os.path.join(frontend_path, "index.html"))
+'''
+
+"""Swagger"""
+
+@app.get("/docs", dependencies=[Depends(get_swagger_user)])
+async def get_documentation():
+    return get_swagger_ui_html(openapi_url=app.openapi_url, title="Документация API")
+'''
+@app.get("/docs", response_class=HTMLResponse)
+def swagger_ui_html(username: str = Depends(get_swagger_user)):
+    return get_swagger_ui_html(
+        openapi_url="/openapi.json",
+        title="Документация API",
+        swagger_js_url="https://cdn.jsdelivr.net/npm/swagger-ui-dist@4/swagger-ui-bundle.js",
+        swagger_css_url="https://cdn.jsdelivr.net/npm/swagger-ui-dist@4/swagger-ui.css",
+    )'''
+
+@app.get("/redoc", dependencies=[Depends(get_swagger_user)])
+async def get_redoc_documentation():
+    return get_redoc_html(openapi_url=app.openapi_url, title="Документация API")
+
+# openapi.json без защиты
+@app.get("/openapi.json")
+async def openapi():
+    return app.openapi()
 
 # Обработка остальных маршрутов (если SPA)
 @app.get("/{full_path:path}")
 def read_spa(full_path: str):
+    excluded_paths = ("api", "docs", "openapi.json", "redoc")
+    if any(full_path == p or full_path.startswith(p + "/") for p in excluded_paths):
+        raise HTTPException(status_code=404)
     return FileResponse(os.path.join(frontend_path, "index.html"))
 
 
@@ -106,15 +141,8 @@ def read_spa(full_path: str):
 def read():
     return RedirectResponse(url="/home/login_in/")'''
 
-"""Swagger
-@app.get("/docs", dependencies=[Depends(get_swagger_user)])
-async def get_documentation():
-    return get_swagger_ui_html(openapi_url=app.openapi_url, title="Документация API")
 
-@app.get("/redoc", dependencies=[Depends(get_swagger_user)])
-async def get_redoc_documentation():
-    return get_redoc_html(openapi_url=app.openapi_url, title="Документация API")
-"""
+
 """запуск сервера"""
 if __name__ == "__main__":
     uvicorn.run("main:app", host="localhost", port=9000)

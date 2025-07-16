@@ -2,6 +2,7 @@ from Service.config import TEMPLATES_DIR
 from Service.Models import Student
 from Service.Schemas.auth import StudentLogin, StudentAuth, AssignPermissionsRequest, ChangePasswordRequest, AdminChangePasswordRequest, TokenWithStudent, StudentOut
 from Service.Crud.auth import get_current_student, permission_required, verify_password, hash_password, get_current_student_or_redirect, get_student_by_login
+from Service.Crud.auth import change_password
 from Service.Security.token import create_access_token
 from Service.dependencies import get_db,get_log_db, get_producer_dep
 from Service.producer import send_log
@@ -22,7 +23,7 @@ logger = logging.getLogger(__name__)
 
 # Routers\auth.py
 home_router = APIRouter() # страница для пользователей
-auth_router = APIRouter(prefix="/auth", tags=["auth"]) # страница для пользователей
+auth_router = APIRouter(prefix="/api/auth", tags=["auth"]) # страница для пользователей
 admin_router = APIRouter(prefix="/admin", tags=["admin"]) # страница для админа
 templates = Jinja2Templates(directory=TEMPLATES_DIR)
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
@@ -43,7 +44,7 @@ def login(
     user_agent = request.headers.get("User-Agent")
 
     # Ищем студента в базе по логину
-    student = get_student_by_login(student_login.Login, db)
+    student = get_student_by_login(db, student_login.Login)
     if not student:
         logger.warning(f"Попытка входа с несуществующим логином: {student_login.Login}")
         send_log(
@@ -125,14 +126,15 @@ def login(
 После аутентификации фронт будет в заголовке отправлять токен, по нему с помощью функции get_current_student()
 получаем информации о пользователе (данный роут нужен для Backend)
 """
-# /auth/check-token
+# /api/auth/check-token
 @auth_router.get("/check-token", response_model=StudentOut, summary="Образец получения данных пользователя по токену (с разрешениями)")
 def check_token(request: Request, current_student = Depends(get_current_student)):
     return current_student
 
-# /auth/logout
+# /api/auth/logout
 '''Реализация выхода (удаления cookie с токеном)'''
-@auth_router.get("/logout", summary="Выход, удаление токена при использовании 'HttpOnly cookie'")
+@auth_router.get("/logout", summary="Выход, удаление токена при использовании 'HttpOnly cookie'",
+                 description="Необходимо в заголовке отправлять токен (требуется для логироания выхода пользователя")
 async def logout(
         request: Request,
         response: Response,
@@ -161,11 +163,12 @@ async def logout(
     logger.info (f"detail LOGOUT")
     return {"detail": "LOGOUT"}
 
-# /auth/change-password
-@auth_router.post("/change-password", summary = "Сменить пароль текущего пользователя (меняет сам пользователь)")
-def change_password(data: ChangePasswordRequest, db: Session = Depends(get_db), current_student =  Depends(get_current_student)):
+# /api/auth/change-password
+@auth_router.post("/change-password", summary = "Сменить пароль текущего пользователя (меняет сам пользователь)",
+                  description="пользователя получаем по токену, который передается из заголовка с frontend")
+def student_change_password(data: ChangePasswordRequest, db: Session = Depends(get_db), current_student =  Depends(get_current_student)):
     # Получаем текущий хеш пароля из базы
-    stored_password = db.execute(text("select Password from students where ID = :id"), {"id": current_student["ID"]}).scalar()
+    stored_password = db.execute(text("select Password from students where ID = :id"), {"id": current_student.ID}).scalar()
 
     # Проверка старого пароля
     if not verify_password(data.old_password, stored_password):
@@ -196,8 +199,34 @@ def change_password(data: ChangePasswordRequest, db: Session = Depends(get_db), 
 
     # хешуруем новый пароль
     new_hashed_password = hash_password(data.new_password)
-    db.execute(text("update Students set Password = :new_hashed_password where ID = :id" ), {"new_hashed_password": new_hashed_password, "id": current_student["ID"]})
-    db.commit()
+    update_password = change_password(db, current_student.ID, new_hashed_password)
+
+    if update_password != 1:
+        logger.warning(f"Не удалось обновить пароль для студента {current_student.Login}")
+        # отправляем лог в kafka
+        send_log(
+            StudentID=current_student.ID,
+            StudentLogin=current_student.Login,
+            action="ServerError",
+            details={
+                "DescriptionEvent": "Ошибка при обновлении пароля",
+                "Reason": "UpdatePasswordFailed"
+                # "Metadata": {"extra": "value"}  # по желанию
+            }
+        )
+        raise errors.internal_server(error="UpdatePasswordFailed", message="Ошибка при обновлении пароля")
+
+
+    logger.info(f"Пароль студента {current_student.Login} успешно обновлен!")
+    send_log(
+        StudentID=current_student.ID,
+        StudentLogin=current_student.Login,
+        action="PASSWORD_CHANGED",
+        details={
+            "DescriptionEvent": "Пароль успешно изменён",
+            # "Metadata": {"extra": "value"}  # по желанию
+        }
+    )
     return {"message": "Пароль успешно изменён"}
 
 
