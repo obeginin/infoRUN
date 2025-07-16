@@ -59,6 +59,8 @@ UnhandledException (необработанное исключение)
 DatabaseUnavailable (БД недоступна)
 KafkaUnavailable (Kafka недоступна)
 ExternalServiceTimeout (таймаут внешнего сервиса)
+
+UpdatePasswordFailed (Ошибка при обновлении пароля)
 '''
 
 # EMAIL_ERROR = "EmailError"
