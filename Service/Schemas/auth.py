@@ -20,8 +20,8 @@ class StudentAuth(BaseModel):
     First_Name: str
     Email: str | None
     RoleName: str | None
-    #IsActive
-    #IsDeleted
+    IsActive: bool
+    IsDeleted: date | None
 
     class Config:
         from_attributes = True # для моделей без orm_mode в Pydantic v2
