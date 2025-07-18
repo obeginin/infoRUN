@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__) # создание логгера для т
 def get_all_students(db: Session):
     return general.run_query_select(
         db,
-        query= """SELECT * FROM Students""",
+        query= """SELECT s.*, r.Name as RoleName FROM Students s LEFT JOIN Roles r ON s.RoleID = r.RoleID""",
         mode="mappings_all",
         params= None,
         error_message=f"Ошибка при получения студентов из БД"
@@ -108,13 +108,16 @@ def get_all_students_tasks(db: Session):
     return student_tasks
 '''
 '''функция которая работает по хранимке'''
-def get_students_all_tasks(db, StudentID=None, CompletionStatus=None, TaskID=None, VariantID=None, SortColumn=None, SortDirection=None):
+def get_students_all_tasks(db, StudentID=None, SubjectID= None, CompletionStatus=None, TaskID=None, VariantID=None, SortColumn=None, SortDirection=None, limit=None, offset=None):
     '''if CompletionStatus is None:
         CompletionStatus = 'Не приступал'
         '''
     logging.info(
         f"Запускаем функцию с вызовом хранимки. StudentID:{StudentID}, CompletionStatus:{CompletionStatus} TaskID:{TaskID}  VariantID: {VariantID} SortColumn:{SortColumn} SortDirection: {SortDirection}")
-
+    if limit is None:
+        limit = 10
+    if offset is None:
+        offset = 0
     query = text("""
         EXEC GetStudentsTasks 
             @StudentID = :StudentID,
@@ -123,7 +126,9 @@ def get_students_all_tasks(db, StudentID=None, CompletionStatus=None, TaskID=Non
             @VariantID = :VariantID,
             @CompletionStatus = :CompletionStatus,
             @SortColumn = :SortColumn,
-            @SortDirection = :SortDirection
+            @SortDirection = :SortDirection,
+            @Limit = :Limit,
+            @Offset = :Offset
     """)
     result = db.execute(query, {
         "StudentID": StudentID,
@@ -132,7 +137,9 @@ def get_students_all_tasks(db, StudentID=None, CompletionStatus=None, TaskID=Non
         "VariantID": VariantID,
         "CompletionStatus": CompletionStatus,
         "SortColumn": SortColumn,
-        "SortDirection": SortDirection
+        "SortDirection": SortDirection,
+        "Limit": limit,
+        "Offset": offset,
     })
     rows = result.mappings().all()  # получаем все строки как словари
     #for row in rows:
