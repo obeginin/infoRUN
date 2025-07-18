@@ -33,6 +33,7 @@ app = FastAPI(debug=LOG_LEVEL, docs_url=None, redoc_url=None)
 producer = get_kafka_producer()
 # Регистрируем роутер
 app.include_router(auth.auth_router) # Регистрируем роутер Аутентификации
+app.include_router(auth.admin_router)
 app.include_router(auth.home_router)
 app.include_router(tasks.subject_router)  # маршрут для предметов
 app.include_router(tasks.task_router) # подключает маршруты из routers/tasks.py.
@@ -43,7 +44,7 @@ app.include_router(tasks.varinant_router) # Регистрируем роуте�
 app.include_router(students.students_router)  # Регистрируем роутер для студентов
 app.include_router(students.students_subtasks_router) # Регистрируем роутер для задач студентов
 
-app.include_router(auth.admin_router)
+
 app.add_middleware(LoggingMiddleware) # Middleware для логов всех запросов
 #app.include_router(files.router)
 

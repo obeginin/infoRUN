@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 # Routers\auth.py
 home_router = APIRouter() # страница для пользователей
 auth_router = APIRouter(prefix="/api/auth", tags=["auth"]) # страница для пользователей
-admin_router = APIRouter(prefix="/admin", tags=["admin"]) # страница для админа
+admin_router = APIRouter(prefix="/api/admin", tags=["admin"]) # страница для админа
 templates = Jinja2Templates(directory=TEMPLATES_DIR)
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
@@ -322,7 +322,7 @@ def read_students_me(current_student: Student = Depends(get_current_student)):
     }
 '''
 # /admin/ @
-'''Роут, доступный только администраторам'''
+'''Роут, доступный только администраторам
 @admin_router.get("/", response_class=HTMLResponse)
 def admin_dashboard(
     request: Request,
@@ -332,19 +332,29 @@ def admin_dashboard(
         "request": request,
         "student": current_student
     })
-
+'''
 
 '''вывод списка студентов в формате JSON'''
-# /admin/api/students @
-@admin_router.get("/api/students")
+# /api/admin/api/students @
+@admin_router.get("/students", summary="Получить список студентов в формате JSON")
 def api_get_students(db: Session = Depends(get_db)):
     result = db.execute(text("SELECT * FROM Students")).fetchall()
     students = [dict(row._mapping) for row in result]
     return JSONResponse(content=jsonable_encoder(students))
 
-# /admin/api/students/{StudentID}/subtasks
+'''
+summary="Получить список студентов в формате JSON",
+                  description="""Если передан параметр **subjectID**, то возвращаются категории только для указанного предмета.  
+                      Если параметр не передан, возвращаются задачи по всем предметам.  
+                      **subjectID** передается как Query-параметр   
+                              "`/api/tasks` — все задачи"  
+                              "`/api/tasks?subjectID=10` — задачи для предмета с ID 10"  
+                              так же необходимо передавать в заголовке **токен** пользователя
+                      """
+'''
+# /api/admin/api/students/{StudentID}/subtasks
 '''Возвращем список задач выбранного студента в формате JSON'''
-@admin_router.get("/api/students/{StudentID}/subtasks")
+@admin_router.get("/students/{StudentID}/subtasks", summary="Получить список задач выбранного студента в формате JSON")
 def api_get_student_subtasks(StudentID: int, db: Session = Depends(get_db)):
     result = db.execute(text("SELECT * FROM StudentTasks WHERE StudentID = :StudentID"), {"StudentID": StudentID}).fetchall()
     subtasks = [dict(row._mapping) for row in result]
@@ -352,7 +362,7 @@ def api_get_student_subtasks(StudentID: int, db: Session = Depends(get_db)):
     return JSONResponse(content=jsonable_encoder(subtasks))
 
 # /admin/ListStudents @
-'''Возвращем html страницу со списком всех студентов'''
+'''Возвращем html страницу со списком всех студентов
 @admin_router.get("/ListStudents",  response_class=HTMLResponse)
 def admin_read_all_students(
         request: Request,
@@ -363,18 +373,18 @@ def admin_read_all_students(
     if isinstance(current_student, RedirectResponse):
         return current_student
     return templates.TemplateResponse("Admin/ListStudents.html", {"request": request, "student": current_student})
-
+'''
 
 """Роли и разрешения"""
 
-# /admin/roles (GET)
-@admin_router.get("/roles", summary="Получить список всех ролей",)
+# /api/admin/roles (GET)
+@admin_router.get("/roles", summary="Получить список всех ролей")
 def read_roles(db: Session = Depends(get_db)):
     roles = db.execute(text("SELECT * FROM Roles")).mappings().all()
     return roles
 
-# /admin/students/{student_id}/assign-role (POST)
-@admin_router.post("/students/{student_id}/assign-role", summary="Назначить роль студенту по его id")
+# /api/admin/students/{student_id}/assign-role (POST)
+@admin_router.post("/students/{student_id}/assign-role", summary="Назначить роль студенту по его id с указанием id роли")
 def assign_role_to_student(student_id: int, role_id: int, db: Session = Depends(get_db)):
     role_exists = db.execute(text("SELECT * FROM Roles where RoleID = :role_id"), {"role_id": role_id}).mappings().fetchone()
     if not role_exists:
@@ -387,13 +397,13 @@ def assign_role_to_student(student_id: int, role_id: int, db: Session = Depends(
     return  {"message": f" Студенту {student_exists['Login']} успешно назначена роль {role_exists['Name']} "}
 
 
-# /admin/permission
+# /api/admin/permission
 @admin_router.get("/permission", summary="Получить список всех разрешений ")
 def read_permission(db: Session = Depends(get_db)):
     permission = db.execute(text("select * from Permissions")).mappings().all()
     return permission
 
-# /admin/roles/{role_id}/assign-permission
+# /api/admin/roles/{role_id}/assign-permission
 @admin_router.get("/roles/{role_id}/assign-permission" , summary="Получить список разрешения для роли по её id")
 def exists_permissions_role(role_id: int, db: Session = Depends(get_db)):
     role_exists = db.execute(text("SELECT * FROM Roles where RoleID = :role_id"),
@@ -405,13 +415,13 @@ def exists_permissions_role(role_id: int, db: Session = Depends(get_db)):
                                             FROM RolePermissions rp
                                             JOIN Roles r ON rp.RoleID = r.RoleID
                                             JOIN Permissions p ON rp.PermissionID = p.PermissionID
-                                            WHERE r.RoleID = 1
+                                            WHERE r.RoleID = :role_id
                                             ORDER BY r.RoleID"""),
                              {"role_id": role_id}).mappings().all()
     if not role_permissions:
         return HTTPException(status_code=404, detail="Разрешений у выбранной роли не найдено")
 
-    # Формируем результат, для выбранно роли выводим
+    # Формируем результат, для выбранной роли выводим
     role_info = {
         "role_id": role_permissions[0]["RoleID"], # её id
         "role_name": role_permissions[0]["RoleName"], # её имя
@@ -423,8 +433,10 @@ def exists_permissions_role(role_id: int, db: Session = Depends(get_db)):
 
 
 
-# /admin/roles/{role_id}/assign-permission
-@admin_router.post("/roles/{role_id}/assign-permission", summary="Назначить разрешения для роли")
+# /api/admin/roles/{role_id}/assign-permission
+@admin_router.post("/roles/{role_id}/assign-permission", summary="Назначить разрешения для роли",
+                   description="""для выбранной роли по её id необходимо передать массив из id разрашений, данный массив и будет назначен для данной роли
+                   список разрешений можно посмотреть по роуту: /api/admin/permission""")
 def assign_permission_for_role (role_id: int, data: AssignPermissionsRequest, db: Session = Depends(get_db)):
     # проверяем что такая роль существует
     role_exists = db.execute(text("SELECT * FROM Roles where RoleID = :role_id"),
@@ -482,13 +494,13 @@ def admin_change_password(
 """роут с историей пользователя (его надо перенести либо доработать) и надо сделать такой же
 только id берется от текущего пользователя"""
 # /admin/logs
-@admin_router.get("/logs", summary = "Вывод истории входов пользователя по его ID")
+@admin_router.get("/logs", summary = "Вывод истории действий пользователя по его ID")
 #def get_logs(current_user: Student = Depends(get_current_student), db_log: Session = Depends(get_log_db)):
 def get_logs(studentID: int, db_log: Session = Depends(get_log_db)):
     result = db_log.execute(text("""
         SELECT TOP 50 * FROM StudentActionLogs
         WHERE StudentID = :student_id
-        ORDER BY EventTime DESC
+
     """), {'student_id': studentID})
 
     logs = result.mappings().all()
