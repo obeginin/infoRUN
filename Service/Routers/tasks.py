@@ -33,9 +33,9 @@ logger = logging.getLogger(__name__) # создание логгера для т
 '''Маршруты добавляются к основному адресу сайта localhost:9000/'''
 subject_router  = APIRouter(prefix="/api/subjects", tags=["subjects"])
 task_router  = APIRouter(prefix="/api/tasks", tags=["tasks"])
-subtask_router  = APIRouter(prefix="/subtasks", tags=["subtasks"])
+subtask_router  = APIRouter(prefix="/api/subtasks", tags=["subtasks"])
 task_js_router = APIRouter(prefix="/js", tags=["js"])
-varinant_router = APIRouter(prefix="/variants", tags=["variants"])
+varinant_router = APIRouter(prefix="/api/variants", tags=["variants"])
 
 #task_ji_router = APIRouter(prefix="/html", tags=["html"])
 
@@ -43,58 +43,6 @@ templates = Jinja2Templates(directory=TEMPLATES_DIR)
 
 
 """API"""
-
-# /api/tasks/   (GET) @
-''' Эндпоинт: Получить список КАТЕГОРИЙ'''
-# через @ указываем какому маршруту принадлежит Эндпоинт
-@task_router.get(
-    "",                    # добавляем префикс к адресу
-    response_model=tasks.TaskListResponse,   # указываем какой схеме должны соответствовать данные
-    summary="Получить список категорий (ЕГЭ_1 ЕГЭ_2, и т.д)",
-    description="""Если передан параметр **subjectID**, то возвращаются категории только для указанного предмета.  
-        Если параметр не передан, возвращаются задачи по всем предметам.  
-        **subjectID** передается как Query-параметр   
-                "`/api/tasks` — все задачи"  
-                "`/api/tasks?subjectID=10` — задачи для предмета с ID 10"  
-                так же необходимо передавать в заголовке **токен** пользователя
-        """
-)
-def read_all_tasks(
-        db: Session = Depends(get_db),
-        subjectID: int | None = Query(default=None),         # передаем id предмета (не обязательно, тогда выйдут категории всех предметов)
-        current_student = Depends(get_current_student)):     # получаем текущего студента по токену
-
-    if subjectID is None:
-        tasks = task_crud.get_all_tasks(db)  # функция без фильтрации
-    else:
-        tasks = task_crud.get_all_tasks(db, subjectID)
-    logger.warning(f"tasks:{tasks}")
-
-    if not tasks:
-        logger.warning(f"Не найдено задач с категорией id= {subjectID}, Возвращаем пустой список")
-        return {
-            "message": f"Для предмета с id={subjectID} категорий не найдено",
-            "tasks": []
-        }
-
-    count = len(tasks)
-    send_log(
-        StudentID=None,  # Или 0
-        StudentLogin=current_student.Login,
-        action="GetTasks",
-        details={
-            "DescriptionEvent": f"Получение задач по предмету id:{subjectID}",
-            "SubjectID": subjectID,
-            "TasksCount": count
-        }
-    )
-    logger.info(f"Пользователь {current_student.Login} запросил список категорий для предмета с id:{subjectID}")
-    return {
-        "message": f"Найдено задач: {count}",
-        "count": count,
-        "tasks": tasks
-    }
-
 
 # /api/subjects   (GET) @
 @subject_router.get(
@@ -178,6 +126,7 @@ def read_all_subject(
     return subject
 
 
+
 '''@subject_router.get("/api", summary="Вывод списка предметов")
 def read_subject (db: Session = Depends(get_db), response_model=List[tasks.SubjectOut]):
     subjects = db.execute(text("SELECT * FROM Subjects")).mappings().all()
@@ -185,9 +134,61 @@ def read_subject (db: Session = Depends(get_db), response_model=List[tasks.Subje
     return subjects'''
 
 
-# /tasks/api/TaskID/{task_id}    (GET) @
+
+# /api/tasks/   (GET) @
+''' Эндпоинт: Получить список КАТЕГОРИЙ'''
+# через @ указываем какому маршруту принадлежит Эндпоинт
+@task_router.get(
+    "",                    # добавляем префикс к адресу
+    response_model=tasks.TaskListResponse,   # указываем какой схеме должны соответствовать данные
+    summary="Получить список категорий (ЕГЭ_1 ЕГЭ_2, и т.д)",
+    description="""Если передан параметр **subjectID**, то возвращаются категории только для указанного предмета.  
+        Если параметр не передан, возвращаются задачи по всем предметам.  
+        **subjectID** передается как Query-параметр   
+                "`/api/tasks` — все задачи"  
+                "`/api/tasks?subjectID=10` — задачи для предмета с ID 10"  
+                так же необходимо передавать в заголовке **токен** пользователя
+        """
+)
+def read_all_tasks(
+        db: Session = Depends(get_db),
+        subjectID: int | None = Query(default=None),         # передаем id предмета (не обязательно, тогда выйдут категории всех предметов)
+        current_student = Depends(get_current_student)):     # получаем текущего студента по токену
+
+    if subjectID is None:
+        tasks = task_crud.get_all_tasks(db)  # функция без фильтрации
+    else:
+        tasks = task_crud.get_all_tasks(db, subjectID)
+    logger.warning(f"tasks:{tasks}")
+
+    if not tasks:
+        logger.warning(f"Не найдено задач с категорией id= {subjectID}, Возвращаем пустой список")
+        return {
+            "message": f"Для предмета с id={subjectID} категорий не найдено",
+            "tasks": []
+        }
+
+    count = len(tasks)
+    send_log(
+        StudentID=None,  # Или 0
+        StudentLogin=current_student.Login,
+        action="GetTasks",
+        details={
+            "DescriptionEvent": f"Получение задач по предмету id:{subjectID}",
+            "SubjectID": subjectID,
+            "TasksCount": count
+        }
+    )
+    logger.info(f"Пользователь {current_student.Login} запросил список категорий для предмета с id:{subjectID}")
+    return {
+        "message": f"Найдено задач: {count}",
+        "count": count,
+        "tasks": tasks
+    }
+
+# /api/tasks/TaskID/{task_id}    (GET) @
 ''' Эндпоинт: Получить список задач с категорией TaskID'''
-@task_router.get("/api/TaskID/{task_id}", response_model=list[tasks.SubTaskRead],summary="Получить подзадачу по TaskID")
+@task_router.get("/TaskID/{task_id}", response_model=list[tasks.SubTaskRead],summary="Получить список задач с категорией TaskID")
 def read_subtasks_TaskID(task_id: int, db: Session = Depends(get_db)):
     result = db.execute(text(f"""SELECT * FROM SubTasks s
                             LEFT JOIN Variants v on s.VariantID = v.VariantID
@@ -195,36 +196,36 @@ def read_subtasks_TaskID(task_id: int, db: Session = Depends(get_db)):
     subtasks = [dict(row._mapping) for row in result]
     return subtasks
 
-# /tasks/api/TaskID/subtasks{subtask_id}    (GET)
+# /api/tasks/TaskID/subtasks{subtask_id}    (GET)
 ''' Эндпоинт: Получить подзадачу по subtask_id'''
 @task_router.get("/api/{TaskID}/subtasks{subtask_id}", response_model=tasks.SubTaskRead,summary="Получить подзадачу по id")
 def read_subtasks_subtask_id(subtask_id: int, db: Session = Depends(get_db)):
     return task_crud.get_subtasks_id(db, subtask_id)
 
 
-# /tasks/api/variants  (GET) @
+# /api/tasks/variants  (GET) @
 ''' Получить список вариантов'''
-@task_router.get("/api/variants")
+@task_router.get("/variants")
 def read_tasks_id(db: Session = Depends(get_db)):
     result = db.execute(text(f"select VariantID, VariantName from Variants order by VariantName")).fetchall()
     variants = [dict(row._mapping) for row in result]
     return variants
 
-# /tasks/api/{task_id}  (GET) @
+# /api/tasks/{task_id}  (GET) @
 ''' Эндпоинт: Получить категорию по id'''
-@task_router.get("/api/{task_id}", response_model=list[tasks.TaskRead],summary="Получить задачу по id")
+@task_router.get("/{task_id}", response_model=list[tasks.TaskRead],summary="Получить задачу по id")
 def read_tasks_id(task_id: int, db: Session = Depends(get_db)):
     print(type(task_id))
     result = db.execute(text(f"SELECT TaskID, TaskNumber, TaskTitle FROM Tasks where TaskID = :task_id"),{"task_id": task_id}).fetchall()
     subtasks = [dict(row._mapping) for row in result]
     return subtasks
 
-# /tasks/exec/{VariantID}
+# /api/tasks/exec/{VariantID}
 '''вызов хранимки с вариантом'''
-@task_router.get("/exec/{VariantID}/{StudentID}")
-def read_tasks_of_variant (VariantID: int, db: Session = Depends(get_db), current_student = Depends(get_current_student_or_redirect)):
+@task_router.get("/exec/{VariantID}/{StudentID}", summary="роут с вызовом хранимой процедуры")
+def read_tasks_of_variant (VariantID: int, StudentID: int, db: Session = Depends(get_db), current_student = Depends(get_current_student_or_redirect)):
     query = text("EXEC dbo.GetStudentsTasks @VariantID =:VariantID, @StudentID =:StudentID")
-    result = db.execute(query, {"VariantID": VariantID, "StudentID": 2}).fetchall()
+    result = db.execute(query, {"VariantID": VariantID, "StudentID": StudentID}).fetchall()
     print(result)
     if not result:
             raise HTTPException(status_code=404, detail=f"нет задач с варианте с ID {VariantID}")
@@ -234,97 +235,12 @@ def read_tasks_of_variant (VariantID: int, db: Session = Depends(get_db), curren
 
 
 
-"""HTML"""
-
-# /tasks/   (GET) @
-'''Вывод страницы html с категориями'''
-''''@task_router.get("/", response_class=HTMLResponse)
-def read_subtasks_TaskID(request: Request, current_student = Depends(get_current_student_or_redirect)):
-    if isinstance(current_student, RedirectResponse):
-        return current_student
-    return templates.TemplateResponse("Tasks/tasks.html", {"request": request, "student": current_student})'''
 
 
 
-
-# /tasks/{task_id}/subtasks{subtask_id}   (GET) @
-'''Вывод страницы html с задачей'''
-@task_router.get("/{task_id}/subtasks{subtask_id}", response_class=HTMLResponse)
-def read_subtasks_subtask_id(request: Request, subtask_id: int, current_student = Depends(get_current_student_or_redirect),):
-    if isinstance(current_student, RedirectResponse):
-        logger.info("Пользователь не авторизован — перенаправляем")
-        return current_student
-
-    return templates.TemplateResponse("Tasks/task.html", {"request": request, "student": current_student,"subtask_id": subtask_id})
-
-
-# /tasks/create  (GET) @
-'''Вызов страницы с добавлением задачи'''
-@task_router.get("/create", response_class=HTMLResponse)
-def get_subtask_form(request: Request, current_student = Depends(permission_required("create_tasks")), db: Session = Depends(get_db)):
-    logger.info(f"Открываем страницу с созданием задачи {current_student}")
-    tasks = task_crud.get_all_tasks(db)
-    if isinstance(current_student, RedirectResponse):
-        return current_student
-    return templates.TemplateResponse("Tasks/create.html", {"request": request, "student": current_student,"tasks": tasks})
-# /tasks/{task_id}/create  (GET) @
-'''Два одинаковых роута, для ссылок с разных страниц, чтобы корректно отрабатывала кнопка назад'''
-@task_router.get("/{task_id}/create", response_class=HTMLResponse)
-def get_subtask_form_with_id(request: Request, current_student = Depends(permission_required("create_tasks")), db: Session = Depends(get_db)):
-    logger.info("Открываем страницу с созданием задачи")
-    tasks = task_crud.get_all_tasks(db)
-    if isinstance(current_student, RedirectResponse):
-        return current_student
-    return templates.TemplateResponse("Tasks/create.html", {"request": request, "student": current_student,"tasks": tasks})
-
-
-# /tasks/{task_id}  (GET) @
-'''Подключаем html с конкретной категорией'''
-@task_router.get("/{task_id}", response_class=HTMLResponse)
-def list_subtasks(request: Request, task_id: int, current_student = Depends(get_current_student_or_redirect)):
-    if isinstance(current_student, RedirectResponse):
-        return current_student
-    return templates.TemplateResponse("Tasks/subtasks.html", {"request": request, "taskId": task_id, "student": current_student})
-
-
-# /tasks/{task_id}/subtasks{subtask_id}/edit  (GET) @
-'''Вызов страницы с редактированием задачи'''
-@task_router.get("/{task_id}/subtasks{subtask_id}/edit", response_class=HTMLResponse)
-def get_edit_subtask_form(
-        request: Request,
-        subtask_id: int,
-        current_student = Depends(permission_required("edit_tasks")),
-        db: Session = Depends(get_db)):
-    logger.info("Открываем страницу с редактированием задачи")
-    if isinstance(current_student, RedirectResponse):
-        logger.info("Пользователь не авторизован — перенаправляем")
-        return current_student
-
-    logger.info(f"Открываем страницу редактирования подзадачи ID={subtask_id}")
-
-    subtask = task_crud.get_subtasks_id(db, subtask_id)
-    tasks = task_crud.get_all_tasks(db)
-
-    variants = db.execute(text("SELECT VariantName FROM Variants order by VariantName")).scalars().all()
-
-    return templates.TemplateResponse("Tasks/edit.html", {"request": request, "student": current_student,"subtask": subtask, "tasks": tasks, "variants": variants})
-
-
-
-
-
-
-# /variants/   @
-'''Вызываем html страницу с вариантами'''
-@varinant_router.get("/", response_class=HTMLResponse)
-def list_tasks_of_varinants(request: Request, current_student = Depends(get_current_student_or_redirect)):
-    if isinstance(current_student, RedirectResponse):
-        return current_student
-    return templates.TemplateResponse("Tasks/variants.html", {"request": request, "student": current_student})
-
-
-# /variants/check_answers
-@varinant_router.post("/check_answers")
+# /api/variants/check_answers
+@varinant_router.post("/check_answers", summary="роут который проверяет ответы пользователя для целого вараинта",
+                      description="передаем словарь с ответами на все задангия пользователя в виде строк")
 def check_answers(user_answers: Dict[int, Optional[str]], db: Session = Depends(get_db)):
     results = []
     print(user_answers)
@@ -358,31 +274,13 @@ def check_answers(user_answers: Dict[int, Optional[str]], db: Session = Depends(
         "message": f"Верно: {sum(r['IsCorrect'] for r in results)} из {len(results)}"
     }
 
-# /variants/{VariantID}    @
-'''Вызываем html страницу с конкретным вариантом'''
-@varinant_router.get("/{VariantID}", response_class=HTMLResponse)
-def list_tasks(request: Request, VariantID:int, current_student = Depends(get_current_student_or_redirect), db: Session = Depends(get_db)):
-    print(current_student)
-    if isinstance(current_student, RedirectResponse):
-        return current_student
-    print(current_student)
-    StudentID = current_student.ID
-    print(StudentID)
-    tasks = read_tasks_of_variant(VariantID, db)
-    return templates.TemplateResponse("Tasks/var.html", {"request": request, "tasks": tasks, "student":current_student})
 
 
-
-
-
-
-
-
-# /subtasks/create_form/    (POST)
+# /api/subtasks/create_form/    (POST)
 '''Получаем с html страницы данные из формы и запускаем с этими параметрами функцию create_subtask_from_form
 в ней добавляем новую задачу в базу и возвращаем номер новой задачи и редиректим на неё
 '''
-@subtask_router.post("/create_form")
+@subtask_router.post("/create_form", summary="роут с созданием задачи через форму")
 def post_subtask_form(
     TaskID: int = Form(...),
     VariantName: str = Form(""),
@@ -414,9 +312,9 @@ def post_subtask_form(
 
 
 
-# /subtasks/edit_form/    (POST)
+# /api/subtasks/edit_form/    (POST)
 '''Отправка данных с добавленной задачей из формы с html страницы'''
-@subtask_router.post("/edit_form")
+@subtask_router.post("/edit_form", summary="роут с редактированием задачи через форму")
 def post_edit_subtask_form(
     SubTaskID: int = Form(...),
     TaskID: int = Form(...),
@@ -535,9 +433,9 @@ def post_edit_subtask_form(
 
 
 
-# /subtasks/files/{file_id}/download   (GET)
+# /api/subtasks/files/{file_id}/download   (GET)
 '''Скачивание файла прикрепленного к задаче'''
-@subtask_router.get("/files/{file_id}/download")
+@subtask_router.get("/files/{file_id}/download",  summary="скачивание файла с задачей")
 def download_file(file_id: int, db: Session = Depends(get_db)):
     db_file = db.query(SubTaskFiles).filter(SubTaskFiles.ID == file_id).first()
     if not db_file:
@@ -546,7 +444,7 @@ def download_file(file_id: int, db: Session = Depends(get_db)):
     return FileResponse(path=db_file.FilePath, filename=db_file.FileName)
 
 '''получение всех файлов задачи'''
-@subtask_router.get("/api/files/{subtask_id}", response_model=List[tasks.FileSchema])
+@subtask_router.get("/files/{subtask_id}", response_model=List[tasks.FileSchema], summary="роут с получением всех файлов задачи")
 def get_files_for_subtask(subtask_id: int, db: Session = Depends(get_db)):
     files = db.execute(text("""
         SELECT ID, FileName, FilePath, UploadDate
@@ -554,6 +452,121 @@ def get_files_for_subtask(subtask_id: int, db: Session = Depends(get_db)):
         WHERE SubTaskID = :subtask_id
     """), {"subtask_id": subtask_id}).mappings().all()
     return list(files)
+
+
+
+
+
+
+
+"""HTML"""
+
+# /tasks/   (GET) @
+'''Вывод страницы html с категориями'''
+''''@task_router.get("/", response_class=HTMLResponse)
+def read_subtasks_TaskID(request: Request, current_student = Depends(get_current_student_or_redirect)):
+    if isinstance(current_student, RedirectResponse):
+        return current_student
+    return templates.TemplateResponse("Tasks/tasks.html", {"request": request, "student": current_student})'''
+
+
+
+
+# /tasks/{task_id}/subtasks{subtask_id}   (GET) @
+'''Вывод страницы html с задачей
+@task_router.get("/{task_id}/subtasks{subtask_id}", response_class=HTMLResponse)
+def read_subtasks_subtask_id(request: Request, subtask_id: int, current_student = Depends(get_current_student_or_redirect),):
+    if isinstance(current_student, RedirectResponse):
+        logger.info("Пользователь не авторизован — перенаправляем")
+        return current_student
+
+    return templates.TemplateResponse("Tasks/task.html", {"request": request, "student": current_student,"subtask_id": subtask_id})
+'''
+
+# /tasks/create  (GET) @
+'''Вызов страницы с добавлением задачи
+@task_router.get("/create", response_class=HTMLResponse)
+def get_subtask_form(request: Request, current_student = Depends(permission_required("create_tasks")), db: Session = Depends(get_db)):
+    logger.info(f"Открываем страницу с созданием задачи {current_student}")
+    tasks = task_crud.get_all_tasks(db)
+    if isinstance(current_student, RedirectResponse):
+        return current_student
+    return templates.TemplateResponse("Tasks/create.html", {"request": request, "student": current_student,"tasks": tasks})
+# /tasks/{task_id}/create  (GET) @
+Два одинаковых роута, для ссылок с разных страниц, чтобы корректно отрабатывала кнопка назад
+@task_router.get("/{task_id}/create", response_class=HTMLResponse)
+def get_subtask_form_with_id(request: Request, current_student = Depends(permission_required("create_tasks")), db: Session = Depends(get_db)):
+    logger.info("Открываем страницу с созданием задачи")
+    tasks = task_crud.get_all_tasks(db)
+    if isinstance(current_student, RedirectResponse):
+        return current_student
+    return templates.TemplateResponse("Tasks/create.html", {"request": request, "student": current_student,"tasks": tasks})
+'''
+
+# /tasks/{task_id}  (GET) @
+'''Подключаем html с конкретной категорией
+@task_router.get("/{task_id}", response_class=HTMLResponse)
+def list_subtasks(request: Request, task_id: int, current_student = Depends(get_current_student_or_redirect)):
+    if isinstance(current_student, RedirectResponse):
+        return current_student
+    return templates.TemplateResponse("Tasks/subtasks.html", {"request": request, "taskId": task_id, "student": current_student})
+'''
+
+# /tasks/{task_id}/subtasks{subtask_id}/edit  (GET) @
+'''Вызов страницы с редактированием задачи
+@task_router.get("/{task_id}/subtasks{subtask_id}/edit", response_class=HTMLResponse)
+def get_edit_subtask_form(
+        request: Request,
+        subtask_id: int,
+        current_student = Depends(permission_required("edit_tasks")),
+        db: Session = Depends(get_db)):
+    logger.info("Открываем страницу с редактированием задачи")
+    if isinstance(current_student, RedirectResponse):
+        logger.info("Пользователь не авторизован — перенаправляем")
+        return current_student
+
+    logger.info(f"Открываем страницу редактирования подзадачи ID={subtask_id}")
+
+    subtask = task_crud.get_subtasks_id(db, subtask_id)
+    tasks = task_crud.get_all_tasks(db)
+
+    variants = db.execute(text("SELECT VariantName FROM Variants order by VariantName")).scalars().all()
+
+    return templates.TemplateResponse("Tasks/edit.html", {"request": request, "student": current_student,"subtask": subtask, "tasks": tasks, "variants": variants})
+
+
+'''
+
+
+
+# /variants/   @
+'''Вызываем html страницу с вариантами
+@varinant_router.get("/", response_class=HTMLResponse)
+def list_tasks_of_varinants(request: Request, current_student = Depends(get_current_student_or_redirect)):
+    if isinstance(current_student, RedirectResponse):
+        return current_student
+    return templates.TemplateResponse("Tasks/variants.html", {"request": request, "student": current_student})
+'''
+
+
+
+# /variants/{VariantID}    @
+'''Вызываем html страницу с конкретным вариантом
+@varinant_router.get("/{VariantID}", response_class=HTMLResponse)
+def list_tasks(request: Request, VariantID:int, current_student = Depends(get_current_student_or_redirect), db: Session = Depends(get_db)):
+    print(current_student)
+    if isinstance(current_student, RedirectResponse):
+        return current_student
+    print(current_student)
+    StudentID = current_student.ID
+    print(StudentID)
+    tasks = read_tasks_of_variant(VariantID, db)
+    return templates.TemplateResponse("Tasks/var.html", {"request": request, "tasks": tasks, "student":current_student})
+'''
+
+
+
+
 
 
 
