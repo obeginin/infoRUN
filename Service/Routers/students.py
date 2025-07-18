@@ -1,5 +1,5 @@
 from Service.config import UPLOAD_IMAGE_DIR, UPLOAD_SOLUTION_DIR, UPLOAD_FILES_DIR, UPLOAD_STUDENTS_IMAGE_DIR, TEMPLATES_DIR
-from Service.Schemas.students import StudentTaskRead,StudentTaskDetails, AnswerInput, SolutionInput
+from Service.Schemas.students import StudentTaskRead,StudentTaskDetails, AnswerInput, SolutionInput, StudentTasksQueryParams
 from Service.Crud import students
 from Service.Routers.tasks import get_files_for_subtask
 from Service.dependencies import get_db  # Зависимость для подключения к базе данных
@@ -34,8 +34,8 @@ templates = Jinja2Templates(directory=TEMPLATES_DIR)
 ''' Эндпоинт: Получить список студентов'''
 @students_router.get(
     "",
-    response_model=list[StudentAuth],
-    summary="Получить список студентов",
+    response_model=list[StudentOut],
+    summary="Получить список студентов в формате JSON",
 )
 def read_all_students(db: Session = Depends(get_db)):
     return students.get_all_students(db)
@@ -78,9 +78,33 @@ def read_task_student( StudentTaskID: int, db: Session = Depends(get_db)):
     #return students.get_task_student(db, student_id, SubTasksID)
     return students.Get_Student_TaskDetails_By_ID(db, StudentTaskID)
 
-@students_subtasks_router.get("/{StudentID}", response_model=list[StudentTaskDetails], summary="роут с получением списка задач студента по StudentID")
-def read_task_student( StudentID: int, db: Session = Depends(get_db)):
-    return students.get_students_all_tasks(db, StudentID)
+
+# /api/students_subtasks/{StudentID}
+@students_subtasks_router.get("/{StudentID}", response_model=list[StudentTaskDetails],
+                              summary="роут с получением списка задач студента по StudentID",
+                              description="""В качестве фильтров передаются параметры  
+                                          CompletionStatus - Статус выполнения  
+                                          SubjectID - 
+                                          TaskID - ID категории 
+                                          VariantID - ID варианта
+                                          SortColumn - Колонка для сортировки
+                                          SortDirection - возрастанию/убыванию
+                                          """)
+def read_tasks_student( StudentID: int,
+                        filters: StudentTasksQueryParams = Depends(),
+                       db: Session = Depends(get_db)):
+    return students.get_students_all_tasks(
+        db,
+        StudentID=StudentID,
+        CompletionStatus=filters.CompletionStatus,
+        #SubjectID=filters.SubjectID,
+        TaskID=filters.TaskID,
+        VariantID=filters.VariantID,
+        SortColumn=filters.SortColumn,
+        SortDirection=filters.SortDirection,
+        limit=filters.limit,
+        offset=filters.offset
+    )
 
 
 '''Проверка ответа пользователя'''

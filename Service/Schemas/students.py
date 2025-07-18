@@ -45,7 +45,15 @@ class StudentTaskRead(StudentTaskBase):
 class StudentTaskDetails(StudentTaskRead):
     SolutionStudentPath: Optional[str] = None
 
-
+class StudentTasksQueryParams(BaseModel):
+    CompletionStatus: Optional[bool] = None
+    #SubjectID: Optional[int] = None
+    TaskID: Optional[int] = None
+    VariantID: Optional[int] = None
+    SortColumn: Optional[str] = None
+    SortDirection: Optional[str] = None
+    limit: int = 10 # сколько записей вернуть
+    offset: int = 0 # с какого элемента начинать
 
 class AnswerInput(BaseModel):
     subtaskId: int

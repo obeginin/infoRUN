@@ -334,14 +334,14 @@ def admin_dashboard(
     })
 '''
 
-'''вывод списка студентов в формате JSON'''
+'''вывод списка студентов в формате JSON
 # /api/admin/api/students @
 @admin_router.get("/students", summary="Получить список студентов в формате JSON")
 def api_get_students(db: Session = Depends(get_db)):
     result = db.execute(text("SELECT * FROM Students")).fetchall()
     students = [dict(row._mapping) for row in result]
     return JSONResponse(content=jsonable_encoder(students))
-
+'''
 '''
 summary="Получить список студентов в формате JSON",
                   description="""Если передан параметр **subjectID**, то возвращаются категории только для указанного предмета.  
