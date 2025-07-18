@@ -18,18 +18,29 @@ CRUD - основная логика работы запроса
 logger = logging.getLogger(__name__) # создание логгера для текущего модуля
 
 ''' Получение всех студентов'''
+''' функция-SQL запрос к БД для вывода всех студентов'''
 def get_all_students(db: Session):
-    query = text(f"SELECT * FROM Students")
-    result = db.execute(query).fetchall()
-    return result
+    return general.run_query_select(
+        db,
+        query= """SELECT * FROM Students""",
+        mode="mappings_all",
+        params= None,
+        error_message=f"Ошибка при получения студентов из БД"
+    )
 
-''' Получения студента по ID'''
+''' функция-SQL запрос к БД для вывода определенного студента'''
 def get_student_id(db: Session, Student_id: int):
-    query = text(f"SELECT * FROM Students where ID={Student_id}")
-    result = db.execute(query).fetchall()
-    if not result:
-        raise HTTPException(status_code=404, detail=f"Студент с ID {Student_id} не найден")
-    return result
+    return general.run_query_select(
+        db,
+        query= """SELECT s.*, r.Name as RoleName FROM Students s
+                LEFT JOIN Roles r ON s.RoleID = r.RoleID
+                WHERE s.ID = :Student_id""",
+        mode="mappings_first",
+        params= {"Student_id": Student_id},
+        error_message=f"Ошибка при получения студента из БД"
+    )
+
+
 
 ''' Получения студента по заданному полю(id, логин)'''
 def get_student_by_field(db: Session, value: str, by: str = "id"):
