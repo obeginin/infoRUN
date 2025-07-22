@@ -18,7 +18,7 @@ from producer import get_kafka_producer
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 import os
-
+from fastapi.openapi.utils import get_openapi
 # main.py
 '''главный файл проекта'''
 
@@ -96,29 +96,14 @@ def shutdown_event():
     if producer:
         producer.close()
 
-# 📄 Отдача index.html при любом неизвестном GET-запросе (кроме /api)
 
-
-# Главная страница
-'''@app.get("/")
-def read_index():
-    return FileResponse(os.path.join(frontend_path, "index.html"))
-'''
 
 """Swagger"""
 
 @app.get("/docs", dependencies=[Depends(get_swagger_user)])
 async def get_documentation():
     return get_swagger_ui_html(openapi_url=app.openapi_url, title="Документация API")
-'''
-@app.get("/docs", response_class=HTMLResponse)
-def swagger_ui_html(username: str = Depends(get_swagger_user)):
-    return get_swagger_ui_html(
-        openapi_url="/openapi.json",
-        title="Документация API",
-        swagger_js_url="https://cdn.jsdelivr.net/npm/swagger-ui-dist@4/swagger-ui-bundle.js",
-        swagger_css_url="https://cdn.jsdelivr.net/npm/swagger-ui-dist@4/swagger-ui.css",
-    )'''
+
 
 @app.get("/redoc", dependencies=[Depends(get_swagger_user)])
 async def get_redoc_documentation():
@@ -137,13 +122,35 @@ def read_spa(full_path: str):
         raise HTTPException(status_code=404)
     return FileResponse(os.path.join(frontend_path, "index.html"))
 
+'''Функция для добавления токена авторизации в SWAGGER'''
+def custom_openapi():
+    if app.openapi_schema:
+        return app.openapi_schema
 
-# Перенаправление на страницу логина при открытии корня (Основной адрес сайта)
-'''@app.get("/")
-def read():
-    return RedirectResponse(url="/home/login_in/")'''
+    openapi_schema = get_openapi(
+        title="Документация API",
+        version="1.0.0",
+        description="Описание API с авторизацией",
+        routes=app.routes,
+    )
 
+    openapi_schema["components"]["securitySchemes"] = {
+        "BearerAuth": {
+            "type": "http",
+            "scheme": "bearer",
+            "bearerFormat": "JWT"
+        }
+    }
 
+    # Добавим схему по умолчанию ко всем методам (можно кастомизировать при необходимости)
+    for path in openapi_schema["paths"].values():
+        for method in path.values():
+            method.setdefault("security", [{"BearerAuth": []}])
+
+    app.openapi_schema = openapi_schema
+    return app.openapi_schema
+
+app.openapi = custom_openapi
 
 """запуск сервера"""
 if __name__ == "__main__":
