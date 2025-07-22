@@ -1,13 +1,14 @@
 from Service.config import TEMPLATES_DIR
 from Service.Models import Student
-from Service.Schemas.auth import StudentLogin, StudentAuth, AssignPermissionsRequest, ChangePasswordRequest, AdminChangePasswordRequest, TokenWithStudent, StudentOut
-from Service.Crud.auth import get_current_student, permission_required, verify_password, hash_password, get_current_student_or_redirect, get_student_by_login
-from Service.Crud.auth import change_password
+from Service.Schemas import auth
+from Service.Crud.auth import get_current_student, permission_required, verify_password, hash_password, get_student_by_login
+from Service.Crud.auth import change_password, get_all_roles
 from Service.Security.token import create_access_token
 from Service.dependencies import get_db,get_log_db, get_producer_dep
 from Service.producer import send_log
 from Service.Crud import errors
 
+from typing import List
 from fastapi import APIRouter, Depends,Form, Request, HTTPException, status, Response
 from fastapi.concurrency import run_in_threadpool
 from sqlalchemy.orm import Session
@@ -32,12 +33,12 @@ pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
 """Роут с аутентификацией (логирование в kafka)"""
 # /auth/login
-@auth_router.post("/login", response_model=TokenWithStudent,
+@auth_router.post("/login", response_model=auth.TokenWithStudent,
                   summary="Аутентификация (запрос токена для пользователя)",
                   description="Возвращает токен, тип заколовка и небольшую информацию о пользователе, если логин и пароль корректны и пользователь активен.")
 def login(
     request: Request,
-    student_login: StudentLogin,
+    student_login: auth.StudentLogin,
     db: Session = Depends(get_db),
 ):
     ip = request.headers.get("X-Forwarded-For") or request.client.host
@@ -101,7 +102,7 @@ def login(
         raise errors.internal_server(error="TokenGenerationError", message="Ошибка при создании токена доступа")
 
     # Создаём Pydantic-модель из словаря (Селеризация)
-    student_short = StudentAuth(**student)
+    student_short = auth.StudentAuth(**student)
 
     # отправляем лог в kafka
     send_log(
@@ -115,7 +116,7 @@ def login(
             #"Metadata": {"extra": "value"}  # по желанию
         }
     )
-    return TokenWithStudent (
+    return auth.TokenWithStudent (
         access_token = access_token,
         token_type = "bearer",
         student = student_short
@@ -127,7 +128,7 @@ def login(
 получаем информации о пользователе (данный роут нужен для Backend)
 """
 # /api/auth/check-token
-@auth_router.get("/check-token", response_model=StudentOut, summary="Образец получения данных пользователя по токену (с разрешениями)")
+@auth_router.get("/check-token", response_model=auth.StudentOut, summary="Образец получения данных пользователя по токену (с разрешениями)")
 def check_token(request: Request, current_student = Depends(get_current_student)):
     return current_student
 
@@ -166,7 +167,7 @@ async def logout(
 # /api/auth/change-password
 @auth_router.post("/change-password", summary = "Сменить пароль текущего пользователя (меняет сам пользователь)",
                   description="пользователя получаем по токену, который передается из заголовка с frontend")
-def student_change_password(data: ChangePasswordRequest, db: Session = Depends(get_db), current_student =  Depends(get_current_student)):
+def student_change_password(data: auth.ChangePasswordRequest, db: Session = Depends(get_db), current_student =  Depends(get_current_student)):
     # Получаем текущий хеш пароля из базы
     stored_password = db.execute(text("select Password from students where ID = :id"), {"id": current_student.ID}).scalar()
 
@@ -378,10 +379,21 @@ def admin_read_all_students(
 """Роли и разрешения"""
 
 # /api/admin/roles (GET)
-@admin_router.get("/roles", summary="Получить список всех ролей")
-def read_roles(db: Session = Depends(get_db)):
-    roles = db.execute(text("SELECT * FROM Roles")).mappings().all()
-    return roles
+@admin_router.get("/roles", response_model=List[auth.Roles], summary="Получить список всех ролей")
+def read_roles(db: Session = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
+    logger.info(f"[ADMIN] Пользователь '{current_student.Login}' запросил список ролей")
+    send_log(
+        StudentID=current_student.ID,
+        StudentLogin=current_student.Login,
+        action="AdminViewRoles",
+        details={
+            "DescriptionEvent": "Запрос списка всех ролей"
+        }
+    )
+    return get_all_roles(db)
+
+
+
 
 # /api/admin/students/{student_id}/assign-role (POST)
 @admin_router.post("/students/{student_id}/assign-role", summary="Назначить роль студенту по его id с указанием id роли")
@@ -437,7 +449,7 @@ def exists_permissions_role(role_id: int, db: Session = Depends(get_db)):
 @admin_router.post("/roles/{role_id}/assign-permission", summary="Назначить разрешения для роли",
                    description="""для выбранной роли по её id необходимо передать массив из id разрашений, данный массив и будет назначен для данной роли
                    список разрешений можно посмотреть по роуту: /api/admin/permission""")
-def assign_permission_for_role (role_id: int, data: AssignPermissionsRequest, db: Session = Depends(get_db)):
+def assign_permission_for_role (role_id: int, data: auth.AssignPermissionsRequest, db: Session = Depends(get_db)):
     # проверяем что такая роль существует
     role_exists = db.execute(text("SELECT * FROM Roles where RoleID = :role_id"),
                              {"role_id": role_id}).mappings().fetchone()
@@ -475,7 +487,7 @@ def assign_permission_for_role (role_id: int, data: AssignPermissionsRequest, db
 @admin_router.post("/students/{student_id}/change-password", summary = "Сменить пароль выбранного студента по его id")
 def admin_change_password(
         student_id: int,
-        data: AdminChangePasswordRequest, # новый пароль
+        data: auth.AdminChangePasswordRequest, # новый пароль
         db: Session = Depends(get_db),
         current_user=Depends(permission_required("edit_students")) # Проверка на разрешение
 ):
