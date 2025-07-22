@@ -2,7 +2,8 @@ from Service.config import TEMPLATES_DIR
 from Service.Models import Student
 from Service.Schemas import auth
 from Service.Crud.auth import get_current_student, permission_required, verify_password, hash_password, get_student_by_login
-from Service.Crud.auth import change_password, get_all_roles
+from Service.Crud.auth import change_password, get_all_roles, get_all_permission, get_permission_id, assign_role
+from Service.Crud.students import  get_student_id
 from Service.Security.token import create_access_token
 from Service.dependencies import get_db,get_log_db, get_producer_dep
 from Service.producer import send_log
@@ -233,10 +234,73 @@ def student_change_password(data: auth.ChangePasswordRequest, db: Session = Depe
 
 
 
+"""Роли и разрешения"""
+
+# /api/admin/roles (GET)
+@admin_router.get("/roles", response_model=List[auth.Roles], summary="Получить список всех ролей", description="требуется токен авторизации")
+def read_roles(db: Session = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
+    logger.info(f"[ADMIN] Пользователь '{current_student.Login}' запросил список ролей")
+    send_log(
+        StudentID=current_student.ID,
+        StudentLogin=current_student.Login,
+        action="AdminViewRoles",
+        details={
+            "DescriptionEvent": "Запрос списка всех ролей"
+        }
+    )
+    return get_all_roles(db)
 
 
+# /api/admin/permission
+@admin_router.get("/permission", response_model=List[auth.Permission], summary="Получить список всех разрешений", description="требуется токен авторизации")
+def read_permission(db: Session = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
+
+    logger.info(f"[ADMIN] Пользователь '{current_student.Login}' запросил список разрешений")
+    send_log(
+        StudentID=current_student.ID,
+        StudentLogin=current_student.Login,
+        action="AdminViewPermission",
+        details={
+            "DescriptionEvent": "Запрос списка всех разрешений"
+        }
+    )
+    return get_all_permission(db)
 
 
+# /api/admin/assign-role (POST)
+@admin_router.post("/students/{studentID}/assign-role", summary="Назначить роль студенту по его id с указанием id роли",
+                   description="""требуется токен авторизации  
+                   studentID передается как path **/students/4**  
+                   RoleID передается как query параметр **/assign-role?RoleID=2**""")
+def assign_role_to_student(studentID: int,
+                            params: auth.AssignRoleQuery = Depends(),
+                           db: Session = Depends(get_db),
+                           current_student=Depends(permission_required("admin_panel"))):
+    # ищем роль по id
+    role = get_permission_id(db, params.RoleID)
+    # ищем студента по id
+    student= get_student_id(db, studentID)
+    # обновляем роль
+    update_role = assign_role(db, student.ID, role.RoleID)
+
+    if update_role != 1:
+        logger.warning(f"Не удалось обновить роль для студента {current_student.Login}")
+        # отправляем лог в kafka
+        send_log(
+            StudentID=current_student.ID,
+            StudentLogin=current_student.Login,
+            action="ServerError",
+            details={
+                "DescriptionEvent": "Ошибка при назначении роли студенту",
+                "Reason": "UpdateRoleFailed",
+                "TargetStudentID": student.ID,
+                "TargetRoleID": role.RoleID
+                # "Metadata": {"extra": "value"}  # по желанию
+            }
+        )
+        raise errors.internal_server(error="UpdateRoleFailed", message="Ошибка при назначении роли студенту")
+
+    return  {"message": f" Студенту {student.Login} успешно назначена роль {role.Name}"}
 
 
 
@@ -376,44 +440,13 @@ def admin_read_all_students(
     return templates.TemplateResponse("Admin/ListStudents.html", {"request": request, "student": current_student})
 '''
 
-"""Роли и разрешения"""
-
-# /api/admin/roles (GET)
-@admin_router.get("/roles", response_model=List[auth.Roles], summary="Получить список всех ролей")
-def read_roles(db: Session = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
-    logger.info(f"[ADMIN] Пользователь '{current_student.Login}' запросил список ролей")
-    send_log(
-        StudentID=current_student.ID,
-        StudentLogin=current_student.Login,
-        action="AdminViewRoles",
-        details={
-            "DescriptionEvent": "Запрос списка всех ролей"
-        }
-    )
-    return get_all_roles(db)
 
 
 
 
-# /api/admin/students/{student_id}/assign-role (POST)
-@admin_router.post("/students/{student_id}/assign-role", summary="Назначить роль студенту по его id с указанием id роли")
-def assign_role_to_student(student_id: int, role_id: int, db: Session = Depends(get_db)):
-    role_exists = db.execute(text("SELECT * FROM Roles where RoleID = :role_id"), {"role_id": role_id}).mappings().fetchone()
-    if not role_exists:
-        raise HTTPException(status_code=404, detail="Роль не найдена")
-    student_exists = db.execute(text("select * from students where id = :student_id"), {"student_id": student_id}).mappings().fetchone()
-    if not student_exists:
-        raise HTTPException(status_code=404, detail="Студент не найден")
-    db.execute(text("update students set RoleID = :role_id where ID = :student_id"), {"role_id":role_id, "student_id": student_id})
-    db.commit()
-    return  {"message": f" Студенту {student_exists['Login']} успешно назначена роль {role_exists['Name']} "}
 
 
-# /api/admin/permission
-@admin_router.get("/permission", summary="Получить список всех разрешений ")
-def read_permission(db: Session = Depends(get_db)):
-    permission = db.execute(text("select * from Permissions")).mappings().all()
-    return permission
+
 
 # /api/admin/roles/{role_id}/assign-permission
 @admin_router.get("/roles/{role_id}/assign-permission" , summary="Получить список разрешения для роли по её id")

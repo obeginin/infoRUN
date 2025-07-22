@@ -269,19 +269,43 @@ def permission_required(permission_name: str):
         return student
     return decorator
 
+
 def get_all_roles(db: Session):
     return general.run_query_select(
         db,
         query= """SELECT * FROM Roles""",
         mode="mappings_all",
         params= None,
-        error_message=f"Ошибка при получения ролей из БД"
+        error_message=f"Ошибка при получения ролей"
     )
 
+def get_all_permission(db: Session):
+    return general.run_query_select(
+        db,
+        query= """SELECT * FROM Permissions""",
+        mode="mappings_all",
+        params= None,
+        error_message=f"Ошибка при получения разрешений"
+    )
 
+def get_permission_id(db: Session, RoleID: int):
+    return general.run_query_select(
+        db,
+        query= """SELECT * FROM Roles where RoleID = :role_id""",
+        mode="mappings_first",
+        params= {"role_id": RoleID},
+        required=True,
+        error_message=f"Ошибка при получения роли с id={RoleID} "
+    )
 
-
-
+''' Назначение роли студенту'''
+def assign_role(db: Session, student_id: int, role_id: int):
+    return general.run_query_update(
+        db,
+        query= """update students set RoleID = :role_id where ID = :student_id""",
+        params= {"role_id":role_id, "student_id": student_id},
+        error_message=f"Ошибка при назначении роли с id={role_id} для студента с id={student_id}"
+    )
 
 
 
