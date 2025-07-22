@@ -1,13 +1,16 @@
 from Service.config import TEMPLATES_DIR
 from Service.Models import Student
-from Service.Schemas.auth import StudentLogin, StudentAuth, AssignPermissionsRequest, ChangePasswordRequest, AdminChangePasswordRequest, TokenWithStudent, StudentOut
-from Service.Crud.auth import get_current_student, permission_required, verify_password, hash_password, get_current_student_or_redirect, get_student_by_login
-from Service.Crud.auth import change_password
+from Service.Schemas import auth
+
+from Service.Crud.auth import get_current_student, permission_required, verify_password, hash_password, get_student_by_login
+from Service.Crud.auth import change_password, get_all_roles, get_all_permission, get_permission_id, assign_role
+from Service.Crud.students import  get_student_id, get_all_students
 from Service.Security.token import create_access_token
 from Service.dependencies import get_db,get_log_db, get_producer_dep
 from Service.producer import send_log
 from Service.Crud import errors
 
+from typing import List
 from fastapi import APIRouter, Depends,Form, Request, HTTPException, status, Response
 from fastapi.concurrency import run_in_threadpool
 from sqlalchemy.orm import Session
@@ -32,12 +35,12 @@ pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
 """Роут с аутентификацией (логирование в kafka)"""
 # /auth/login
-@auth_router.post("/login", response_model=TokenWithStudent,
+@auth_router.post("/login", response_model=auth.TokenWithStudent,
                   summary="Аутентификация (запрос токена для пользователя)",
                   description="Возвращает токен, тип заколовка и небольшую информацию о пользователе, если логин и пароль корректны и пользователь активен.")
 def login(
     request: Request,
-    student_login: StudentLogin,
+    student_login: auth.StudentLogin,
     db: Session = Depends(get_db),
 ):
     ip = request.headers.get("X-Forwarded-For") or request.client.host
@@ -101,7 +104,7 @@ def login(
         raise errors.internal_server(error="TokenGenerationError", message="Ошибка при создании токена доступа")
 
     # Создаём Pydantic-модель из словаря (Селеризация)
-    student_short = StudentAuth(**student)
+    student_short = auth.StudentAuth(**student)
 
     # отправляем лог в kafka
     send_log(
@@ -115,7 +118,7 @@ def login(
             #"Metadata": {"extra": "value"}  # по желанию
         }
     )
-    return TokenWithStudent (
+    return auth.TokenWithStudent (
         access_token = access_token,
         token_type = "bearer",
         student = student_short
@@ -127,7 +130,7 @@ def login(
 получаем информации о пользователе (данный роут нужен для Backend)
 """
 # /api/auth/check-token
-@auth_router.get("/check-token", response_model=StudentOut, summary="Образец получения данных пользователя по токену (с разрешениями)")
+@auth_router.get("/check-token", response_model=auth.StudentOut, summary="Образец получения данных пользователя по токену (с разрешениями)")
 def check_token(request: Request, current_student = Depends(get_current_student)):
     return current_student
 
@@ -166,7 +169,7 @@ async def logout(
 # /api/auth/change-password
 @auth_router.post("/change-password", summary = "Сменить пароль текущего пользователя (меняет сам пользователь)",
                   description="пользователя получаем по токену, который передается из заголовка с frontend")
-def student_change_password(data: ChangePasswordRequest, db: Session = Depends(get_db), current_student =  Depends(get_current_student)):
+def student_change_password(data: auth.ChangePasswordRequest, db: Session = Depends(get_db), current_student =  Depends(get_current_student)):
     # Получаем текущий хеш пароля из базы
     stored_password = db.execute(text("select Password from students where ID = :id"), {"id": current_student.ID}).scalar()
 
@@ -232,10 +235,81 @@ def student_change_password(data: ChangePasswordRequest, db: Session = Depends(g
 
 
 
+"""Роли и разрешения"""
+
+# /api/admin/roles (GET)
+@admin_router.get("/roles", response_model=List[auth.Roles], summary="Получить список всех ролей", description="требуется токен авторизации")
+def read_roles(db: Session = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
+    logger.info(f"[ADMIN] Пользователь '{current_student.Login}' запросил список ролей")
+    send_log(
+        StudentID=current_student.ID,
+        StudentLogin=current_student.Login,
+        action="AdminViewRoles",
+        details={
+            "DescriptionEvent": "Запрос списка всех ролей"
+        }
+    )
+    return get_all_roles(db)
 
 
+# /api/admin/permission
+@admin_router.get("/permission", response_model=List[auth.Permission], summary="Получить список всех разрешений", description="требуется токен авторизации")
+def read_permission(db: Session = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
 
+    logger.info(f"[ADMIN] Пользователь '{current_student.Login}' запросил список разрешений")
+    send_log(
+        StudentID=current_student.ID,
+        StudentLogin=current_student.Login,
+        action="AdminViewPermission",
+        details={
+            "DescriptionEvent": "Запрос списка всех разрешений"
+        }
+    )
+    return get_all_permission(db)
 
+# /api/admin/students
+@admin_router.get(
+    "/students",
+    response_model=list[auth.StudentOut],
+    summary="Получить список студентов в формате JSON (для админа)",
+)
+def read_all_students(db: Session = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
+    return get_all_students(db)
+
+# /api/admin/students/{studentID}/assign-role (POST)
+@admin_router.post("/students/{studentID}/assign-role", summary="Назначить роль студенту по его id с указанием id роли",
+                   description="""требуется токен авторизации  
+                   studentID передается как path **/students/4**  
+                   RoleID передается как query параметр **/assign-role?RoleID=2**""")
+def assign_role_to_student(studentID: int,
+                            params: auth.AssignRoleQuery = Depends(),
+                           db: Session = Depends(get_db),
+                           current_student=Depends(permission_required("admin_panel"))):
+    # ищем роль по id
+    role = get_permission_id(db, params.RoleID)
+    # ищем студента по id
+    student= get_student_id(db, studentID)
+    # обновляем роль
+    update_role = assign_role(db, student.ID, role.RoleID)
+
+    if update_role != 1:
+        logger.warning(f"Не удалось обновить роль для студента {current_student.Login}")
+        # отправляем лог в kafka
+        send_log(
+            StudentID=current_student.ID,
+            StudentLogin=current_student.Login,
+            action="ServerError",
+            details={
+                "DescriptionEvent": "Ошибка при назначении роли студенту",
+                "Reason": "UpdateRoleFailed",
+                "TargetStudentID": student.ID,
+                "TargetRoleID": role.RoleID
+                # "Metadata": {"extra": "value"}  # по желанию
+            }
+        )
+        raise errors.internal_server(error="UpdateRoleFailed", message="Ошибка при назначении роли студенту")
+
+    return  {"message": f" Студенту {student.Login} успешно назначена роль {role.Name}"}
 
 
 
@@ -375,33 +449,13 @@ def admin_read_all_students(
     return templates.TemplateResponse("Admin/ListStudents.html", {"request": request, "student": current_student})
 '''
 
-"""Роли и разрешения"""
-
-# /api/admin/roles (GET)
-@admin_router.get("/roles", summary="Получить список всех ролей")
-def read_roles(db: Session = Depends(get_db)):
-    roles = db.execute(text("SELECT * FROM Roles")).mappings().all()
-    return roles
-
-# /api/admin/students/{student_id}/assign-role (POST)
-@admin_router.post("/students/{student_id}/assign-role", summary="Назначить роль студенту по его id с указанием id роли")
-def assign_role_to_student(student_id: int, role_id: int, db: Session = Depends(get_db)):
-    role_exists = db.execute(text("SELECT * FROM Roles where RoleID = :role_id"), {"role_id": role_id}).mappings().fetchone()
-    if not role_exists:
-        raise HTTPException(status_code=404, detail="Роль не найдена")
-    student_exists = db.execute(text("select * from students where id = :student_id"), {"student_id": student_id}).mappings().fetchone()
-    if not student_exists:
-        raise HTTPException(status_code=404, detail="Студент не найден")
-    db.execute(text("update students set RoleID = :role_id where ID = :student_id"), {"role_id":role_id, "student_id": student_id})
-    db.commit()
-    return  {"message": f" Студенту {student_exists['Login']} успешно назначена роль {role_exists['Name']} "}
 
 
-# /api/admin/permission
-@admin_router.get("/permission", summary="Получить список всех разрешений ")
-def read_permission(db: Session = Depends(get_db)):
-    permission = db.execute(text("select * from Permissions")).mappings().all()
-    return permission
+
+
+
+
+
 
 # /api/admin/roles/{role_id}/assign-permission
 @admin_router.get("/roles/{role_id}/assign-permission" , summary="Получить список разрешения для роли по её id")
@@ -437,7 +491,7 @@ def exists_permissions_role(role_id: int, db: Session = Depends(get_db)):
 @admin_router.post("/roles/{role_id}/assign-permission", summary="Назначить разрешения для роли",
                    description="""для выбранной роли по её id необходимо передать массив из id разрашений, данный массив и будет назначен для данной роли
                    список разрешений можно посмотреть по роуту: /api/admin/permission""")
-def assign_permission_for_role (role_id: int, data: AssignPermissionsRequest, db: Session = Depends(get_db)):
+def assign_permission_for_role (role_id: int, data: auth.AssignPermissionsRequest, db: Session = Depends(get_db)):
     # проверяем что такая роль существует
     role_exists = db.execute(text("SELECT * FROM Roles where RoleID = :role_id"),
                              {"role_id": role_id}).mappings().fetchone()
@@ -475,7 +529,7 @@ def assign_permission_for_role (role_id: int, data: AssignPermissionsRequest, db
 @admin_router.post("/students/{student_id}/change-password", summary = "Сменить пароль выбранного студента по его id")
 def admin_change_password(
         student_id: int,
-        data: AdminChangePasswordRequest, # новый пароль
+        data: auth.AdminChangePasswordRequest, # новый пароль
         db: Session = Depends(get_db),
         current_user=Depends(permission_required("edit_students")) # Проверка на разрешение
 ):

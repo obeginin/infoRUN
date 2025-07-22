@@ -3,7 +3,7 @@ from Service.Schemas.students import StudentTaskRead,StudentTaskDetails, AnswerI
 from Service.Crud import students
 from Service.Routers.tasks import get_files_for_subtask
 from Service.dependencies import get_db  # Зависимость для подключения к базе данных
-from Service.Crud.auth import get_current_student, verify_password, get_current_student_or_redirect
+from Service.Crud.auth import get_current_student, verify_password
 from Service.Schemas.auth import StudentAuth, StudentOut
 from fastapi import APIRouter, Depends, Request, Query, Form,  UploadFile, File
 from sqlalchemy.orm import Session

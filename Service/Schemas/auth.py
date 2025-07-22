@@ -66,3 +66,15 @@ class ChangePasswordRequest(BaseModel):
 class AdminChangePasswordRequest(BaseModel):
     new_password: constr(min_length=6)
     #new_password: str = Field(min_length=6)
+
+class Roles(BaseModel):
+    RoleID: int
+    Name: str
+
+class Permission(BaseModel):
+    PermissionID: int
+    Name: str
+    Description: str
+
+class AssignRoleQuery(BaseModel):
+    RoleID: int
