@@ -17,6 +17,7 @@ def run_query_select(
     query: str,
     params: dict,
     mode: str = "mappings_first",
+    required: bool = False, # флаг что не пустой результат
     error_message: str = "Ошибка запроса к БД"
 ):
     try:
@@ -25,19 +26,24 @@ def run_query_select(
         # Выбор метода извлечения
         match mode:
             case "scalar":
-                return result.scalar()              # Первое поле первой строки
+                data =  result.scalar()              # Первое поле первой строки
             case "scalars_all":
-                return result.scalars().all()       # Список значений одной колонки
+                data =  result.scalars().all()       # Список значений одной колонки
             case "mappings_first":
-                return result.mappings().first()    # Один словарь (строка)
+                data =  result.mappings().first()    # Один словарь (строка)
             case "mappings_all":
-                return result.mappings().all()      # Список словарей
+                data =  result.mappings().all()      # Список словарей
             case "one_or_none":
-                return result.one_or_none()         # Один объект или None, выбрасывает ошибку если >1
+                data =  result.one_or_none()         # Один объект или None, выбрасывает ошибку если >1
             case "first":
-                return result.first()               # Первый результат (обычно ORM объект)
+                data =  result.first()               # Первый результат (обычно ORM объект)
             case _:
                 raise ValueError(f"Неизвестный режим выборки: {mode}")
+
+        if required and not data:
+            raise errors.not_found(message=error_message)
+
+        return data
 
     except SQLAlchemyError:
         logger.exception(f"[DB ERROR] {error_message}")
