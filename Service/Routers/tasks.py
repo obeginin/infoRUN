@@ -4,7 +4,7 @@ from Service.Crud import tasks as task_crud
 from Service.Crud import errors
 from Service.dependencies import get_db
 from Service.Models import Student, SubTaskFiles
-from Service.Crud.auth import get_current_student, permission_required, get_current_student_or_redirect
+from Service.Crud.auth import get_current_student, permission_required
 from Service.producer import send_log
 
 from fastapi import APIRouter, Depends, Request, Form, UploadFile, File, Query, HTTPException
@@ -223,7 +223,7 @@ def read_tasks_id(task_id: int, db: Session = Depends(get_db)):
 # /api/tasks/exec/{VariantID}
 '''вызов хранимки с вариантом'''
 @task_router.get("/exec/{VariantID}/{StudentID}", summary="роут с вызовом хранимой процедуры")
-def read_tasks_of_variant (VariantID: int, StudentID: int, db: Session = Depends(get_db), current_student = Depends(get_current_student_or_redirect)):
+def read_tasks_of_variant (VariantID: int, StudentID: int, db: Session = Depends(get_db)):
     query = text("EXEC dbo.GetStudentsTasks @VariantID =:VariantID, @StudentID =:StudentID")
     result = db.execute(query, {"VariantID": VariantID, "StudentID": StudentID}).fetchall()
     print(result)
