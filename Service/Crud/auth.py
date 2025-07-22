@@ -47,6 +47,8 @@ def get_swagger_user(
     logging.info(f"User {credentials.username} authenticated successfully")
     return user
 
+
+
 # шифрование пароля
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 # Функция для хеширования пароля (принимает обычный и возвращает хэшированный)
@@ -231,54 +233,61 @@ def get_current_student(request: Request, db: Session = Depends(get_db)) -> Stud
         student["BirthDate"] = student["BirthDate"].date()'''
     return StudentOut(**dict(student))
 
+def admin_required(student: StudentOut = Depends(get_current_student)):
+    if student.RoleName != "Админ":
+        raise errors.access_denied(message="Только для администраторов")
+    return student
 
 
-
-
-
-
-
-
-
-
-
+'''Функция для проверки разрешения у авторизованного студента'''
 def permission_required(permission_name: str):
-    def decorator(current_student=Depends(get_current_student)):
-        if permission_name not in current_student["permissions"]:
-            raise HTTPException(
-                status_code=403,
-                detail="Недостаточно прав"
+    def decorator(student=Depends(get_current_student)):
+        if permission_name not in student.permissions:
+            logger.warning(f"[PERMISSION] '{student.Login}' без разрешения '{permission_name}'")
+
+            send_log(
+                StudentID=student.ID,
+                StudentLogin=student.Login,
+                action="PermissionDenied",
+                details={
+                    "DescriptionEvent": "Попытка доступа без разрешения",
+                    "Reason": f"MissingPermission:{permission_name}"
+                }
             )
-        return current_student
+            raise errors.access_denied(message="Недостаточно прав")
+        logger.info(f"[PERMISSION] '{student.Login}' успешно прошёл проверку на '{permission_name}'")
+
+        send_log(
+            StudentID=student.ID,
+            StudentLogin=student.Login,
+            action="PermissionGranted",
+            details={
+                "DescriptionEvent": "Успешная проверка разрешения",
+                "Permission": permission_name
+            }
+        )
+        return student
     return decorator
 
+def get_all_roles(db: Session):
+    return general.run_query_select(
+        db,
+        query= """SELECT * FROM Roles""",
+        mode="mappings_all",
+        params= None,
+        error_message=f"Ошибка при получения ролей из БД"
+    )
 
-# Проверка на роль "admin" (заменил на permission_required("admin_panel"))
-def admin_required(
-    current_student=Depends(get_current_student),
-):
-    if current_student.RoleName != "Админ":
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Недостаточно прав"
-        )
-    return current_student
 
-# редирект на страницу логина при неавторизованном доступе
-async def get_current_student_or_redirect(
-    request: Request,
-    db: Session = Depends(get_db)
-) -> Optional[StudentAuth]:
-    try:
 
-        student = get_current_student(request, db)
-        return StudentAuth.model_validate(student)
-    except HTTPException as e:
-        if e.status_code == HTTP_401_UNAUTHORIZED:
-            #logging.warning("Редирект, так как студент не авторизован")
-            return RedirectResponse(url=f"/home/login_in/?next={request.url.path}", status_code=302)
-            #return RedirectResponse(url="/home/login_in")
-        raise e
+
+
+
+
+
+
+
+
 
 '''
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
