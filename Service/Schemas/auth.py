@@ -70,3 +70,11 @@ class AdminChangePasswordRequest(BaseModel):
 class Roles(BaseModel):
     RoleID: int
     Name: str
+
+class Permission(BaseModel):
+    PermissionID: int
+    Name: str
+    Description: str
+
+class AssignRoleQuery(BaseModel):
+    RoleID: int

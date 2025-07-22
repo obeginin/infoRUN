@@ -37,6 +37,7 @@ def get_student_id(db: Session, Student_id: int):
                 WHERE s.ID = :Student_id""",
         mode="mappings_first",
         params= {"Student_id": Student_id},
+        required=True,
         error_message=f"Ошибка при получения студента из БД"
     )
 
