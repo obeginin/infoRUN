@@ -1,9 +1,10 @@
 from Service.config import TEMPLATES_DIR
 from Service.Models import Student
 from Service.Schemas import auth
+
 from Service.Crud.auth import get_current_student, permission_required, verify_password, hash_password, get_student_by_login
 from Service.Crud.auth import change_password, get_all_roles, get_all_permission, get_permission_id, assign_role
-from Service.Crud.students import  get_student_id
+from Service.Crud.students import  get_student_id, get_all_students
 from Service.Security.token import create_access_token
 from Service.dependencies import get_db,get_log_db, get_producer_dep
 from Service.producer import send_log
@@ -266,8 +267,16 @@ def read_permission(db: Session = Depends(get_db), current_student=Depends(permi
     )
     return get_all_permission(db)
 
+# /api/admin/students
+@admin_router.get(
+    "/students",
+    response_model=list[auth.StudentOut],
+    summary="Получить список студентов в формате JSON (для админа)",
+)
+def read_all_students(db: Session = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
+    return get_all_students(db)
 
-# /api/admin/assign-role (POST)
+# /api/admin/students/{studentID}/assign-role (POST)
 @admin_router.post("/students/{studentID}/assign-role", summary="Назначить роль студенту по его id с указанием id роли",
                    description="""требуется токен авторизации  
                    studentID передается как path **/students/4**  
