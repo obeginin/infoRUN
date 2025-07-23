@@ -3,7 +3,7 @@ from Service.Models import Student
 from Service.Schemas import auth
 
 from Service.Crud.auth import get_current_student, permission_required, verify_password, hash_password, get_student_by_login
-from Service.Crud.auth import change_password, get_all_roles, get_all_permission, get_permission_id, assign_role
+from Service.Crud.auth import change_password, get_all_roles, get_all_permission, get_role_id, assign_role, get_permission_role
 from Service.Crud.students import  get_student_id, get_all_students
 from Service.Security.token import create_access_token
 from Service.dependencies import get_db,get_log_db, get_producer_dep
@@ -252,6 +252,43 @@ def read_roles(db: Session = Depends(get_db), current_student=Depends(permission
     return get_all_roles(db)
 
 
+# /api/admin/roles/{role_id}
+@admin_router.get("/roles/{role_id}" , summary="Получить список разрешения для роли по её id")
+def read_permissions_role(role_id: int, db: Session = Depends(get_db),
+                            current_student=Depends(permission_required("admin_panel"))):
+    # ищем роль по id
+    role = get_role_id(db, role_id)
+    if not role:
+        logger.warning(f"[ADMIN] Пользователь '{current_student.Login}' попытался запросить несуществующую роль ID={role_id}")
+        return errors.not_found(message=f"Не удалось найти роль с id {role_id}")
+    # ищем разрешения для данной роли
+    role_permissions = get_permission_role(db, role_id)
+    if not role_permissions:
+        logger.warning(f"[ADMIN] Пользователь '{current_student.Login}' запросил роль '{role.Name}' (ID={role_id}), но у неё нет разрешений")
+        return errors.not_found(message=f"Разрешений у роли {role.Name} не найдено")
+
+    role_permissions_dict = [dict(row) for row in role_permissions]
+    # Формируем результат, для выбранной роли выводим
+    role_info = {
+        "role_id": role_permissions_dict[0]["RoleID"], # её id
+        "role_name": role_permissions_dict[0]["RoleName"], # её имя
+        "permissions": [
+        row["PermissionName"] for row in role_permissions_dict
+        ]
+    }
+    logger.info(f"[ADMIN] Пользователь '{current_student.Login}' запросил разрешения для роли '{role_info['role_name']}' (ID={role_id}), всего {len(role_info['permissions'])} разрешений")
+    logger.debug(f"Детали разрешений роли: {role_info}")
+    send_log(
+        StudentID=current_student.ID,
+        StudentLogin=current_student.Login,
+        action="AdminViewRolePermissions",
+        details={
+            "DescriptionEvent": f"Запрос разрешений для роли '{role.Name}' (ID={role_id})",
+            "PermissionsCount": len(role_info["permissions"])
+        }
+    )
+    return role_info
+
 # /api/admin/permission
 @admin_router.get("/permission", response_model=List[auth.Permission], summary="Получить список всех разрешений", description="требуется токен авторизации")
 def read_permission(db: Session = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
@@ -286,7 +323,7 @@ def assign_role_to_student(studentID: int,
                            db: Session = Depends(get_db),
                            current_student=Depends(permission_required("admin_panel"))):
     # ищем роль по id
-    role = get_permission_id(db, params.RoleID)
+    role = get_role_id(db, params.RoleID)
     # ищем студента по id
     student= get_student_id(db, studentID)
     # обновляем роль
@@ -457,32 +494,7 @@ def admin_read_all_students(
 
 
 
-# /api/admin/roles/{role_id}/assign-permission
-@admin_router.get("/roles/{role_id}/assign-permission" , summary="Получить список разрешения для роли по её id")
-def exists_permissions_role(role_id: int, db: Session = Depends(get_db)):
-    role_exists = db.execute(text("SELECT * FROM Roles where RoleID = :role_id"),
-                             {"role_id": role_id}).mappings().fetchone()
-    if not role_exists:
-        return HTTPException(status_code=404, detail="Роль не найдена")
 
-    role_permissions = db.execute(text("""SELECT r.RoleID, r.Name as RoleName, p.PermissionID, p.Name as PermissionName
-                                            FROM RolePermissions rp
-                                            JOIN Roles r ON rp.RoleID = r.RoleID
-                                            JOIN Permissions p ON rp.PermissionID = p.PermissionID
-                                            WHERE r.RoleID = :role_id
-                                            ORDER BY r.RoleID"""),
-                             {"role_id": role_id}).mappings().all()
-    if not role_permissions:
-        return HTTPException(status_code=404, detail="Разрешений у выбранной роли не найдено")
-
-    # Формируем результат, для выбранной роли выводим
-    role_info = {
-        "role_id": role_permissions[0]["RoleID"], # её id
-        "role_name": role_permissions[0]["RoleName"], # её имя
-        "permission_ids": [row["PermissionID"] for row in role_permissions], # генератором перебираем все строки из результата запроса и добавляем все разрешения для неё
-        "permission_names": [row["PermissionName"] for row in role_permissions], # тоже самое только с именами
-    }
-    return role_info
 
 
 
