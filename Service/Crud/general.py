@@ -51,10 +51,16 @@ def run_query_select(
 
 
 '''UPDATE'''
-def run_query_update(db: Session, query: str, params: dict = None, error_message: str = "Ошибка записи в БД"):
+def run_query_update(
+        db: Session,
+        query: str,
+        params: dict = None,
+        commit: bool = True,
+        error_message: str = "Ошибка записи в БД"):
     try:
         result = db.execute(text(query), params or {})
-        db.commit()
+        if commit:
+            db.commit()
         return result.rowcount
     except SQLAlchemyError:
         logger.exception(f"[DB ERROR] {error_message}")
@@ -65,11 +71,13 @@ def run_query_delete(
     db: Session,
     query: str,
     params: dict = None,
+    commit: bool = True,
     error_message: str = "Ошибка удаления из БД"
 ):
     try:
         result = db.execute(text(query), params or {})
-        db.commit()
+        if commit:
+            db.commit()
         return result.rowcount
     except SQLAlchemyError:
         logger.exception(f"[DB ERROR] {error_message}")
@@ -80,13 +88,16 @@ def run_query_insert(
     db: Session,
     query: str,
     params: dict = None,
+    commit: bool = True,
     error_message: str = "Ошибка вставки в БД"
 ):
     try:
         result = db.execute(text(query), params or {})
-        db.commit()
-        inserted_id = result.scalar()  # Получаем ID из OUTPUT
-        return inserted_id
+        if commit:
+            db.commit()
+
+        #inserted_id = result.scalar()  # Получаем ID из OUTPUT
+        #return inserted_id
         # Если нужно получить id вставленной записи (PostgreSQL и др.):
         # inserted_id = result.scalar()
         # return inserted_id

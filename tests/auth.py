@@ -14,7 +14,7 @@ login_user = 'test'
 pass_user = 'standart'
 new_pass_user = 'standart_password'
 
-def _login():
+def _login(login_user: str = "test", pass_user: str = "standart"):
     response = requests.post(f"{BASE_URL}/api/auth/login", json={
         "Login": login_user,
         "Password": pass_user
