@@ -61,5 +61,37 @@ def run_query_update(db: Session, query: str, params: dict = None, error_message
         raise errors.internal_server(message=error_message)
 
 '''DELETE'''
+def run_query_delete(
+    db: Session,
+    query: str,
+    params: dict = None,
+    error_message: str = "Ошибка удаления из БД"
+):
+    try:
+        result = db.execute(text(query), params or {})
+        db.commit()
+        return result.rowcount
+    except SQLAlchemyError:
+        logger.exception(f"[DB ERROR] {error_message}")
+        raise errors.internal_server(message=error_message)
 
 '''INSERT'''
+def run_query_insert(
+    db: Session,
+    query: str,
+    params: dict = None,
+    error_message: str = "Ошибка вставки в БД"
+):
+    try:
+        result = db.execute(text(query), params or {})
+        db.commit()
+        inserted_id = result.scalar()  # Получаем ID из OUTPUT
+        return inserted_id
+        # Если нужно получить id вставленной записи (PostgreSQL и др.):
+        # inserted_id = result.scalar()
+        # return inserted_id
+
+        return result.rowcount  # обычно 1 при успешной вставке
+    except SQLAlchemyError:
+        logger.exception(f"[DB ERROR] {error_message}")
+        raise errors.internal_server(message=error_message)
