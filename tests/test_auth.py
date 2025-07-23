@@ -141,3 +141,26 @@ def test_read_all_students():
 
     print(f"✅ Успешно получен список студентов. Всего студентов: {len(data)}")
 
+
+@pytest.mark.parametrize("role_id, permission_ids, expected_status, description", [
+    (3, [1, 2], 200, "Назначение новых разрешений существующей роли"),
+    (3, [], 200, "Очистка всех разрешений у существующей роли"),
+    (9999, [1], 404, "Роль не найдена"),
+    (3, [9999], 500, "Ошибка при назначении несуществующего разрешения"),
+])
+def test_assign_permissions_to_role(role_id, permission_ids, expected_status, description):
+    url = f"{BASE_URL}/api/admin/roles/{role_id}/assign-permission"
+    payload = {"permission_ids": permission_ids}
+    headers = {"Authorization": f"Bearer {token}"}
+
+    response = requests.post(url, json=payload, headers=headers)
+
+    assert response.status_code == expected_status, f"❌ {description} (ожидали {expected_status}, получили {response.status_code})"
+
+    if expected_status == 200:
+        json = response.json()
+        assert "message" in json
+        assert isinstance(json.get("added", []), list)
+        assert isinstance(json.get("removed", []), list)
+
+    #print(f"✅ {description} — статус {response.status_code}")

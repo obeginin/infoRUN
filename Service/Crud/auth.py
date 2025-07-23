@@ -16,7 +16,7 @@ from passlib.context import CryptContext # объект, который помо
 from fastapi.responses import RedirectResponse
 from starlette.status import HTTP_401_UNAUTHORIZED
 from typing import Optional
-from sqlalchemy import text
+from sqlalchemy.exc import SQLAlchemyError
 from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 
@@ -70,49 +70,7 @@ print("Хешированный пароль:", hashed_password)
 
 
 
-"""Выбор студента из базы по его логину (Аутентификация)"""
-def get_student_by_login(db: Session, login: str):
-    return general.run_query_select(
-        db,
-        query="""
-                SELECT s.*, r.Name as RoleName
-                FROM Students s
-                LEFT JOIN Roles r ON s.RoleID = r.RoleID
-                WHERE s.Login = :login
-            """,
-        params={"login": login},
-        mode="mappings_first",
-        error_message=f"Ошибка при получении студента: {login}"
-    )
 
-"""Выбор из базы разрешений для роли по её ID """
-def get_permission_role(db: Session, RoleID: int):
-    return general.run_query_select(
-        db,
-        query="""
-                SELECT p.Name
-                FROM RolePermissions rp
-                JOIN Permissions p ON rp.PermissionID = p.PermissionID
-                WHERE rp.RoleID = :role_id
-                """,
-        params={"role_id": RoleID},
-        mode="scalars_all",
-        error_message=f"Ошибка при получения разрешений для роли с id:{RoleID}"
-    )
-
-
-"""Смена пароля пользователя"""
-def change_password(db: Session, student_ID: int, new_password: str):
-    return general.run_query_update(
-        db,
-        query="""
-                update Students 
-                set Password = :new_password 
-                where ID = :id
-                """,
-        params={"id": student_ID, "new_password": new_password},
-        error_message=f"Ошибка обновления пароля для студента с id:{student_ID}"
-    )
 
 '''функция получения студента по токену (токен приходит с фронта в заголовке)'''
 def get_current_student(request: Request, db: Session = Depends(get_db)) -> StudentOut:
@@ -270,6 +228,77 @@ def permission_required(permission_name: str):
         return student
     return decorator
 
+# Зависимость (пока не используется)
+'''Проверяет наличия разрешения у переданного ей пользователя'''
+def check_permission(student, permission_name: str):
+    if permission_name not in student.permissions:
+        logger.warning(f"[PERMISSION] '{student.Login}' без разрешения '{permission_name}'")
+
+        send_log(
+            StudentID=student.ID,
+            StudentLogin=student.Login,
+            action="PermissionDenied",
+            details={
+                "DescriptionEvent": "Попытка доступа без разрешения",
+                "Reason": f"MissingPermission:{permission_name}"
+            }
+        )
+        raise errors.access_denied(message="Недостаточно прав")
+    logger.info(f"[PERMISSION] '{student.Login}' успешно прошёл проверку на '{permission_name}'")
+
+    send_log(
+        StudentID=student.ID,
+        StudentLogin=student.Login,
+        action="PermissionGranted",
+        details={
+            "DescriptionEvent": "Успешная проверка разрешения",
+            "Permission": permission_name
+        }
+    )
+
+"""Выбор студента из базы по его логину (Аутентификация)"""
+def get_student_by_login(db: Session, login: str):
+    return general.run_query_select(
+        db,
+        query="""
+                SELECT s.*, r.Name as RoleName
+                FROM Students s
+                LEFT JOIN Roles r ON s.RoleID = r.RoleID
+                WHERE s.Login = :login
+            """,
+        params={"login": login},
+        mode="mappings_first",
+        error_message=f"Ошибка при получении студента: {login}"
+    )
+
+"""Выбор из базы разрешений для роли по её ID """
+def get_permission_role(db: Session, RoleID: int):
+    return general.run_query_select(
+        db,
+        query="""
+                SELECT p.Name
+                FROM RolePermissions rp
+                JOIN Permissions p ON rp.PermissionID = p.PermissionID
+                WHERE rp.RoleID = :role_id
+                """,
+        params={"role_id": RoleID},
+        mode="scalars_all",
+        error_message=f"Ошибка при получения разрешений для роли с id:{RoleID}"
+    )
+
+
+"""Смена пароля пользователя"""
+def change_password(db: Session, student_ID: int, new_password: str):
+    return general.run_query_update(
+        db,
+        query="""
+                update Students 
+                set Password = :new_password 
+                where ID = :id
+                """,
+        params={"id": student_ID, "new_password": new_password},
+        error_message=f"Ошибка обновления пароля для студента с id:{student_ID}"
+    )
 
 def get_all_roles(db: Session):
     return general.run_query_select(
@@ -322,8 +351,69 @@ def assign_role(db: Session, student_id: int, role_id: int):
         error_message=f"Ошибка при назначении роли с id={role_id} для студента с id={student_id}"
     )
 
+def update_role_permissions (db: Session, role_id: int, to_delete: set, to_add: set):
+    try:
+        # удаляем разрешения, которые больше не нужны
+        for permission in to_delete:
+            general.run_query_delete(
+                db,
+                query="DELETE FROM RolePermissions WHERE RoleID = :role_id AND PermissionID = :permission",
+                params={"role_id": role_id, "permission": permission},
+                error_message=f"Ошибка при удалении разрешения {permission} у роли {role_id}",
+                commit=False  # добавим этот флаг
+            )
 
+        # добавляем новые разрешения
+        for permission in to_add:
+            general.run_query_insert(
+                db,
+                query="INSERT INTO RolePermissions (RoleID, PermissionID) VALUES (:role_id, :permission)",
+                params={"role_id": role_id, "permission": permission},
+                error_message=f"Ошибка при добавлении разрешения {permission} роли {role_id}",
+                commit=False
+            )
+        db.commit()
 
+    except SQLAlchemyError:
+        db.rollback()
+        logger.exception(f"[DB ERROR] Ошибка при обновлении разрешений роли")
+        send_log(
+            StudentID=0,
+            StudentLogin="System",
+            action="AssignPermissionsToRoleFailed",
+            details={
+                "DescriptionEvent": "Ошибка при обновлении разрешений у роли",
+                "Reason": "UpdatePermissionsFailed",
+                "TargetRoleID": role_id,
+                "PermissionsToAdd": list(to_add),
+                "PermissionsToRemove": list(to_delete)
+            }
+        )
+        raise errors.internal_server(message="Ошибка при обновлении разрешений роли")
+
+def get_logs_all(db: Session, limit: int = 50, offset: int = 0):
+    return general.run_query_select(
+        db,
+        query= """SELECT * FROM StudentActionLogs
+            ORDER BY EventTime DESC
+            OFFSET :offset ROWS
+            FETCH NEXT :limit ROWS ONLY""",
+        mode="mappings_all",
+        params= {"limit": limit, "offset": offset},
+        error_message=f"Ошибка при получении истории действий пользователей"
+    )
+
+def get_logs_student(db: Session, studentID: int):
+    return general.run_query_select(
+        db,
+        query= """SELECT TOP 50 * FROM StudentActionLogs 
+        WHERE StudentID = :student_id
+        ORDER BY EventTime DESC
+        """,
+        mode="mappings_all",
+        params= {'student_id': studentID},
+        error_message=f"Ошибка при получения истории действий пользователя"
+    )
 
 
 
