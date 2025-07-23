@@ -226,13 +226,14 @@ def get_current_student(request: Request, db: Session = Depends(get_db)) -> Stud
     #смотрим разрешения для данного студента по его роли
     permissions = get_permission_role(db, student["RoleID"])
     student = dict(student)
-    student["permissions"] = permissions
+    student["permissions"] = [row["PermissionName"] for row in permissions]
     # student["BirthDate"] = student["BirthDate"].isoformat()
 
     '''if isinstance(student["BirthDate"], datetime):
         student["BirthDate"] = student["BirthDate"].date()'''
     return StudentOut(**dict(student))
 
+"""НЕ ИСПОЛЬЗУЕТСЯ, сделано через разрешения permission_required"""
 def admin_required(student: StudentOut = Depends(get_current_student)):
     if student.RoleName != "Админ":
         raise errors.access_denied(message="Только для администраторов")
@@ -288,7 +289,7 @@ def get_all_permission(db: Session):
         error_message=f"Ошибка при получения разрешений"
     )
 
-def get_permission_id(db: Session, RoleID: int):
+def get_role_id(db: Session, RoleID: int):
     return general.run_query_select(
         db,
         query= """SELECT * FROM Roles where RoleID = :role_id""",
@@ -298,6 +299,20 @@ def get_permission_id(db: Session, RoleID: int):
         error_message=f"Ошибка при получения роли с id={RoleID} "
     )
 
+def get_permission_role(db: Session, RoleID: int):
+    return general.run_query_select(
+        db,
+        query= """SELECT r.RoleID, r.Name as RoleName, p.PermissionID, p.Name as PermissionName
+                                            FROM RolePermissions rp
+                                            JOIN Roles r ON rp.RoleID = r.RoleID
+                                            JOIN Permissions p ON rp.PermissionID = p.PermissionID
+                                            WHERE r.RoleID = :role_id
+                                            ORDER BY r.RoleID""",
+        mode="mappings_all",
+        params= {"role_id": RoleID},
+        #required=True,
+        error_message=f"Ошибка при получения разрешений роли с id={RoleID} "
+    )
 ''' Назначение роли студенту'''
 def assign_role(db: Session, student_id: int, role_id: int):
     return general.run_query_update(

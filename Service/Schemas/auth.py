@@ -36,6 +36,7 @@ class StudentOut(StudentAuth):
     class Config:
         from_attributes = True # для моделей без orm_mode в Pydantic v2
 
+
 class TokenWithStudent(BaseModel):
     access_token: str
     token_type: str
@@ -70,6 +71,7 @@ class AdminChangePasswordRequest(BaseModel):
 class Roles(BaseModel):
     RoleID: int
     Name: str
+
 
 class Permission(BaseModel):
     PermissionID: int
