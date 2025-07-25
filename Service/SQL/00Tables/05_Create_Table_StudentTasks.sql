@@ -9,28 +9,28 @@ BEGIN
     IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'StudentTasks')
 	BEGIN
 		CREATE TABLE StudentTasks (
-		StudentTaskID INT IDENTITY(1,1) PRIMARY KEY,
-		StudentID bigint NOT NULL,  -- Ученик
-		SubTaskID INT NOT NULL,  -- Подзадача
-		StudentAnswer NVARCHAR(32), --Ответ ученика
-		CompletionStatus NVARCHAR(20) CHECK (CompletionStatus IN ('Не приступал', 'В процессе', 'Выполнено')),
-		Score DECIMAL(5,2) NULL,  -- Баллы за подзадачу
-		SolutionStudentPath NVARCHAR(255), --Решение задачи Студента
-		StartDate DATETIME NULL, -- Дата начала выполнения задания
-		ModifiedDate DATETIME NULL, -- Дата изменения 
-		CompletionDate DATETIME NULL, -- Дата когда был получен правильный ответ
-		DeadlineDate DATETIME NULL, -- Срок выполнения
-		Attempts INT DEFAULT 0, -- количество попыток
-		FOREIGN KEY (StudentID) REFERENCES Students(ID),
-		FOREIGN KEY (SubTaskID) REFERENCES SubTasks(SubTaskID)
+		StudentTaskID INT IDENTITY(1,1) PRIMARY KEY,			-- id задачи студента
+		StudentID bigint NOT NULL,								-- id студента
+		SubTaskID INT NOT NULL,									-- id задачи
+		StudentAnswer NVARCHAR(32),								-- Ответ студента
+		CompletionStatus NVARCHAR(20) CHECK (CompletionStatus IN ('Не приступал', 'В процессе', 'Выполнено')),	-- Статус выполнения
+		Score DECIMAL(5,2) NULL,								-- Баллы за подзадачу
+		SolutionStudentPath NVARCHAR(255),						-- Решение задачи Студента
+		StartDate DATETIME NULL,								-- Дата начала выполнения задания
+		ModifiedDate DATETIME NULL,								-- Дата изменения 
+		CompletionDate DATETIME NULL,							-- Дата когда был получен правильный ответ
+		DeadlineDate DATETIME NULL,								-- Срок выполнения
+		Attempts INT DEFAULT 0,									-- количество попыток
+		FOREIGN KEY (StudentID) REFERENCES Students(ID),		-- внешний ключ на id студента
+		FOREIGN KEY (SubTaskID) REFERENCES SubTasks(SubTaskID)	-- внешний ключ на id задачи
 		);
 	END
 END
-update StudentTasks set Attempts=0
+
 /*
 exec dbo.Create_Table_StudentTasks
 
-
+update StudentTasks set Attempts=0
 select * from StudentTasks
 
 

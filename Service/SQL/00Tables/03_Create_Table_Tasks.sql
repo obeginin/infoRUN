@@ -9,11 +9,11 @@ BEGIN
     IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Tasks')
 	BEGIN
 		CREATE TABLE Tasks (
-			TaskID INT IDENTITY(1,1) PRIMARY KEY, -- id задачи (первичный ключ)
-			SubjectID INT NOT NULL,
-			TaskNumber INT NOT NULL UNIQUE,  -- Номер задачи (1, 2, 3... 27) не должен быть нулевым и уникальным
-			TaskTitle NVARCHAR(255) NOT NULL -- Название задачи
-			CONSTRAINT FK_Tasks_Subjects FOREIGN KEY (SubjectID) REFERENCES Subjects(ID)
+			TaskID INT IDENTITY(1,1) PRIMARY KEY,		-- id категории (первичный ключ)
+			SubjectID INT NOT NULL,						-- id предмета
+			TaskNumber INT NOT NULL UNIQUE,				-- Номер задачи (1, 2, 3... 27) обязательно уникальный и не должен быть нулевым 
+			TaskTitle NVARCHAR(255) NOT NULL			-- Название категории
+			FOREIGN KEY (SubjectID) REFERENCES Subjects(ID)
 		);
 	END
 END;
@@ -30,9 +30,9 @@ BEGIN
     IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Subjects')
 	BEGIN
 		CREATE TABLE Subjects (
-			ID INT IDENTITY(1,1) PRIMARY KEY,
-			Name NVARCHAR(100) NOT NULL UNIQUE,
-			Description NVARCHAR(MAX) NULL
+			ID INT IDENTITY(1,1) PRIMARY KEY,			-- id предмета
+			Name NVARCHAR(100) NOT NULL UNIQUE,			-- название предмет
+			Description NVARCHAR(MAX) NULL				-- описание предмета
 		);
 	END
 END;
