@@ -1,27 +1,8 @@
 /*
 Основная хранимка
 */
-IF EXISTS(SELECT 1 FROM sys.procedures WHERE OBJECT_SCHEMA_NAME([object_id]) = 'dbo' and name = 'GetStudentsTasks')
-	DROP PROCEDURE dbo.GetStudentsTasks
-GO
 
-CREATE PROCEDURE GetStudentsTasks
-    @StudentTaskID INT				= NULL,			-- по Номеру задачи Студента
-    @StudentID INT					= NULL,			-- по id студента
-    @SubTaskID INT					= NULL,			-- по id задачи
-    @TaskID INT						= NULL,			-- по id категории
-	@SubjectID INT					= NULL,			-- по id предмета
-	@VariantID INT					= NULL,			-- по id варианта
-    @CompletionStatus NVARCHAR(20)  = NULL,			-- по статусу выполнения 
-	@SortColumn NVARCHAR(50)		= NULL,			-- Выбор колонки для сортировки ()
-    @SortDirection NVARCHAR(4)		= 'ASC',		-- Сортировка (по возрастанию ASC ) DESC -по убыванию
-	@Offset INT						= 0,			-- с какой строки начинать выводить
-	@Limit INT						= 50			-- количество выведенных строк
-	--@Description  NVARCHAR(MAX)		= NULL
-	
-AS
-BEGIN
-	/*вывод параметров в консоль SSMS
+/*вывод параметров в консоль SSMS
 	PRINT 'Params:';
 	PRINT 'StudentTaskID: ' + ISNULL(CAST(@StudentTaskID AS NVARCHAR), 'NULL');
 	PRINT 'StudentID: ' + ISNULL(CAST(@StudentID AS NVARCHAR), 'NULL');
@@ -36,6 +17,34 @@ BEGIN
 	select * from Variants
 	select * from Subjects
     */
+
+	--(SELECT COUNT(*) FROM StudentTasks where StudentID= @StudentID) AS TotalSubTasks, -- --Количество задач студента
+		--(SELECT COUNT(*) FROM StudentTasks where StudentID=@StudentID and CompletionStatus='Выполнено') AS CompletedSubTasks, --Количество выполненных задач
+		--COUNT(*) OVER() AS TotalCount --  Общее количество задач
+IF EXISTS(SELECT 1 FROM sys.procedures WHERE OBJECT_SCHEMA_NAME([object_id]) = 'dbo' and name = 'GetStudentsTasks')
+	DROP PROCEDURE dbo.GetStudentsTasks
+GO
+
+CREATE PROCEDURE GetStudentsTasks
+    @StudentTaskID INT				= NULL,			-- по Номеру задачи Студента
+    @StudentID INT					= NULL,			-- по id студента
+    @SubTaskID INT					= NULL,			-- по id задачи
+    @TaskID INT						= NULL,			-- по id категории
+	@SubjectID INT					= NULL,			-- по id предмета
+	@VariantID INT					= NULL,			-- по id варианта
+    @CompletionStatus NVARCHAR(20)  = NULL,			-- по статусу выполнения 
+	@Search NVARCHAR(100)			= NULL,			-- Поиск по ключевому слову (логин, описание и т.п.)
+	@SortColumn1 NVARCHAR(50)		= NULL,			-- Выбор колонки для сортировки 1 уровень
+	@SortColumn2 NVARCHAR(50)		= NULL,			-- Выбор колонки для сортировки 2 уровень
+    @SortDirection1 NVARCHAR(4)		= 'ASC',		-- Сортировка (по возрастанию ASC ) DESC -по убыванию
+	@SortDirection2	NVARCHAR(4)		= 'ASC',
+	@Offset INT						= 0,			-- с какой строки начинать выводить
+	@Limit INT						= 50			-- количество выведенных строк
+	--@Description  NVARCHAR(MAX)		= NULL
+	
+AS
+BEGIN
+	
 	SELECT 
         st.StudentTaskID,					-- id задачи студента
         st.StudentID,						-- id студента
@@ -60,13 +69,11 @@ BEGIN
 		v.VariantName,						-- Вариант
 		v.Type as TypeVariant,				-- Тип варианта ("Вариант", "Контрольная", "Олимпиада", "Практика")
 		v.Year as YearVariant,				-- Год варианта
-		v.Number,							-- Специальный номер варианта (если применимо 1, 2, 3 и т.д.)
+		v.Number as NumberVarinat,			-- Специальный номер варианта (если применимо 1, 2, 3 и т.д.)
 		v.DifficultyLevel,					-- Уровень сложности варианта
 		v.Comment							-- Комментарий варианта
 
-		--(SELECT COUNT(*) FROM StudentTasks where StudentID= @StudentID) AS TotalSubTasks, -- --Количество задач студента
-		--(SELECT COUNT(*) FROM StudentTasks where StudentID=@StudentID and CompletionStatus='Выполнено') AS CompletedSubTasks, --Количество выполненных задач
-		--COUNT(*) OVER() AS TotalCount --  Общее количество задач
+		
     FROM StudentTasks st
         JOIN Students sd ON sd.ID = st.StudentID 
         JOIN SubTasks s ON s.SubTaskID = st.SubTaskID
@@ -81,48 +88,101 @@ BEGIN
 		AND (@SubjectID IS NULL OR sj.ID = @SubjectID)
 		AND (@VariantID IS NULL OR v.VariantID = @VariantID)
 		AND (@CompletionStatus IS NULL OR st.CompletionStatus = @CompletionStatus) 
-		
+		AND (
+			@Search IS NULL
+			OR s.Description LIKE '%' + @Search + '%'
+			OR sd.Login LIKE '%' + @Search + '%'
+			OR v.VariantName LIKE '%' + @Search + '%'
+			OR v.Comment LIKE '%' + @Search + '%'
+		)
 		--AND (@Description IS NULL OR s.Description = @Description)
 	ORDER BY
+	-- Первая сортировка
     CASE 
-        WHEN @SortDirection = 'ASC' THEN 
+        WHEN @SortDirection1 = 'ASC' THEN 
             CASE 
-                WHEN @SortColumn = 'StudentTaskID' THEN st.StudentTaskID
-                WHEN @SortColumn = 'StudentID' THEN st.StudentID
-				WHEN @SortColumn = 'SubTaskID' THEN st.SubTaskID
-                WHEN @SortColumn = 'TaskID' THEN s.TaskID
-                WHEN @SortColumn = 'SubjectID' THEN sj.ID
-                WHEN @SortColumn = 'VariantID' THEN v.VariantID  
-				WHEN @SortColumn = 'StartDate' THEN st.StartDate
-				WHEN @SortColumn = 'ModifiedDate' THEN st.ModifiedDate
-				WHEN @SortColumn = 'CompletionDate' THEN st.CompletionDate
-				WHEN @SortColumn = 'DeadlineDate' THEN st.DeadlineDate
-				WHEN @SortColumn = 'TypeVariant' THEN v.Type
-				WHEN @SortColumn = 'YearVariant' THEN v.Year
-				WHEN @SortColumn = 'Attempts' THEN st.Attempts
+                WHEN @SortColumn1 = 'StudentTaskID' THEN st.StudentTaskID
+                WHEN @SortColumn1 = 'StudentID' THEN st.StudentID
+				WHEN @SortColumn1 = 'SubTaskID' THEN st.SubTaskID
+                WHEN @SortColumn1 = 'TaskID' THEN s.TaskID
+                WHEN @SortColumn1 = 'SubjectID' THEN sj.ID
+                WHEN @SortColumn1 = 'VariantID' THEN v.VariantID  
+				WHEN @SortColumn1 = 'StartDate' THEN st.StartDate
+				WHEN @SortColumn1 = 'ModifiedDate' THEN st.ModifiedDate
+				WHEN @SortColumn1 = 'CompletionDate' THEN st.CompletionDate
+				WHEN @SortColumn1 = 'DeadlineDate' THEN st.DeadlineDate
+				WHEN @SortColumn1 = 'TypeVariant' THEN v.Type
+				WHEN @SortColumn1 = 'YearVariant' THEN v.Year
+				WHEN @SortColumn1 = 'NumberVarinat' THEN v.Number
+				WHEN @SortColumn1 = 'DifficultyLevel' THEN v.DifficultyLevel
+				WHEN @SortColumn1 = 'Attempts' THEN st.Attempts
 
 				
-				-- StudentTaskID, StudentID, SubTaskID, TaskID, SubjectID, VariantID, CompletionDate, StartDate, ModifiedDate, DeadlineDate, Attempts, TypeVariant, YearVariant
-				--WHEN @SortColumn = 'Login' THEN sd.Login
-				--WHEN @SortColumn = 'Description' THEN s.Description
+				-- Поля для сортировки: StudentTaskID, StudentID, SubTaskID, TaskID, SubjectID, VariantID, StartDate, ModifiedDate, CompletionDate,  DeadlineDate, TypeVariant, YearVariant, NumberVarinat, DifficultyLevel, Attempts,
+				--WHEN @SortColumn1 = 'Login' THEN sd.Login
+				--WHEN @SortColumn1 = 'Description' THEN s.Description
             END
     END ASC,
     CASE 
-        WHEN @SortDirection = 'DESC' THEN 
+        WHEN @SortDirection1 = 'DESC' THEN 
             CASE 
-                WHEN @SortColumn = 'StudentTaskID' THEN st.StudentTaskID
-                WHEN @SortColumn = 'StudentID' THEN st.StudentID
-				WHEN @SortColumn = 'SubTaskID' THEN st.SubTaskID
-                WHEN @SortColumn = 'TaskID' THEN s.TaskID
-                WHEN @SortColumn = 'SubjectID' THEN sj.ID
-                WHEN @SortColumn = 'VariantID' THEN v.VariantID  
-				WHEN @SortColumn = 'StartDate' THEN st.StartDate
-				WHEN @SortColumn = 'ModifiedDate' THEN st.ModifiedDate
-				WHEN @SortColumn = 'CompletionDate' THEN st.CompletionDate
-				WHEN @SortColumn = 'DeadlineDate' THEN st.DeadlineDate
-				WHEN @SortColumn = 'TypeVariant' THEN v.Type
-				WHEN @SortColumn = 'YearVariant' THEN v.Year
-				WHEN @SortColumn = 'Attempts' THEN st.Attempts
+                WHEN @SortColumn1 = 'StudentTaskID' THEN st.StudentTaskID
+                WHEN @SortColumn1 = 'StudentID' THEN st.StudentID
+				WHEN @SortColumn1 = 'SubTaskID' THEN st.SubTaskID
+                WHEN @SortColumn1 = 'TaskID' THEN s.TaskID
+                WHEN @SortColumn1 = 'SubjectID' THEN sj.ID
+                WHEN @SortColumn1 = 'VariantID' THEN v.VariantID  
+				WHEN @SortColumn1 = 'StartDate' THEN st.StartDate
+				WHEN @SortColumn1 = 'ModifiedDate' THEN st.ModifiedDate
+				WHEN @SortColumn1 = 'CompletionDate' THEN st.CompletionDate
+				WHEN @SortColumn1 = 'DeadlineDate' THEN st.DeadlineDate
+				WHEN @SortColumn1 = 'TypeVariant' THEN v.Type
+				WHEN @SortColumn1 = 'YearVariant' THEN v.Year
+				WHEN @SortColumn1 = 'NumberVarinat' THEN v.Number
+				WHEN @SortColumn1 = 'DifficultyLevel' THEN v.DifficultyLevel
+				WHEN @SortColumn1 = 'Attempts' THEN st.Attempts
+            END    
+	END DESC,
+
+	-- Вторая сортировка (только если указана!)
+	CASE 
+        WHEN @SortColumn2 IS NOT NULL AND @SortDirection2 = 'ASC' THEN 
+            CASE 
+                WHEN @SortColumn2 = 'StudentTaskID' THEN st.StudentTaskID
+                WHEN @SortColumn2 = 'StudentID' THEN st.StudentID
+				WHEN @SortColumn2 = 'SubTaskID' THEN st.SubTaskID
+                WHEN @SortColumn2 = 'TaskID' THEN s.TaskID
+                WHEN @SortColumn2 = 'SubjectID' THEN sj.ID
+                WHEN @SortColumn2 = 'VariantID' THEN v.VariantID  
+				WHEN @SortColumn2 = 'StartDate' THEN st.StartDate
+				WHEN @SortColumn2 = 'ModifiedDate' THEN st.ModifiedDate
+				WHEN @SortColumn2 = 'CompletionDate' THEN st.CompletionDate
+				WHEN @SortColumn2 = 'DeadlineDate' THEN st.DeadlineDate
+				WHEN @SortColumn2 = 'TypeVariant' THEN v.Type
+				WHEN @SortColumn2 = 'YearVariant' THEN v.Year
+				WHEN @SortColumn1 = 'NumberVarinat' THEN v.Number
+				WHEN @SortColumn1 = 'DifficultyLevel' THEN v.DifficultyLevel
+				WHEN @SortColumn1 = 'Attempts' THEN st.Attempts
+            END
+    END ASC,
+    CASE 
+        WHEN @SortColumn2 IS NOT NULL AND @SortDirection2 = 'DESC' THEN 
+            CASE 
+                WHEN @SortColumn2 = 'StudentTaskID' THEN st.StudentTaskID
+                WHEN @SortColumn2 = 'StudentID' THEN st.StudentID
+				WHEN @SortColumn2 = 'SubTaskID' THEN st.SubTaskID
+                WHEN @SortColumn2 = 'TaskID' THEN s.TaskID
+                WHEN @SortColumn2 = 'SubjectID' THEN sj.ID
+                WHEN @SortColumn2 = 'VariantID' THEN v.VariantID  
+				WHEN @SortColumn2 = 'StartDate' THEN st.StartDate
+				WHEN @SortColumn2 = 'ModifiedDate' THEN st.ModifiedDate
+				WHEN @SortColumn2 = 'CompletionDate' THEN st.CompletionDate
+				WHEN @SortColumn2 = 'DeadlineDate' THEN st.DeadlineDate
+				WHEN @SortColumn2 = 'TypeVariant' THEN v.Type
+				WHEN @SortColumn2 = 'YearVariant' THEN v.Year
+				WHEN @SortColumn1 = 'NumberVarinat' THEN v.Number
+				WHEN @SortColumn1 = 'DifficultyLevel' THEN v.DifficultyLevel
+				WHEN @SortColumn1 = 'Attempts' THEN st.Attempts
             END
     
 	END DESC
@@ -135,43 +195,35 @@ GO
 /*SELECT DISTINCT CompletionStatus FROM StudentTasks;
 
 
-EXEC GetStudentsTasks; 
-EXEC GetStudentsTasks @StudentID = 3;  id=2
-EXEC GetStudentsTasks @StudentID = 2, @Description = N'; id=2
-EXEC GetStudentsTasks @StudentTaskID=1
-EXEC GetStudentsTasks @TaskID = 2;
-EXEC GetStudentsTasks @SubTaskID = 2, @CompletionStatus = N'';
-EXEC GetStudentsTasks @CompletionStatus = N''; 
-EXEC GetStudentsTasks @StudentTaskID = 2;
-EXEC GetStudentsTasks @Description = N'';
+EXEC GetStudentsTasks @Limit=5000;						-- все задачи всех студентов
+EXEC GetStudentsTasks @StudentID = 3;					-- задачи конкретного студента с id=3
+EXEC GetStudentsTasks @StudentTaskID=1					-- конкретная задачу студента по её id
+EXEC GetStudentsTasks @TaskID = 2;						-- все задачи категории с id=2
+EXEC GetStudentsTasks @CompletionStatus = N'Выполенено';-- все задачи со статусом "Выполенено"
+
+EXEC GetStudentsTasks @StudentID = 2
 
 
 
-EXEC GetStudentsTasks @SortColumn = 'StudentTaskID', @SortDirection = 'ASC';
-EXEC GetStudentsTasks @SortColumn = 'StudentTaskID', @SortDirection = 'DESC';
-EXEC GetStudentsTasks @SortColumn = 'TaskID', @SortDirection = 'ASC';
-EXEC GetStudentsTasks @SortColumn = 'TaskID', @SortDirection = 'DESC';
 
-EXEC GetStudentsTasks @SortColumn = 'CompletionDate', @SortDirection = 'ASC'; 
-EXEC GetStudentsTasks @SortColumn = 'CompletionDate', @SortDirection = 'DESC'; 
+EXEC GetStudentsTasks @SortColumn1 = 'StudentTaskID', @SortDirection1 = 'ASC';
+EXEC GetStudentsTasks @SortColumn1 = 'StudentID', @SortDirection1 = 'DESC', @SortColumn2 = 'StudentTaskID', @SortDirection2 = 'ASC';
+EXEC GetStudentsTasks @SortColumn1 = 'TaskID', @SortDirection1 = 'ASC';
+EXEC GetStudentsTasks @SortColumn1 = 'TaskID', @SortDirection1 = 'DESC';
 
-
-EXEC GetStudentsTasks @SortColumn = 'StudentID', @SortDirection = 'ASC';
-EXEC GetStudentsTasks @SortColumn = 'StudentID', @SortDirection = 'DESC';
-EXEC GetStudentsTasks @SortColumn = 'Login', @SortDirection = 'ASC';
-EXEC GetStudentsTasks @SortColumn = 'Login', @SortDirection = 'DESC';
+EXEC GetStudentsTasks @SortColumn1 = 'CompletionDate', @SortDirection1 = 'ASC'; 
+EXEC GetStudentsTasks @SortColumn1 = 'CompletionDate', @SortDirection1 = 'DESC'; 
 
 
-EXEC GetStudentsTasks @StudentID = 1, @SortColumn = 'StudentTaskID', @SortDirection = 'ASC';
+EXEC GetStudentsTasks @SortColumn1 = 'StudentID', @SortDirection1 = 'ASC';
+EXEC GetStudentsTasks @SortColumn1 = 'StudentID', @SortDirection1 = 'DESC';
+
+EXEC GetStudentsTasks @Search = 'Крылов'
+
+EXEC GetStudentsTasks @StudentID = 2, @SortColumn1 = 'StudentTaskID', @SortDirection1 = 'DESC';
 */ 
 
 /*
-select* from Tasks
-select* from SubTasks
-
-select ID, Login from Students
-select distinct Description from SubTasks
-SELECT TaskTitle FROM Tasks
 
 
 select* from StudentTasks where StudentID=2 and CompletionStatus='Выполнено'
