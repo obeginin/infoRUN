@@ -1,8 +1,8 @@
  -- Хранимка для подсчета выполненных заданий по вариантам
- IF EXISTS(SELECT 1 FROM sys.procedures WHERE OBJECT_SCHEMA_NAME([object_id]) = 'dbo' and name = 'GetStudentsTasksStatistic')
-	DROP PROCEDURE dbo.GetStudentsTasksStatistic
+ IF EXISTS(SELECT 1 FROM sys.procedures WHERE OBJECT_SCHEMA_NAME([object_id]) = 'dbo' and name = 'GetStudentTasksStatsFull')
+	DROP PROCEDURE dbo.GetStudentTasksStatsFull
 GO
- CREATE PROCEDURE GetStudentsTasksStatistic
+ CREATE PROCEDURE GetStudentTasksStatsFull
  @StudentID INT	= NULL
 AS
 BEGIN
@@ -55,4 +55,4 @@ BEGIN
     ) AS sub;
 END;
 GO
-exec GetStudentsTasksStatistic @StudentID = 2
+--exec GetStudentsTasksFullStats @StudentID = 2
