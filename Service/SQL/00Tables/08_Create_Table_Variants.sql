@@ -9,14 +9,14 @@ BEGIN
 	IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Variants')
 	BEGIN
 		CREATE TABLE Variants (
-			VariantID INT PRIMARY KEY IDENTITY(1,1),
-			VariantName NVARCHAR(255),           -- Человеко-понятное название (например, "Контрольная работа")
-			Type NVARCHAR(100),           -- Тип (например, "Вариант", "Контрольная", "Олимпиада", "Практика")
-			Year NVARCHAR(100),
-			Number INT NULL,              -- Номер, если применимо (1, 2, 3 и т.д.)
-			DifficultyLevel int,  -- Уровень сложности (например, )
-			Comment NVARCHAR(100)
-		);
+			VariantID INT PRIMARY KEY IDENTITY(1,1),	-- id варианта
+			VariantName NVARCHAR(255),					-- Человеко-понятное название (например, "Контрольная работа")
+			Type NVARCHAR(100),							-- Тип (например, "Вариант", "Контрольная", "Олимпиада", "Практика")
+			Year NVARCHAR(100),							-- Год варианта
+			Number INT NULL,							-- Номер, если применимо (1, 2, 3 и т.д.)
+			DifficultyLevel int,						-- Уровень сложности варианта
+			Comment NVARCHAR(100)						-- Комментарий варианта
+		);	
 	END
 END;
 
@@ -50,9 +50,10 @@ UPDATE S
 SET S.VariantID = V.VariantID
 FROM SubTasks S
 JOIN Variants V ON S.Description = V.Name;
-*/
+
 
 SELECT * FROM SubTasks s
                             LEFT JOIN Variants v on s.VariantID = v.VariantID where TaskID=1
 
 							EXEC sp_rename 'Variants.Name', 'VariantName', 'COLUMN';
+*/
