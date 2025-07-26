@@ -1,10 +1,13 @@
 from Service.config import UPLOAD_IMAGE_DIR, UPLOAD_SOLUTION_DIR, UPLOAD_FILES_DIR, UPLOAD_STUDENTS_IMAGE_DIR, TEMPLATES_DIR
-from Service.Schemas.students import StudentTaskRead,StudentTaskDetails, AnswerInput, SolutionInput, StudentTasksQueryParams
+from Service.Schemas.students import StudentTaskRead,StudentTaskBase, AnswerInput, SolutionInput, StudentTasksQueryParams
+from Service.Crud.auth import get_current_student, permission_required
 from Service.Crud import students
 from Service.Routers.tasks import get_files_for_subtask
 from Service.dependencies import get_db  # Зависимость для подключения к базе данных
 from Service.Crud.auth import get_current_student, verify_password
 from Service.Schemas.auth import StudentAuth, StudentOut
+from Service.producer import send_log
+
 from fastapi import APIRouter, Depends, Request, Query, Form,  UploadFile, File
 from sqlalchemy.orm import Session
 from fastapi.responses import HTMLResponse
@@ -46,66 +49,99 @@ def read_all_students(db: Session = Depends(get_db)):
 def read_student_id(student_id: int, db: Session = Depends(get_db)):
     return students.get_student_id(db, student_id)
 
-# /students/{value}
-# !!! Полезный роут, но пока не используем!
-''' Эндпоинт: Получить пользователей по параметру 
-@students_router.get("/{value}", response_model=list[StudentAuth], summary="Получить студента по выбранному полю")
-def read_student_by_field(
-        value: str,
-        #by: str = 'id', # значение по умолчанию
-        by: Literal["id", "login"] = Query("id", description="Поле для поиска: 'id' или 'login'"),
-        db: Session = Depends(get_db)):
-    return students.get_student_by_field(db, value, by)
 
-'''
 
 # /api/students_subtasks
 '''Эндпоинт для получения всех подзадач всех студентов'''
-@students_subtasks_router.get("", response_model=list[StudentTaskRead], summary="роут с получением всех задач всех студентов")
-def read_all_students_subtasks(db: Session = Depends(get_db)):
-    return students.get_all_students_tasks(db)
+@students_subtasks_router.get("", response_model=list[StudentTaskRead],
+                              summary="ГЛАВНЫЙ РОУТ с получением списка задач всех студентов (без фильтров)",
+                              description="Возвращает список всех задач студентов без применения фильтров.")
+def read_all_students_subtasks(db: Session = Depends(get_db), current_student=Depends(permission_required("view_tasks"))):
+    logger.info(f"[TASKS] Пользователь '{current_student.Login}' запросил задачи всех студентов. ")
 
-# /api/students_subtasks/{student_id}
-'''Эндпоинт для получения всех подзадач студента по его student_id
-@students_subtasks_router.get("/{student_id}", response_model=list[StudentTaskRead], summary="роут с получением всех задач (список) студента по его id")
-def read_student_all_subtasks(student_id: int, db: Session = Depends(get_db)):
-    return students.get_student_all_tasks(db, student_id)
-'''
-# /api/students_subtasks/{StudentID}/{SubTasksID}
-'''Эндпоинт для получения задачи студента по его student_id и номеру SubTasksID'''
-@students_subtasks_router.get("/{student_id}/{SubTasksID}", response_model=StudentTaskDetails, summary="роут с получением данных о задаче студента по StudentTaskID")
-def read_task_student( StudentTaskID: int, db: Session = Depends(get_db)):
-    #return students.get_task_student(db, student_id, SubTasksID)
-    return students.Get_Student_TaskDetails_By_ID(db, StudentTaskID)
+    send_log(
+        StudentID=current_student.ID,
+        StudentLogin=current_student.Login,
+        action="ViewStudentsTasks",
+        details={"DescriptionEvent": "Запрос задач всех студентов"}
+    )
+    return students.get_students_all_tasks(db)
+
 
 
 # /api/students_subtasks/{StudentID}
-@students_subtasks_router.get("/{StudentID}", response_model=list[StudentTaskDetails],
-                              summary="роут с получением списка задач студента по StudentID",
-                              description="""В качестве фильтров передаются параметры  
-                                          CompletionStatus - Статус выполнения  
-                                          SubjectID - 
-                                          TaskID - ID категории 
-                                          VariantID - ID варианта
-                                          SortColumn - Колонка для сортировки
-                                          SortDirection - возрастанию/убыванию
+@students_subtasks_router.get("/{StudentID}", response_model=list[StudentTaskRead],
+                              summary="ГЛАВНЫЙ РОУТ с получением списка задач студента по фильтрам",
+                              description="""В качестве фильтров передаются параметры    
+                                            `StudentTaskID` - по Номеру задачи Студента  
+                                            `StudentID` - по id студента (по PATH)  
+                                            `SubTaskID` - по id задачи  
+                                            `TaskID` - по id категории  
+                                            `SubjectID` - по id предмета  
+                                            `VariantID` - по id варианта  
+                                            `CompletionStatus` - по статусу выполнения   
+                                            `Search` - Поиск по ключевому слову (логин, описание и т.п.)  
+                                            `SortColumn1` - Выбор колонки для сортировки 1 уровень  
+                                            `SortColumn2` - Выбор колонки для сортировки 2 уровень  
+                                            `SortDirection1` - Сортировка (по возрастанию ASC ) DESC -по убыванию  
+                                            `SortDirection2`	NVARCHAR(4)		= 'ASC'    
+                                            `Offset` - с какой строки начинать выводить  
+                                            `Limit` - количество выведенных строк
                                           """)
-def read_tasks_student( StudentID: int,
-                        filters: StudentTasksQueryParams = Depends(),
-                       db: Session = Depends(get_db)):
+def read_tasks_student(StudentID: int,
+                       filters: StudentTasksQueryParams = Depends(),
+                       db: Session = Depends(get_db),
+                       current_student=Depends(permission_required("view_tasks"))):
+    logger.info(
+        f"[TASKS] Пользователь '{current_student.Login}' запросил задачи студента с ID {StudentID}. "
+        f"Фильтры: {filters.dict()}"
+    )
+
+    send_log(
+        StudentID=current_student.ID,
+        StudentLogin=current_student.Login,
+        action="ViewStudentTasks",
+        details={
+            "DescriptionEvent": "Запрос задач студента",
+            "TargetStudentID": StudentID,
+            "Filters": filters.dict()
+        }
+    )
     return students.get_students_all_tasks(
         db,
+        StudentTaskID=filters.StudentTaskID,
         StudentID=StudentID,
-        CompletionStatus=filters.CompletionStatus,
-        #SubjectID=filters.SubjectID,
+        SubTaskID=filters.SubTaskID,
         TaskID=filters.TaskID,
+        SubjectID=filters.SubjectID,
         VariantID=filters.VariantID,
-        SortColumn=filters.SortColumn,
-        SortDirection=filters.SortDirection,
+        CompletionStatus=filters.CompletionStatus,
+        Search=filters.Search,
+        SortColumn1=filters.SortColumn1,
+        SortColumn2=filters.SortColumn2,
+        SortDirection1=filters.SortDirection1,
+        SortDirection2=filters.SortDirection2,
         limit=filters.limit,
         offset=filters.offset
     )
 
+
+# /api/students_subtasks/{StudentID}/StudentTask/{StudentTaskID}
+'''Эндпоинт для получения задачи студента по его student_id и номеру SubTasksID'''
+@students_subtasks_router.get("/{student_id}/StudentTask/{StudentTaskID}", response_model=list[StudentTaskRead], summary="роут с получением данных о задаче студента по StudentTaskID")
+def read_task_student(StudentTaskID: int, db: Session = Depends(get_db), current_student=Depends(permission_required("view_tasks"))):
+    logger.info(f"[TASKS] Пользователь '{current_student.Login}' запросил данные задачи с ID={StudentTaskID}. ")
+
+    send_log(
+        StudentID=current_student.ID,
+        StudentLogin=current_student.Login,
+        action="ViewStudentTask",
+        details={
+            "DescriptionEvent": "Запрос задачи студента",
+            "TargetStudentTaskID": StudentTaskID
+        }
+    )
+    return students.get_students_all_tasks(db, StudentTaskID=StudentTaskID)
 
 '''Проверка ответа пользователя'''
 # /api/students_subtasks/check-answer/
@@ -270,7 +306,18 @@ async def submit_solution(
 
 
 """Старое"""
+# /students/{value}
+# !!! Полезный роут, но пока не используем!
+''' Эндпоинт: Получить пользователей по параметру 
+@students_router.get("/{value}", response_model=list[StudentAuth], summary="Получить студента по выбранному полю")
+def read_student_by_field(
+        value: str,
+        #by: str = 'id', # значение по умолчанию
+        by: Literal["id", "login"] = Query("id", description="Поле для поиска: 'id' или 'login'"),
+        db: Session = Depends(get_db)):
+    return students.get_student_by_field(db, value, by)
 
+'''
 
 
 # /students_subtasks/StudentTask/{StudentID}

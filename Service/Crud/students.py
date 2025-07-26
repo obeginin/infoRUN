@@ -42,6 +42,75 @@ def get_student_id(db: Session, Student_id: int):
     )
 
 
+'''функция которая работает по хранимке'''
+def get_students_all_tasks(
+    db,
+    StudentTaskID=None,
+    StudentID=None,
+    SubTaskID=None,
+    TaskID=None,
+    SubjectID=None,
+    VariantID=None,
+    CompletionStatus=None,
+    Search=None,
+    SortColumn1=None,
+    SortColumn2=None,
+    SortDirection1=None,
+    SortDirection2=None,
+    limit=None,
+    offset=None
+):
+    logging.debug(
+        f"""[DB CALL] Вызов хранимки GetStudentsTasks с параметрами:
+        StudentTaskID: {StudentTaskID}, StudentID: {StudentID}, SubTaskID: {SubTaskID}, TaskID: {TaskID}, SubjectID: {SubjectID}, VariantID: {VariantID},
+        CompletionStatus: {CompletionStatus}, Search: {Search}, SortColumn1: {SortColumn1}, SortDirection1: {SortDirection1}, SortColumn2: {SortColumn2},
+        SortDirection2: {SortDirection2}, Offset: {offset}, Limit: {limit}
+        """
+    )
+    query = """
+    EXEC GetStudentsTasks 
+        @StudentTaskID = :StudentTaskID,
+        @StudentID = :StudentID,
+        @SubTaskID = :SubTaskID,
+        @TaskID = :TaskID,
+        @SubjectID = :SubjectID,
+        @VariantID = :VariantID,
+        @CompletionStatus = :CompletionStatus,
+        @Search = :Search,
+        @SortColumn1 = :SortColumn1,
+        @SortColumn2 = :SortColumn2,
+        @SortDirection1 = :SortDirection1,
+        @SortDirection2 = :SortDirection2,
+        @Limit = :Limit,
+        @Offset = :Offset
+    """
+
+    params = {
+        "StudentTaskID": StudentTaskID,
+        "StudentID": StudentID,
+        "SubTaskID": SubTaskID,
+        "TaskID": TaskID,
+        "SubjectID": SubjectID,
+        "VariantID": VariantID,
+        "CompletionStatus": CompletionStatus,
+        "Search": Search,
+        "SortColumn1": SortColumn1,
+        "SortColumn2": SortColumn2,
+        "SortDirection1": SortDirection1,
+        "SortDirection2": SortDirection2,
+        "Limit": limit,
+        "Offset": offset,
+    }
+
+    return general.run_query_select(
+        db=db,
+        query=query,
+        params=params,
+        mode="mappings_all",  # Возвращаем список словарей
+        required=False,
+        error_message="[EXEC] Не удалось получить список задач студента"
+    )
+
 
 ''' Получения студента по заданному полю(id, логин)'''
 def get_student_by_field(db: Session, value: str, by: str = "id"):
@@ -108,44 +177,9 @@ def get_all_students_tasks(db: Session):
         raise HTTPException (status_code=404, detail=f"Студент с ID {student_id} не найден")
     return student_tasks
 '''
-'''функция которая работает по хранимке'''
-def get_students_all_tasks(db, StudentID=None, SubjectID= None, CompletionStatus=None, TaskID=None, VariantID=None, SortColumn=None, SortDirection=None, limit=None, offset=None):
-    '''if CompletionStatus is None:
-        CompletionStatus = 'Не приступал'
-        '''
-    logging.info(
-        f"Запускаем функцию с вызовом хранимки. StudentID:{StudentID}, CompletionStatus:{CompletionStatus} TaskID:{TaskID}  VariantID: {VariantID} SortColumn:{SortColumn} SortDirection: {SortDirection}")
-    if limit is None:
-        limit = 10
-    if offset is None:
-        offset = 0
-    query = text("""
-        EXEC GetStudentsTasks 
-            @StudentID = :StudentID,
 
-            @TaskID = :TaskID,
-            @VariantID = :VariantID,
-            @CompletionStatus = :CompletionStatus,
-            @SortColumn = :SortColumn,
-            @SortDirection = :SortDirection,
-            @Limit = :Limit,
-            @Offset = :Offset
-    """)
-    result = db.execute(query, {
-        "StudentID": StudentID,
 
-        "TaskID": TaskID,
-        "VariantID": VariantID,
-        "CompletionStatus": CompletionStatus,
-        "SortColumn": SortColumn,
-        "SortDirection": SortDirection,
-        "Limit": limit,
-        "Offset": offset,
-    })
-    rows = result.mappings().all()  # получаем все строки как словари
-    #for row in rows:
-        #print(row)
-    return rows
+
 
 
 ''' Получения задачи студента по SubTaskID'''

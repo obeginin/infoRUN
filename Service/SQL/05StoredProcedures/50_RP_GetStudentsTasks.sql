@@ -38,8 +38,8 @@ CREATE PROCEDURE GetStudentsTasks
 	@SortColumn2 NVARCHAR(50)		= NULL,			-- Выбор колонки для сортировки 2 уровень
     @SortDirection1 NVARCHAR(4)		= 'ASC',		-- Сортировка (по возрастанию ASC ) DESC -по убыванию
 	@SortDirection2	NVARCHAR(4)		= 'ASC',
-	@Offset INT						= 0,			-- с какой строки начинать выводить
-	@Limit INT						= 50			-- количество выведенных строк
+	@Offset INT						= NULL,			-- с какой строки начинать выводить
+	@Limit INT						= NULL			-- количество выведенных строк
 	--@Description  NVARCHAR(MAX)		= NULL
 	
 AS
@@ -186,8 +186,8 @@ BEGIN
             END
     
 	END DESC
-OFFSET @Offset ROWS
-FETCH NEXT @Limit ROWS ONLY;
+OFFSET ISNULL(@Offset, 0) ROWS
+FETCH NEXT ISNULL(@Limit, 50) ROWS ONLY
 END
 GO
 
