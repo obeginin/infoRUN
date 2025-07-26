@@ -1,4 +1,4 @@
-from tests.config import BASE_URL, login_admin, pass_admin, login_user, pass_user, token_admin, token
+from config import BASE_URL, login_admin, pass_admin, login_user, pass_user, token_admin, token
 import requests
 import pytest
 
