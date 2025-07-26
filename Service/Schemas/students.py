@@ -13,19 +13,7 @@ from pydantic import ConfigDict
 
 
 # Базовая модель StudentTask
-class StudentTaskBase(BaseModel):
-    StudentTaskID: int
-    StudentID: int
-    SubTaskID: int
-    CompletionStatus: Optional[str] = None
-    Score: Optional[float] = None
-    CompletionDate: Optional[datetime] = None
-    StudentAnswer: Optional[str] = None
 
-    model_config = ConfigDict(
-        from_attributes=True,
-        json_encoders={datetime: lambda v: v.isoformat() if v else None}
-    )
 
 # 🔍 Расширение для отображения задачи с деталями (наследуем от StudentTaskBase)
 class StudentTaskRead(BaseModel):
@@ -83,19 +71,19 @@ class SortDirection(str, Enum):
     DESC = "DESC"
 
 class StudentTasksQueryParams(BaseModel):
-    StudentTaskID: Optional[int] = None
-    SubTaskID: Optional[int] = None
-    TaskID: Optional[int] = None
-    SubjectID: Optional[int] = None
-    VariantID: Optional[int] = None
-    CompletionStatus: Optional[int] = None
-    Search: Optional[str] = Field(default='Крылов', description="поиск по полю")
-    SortColumn1: Optional[SortableFields] = Field(default=SortableFields.StartDate, description="Колонка для сортировки уровня 1")
-    SortColumn2: Optional[SortableFields] = Field(default=None, description="Колонка для сортировки уровня 1")
-    SortDirection1: Optional[SortDirection] = Field(default="ASC", description="Направление сортировки (ASC или DESC) для уровня 1")
-    SortDirection2: Optional[SortDirection] = Field(default=None, description="Направление сортировки (ASC или DESC) для уровня 2")
-    limit: Optional[int] = None # сколько записей вернуть
-    offset: Optional[int] = None # с какого элемента начинать
+    student_task_id: Optional[int] = None
+    sub_task_id: Optional[int] = None
+    task_id: Optional[int] = None
+    subject_id: Optional[int] = None
+    variant_id: Optional[int] = None
+    completion_status: Optional[str] = None
+    search: Optional[str] = None
+    sort_column1: Optional[SortableFields] = Field(default=SortableFields.StartDate)
+    sort_column2: Optional[SortableFields] = None
+    sort_direction1: Optional[SortDirection] = Field(default="ASC")
+    sort_direction2: Optional[SortDirection] = None
+    limit: Optional[int] = None
+    offset: Optional[int] = None
 
 
 

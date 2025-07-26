@@ -39,7 +39,7 @@ token_admin =  _login(login_admin, pass_admin)
 token = _login(login_user, pass_user)
 
 STUDENT_ID = 2 # id существубщего студента
-STUDENT_TASK_ID = 3 # существующая задача студента
+
 
 #client = TestClient(app)
 

@@ -45,63 +45,63 @@ def get_student_id(db: Session, Student_id: int):
 '''функция которая работает по хранимке'''
 def get_students_all_tasks(
     db,
-    StudentTaskID=None,
-    StudentID=None,
-    SubTaskID=None,
-    TaskID=None,
-    SubjectID=None,
-    VariantID=None,
-    CompletionStatus=None,
-    Search=None,
-    SortColumn1=None,
-    SortColumn2=None,
-    SortDirection1=None,
-    SortDirection2=None,
+    student_task_id=None,
+    student_id=None,
+    sub_task_id=None,
+    task_id=None,
+    subject_id=None,
+    variant_id=None,
+    completion_status=None,
+    search=None,
+    sort_column1=None,
+    sort_column2=None,
+    sort_direction1=None,
+    sort_direction2=None,
     limit=None,
     offset=None
 ):
     logging.debug(
         f"""[DB CALL] Вызов хранимки GetStudentsTasks с параметрами:
-        StudentTaskID: {StudentTaskID}, StudentID: {StudentID}, SubTaskID: {SubTaskID}, TaskID: {TaskID}, SubjectID: {SubjectID}, VariantID: {VariantID},
-        CompletionStatus: {CompletionStatus}, Search: {Search}, SortColumn1: {SortColumn1}, SortDirection1: {SortDirection1}, SortColumn2: {SortColumn2},
-        SortDirection2: {SortDirection2}, Offset: {offset}, Limit: {limit}
+        student_task_id: {student_task_id}, student_id: {student_id}, sub_task_id: {sub_task_id}, task_id: {task_id}, subject_id: {subject_id}, variant_id: {variant_id},
+        completion_status: {completion_status}, search: {search}, sort_column1: {sort_column1}, sort_direction1: {sort_direction1}, sort_column2: {sort_column2},
+        sort_direction2: {sort_direction2}, offset: {offset}, limit: {limit}
         """
     )
+
     query = """
     EXEC GetStudentsTasks 
-        @StudentTaskID = :StudentTaskID,
-        @StudentID = :StudentID,
-        @SubTaskID = :SubTaskID,
-        @TaskID = :TaskID,
-        @SubjectID = :SubjectID,
-        @VariantID = :VariantID,
-        @CompletionStatus = :CompletionStatus,
-        @Search = :Search,
-        @SortColumn1 = :SortColumn1,
-        @SortColumn2 = :SortColumn2,
-        @SortDirection1 = :SortDirection1,
-        @SortDirection2 = :SortDirection2,
-        @Limit = :Limit,
-        @Offset = :Offset
+        @StudentTaskID = :student_task_id,
+        @StudentID = :student_id,
+        @SubTaskID = :sub_task_id,
+        @TaskID = :task_id,
+        @SubjectID = :subject_id,
+        @VariantID = :variant_id,
+        @CompletionStatus = :completion_status,
+        @Search = :search,
+        @SortColumn1 = :sort_column1,
+        @SortColumn2 = :sort_column2,
+        @SortDirection1 = :sort_direction1,
+        @SortDirection2 = :sort_direction2,
+        @Limit = :limit,
+        @Offset = :offset
     """
 
     params = {
-        "StudentTaskID": StudentTaskID,
-        "StudentID": StudentID,
-        "SubTaskID": SubTaskID,
-        "TaskID": TaskID,
-        "SubjectID": SubjectID,
-        "VariantID": VariantID,
-        "CompletionStatus": CompletionStatus,
-        "Search": Search,
-        "SortColumn1": SortColumn1,
-        "SortColumn2": SortColumn2,
-        "SortDirection1": SortDirection1,
-        "SortDirection2": SortDirection2,
-        "Limit": limit,
-        "Offset": offset,
+        "student_task_id": student_task_id,
+        "student_id": student_id,
+        "sub_task_id": sub_task_id,
+        "task_id": task_id,
+        "subject_id": subject_id,
+        "variant_id": variant_id,
+        "completion_status": completion_status,
+        "search": search,
+        "sort_column1": sort_column1,
+        "sort_column2": sort_column2,
+        "sort_direction1": sort_direction1,
+        "sort_direction2": sort_direction2,
+        "limit": limit,
+        "offset": offset,
     }
-
     return general.run_query_select(
         db=db,
         query=query,
