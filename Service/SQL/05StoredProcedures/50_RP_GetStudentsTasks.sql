@@ -50,7 +50,7 @@ BEGIN
         st.StudentID,						-- id студента
         st.SubTaskID,						-- id задачи
         st.StudentAnswer,					-- ответ студента
-        st.CompletionStatus,				-- статус выполнения
+        st.CompletionStatus,				-- статус выполнения ('Не приступал')
         st.Score,							-- типо оценка
 		st.StartDate,						-- Дата начала выполнения задания
 		st.ModifiedDate,					-- Дата внесения изменений в задание
@@ -58,8 +58,8 @@ BEGIN
 		st.DeadlineDate,					-- Срок выполнения
 		st.Attempts,						-- Количество попыток
         sd.Login,							-- Логин пользователя
-        sj.ID,								-- id предмета
-		sj.Name,							-- предмет (информатика, математика)
+        sj.ID as SubjectID,					-- id предмета
+		sj.Name as SubjectName,				-- предмет (информатика, математика)
 		t.TaskID,							-- id категории 
 		t.TaskTitle,						-- категория (ЕГЭ_1, ЕГЭ_2)
         s.SubTaskNumber,					-- типы задач в данной категории (1.1, 1.2, ...)
@@ -187,7 +187,7 @@ BEGIN
     
 	END DESC
 OFFSET ISNULL(@Offset, 0) ROWS
-FETCH NEXT ISNULL(@Limit, 50) ROWS ONLY
+FETCH NEXT ISNULL(@Limit, 500) ROWS ONLY
 END
 GO
 
@@ -196,12 +196,12 @@ GO
 
 
 EXEC GetStudentsTasks @Limit=5000;						-- все задачи всех студентов
-EXEC GetStudentsTasks @StudentID = 3;					-- задачи конкретного студента с id=3
+EXEC GetStudentsTasks @StudentID = 2;					-- задачи конкретного студента с id=3
 EXEC GetStudentsTasks @StudentTaskID=1					-- конкретная задачу студента по её id
 EXEC GetStudentsTasks @TaskID = 2;						-- все задачи категории с id=2
 EXEC GetStudentsTasks @CompletionStatus = N'Выполенено';-- все задачи со статусом "Выполенено"
 
-EXEC GetStudentsTasks @StudentID = 2
+EXEC GetStudentsTasks @StudentID = 2, @StudentTaskID=43 @CompletionStatus='Не приступал'
 
 
 

@@ -1,5 +1,5 @@
 from Service.config import UPLOAD_IMAGE_DIR, UPLOAD_SOLUTION_DIR, UPLOAD_FILES_DIR, UPLOAD_STUDENTS_IMAGE_DIR, TEMPLATES_DIR
-from Service.Schemas.students import StudentTaskRead,StudentTaskBase, AnswerInput, SolutionInput, StudentTasksQueryParams
+from Service.Schemas.students import StudentTaskRead, AnswerInput, SolutionInput, StudentTasksQueryParams
 from Service.Crud.auth import get_current_student, permission_required
 from Service.Crud import students
 from Service.Routers.tasks import get_files_for_subtask
@@ -86,7 +86,7 @@ def read_all_students_subtasks(db: Session = Depends(get_db), current_student=De
                                             `SortDirection1` - Сортировка (по возрастанию ASC ) DESC -по убыванию  
                                             `SortDirection2`	NVARCHAR(4)		= 'ASC'    
                                             `Offset` - с какой строки начинать выводить  
-                                            `Limit` - количество выведенных строк
+                                            `Limit` - количество выведенных строк (По умолчанию: 500)
                                           """)
 def read_tasks_student(StudentID: int,
                        filters: StudentTasksQueryParams = Depends(),
@@ -109,18 +109,18 @@ def read_tasks_student(StudentID: int,
     )
     return students.get_students_all_tasks(
         db,
-        StudentTaskID=filters.StudentTaskID,
-        StudentID=StudentID,
-        SubTaskID=filters.SubTaskID,
-        TaskID=filters.TaskID,
-        SubjectID=filters.SubjectID,
-        VariantID=filters.VariantID,
-        CompletionStatus=filters.CompletionStatus,
-        Search=filters.Search,
-        SortColumn1=filters.SortColumn1,
-        SortColumn2=filters.SortColumn2,
-        SortDirection1=filters.SortDirection1,
-        SortDirection2=filters.SortDirection2,
+        student_task_id=filters.student_task_id,
+        student_id=StudentID,
+        sub_task_id=filters.sub_task_id,
+        task_id=filters.task_id,
+        subject_id=filters.subject_id,
+        variant_id=filters.variant_id,
+        completion_status=filters.completion_status,
+        search=filters.search,
+        sort_column1=filters.sort_column1,
+        sort_column2=filters.sort_column2,
+        sort_direction1=filters.sort_direction1,
+        sort_direction2=filters.sort_direction2,
         limit=filters.limit,
         offset=filters.offset
     )
@@ -128,9 +128,9 @@ def read_tasks_student(StudentID: int,
 
 # /api/students_subtasks/{StudentID}/StudentTask/{StudentTaskID}
 '''Эндпоинт для получения задачи студента по его student_id и номеру SubTasksID'''
-@students_subtasks_router.get("/{student_id}/StudentTask/{StudentTaskID}", response_model=list[StudentTaskRead], summary="роут с получением данных о задаче студента по StudentTaskID")
-def read_task_student(StudentTaskID: int, db: Session = Depends(get_db), current_student=Depends(permission_required("view_tasks"))):
-    logger.info(f"[TASKS] Пользователь '{current_student.Login}' запросил данные задачи с ID={StudentTaskID}. ")
+@students_subtasks_router.get("/{student_id}/StudentTask/{student_task_id}", response_model=list[StudentTaskRead], summary="роут с получением данных о задаче студента по StudentTaskID")
+def read_task_student(student_task_id: int, db: Session = Depends(get_db), current_student=Depends(permission_required("view_tasks"))):
+    logger.info(f"[TASKS] Пользователь '{current_student.Login}' запросил данные задачи с ID={student_task_id}. ")
 
     send_log(
         StudentID=current_student.ID,
@@ -138,10 +138,10 @@ def read_task_student(StudentTaskID: int, db: Session = Depends(get_db), current
         action="ViewStudentTask",
         details={
             "DescriptionEvent": "Запрос задачи студента",
-            "TargetStudentTaskID": StudentTaskID
+            "TargetStudentTaskID": student_task_id
         }
     )
-    return students.get_students_all_tasks(db, StudentTaskID=StudentTaskID)
+    return students.get_students_all_tasks(db, student_task_id=student_task_id)
 
 '''Проверка ответа пользователя'''
 # /api/students_subtasks/check-answer/
