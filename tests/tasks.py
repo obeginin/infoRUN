@@ -1,24 +1,10 @@
-from auth import _login
 import requests
 from time import time, sleep
 from dotenv import load_dotenv
+from tests.config import BASE_URL, login_admin, pass_admin, login_user, pass_user, new_pass_user, token_admin, token
 
-import jwt
-from datetime import datetime, timedelta, timezone
-import os
-
-#from Service.Scripts.check_token import headers
 
 load_dotenv()
-
-BASE_URL = "https://info-run.ru/"
-#BASE_URL = "http://127.0.0.1:9000/"
-
-# актуальный пользователь
-login_user = 'test'
-pass_user = 'standart'
-new_pass_user = 'standart_password'
-token = _login()
 
 
 

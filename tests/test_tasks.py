@@ -1,18 +1,13 @@
-from auth import _login
+from tests.config import BASE_URL, login_admin, pass_admin, login_user, pass_user, token_admin, token
 import requests
 import pytest
-BASE_URL = "https://info-run.ru/"
-#BASE_URL = "http://localhost:9000/"
 
-# актуальный пользователь
-login_user = 'test'
-pass_user = 'standart'
-token = _login()
+
 
 
 """Категории"""
 def run_task_test(subjectID, expected_status):
-    token = _login()
+
     assert token, "❌ Невозможно получить токен, тест остановлен."
     headers = {"Authorization": f"Bearer {token}"}
     params = {"subjectID": subjectID}

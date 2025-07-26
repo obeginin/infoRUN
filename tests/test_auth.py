@@ -1,16 +1,11 @@
-from auth import _login
+from tests.config import BASE_URL, login_admin, pass_admin, login_user, pass_user, token_admin, token
 import requests
 import pytest
-#from fastapi.testclient import TestClient
-#from Service.main import app
-BASE_URL = "https://info-run.ru/"
-#BASE_URL = "http://localhost:9000/"
 
-# актуальный пользователь
-login_user = 'test'
-pass_user = 'standart'
 
-token = _login()
+
+
+
 '''Аутентификация'''
 def test_successful_login():
     data = {"Login": login_user, "Password": pass_user}

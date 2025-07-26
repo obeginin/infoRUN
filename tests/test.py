@@ -1,30 +1,20 @@
-from auth import _login
+from tests.config import BASE_URL, login_admin, pass_admin, login_user, pass_user, token_admin, token
 import requests
 import pytest
-#from fastapi.testclient import TestClient
-#from Service.main import app
-BASE_URL = "https://info-run.ru/"
-#BASE_URL = "http://localhost:9000/"
 
-# админ пользователь
-login_admin = 'test'
-pass_admin = 'standart'
 
-login_user = 'ivan'
-pass_user = 'standart'
+
+
+
+
 # В test_get_logs надо менять id пользователй
 
 
-# Заготовка токенов для теста (админ и обычный пользователь)
-ADMIN_TOKEN =  _login() # замените на настоящий тестовый токен с правами admin_panel
-USER_TOKEN = _login(login_user,pass_user)  # токен без прав admin_panel, например, для студента ID=2
 
-#print("admin",ADMIN_TOKEN)
-#print("user",USER_TOKEN)
 
 @pytest.mark.parametrize("token, expected_status, description", [
-    (ADMIN_TOKEN, 200, "Админ получает все логи"),
-    (USER_TOKEN, 403, "Обычный пользователь не имеет доступа")
+    (token_admin, 200, "Админ получает все логи"),
+    (token, 403, "Обычный пользователь не имеет доступа")
 ])
 def test_get_all_logs(token, expected_status, description):
     url = f"{BASE_URL}/api/admin/students/logs"
@@ -40,9 +30,9 @@ def test_get_all_logs(token, expected_status, description):
         assert len(data) <= 50, "Default limit exceeded"
 
 @pytest.mark.parametrize("requester_token, requested_student_id, expected_status", [
-    (ADMIN_TOKEN, 1, 200),          # админ может смотреть логи любого пользователя
-    (USER_TOKEN, 6, 200),           # пользователь смотрит свои логи — ок
-    (USER_TOKEN, 3, 403),           # пользователь смотрит чужие логи — доступ запрещён
+    (token_admin, 1, 200),          # админ может смотреть логи любого пользователя
+    (token, 6, 200),           # пользователь смотрит свои логи — ок
+    (token, 3, 403),           # пользователь смотрит чужие логи — доступ запрещён
 ])
 def test_get_logs(requester_token, requested_student_id, expected_status):
     url = f"{BASE_URL}/api/admin/students/{requested_student_id}/logs"

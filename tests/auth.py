@@ -1,3 +1,4 @@
+from tests.config import BASE_URL, login_admin, pass_admin, login_user, pass_user, new_pass_user, token_admin, token
 import requests
 from time import time, sleep
 from dotenv import load_dotenv
@@ -6,32 +7,12 @@ from datetime import datetime, timedelta, timezone
 import os
 load_dotenv()
 
-BASE_URL = "https://info-run.ru/"
-#BASE_URL = "http://localhost:9000/"
 
-# актуальный пользователь
-login_user = 'test'
-pass_user = 'standart'
-new_pass_user = 'standart_password'
 
-def _login(login_user: str = "test", pass_user: str = "standart"):
-    response = requests.post(f"{BASE_URL}/api/auth/login", json={
-        "Login": login_user,
-        "Password": pass_user
-    })
-    try:
-        data = response.json()
-    except Exception as e:
-        print("Ошибка при декодировании JSON:", e)
-        print("Тело ответа:", response.text)
-        raise
-    #print("Ответ сервера:", data)
-    if 'access_token' not in data:
-        print(f"[Ошибка] Логин не удался. Статус: {response.status_code}")
-        #print("Ответ:", data)
-        raise KeyError("'access_token' отсутствует в ответе")
 
-    return data["access_token"]
+
+
+
 
 def login_wrong_password():
     response = requests.post(f"{BASE_URL}/api/auth/login", json={
@@ -110,7 +91,6 @@ def login_success():
 
 '''Проверка Токена'''
 def check_token():
-    token = _login()
     headers = {
         "Authorization": f"Bearer {token}"
     }
@@ -144,7 +124,6 @@ def invalid_token():
         print("🔁 Ответ сервера:", response.text)
 
 def invalid_schema_token():
-    token = _login()
     headers = {
         "Authorization": f"Token {token}"
     }
@@ -244,7 +223,6 @@ def expired_Token():
 
 
 def student_change_password_wrong_old():
-    token = _login()  # Получаем токен авторизации
     headers = {
         "Authorization": f"Bearer {token}"
     }
@@ -266,7 +244,6 @@ def student_change_password_wrong_old():
         print("Ответ сервера:", response.text)
 
 def student_change_password_mismatch():
-    token = _login()  # Получаем токен авторизации
     headers = {
         "Authorization": f"Bearer {token}"
     }
@@ -288,7 +265,6 @@ def student_change_password_mismatch():
         print("Ответ сервера:", response.text)
 
 def student_change_password():
-    token = _login()
 
     headers = {
         "Authorization": f"Bearer {token}"
