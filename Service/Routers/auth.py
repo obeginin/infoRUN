@@ -226,7 +226,7 @@ def register_user(user_data: auth.UserCreate, db: Session = Depends(get_db)):
     return  {"message": f"Письмо с подтверждением отправлено на почту {params["Email"]}"}
 
 @auth_router.post("/delete_student", summary="Удаление студента по email")
-def confirm_email(email: EmailStr, db: Session = Depends(get_db)):
+def confirm_email(email: EmailStr, db: Session = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
     # try:
     student = get_student_by_email(db, email)
     logger.info(f"Студент cccccc {student}")
@@ -234,13 +234,18 @@ def confirm_email(email: EmailStr, db: Session = Depends(get_db)):
         logger.warning(f"Студент с email {email} не найден")
         raise errors.bad_request(message=f"Студент с email {email} не найден")
     del_student_email(db, email)
-    logger.info(f"Студент с email {email} успешно удалён")
+
+    logger.info(f"[ADMIN] Администратор:{current_student.Login} удалил студента с email: {email}")
+    send_log(
+        StudentID=student["ID"],
+        StudentLogin=student["Login"],
+        action="StudentDeleted",
+        details={
+            "DescriptionEvent": f"Администратор:{current_student.Login} удалил студента с email: {email}",
+        }
+    )
     return {"message": f"Студент с email {email} успешно удалён"}
-    # except Exception as e:
-    #     raise HTTPException(
-    #         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-    #         detail=str(e)
-    #     )
+
 
 '''Подтверждение email'''
 @auth_router.get("/confirm-email", summary="Подтверждение email",

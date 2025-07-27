@@ -93,7 +93,7 @@ def send_email_event(event_type: str, email: str, subject: str, template: str, d
 
     message = {
         "event_type": event_type,
-        "timestamp": TIME_NOW,
+        "timestamp": TIME_NOW.isoformat(),
         "email": email,
         "subject": subject,
         "template": template,

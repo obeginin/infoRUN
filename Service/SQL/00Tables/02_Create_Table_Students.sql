@@ -21,11 +21,12 @@ BEGIN
 			Sex nvarchar(2),
 			BirthDate datetime,
 			Comment nvarchar(MAX),
-			Password VARCHAR(255),-- Хеш пароля (надо сделать NOT NULL)
-			--Role nvarchar(15), -- роль (админс, user) СТАРОЕ УДАЛИТЬ!!!!
-			RoleID INT NOT NULL, -- id роли
-			IsActive BIT NOT NULL DEFAULT 1, -- bit - булевый тип
-			IsDeleted datetime NULL,
+			Password VARCHAR(255),					-- Хеш пароля (надо сделать NOT NULL)
+			--Role nvarchar(15),					-- роль (админс, user) СТАРОЕ УДАЛИТЬ!!!!
+			RoleID INT NOT NULL,					-- id роли
+			IsActive BIT NOT NULL DEFAULT 1,		-- bit - булевый тип
+			IsDeleted datetime NULL,				-- 
+			IsConfirmed BIT NOT NULL DEFAULT 0,		-- подтверждение email
 			FOREIGN KEY (RoleID) REFERENCES Roles(RoleID)
 		);
 	END
