@@ -1,15 +1,18 @@
-from Service.config import TEMPLATES_DIR
+from Service.config import TEMPLATES_DIR, ACCESS_TOKEN_EXPIRE_MINUTES
 from Service.Models import Student
 from Service.Schemas import auth
 
 from Service.Crud.auth import get_current_student, permission_required, verify_password, hash_password, get_student_by_login, get_logs_student, get_logs_all
 from Service.Crud.auth import change_password, get_all_roles, get_all_permission, get_role_id, assign_role, get_permission_role, update_role_permissions
+from Service.Crud.auth import get_student_by_email, add_new_register_student, confirm_student_email
 from Service.Crud.students import  get_student_id, get_all_students
-from Service.Security.token import create_access_token
+from Service.Security.token import create_access_token, verify_token
 from Service.dependencies import get_db,get_log_db, get_producer_dep
-from Service.producer import send_log
+from Service.producer import send_log, send_email_event
 from Service.Crud import errors
 
+from datetime import datetime
+from datetime import timedelta
 from typing import List
 from fastapi import APIRouter, Depends,Form, Request, HTTPException, status, Response, Query
 from fastapi.concurrency import run_in_threadpool
@@ -133,6 +136,76 @@ def login(
 @auth_router.get("/check-token", response_model=auth.StudentOut, summary="Образец получения данных пользователя по токену (с разрешениями)")
 def check_token(request: Request, current_student = Depends(get_current_student)):
     return current_student
+
+
+# /api/auth/register
+'''Регистрация'''
+@auth_router.post("/register", summary="Регистрация пользлвателя",
+                 description="")
+def register_user(user_data: auth.UserCreate, db: Session = Depends(get_db)):
+    student = get_student_by_email(db, user_data.email)
+    if student:
+        raise errors.bad_request(message="Пользователь с таким Email уже зарегистрирован")
+    student = get_student_by_login(db, user_data.login)
+    if student:
+        raise errors.bad_request(message="Пользователь с таким Login уже зарегистрирован")
+    # хэшируем пароль
+    hashed_password = hash_password(user_data.password)
+    # Генерация токена подтверждения
+    token = create_access_token(
+        data={"sub": user_data.email}, # закладываем в токен email
+        expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    )
+
+    # Подготовка параметров для вставки
+    params = {
+        "Email": user_data.email,
+        "Login": user_data.login,
+        "Password": hashed_password,
+        "IsConfirmed": False,
+    }
+    result = add_new_register_student(db, params)
+    # if result != 1:
+    #     logger.warning(f"Регистрация: insert вернул {result}, ожидалось 1")
+    #     raise errors.internal_server(message="Ошибка регистрации пользователя")
+    logger.info(f"Новый пользователь зарегистрирован: {user_data.email}")
+
+    # Отправка события Kafka на email-сервис
+    send_email_event(
+        event_type="email_registration",
+        email=user_data.email,
+        subject="Подтверждение регистрации",
+        template="registration_confirmation",
+        data={"confirmation_link": f"https://info-run.ru/api/auth/confirm-email?token={token}"}
+    )
+    logger.info(f"Письмо с подтверждением отправлено: {user_data.email}")
+    return  {"message": f"Письмо с подтверждением отправлено на почту {params["Email"]}"}
+
+
+'''Подтверждение email'''
+@auth_router.get("/confirm-email", summary="Подтверждение email",
+                 description="")
+def confirm_email(token: str, db: Session = Depends(get_db)):
+    # Декодируем и верифицируем токен
+    payload = verify_token(token)
+    if not payload:
+        # либо истёк, либо неверная подпись
+        raise errors.bad_request(message="Недействительный или просроченный токен")
+
+    # Извлекаем email из поля sub
+    email = payload.get("sub")
+    if not email:
+        raise errors.bad_request(message="Неверные данные в токене")
+
+    # обновляем данные
+    result = confirm_student_email(db, {"email": email, "now": datetime.utcnow()})
+
+    '''if result.rowcount != 1:
+        # либо такой email не найден, либо уже был подтверждён
+        raise errors.bad_request(message="Пользователь не найден или уже подтверждён")'''
+    return {"message": "Email успешно подтверждён"}
+
+
 
 # /api/auth/logout
 '''Реализация выхода (удаления cookie с токеном)'''

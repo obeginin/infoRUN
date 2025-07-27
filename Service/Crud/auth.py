@@ -9,7 +9,7 @@ from Service.Crud import errors,general
 from fastapi import Depends, HTTPException, status, Request
 from fastapi.security import OAuth2PasswordBearer, HTTPBasic, HTTPBasicCredentials
 from Service.producer import send_log
-
+import uuid
 from datetime import datetime
 from jose.exceptions import ExpiredSignatureError
 from passlib.context import CryptContext # объект, который помогает удобно хешировать и проверять пароли.
@@ -269,6 +269,40 @@ def get_student_by_login(db: Session, login: str):
         params={"login": login},
         mode="mappings_first",
         error_message=f"Ошибка при получении студента: {login}"
+    )
+
+
+"""Выбор студента из базы по его логину (Аутентификация)"""
+def get_student_by_email(db: Session, email: str):
+    return general.run_query_select(
+        db,
+        query="""
+                SELECT * FROM Students 
+                WHERE Email = :email
+            """,
+        params={"email": email},
+        mode="mappings_first",
+        error_message=f"Ошибка при получении студента по email: {email}"
+    )
+
+def add_new_register_student(db: Session, params: dict):
+    return general.run_query_insert(
+        db,
+        query="""
+        Insert Students (Login, Email, Password,IsConfirmed)
+        VALUES (:Login, :Email, :Password, :IsConfirmed)
+        """,
+        params=params,
+        error_message="Ошибка добавления нового студента (через регистрацию)"
+    )
+
+'''функция подтвержения email'''
+def confirm_student_email(db: Session, params: dict):
+    return general.run_query_update(
+        db,
+        query="""UPDATE Students SET IsConfirmed = 1, RegisterDate = :now WHERE Email = :email AND IsConfirmed = 0""",
+        params=params,
+        error_message="Ошибка добавления нового студента (через регистрацию)"
     )
 
 """Выбор из базы разрешений для роли по её ID """
