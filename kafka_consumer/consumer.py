@@ -51,7 +51,8 @@ def run_deadline_checker():
 
 def consume_messages():
     consumer = KafkaConsumer(
-        'students.actions',
+        'students.actions',  # топик с логированием
+        'email.notifications',      # топик с email уведомлениями
         bootstrap_servers=KAFKA_BOOTSTRAP_SERVERS,
         group_id='main-consumer-group',
         auto_offset_reset='earliest',
@@ -63,7 +64,7 @@ def consume_messages():
             print(f"Получено сообщение: {message}")
             with get_db_session() as db:
                 try:
-                    handle_action(message, db)
+                    handle_action(message, db, topic=msg.topic)
                 except Exception as e:
                     print(f"Ошибка обработки сообщения: {e}")
     except KeyboardInterrupt:

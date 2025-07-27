@@ -48,7 +48,7 @@ def get_kafka_producer() -> KafkaProducer:
     return _producer
 
 
-# Функция логирования действий
+# Функция логирования действий в Kafka
 def send_log(StudentID: int, StudentLogin: str, action: str, details: dict = None):
     producer = get_kafka_producer()
     if not producer:
@@ -81,3 +81,56 @@ def send_log(StudentID: int, StudentLogin: str, action: str, details: dict = Non
         print(f"[Kafka] Failed to send log: {e}")
 
 
+
+# Функция отправки email через Kafka
+def send_email_event(event_type: str, email: str, subject: str, template: str, data: dict):
+    producer = get_kafka_producer()
+    if not producer:
+        logging.warning("[Kafka] Producer not available. Email not sent.")
+        return
+
+    message = {
+        "event_type": event_type,
+        "timestamp": datetime.utcnow().isoformat(),
+        "email": email,
+        "subject": subject,
+        "template": template,
+        "data": data
+    }
+
+    try:
+        future = producer.send("email.notifications", value=message)
+        future.get(timeout=1.0)
+        logging.info(f"[Kafka] Email event sent: {message}")
+    except KafkaError as e:
+        logging.warning(f"[Kafka] Failed to send email event: {e}")
+
+
+# пример вызова send_email_event
+'''
+#Регистрация
+send_email_event(
+    event_type="email_registration",
+    email=user_data.email,
+    subject="Подтверждение регистрации",
+    template="registration_confirmation",
+    data={"confirmation_link": f"https://yourdomain.com/confirm-email?token={token}"}
+)
+# Сброс пароля
+send_email_event(
+    event_type="email_reset_password",
+    email=user.email,
+    subject="Восстановление доступа",
+    template="reset_password",
+    data={"reset_link": f"https://yourdomain.com/reset-password?token={token}"}
+)
+
+# Новости
+send_email_event(
+    event_type="email_news",
+    email=user.email,
+    subject="Наши новости!",
+    template="newsletter",
+    data={"title": "Обновления в системе", "body": "Мы добавили новые фичи..."}
+)
+'''
