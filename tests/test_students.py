@@ -1,4 +1,4 @@
-from config import BASE_URL, login_admin, pass_admin, login_user, pass_user, token_admin, token, STUDENT_ID #, client
+from config_test import BASE_URL, login_admin, pass_admin, login_user, pass_user, token_admin, token, STUDENT_ID #, client
 
 import pytest
 import requests
