@@ -28,6 +28,7 @@ class Student(Base):
     RoleID = Column(Integer, default=3)  # Подзадача
     IsActive = Column(Boolean, nullable=False, default=True)
     IsDeleted = Column(DateTime, nullable=True, default=None)
+    IsConfirmed = Column(Boolean, default=False)
 
 # Модель для таблицы Tasks
 class Task(Base):

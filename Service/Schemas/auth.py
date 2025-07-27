@@ -1,4 +1,4 @@
-from pydantic import BaseModel, constr
+from pydantic import BaseModel, constr, EmailStr
 from typing import List
 from datetime import date
 
@@ -9,9 +9,10 @@ class StudentLogin(BaseModel):
     class Config:
         from_attributes = True
 
-class StudentCreate(BaseModel):
-    Login: str
-    Password: str
+class UserCreate(BaseModel):
+    email: EmailStr
+    login: str
+    password: str
 
 class StudentAuth(BaseModel):
     ID: int

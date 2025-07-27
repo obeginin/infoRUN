@@ -16,13 +16,17 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
-# Функция для валидации токена
+# Функция для расшифровки и проверки токена
 def verify_token(token: str):
     try:
+        # проверяет подпись токена и его срок жизни
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        # Если всё ок, возвращает payload — словарь с теми полями, которые залили при генерации
         return payload
+    # Если токен просрочен
     except jwt.ExpiredSignatureError:
         return None
+    # При любой другой ошибке декодирования (подмена, неверная структура)
     except jwt.JWTError:
         return None
 
