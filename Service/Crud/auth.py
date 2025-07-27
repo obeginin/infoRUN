@@ -305,6 +305,35 @@ def confirm_student_email(db: Session, params: dict):
         error_message="Ошибка добавления нового студента (через регистрацию)"
     )
 
+'''функция удаление студента по email'''
+def del_student_email(db: Session, email: str):
+    try:
+        general.run_query_delete(
+            db,
+            query="""
+                DELETE FROM StudentTasks 
+                WHERE StudentID = (SELECT ID FROM Students WHERE Email = :email)
+                """,
+            params={"email": email},
+            commit=False
+        )
+
+        general.run_query_delete(
+            db,
+            query="""
+                DELETE FROM Students 
+                WHERE Email = :email
+                """,
+            params={"email": email},
+            commit=False
+        )
+
+        db.commit()
+    except SQLAlchemyError as e:
+        db.rollback()
+        logger.exception("Ошибка при удалении студента и связанных данных")
+        raise errors.internal_server(message="Ошибка удаления студента и связанных данных")
+
 """Выбор из базы разрешений для роли по её ID """
 def get_permission_role(db: Session, RoleID: int):
     return general.run_query_select(

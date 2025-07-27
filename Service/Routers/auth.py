@@ -4,13 +4,14 @@ from Service.Schemas import auth
 
 from Service.Crud.auth import get_current_student, permission_required, verify_password, hash_password, get_student_by_login, get_logs_student, get_logs_all
 from Service.Crud.auth import change_password, get_all_roles, get_all_permission, get_role_id, assign_role, get_permission_role, update_role_permissions
-from Service.Crud.auth import get_student_by_email, add_new_register_student, confirm_student_email
+from Service.Crud.auth import get_student_by_email, add_new_register_student, confirm_student_email, del_student_email
 from Service.Crud.students import  get_student_id, get_all_students
 from Service.Security.token import create_access_token, verify_token
 from Service.dependencies import get_db,get_log_db, get_producer_dep
 from Service.producer import send_log, send_email_event
 from Service.Crud import errors
 
+from pydantic import EmailStr
 from datetime import datetime
 from datetime import timedelta
 from typing import List
@@ -140,8 +141,8 @@ def check_token(request: Request, current_student = Depends(get_current_student)
 
 # /api/auth/register
 '''Регистрация'''
-@auth_router.post("/register", summary="Регистрация пользлвателя",
-                 description="")
+@auth_router.post("/register", summary="Регистрация пользователя",
+                 description="после ввода данных на указанный email отправляется письмо с подтверждением почты")
 def register_user(user_data: auth.UserCreate, db: Session = Depends(get_db)):
     student = get_student_by_email(db, user_data.email)
     if student:
@@ -164,12 +165,54 @@ def register_user(user_data: auth.UserCreate, db: Session = Depends(get_db)):
         "Password": hashed_password,
         "IsConfirmed": False,
     }
-    result = add_new_register_student(db, params)
-    # if result != 1:
-    #     logger.warning(f"Регистрация: insert вернул {result}, ожидалось 1")
-    #     raise errors.internal_server(message="Ошибка регистрации пользователя")
+    add_new_register_student(db, params)
+
     logger.info(f"Новый пользователь зарегистрирован: {user_data.email}")
 
+    # Отправка события Kafka на email-сервис
+    send_email_event(
+        event_type="email_registration",
+        email=user_data.email,
+        subject="Подтверждение регистрации",
+        template="registration_confirmation",
+        data={"confirmation_link": f"https://info-run.ru/auth/confirm-email?token={token}"}
+    )
+    logger.info(f"Письмо с подтверждением отправлено: {user_data.email}")
+    return  {"message": f"Письмо с подтверждением отправлено на почту {params["Email"]}"}
+
+
+# /api/auth/register
+'''Регистрация'''
+@auth_router.post("/register/v2", summary="Регистрация пользователя",
+                 description="после ввода данных на указанный email отправляется письмо с подтверждением почты")
+def register_user(user_data: auth.UserCreate, db: Session = Depends(get_db)):
+    student = get_student_by_email(db, user_data.email)
+    if student:
+        raise errors.bad_request(message="Пользователь с таким Email уже зарегистрирован")
+    student = get_student_by_login(db, user_data.login)
+    if student:
+        raise errors.bad_request(message="Пользователь с таким Login уже зарегистрирован")
+    # хэшируем пароль
+    hashed_password = hash_password(user_data.password)
+    # Генерация токена подтверждения
+    token = create_access_token(
+        data={"sub": user_data.email}, # закладываем в токен email
+        expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    )
+
+    # Подготовка параметров для вставки
+    params = {
+        "Email": user_data.email,
+        "Login": user_data.login,
+        "Password": hashed_password,
+        "IsConfirmed": False,
+    }
+    add_new_register_student(db, params)
+
+    logger.info(f"аааааааНовый пользователь зарегистрирован: {user_data.email}")
+    confirmation_link = f"http://localhost:5177/auth/confirm-email?token={token}"
+    logger.warning(f"!!!!!!!send_email_event called with confirmation_link: {confirmation_link}")
+    logger.info(f"Привеееееееет")
     # Отправка события Kafka на email-сервис
     send_email_event(
         event_type="email_registration",
@@ -179,31 +222,51 @@ def register_user(user_data: auth.UserCreate, db: Session = Depends(get_db)):
         data={"confirmation_link": f"https://info-run.ru/api/auth/confirm-email?token={token}"}
     )
     logger.info(f"Письмо с подтверждением отправлено: {user_data.email}")
+
     return  {"message": f"Письмо с подтверждением отправлено на почту {params["Email"]}"}
 
+@auth_router.post("/delete_student", summary="Удаление студента по email")
+def confirm_email(email: EmailStr, db: Session = Depends(get_db)):
+    # try:
+    student = get_student_by_email(db, email)
+    logger.info(f"Студент cccccc {student}")
+    if student == None:
+        logger.warning(f"Студент с email {email} не найден")
+        raise errors.bad_request(message=f"Студент с email {email} не найден")
+    del_student_email(db, email)
+    logger.info(f"Студент с email {email} успешно удалён")
+    return {"message": f"Студент с email {email} успешно удалён"}
+    # except Exception as e:
+    #     raise HTTPException(
+    #         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+    #         detail=str(e)
+    #     )
 
 '''Подтверждение email'''
 @auth_router.get("/confirm-email", summary="Подтверждение email",
-                 description="")
+                 description="""данный роут вызывается после открытия ссылки из письма с подтверждением email""")
 def confirm_email(token: str, db: Session = Depends(get_db)):
     # Декодируем и верифицируем токен
     payload = verify_token(token)
     if not payload:
         # либо истёк, либо неверная подпись
+        logger.warning(f"Недействительный или просроченный токен: {token}")
         raise errors.bad_request(message="Недействительный или просроченный токен")
 
     # Извлекаем email из поля sub
     email = payload.get("sub")
     if not email:
+        logger.warning(f"В токене отсутствует поле 'sub': {payload}")
         raise errors.bad_request(message="Неверные данные в токене")
 
 
     # обновляем данные
     result = confirm_student_email(db, {"email": email, "now": TIME_NOW})
+    if result != 1:
+        logger.warning(f"Пользователь не найден или уже подтверждён")
+        raise errors.bad_request(message="Пользователь не найден или уже подтверждён")
 
-    '''if result.rowcount != 1:
-        # либо такой email не найден, либо уже был подтверждён
-        raise errors.bad_request(message="Пользователь не найден или уже подтверждён")'''
+    logger.info(f"Email успешно подтверждён: {email}")
     return {"message": "Email успешно подтверждён"}
 
 
