@@ -16,10 +16,10 @@ class UserCreate(BaseModel):
 
 class StudentAuth(BaseModel):
     ID: int
-    Login: str
-    Last_Name: str
-    First_Name: str
-    Email: str | None
+    Login: str | None
+    Last_Name: str | None
+    First_Name: str | None
+    Email: str
     RoleName: str | None
     IsActive: bool
     IsDeleted: date | None
@@ -28,10 +28,10 @@ class StudentAuth(BaseModel):
         from_attributes = True # для моделей без orm_mode в Pydantic v2
 
 class StudentOut(StudentAuth):
-    Middle_Name: str
-    Sex: str
+    Middle_Name: str | None
+    Sex: str | None
     BirthDate: date | None
-    Comment: str
+    Comment: str | None
     permissions: List[str] = []
 
     class Config:
