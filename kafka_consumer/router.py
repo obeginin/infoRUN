@@ -1,6 +1,7 @@
  # Опеределяет какой обработчки вызвать по action_type
 from handlers.students_handler import handle_student_action, handle_system_event
 from handlers.email_handlers import handle_email_event
+
 def handle_action(message: dict, db, topic: str):
     if topic == "students.actions":
         action_type = message.get('action_type')

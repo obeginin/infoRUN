@@ -1,4 +1,4 @@
-from Service.config import TEMPLATES_DIR, ACCESS_TOKEN_EXPIRE_MINUTES
+from Service.config import TEMPLATES_DIR, ACCESS_TOKEN_EXPIRE_MINUTES, TIME_NOW
 from Service.Models import Student
 from Service.Schemas import auth
 
@@ -197,8 +197,9 @@ def confirm_email(token: str, db: Session = Depends(get_db)):
     if not email:
         raise errors.bad_request(message="Неверные данные в токене")
 
+
     # обновляем данные
-    result = confirm_student_email(db, {"email": email, "now": datetime.utcnow()})
+    result = confirm_student_email(db, {"email": email, "now": TIME_NOW})
 
     '''if result.rowcount != 1:
         # либо такой email не найден, либо уже был подтверждён
