@@ -60,7 +60,7 @@ def consume_messages():
     )
     try:
         for msg in consumer:
-            message = msg.value
+            message = msg.value # указывает, из какого именно топика пришло сообщение
             print(f"Получено сообщение: {message}")
             with get_db_session() as db:
                 try:

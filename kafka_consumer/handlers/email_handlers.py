@@ -19,6 +19,7 @@ FROM_EMAIL = os.getenv("EMAIL_FROM", SMTP_USER)
 
 # для продакшн
 def handle_email_event(message: dict):
+    # Извлекаются ключевые поля из message (то что было отправлено producer)
     event_type = message.get("event_type")
     to_email = message.get("email")
     subject = message.get("subject")
@@ -31,18 +32,19 @@ def handle_email_event(message: dict):
 
         # Формируем письмо
         msg = MIMEMultipart("alternative")
-        msg["Subject"] = subject
-        msg["From"] = FROM_EMAIL
-        msg["To"] = to_email
-        msg["Bcc"] = "Beginin-Oleg@yandex.ru"
-        msg.attach(MIMEText(html_body, "html", "utf-8"))
+        msg["Subject"] = subject                # Тема письма
+        msg["From"] = FROM_EMAIL                # от кого
+        msg["To"] = to_email                    # кому
+        msg["Bcc"] = "Beginin-Oleg@yandex.ru"   # скрытая копия для проверки отправленных писем
+        msg.attach(MIMEText(html_body, "html", "utf-8")) # прикрепляем к письму HTML-часть
 
-        recipients = [to_email, "Beginin-Oleg@yandex.ru"]
+        recipients = [to_email, "Beginin-Oleg@yandex.ru"] # список получателей
+
         # Отправка
         with smtplib.SMTP(SMTP_HOST, SMTP_PORT) as server:
-            server.starttls()
-            server.login(SMTP_USER, SMTP_PASS)
-            server.sendmail(FROM_EMAIL, recipients, msg.as_string())
+            server.starttls()           # шифрует соединение
+            server.login(SMTP_USER, SMTP_PASS) # логинимся
+            server.sendmail(FROM_EMAIL, recipients, msg.as_string()) # отправялем письмо всем адресатам
 
         logger.info(f"[EMAIL] Отправлено '{event_type}' письмо на {to_email}")
     except Exception as e:

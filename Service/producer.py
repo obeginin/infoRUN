@@ -1,8 +1,10 @@
 from kafka import KafkaProducer
 from dotenv import load_dotenv
+from config import TIME_NOW
 from kafka.errors import KafkaError
 import json
 from datetime import datetime
+import pytz
 import logging
 import os
 logger = logging.getLogger(__name__)
@@ -91,7 +93,7 @@ def send_email_event(event_type: str, email: str, subject: str, template: str, d
 
     message = {
         "event_type": event_type,
-        "timestamp": datetime.utcnow().isoformat(),
+        "timestamp": TIME_NOW,
         "email": email,
         "subject": subject,
         "template": template,
