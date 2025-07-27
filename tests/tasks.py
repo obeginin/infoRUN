@@ -1,7 +1,7 @@
 import requests
 from time import time, sleep
 from dotenv import load_dotenv
-from config import BASE_URL, login_admin, pass_admin, login_user, pass_user, new_pass_user, token_admin, token
+from config_test import BASE_URL, login_admin, pass_admin, login_user, pass_user, new_pass_user, token_admin, token
 
 
 load_dotenv()

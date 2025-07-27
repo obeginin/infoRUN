@@ -308,6 +308,7 @@ def confirm_student_email(db: Session, params: dict):
 '''функция удаление студента по email'''
 def del_student_email(db: Session, email: str):
     try:
+        logger.info(f"Удаляем задачи студента с email: {email}")
         general.run_query_delete(
             db,
             query="""
@@ -318,6 +319,7 @@ def del_student_email(db: Session, email: str):
             commit=False
         )
 
+        logger.info(f"Удаляем студента с email: {email}")
         general.run_query_delete(
             db,
             query="""
