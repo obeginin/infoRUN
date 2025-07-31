@@ -49,7 +49,7 @@ def setup_logging(log_file: str = "app.log", archive_dir: Path = None):
 
     handler = ArchiveHandler(
         filename=str(log_path),
-        when="M",           # или "M" для тестов каждую минуту midnight
+        when="H",           # или "M" для тестов каждую минуту midnight
         interval=1,
         backupCount=30,
         encoding="utf-8",
