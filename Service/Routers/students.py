@@ -1,4 +1,4 @@
-from Service.config import UPLOAD_IMAGE_DIR, UPLOAD_SOLUTION_DIR, UPLOAD_FILES_DIR, UPLOAD_STUDENTS_IMAGE_DIR, TEMPLATES_DIR
+from Service.config_app import UPLOAD_IMAGE_DIR, UPLOAD_SOLUTION_DIR, UPLOAD_FILES_DIR, UPLOAD_STUDENTS_IMAGE_DIR, TEMPLATES_DIR
 from Service.Schemas.students import StudentTaskRead, AnswerInput, SolutionInput, StudentTasksQueryParams
 from Service.Crud.auth import get_current_student, permission_required
 from Service.Crud import students

@@ -1,7 +1,10 @@
+from utils.log import setup_logging
+
 from celery import Celery
 from dotenv import load_dotenv
 import redis
 import os
+
 #from Service.celery_tasks.notifications import send_email_task
 load_dotenv()
 # SMTP-параметры
@@ -15,6 +18,8 @@ FROM_EMAIL = os.getenv("EMAIL_FROM", SMTP_USER)
 # Настройки Redis
 REDIS_BROKER_URL = os.getenv("REDIS_BROKER_URL")
 REDIS_RESULT_BACKEND = os.getenv("REDIS_RESULT_BACKEND")
+
+
 
 # Создаём celery app
 celery_app = Celery("email_sender", broker=REDIS_BROKER_URL, backend=REDIS_RESULT_BACKEND, include=["Service.celery_tasks.notifications"])
@@ -32,7 +37,7 @@ try:
     redis_client = redis.Redis.from_url(REDIS_BROKER_URL)
     redis_client.ping()
     print("✅ Подключение к Redis успешно установлено.")
-    #logging.info("✅ Подключение к Redis успешно установлено.")
+    #logging.info("[CELERY]✅ Подключение к Redis успешно установлено.")
 except redis.exceptions.ConnectionError as e:
     print(f"❌ Ошибка подключения к Redis: {e}")
     raise SystemExit("Не удалось подключиться к Redis — проверь docker-compose, порты и настройки.")
