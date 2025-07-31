@@ -33,7 +33,7 @@ export const AdminChangeUser = () => {
         />
         <div>
           <div className={styles.user__item}>
-            <Suspense fallback={<div>Loading...</div>}>
+            <Suspense fallback={<div>Загрузка........</div>}>
               <TableUsers />
             </Suspense>
           </div>
