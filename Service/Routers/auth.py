@@ -1,4 +1,4 @@
-from Service.config import TEMPLATES_DIR, ACCESS_TOKEN_EXPIRE_MINUTES, TIME_NOW
+from Service.config_app import TEMPLATES_DIR, ACCESS_TOKEN_EXPIRE_MINUTES, TIME_NOW
 from Service.Models import Student
 from Service.Schemas import auth
 
@@ -10,6 +10,7 @@ from Service.Security.token import create_access_token, verify_token
 from Service.dependencies import get_db,get_log_db, get_producer_dep
 from Service.producer import send_log, send_email_event
 from Service.Crud import errors
+
 
 from pydantic import EmailStr
 from datetime import datetime
@@ -210,41 +211,20 @@ def register_user(user_data: auth.UserCreate, db: Session = Depends(get_db)):
     add_new_register_student(db, params)
 
     logger.info(f"аааааааНовый пользователь зарегистрирован: {user_data.email}")
-    confirmation_link = f"http://localhost:5177/auth/confirm-email?token={token}"
-    logger.warning(f"!!!!!!!send_email_event called with confirmation_link: {confirmation_link}")
-    logger.info(f"Привеееееееет")
-    # Отправка события Kafka на email-сервис
-    send_email_event(
+
+    send_email_event_celery(
         event_type="email_registration",
         email=user_data.email,
         subject="Подтверждение регистрации",
         template="registration_confirmation",
-        data={"confirmation_link": f"https://info-run.ru/api/auth/confirm-email?token={token}"}
+        data={"confirmation_link": f"https://info-run.ru/auth/confirm-email?token={token}"}
     )
+
     logger.info(f"Письмо с подтверждением отправлено: {user_data.email}")
+    return {"message": f"Письмо с подтверждением отправлено на почту {params["Email"]}"}
 
-    return  {"message": f"Письмо с подтверждением отправлено на почту {params["Email"]}"}
 
-@auth_router.post("/delete_student", summary="Удаление студента по email")
-def confirm_email(email: EmailStr, db: Session = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
-    # try:
-    student = get_student_by_email(db, email)
-    logger.info(f"Студент cccccc {student}")
-    if student == None:
-        logger.warning(f"Студент с email {email} не найден")
-        raise errors.bad_request(message=f"Студент с email {email} не найден")
-    del_student_email(db, email)
 
-    logger.info(f"[ADMIN] Администратор:{current_student.Login} удалил студента с email: {email}")
-    send_log(
-        StudentID=student["ID"],
-        StudentLogin=student["Login"],
-        action="StudentDeleted",
-        details={
-            "DescriptionEvent": f"Администратор:{current_student.Login} удалил студента с email: {email}",
-        }
-    )
-    return {"message": f"Студент с email {email} успешно удалён"}
 
 
 '''Подтверждение email'''
@@ -375,6 +355,51 @@ def student_change_password(data: auth.ChangePasswordRequest, db: Session = Depe
     return {"message": "Пароль успешно изменён"}
 
 
+'''Студенты
+
+@admin_router.post("/new_student", summary="Добавление нового студента")
+def confirm_email(email: EmailStr,
+                  db: Session = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
+    # try:
+    student = get_student_by_email(db, email)
+    logger.info(f"Студент cccccc {student}")
+    if student == None:
+        logger.warning(f"Студент с email {email} не найден")
+        raise errors.bad_request(message=f"Студент с email {email} не найден")
+    del_student_email(db, email)
+
+    logger.info(f"[ADMIN] Администратор:{current_student.Login} удалил студента с email: {email}")
+    send_log(
+        StudentID=student["ID"],
+        StudentLogin=student["Login"],
+        action="StudentDeleted",
+        details={
+            "DescriptionEvent": f"Администратор:{current_student.Login} удалил студента с email: {email}",
+        }
+    )
+    return {"message": f"Студент с email {email} успешно удалён"}
+
+'''
+@admin_router.post("/delete_student", summary="Удаление студента по email")
+def confirm_email(email: EmailStr, db: Session = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
+    # try:
+    student = get_student_by_email(db, email)
+    logger.info(f"Студент cccccc {student}")
+    if student == None:
+        logger.warning(f"Студент с email {email} не найден")
+        raise errors.bad_request(message=f"Студент с email {email} не найден")
+    del_student_email(db, email)
+
+    logger.info(f"[ADMIN] Администратор:{current_student.Login} удалил студента с email: {email}")
+    send_log(
+        StudentID=student["ID"],
+        StudentLogin=student["Login"],
+        action="StudentDeleted",
+        details={
+            "DescriptionEvent": f"Администратор:{current_student.Login} удалил студента с email: {email}",
+        }
+    )
+    return {"message": f"Студент с email {email} успешно удалён"}
 
 
 """Роли и разрешения"""
@@ -419,7 +444,7 @@ def read_permissions_role(role_id: int, db: Session = Depends(get_db),
         ]
     }
     logger.info(f"[ADMIN] Пользователь '{current_student.Login}' запросил разрешения для роли '{role_info['role_name']}' (ID={role_id}), всего {len(role_info['permissions'])} разрешений")
-    logger.debug(f"Детали разрешений роли: {role_info}")
+    logger.debug(f"[ADMIN] Детали разрешений роли: {role_info}")
     send_log(
         StudentID=current_student.ID,
         StudentLogin=current_student.Login,
@@ -498,6 +523,15 @@ def read_permission(db: Session = Depends(get_db), current_student=Depends(permi
     summary="Получить список студентов в формате JSON (для админа)",
 )
 def read_all_students(db: Session = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
+    logger.info(f"[ADMIN] Пользователь '{current_student.Login}' запросил список всех студентов")
+    send_log(
+        StudentID=current_student.ID,
+        StudentLogin=current_student.Login,
+        action="AdminViewStudents",
+        details={
+            "DescriptionEvent": "Запрос списка всех студентов"
+        }
+    )
     return get_all_students(db)
 
 # /api/admin/students/{studentID}/assign-role (POST)
@@ -517,7 +551,7 @@ def assign_role_to_student(studentID: int,
     update_role = assign_role(db, student.ID, role.RoleID)
 
     if update_role != 1:
-        logger.warning(f"Не удалось обновить роль для студента {current_student.Login}")
+        logger.warning(f"[ADMIN] Не удалось обновить роль для студента {current_student.Login}")
         # отправляем лог в kafka
         send_log(
             StudentID=current_student.ID,
@@ -580,7 +614,7 @@ def get_logs(limit: int = Query(50, ge=1, le=10000),
     # выбираем логи для пользователя по id
     logs = get_logs_all(db_log, limit=limit, offset=offset)
 
-    logger.info(f"[LOGS] Пользователь '{current_student.Login}' запросил историю действий всех пользователей")
+    logger.info(f"[ADMIN] Пользователь '{current_student.Login}' запросил историю действий всех пользователей")
     send_log(
         StudentID=current_student.ID,
         StudentLogin=current_student.Login,

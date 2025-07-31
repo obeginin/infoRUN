@@ -1,9 +1,12 @@
-from config_celery import celery_app, SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, FROM_EMAIL
+# from Celery_worker.email_worker import celery_app, SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, FROM_EMAIL
+from .email_worker import celery_app, SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, FROM_EMAIL
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import smtplib
 
-@celery_app.task(bind=True, max_retries=3, default_retry_delay=60)
+
+'''Задача отправки письма'''
+@celery_app.task(name="email.send", bind=True, max_retries=3, default_retry_delay=60)
 def send_email_task(self, event_type, to_email, subject, template_name, data):
     try:
         html_body = render_template(template_name, data)
