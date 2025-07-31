@@ -1,6 +1,6 @@
 from kafka import KafkaProducer
 from dotenv import load_dotenv
-from config import TIME_NOW
+from config_app import TIME_NOW
 from kafka.errors import KafkaError
 import json
 from datetime import datetime
@@ -43,7 +43,7 @@ def get_kafka_producer() -> KafkaProducer:
                 retries=3,       # попытки повторной отправки
                 linger_ms=5      # ждёт 5 мс перед отправкой (может собрать несколько сообщений в одну партию)
             )
-            print("[Kafka] Producer initialized")
+            logging.info(f"[Kafka] Producer initialized")
         except Exception as e:
             print(f"[Kafka] Failed to initialize producer: {e}")
             _producer = None

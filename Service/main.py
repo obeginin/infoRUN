@@ -1,4 +1,4 @@
-from config import TEMPLATES_DIR, LOG_LEVEL
+from config_app import TEMPLATES_DIR, LOG_LEVEL, LOG_FILE
 from fastapi import FastAPI, Depends, Request, HTTPException
 from Routers import tasks,students,auth,files  # Импортируем роутер задач
 from fastapi.openapi.docs import get_swagger_ui_html, get_redoc_html
@@ -9,7 +9,7 @@ from sqlalchemy import text
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse
-from log import setup_logging
+from utils.log import setup_logging
 from middlewares import LoggingMiddleware
 from fastapi.middleware.cors import CORSMiddleware
 import logging
@@ -19,14 +19,22 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 import os
 from fastapi.openapi.utils import get_openapi
+from celery import Celery
 # main.py
 '''главный файл проекта'''
 
-# Настроим логирование при запуске приложения
-setup_logging()
+# Настроим логирование при запуске основного приложения FastAPI
 
 
+setup_logging(log_file=LOG_FILE)
+logging.info(f"Запускаем логирование с файлом: {LOG_FILE}")
 
+REDIS_BROKER_URL = os.getenv("REDIS_BROKER_URL")
+# подключить Celery клиент
+celery_app = Celery(
+    'email_sender',
+    broker=REDIS_BROKER_URL,
+)
 
 
 app = FastAPI(debug=LOG_LEVEL, docs_url=None, redoc_url=None)
