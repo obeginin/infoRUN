@@ -1,4 +1,4 @@
-from Service.config import *
+from Service.config_app import *
 from Service.dependencies import get_db
 from Service.Models import Student
 from Service.Schemas.auth import StudentOut, StudentAuth

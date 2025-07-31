@@ -1,4 +1,4 @@
-from Service.config import UPLOAD_IMAGE_DIR, UPLOAD_SOLUTION_DIR, UPLOAD_FILES_DIR
+from Service.config_app import UPLOAD_IMAGE_DIR, UPLOAD_SOLUTION_DIR, UPLOAD_FILES_DIR
 from Service.Schemas.tasks import SubTaskCreate, SubTaskUpdate
 from Service.Models import SubTaskFiles
 from Service.Crud import errors,general

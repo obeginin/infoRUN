@@ -1,4 +1,6 @@
 # Главный consumer читает из kafka и передает в роут
+from utils.log import setup_logging
+
 from router import handle_action
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
@@ -9,6 +11,7 @@ from dotenv import load_dotenv
 import os
 #from handlers.deadline_checker import check_deadlines
 import threading
+from pathlib import Path
 import time
 
 load_dotenv()
@@ -19,7 +22,12 @@ DB_NAME_LOG=os.getenv("DB_NAME_LOG")
 DB_USER_LOG=os.getenv("DB_USER_LOG")
 DB_PASS_LOG=os.getenv("DB_PASS_LOG")
 
-
+KAFKA_LOG_FILE=os.getenv("KAFKA_LOG_FILE")
+setup_logging(log_file=KAFKA_LOG_FILE)
+print(f"Запускаем логирование с файлом: {KAFKA_LOG_FILE}")
+# Настроим логирование Celery
+#kafka_logging = setup_logging(log_file=KAFKA_LOG_FILE)
+print(f"Запускаем логирование с файлом: {KAFKA_LOG_FILE}")
 # Подключение к базе данных SQL Server
 DATABASE_URL =f"mssql+pyodbc://{DB_USER_LOG}:{DB_PASS_LOG}@{DB_HOST_LOG}/{DB_NAME_LOG}?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes"
 engine = create_engine(DATABASE_URL)
