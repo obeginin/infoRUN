@@ -1,4 +1,4 @@
-from Service.config import TEMPLATES_DIR, ACCESS_TOKEN_EXPIRE_MINUTES, TIME_NOW
+from Service.config_app import TEMPLATES_DIR, ACCESS_TOKEN_EXPIRE_MINUTES, TIME_NOW
 from Service.Models import Student
 from Service.Schemas import auth
 
@@ -380,6 +380,27 @@ def confirm_email(email: EmailStr,
     return {"message": f"Студент с email {email} успешно удалён"}
 
 '''
+@admin_router.post("/delete_student", summary="Удаление студента по email")
+def confirm_email(email: EmailStr, db: Session = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
+    # try:
+    student = get_student_by_email(db, email)
+    logger.info(f"Студент cccccc {student}")
+    if student == None:
+        logger.warning(f"Студент с email {email} не найден")
+        raise errors.bad_request(message=f"Студент с email {email} не найден")
+    del_student_email(db, email)
+
+    logger.info(f"[ADMIN] Администратор:{current_student.Login} удалил студента с email: {email}")
+    send_log(
+        StudentID=student["ID"],
+        StudentLogin=student["Login"],
+        action="StudentDeleted",
+        details={
+            "DescriptionEvent": f"Администратор:{current_student.Login} удалил студента с email: {email}",
+        }
+    )
+    return {"message": f"Студент с email {email} успешно удалён"}
+
 
 """Роли и разрешения"""
 
