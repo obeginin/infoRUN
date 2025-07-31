@@ -19,7 +19,7 @@ export const DialogDelete = () => {
         style={{ width: "370px", maxHeight: "500px" }}
       >
         <div className={styles.dialog}>
-          <Paragraph size="medium">Are you sure?</Paragraph>
+          <Paragraph size="medium">Вы уверены?</Paragraph>
           <Paragraph>Логин: {currentUser?.Login}</Paragraph>
           <Paragraph>Имя: {currentUser?.First_Name}</Paragraph>
           <Paragraph>Email: {currentUser?.Email}</Paragraph>
