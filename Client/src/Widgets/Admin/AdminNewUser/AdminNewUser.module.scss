@@ -1,0 +1,16 @@
+.select {
+    width: 100%;
+    padding: 15px 20px;
+    border-radius: 16px;
+    border: 1px solid var(--primary);
+    background-color: var(--bg);
+    font-size: var(--base);
+}
+
+.option {
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--primary);
+    background-color: var(--bg);
+}

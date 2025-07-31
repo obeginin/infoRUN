@@ -1,0 +1,15 @@
+.progressWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 120px;
+  margin: 0 auto;
+}
+
+.progressLabel {
+  margin-top: 8px;
+  font-size: var(--base);
+  color: var(--text);
+  text-align: center;
+}
