@@ -1,0 +1,142 @@
+@font-face {
+  font-family: "Lato";
+  src: url(/src/assets/font/Lato/Lato-Regular.ttf) format("truetype");
+}
+
+@font-face {
+  font-family: "Rubik";
+  src: url(/src/assets/font/Rubik_Doodle_Shadow/RubikDoodleShadow-Regular.ttf)
+    format("truetype");
+}
+
+:root {
+  line-height: 1.5;
+
+  background-color: var(--bg);
+  color: var(--text);
+
+  --fw_light: 300;
+  --fw_bold: 500;
+  --fw_extra_bold: 700;
+
+  --primary: #639aff;
+  --secondary: #7CE9F0;
+  --purple: #A483EF;
+
+  --text: #1d1d1d;
+  --bg: #ffffff;
+  --white_secondary: #e8ecfa;
+  --white: #ffffff;
+
+  --large: 64px;
+  --medium: 40px;
+  --base: 24px;
+  --small: 20px;
+  --tiny: 16px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+section {
+  margin: 100px 0;
+}
+
+footer {
+  margin-top: auto;
+}
+
+h1 {
+  font-family: "Rubik";
+  font-size: 64px;
+  font-weight: 400;
+}
+
+label {
+  font-family: "Lato", sans-serif;
+}
+
+.app {
+  font-family: "Lato", sans-serif;
+  margin: 0 auto;
+  max-width: 1440px;
+  vertical-align: top;
+}
+
+.p-component-overlay,
+.p-dialog-mask {
+  background: rgba(0, 0, 0, 0.5) !important;
+  z-index: 1000 !important;
+}
+
+.p-dialog {
+  border-radius: 16px !important;
+  overflow: hidden;
+}
+
+.p-dialog .p-dialog-header .p-dialog-header-icon {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 2;
+  background: none;
+  border: none;
+  box-shadow: none;
+  color: var(--text);
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.p-dialog .p-dialog-header {
+  position: relative;
+  padding-right: 48px;
+}
+
+@media screen and (max-width: 1200px) {
+  h1 {
+    font-size: 40px;
+  }
+
+  :root {
+    --large: 40px;
+    --medium: 32px;
+    --base: 20px;
+    --small: 16px;
+    --tiny: 12px;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  h1 {
+    font-size: 32px;
+  }
+
+  :root {
+    --large: 32px;
+    --medium: 24px;
+    --base: 16px;
+    --small: 12px;
+    --tiny: 8px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  h1 {
+    font-size: 24px;
+  }
+
+  :root {
+    --large: 32px;
+    --medium: 20px;
+    --base: 16px;
+    --small: 14px;
+    --tiny: 12px;
+  }
+
+  section {
+    margin: 50px 0;
+  }
+}

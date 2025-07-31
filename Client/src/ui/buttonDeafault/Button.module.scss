@@ -1,0 +1,60 @@
+.button {
+  padding: 10px 25px;
+  border: 1px solid var(--primary);
+  border-radius: 32px;
+  font-size: var(--base);
+  font-weight: var(--fw_light);
+  font-family: "Lato" sans-serif;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &.disabled {
+    pointer-events: none;
+    color: var(--text);
+  }
+
+  &:hover {
+    background-color: var(--primary);
+    color: var(--primary);
+  }
+
+  &:active {
+    transform: scale(1.05);
+  }
+}
+
+
+// .button {
+//   padding: 10px 25px;
+//   font-size: var(--base);
+//   font-weight: var(--fw_light);
+//   font-family: "Lato", sans-serif;
+//   cursor: pointer;
+//   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+//   display: inline-flex;
+//   align-items: center;
+//   justify-content: center;
+//   position: relative;
+//   overflow: hidden;
+
+//   &:not(.disabled):hover {
+//     opacity: 0.9;
+//     transform: translateY(-1px);
+//   }
+
+//   &:not(.disabled):active {
+//     transform: translateY(0) scale(0.98);
+//   }
+
+//   &.disabled {
+//     pointer-events: none;
+//   }
+
+//   &.outlined {
+//     background-color: transparent !important;
+    
+//     &:hover {
+//       background-color: rgba(var(--primary-rgb), 0.1) !important;
+//     }
+//   }
+// }
