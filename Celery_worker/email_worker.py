@@ -4,6 +4,7 @@ from celery import Celery
 from dotenv import load_dotenv
 import redis
 import os
+import logging
 
 #from Service.celery_tasks.notifications import send_email_task
 load_dotenv()
@@ -19,10 +20,13 @@ FROM_EMAIL = os.getenv("EMAIL_FROM", SMTP_USER)
 REDIS_BROKER_URL = os.getenv("REDIS_BROKER_URL")
 REDIS_RESULT_BACKEND = os.getenv("REDIS_RESULT_BACKEND")
 
-
+# Настроим логирование Celery
+CELERY_LOG_FILE=os.getenv("CELERY_LOG_FILE")
+setup_logging(log_file=CELERY_LOG_FILE)
+logging.info(f"[CELERY] Запускаем логирование с файлом: {CELERY_LOG_FILE}")
 
 # Создаём celery app
-celery_app = Celery("email_sender", broker=REDIS_BROKER_URL, backend=REDIS_RESULT_BACKEND, include=["Service.celery_tasks.notifications"])
+celery_app = Celery("email_sender", broker=REDIS_BROKER_URL, backend=REDIS_RESULT_BACKEND, include=["Celery_worker.notifications"])
 
 # Конфигурация
 celery_app.conf.update(
@@ -36,10 +40,10 @@ celery_app.conf.update(
 try:
     redis_client = redis.Redis.from_url(REDIS_BROKER_URL)
     redis_client.ping()
-    print("✅ Подключение к Redis успешно установлено.")
-    #logging.info("[CELERY]✅ Подключение к Redis успешно установлено.")
+    #print("✅ Подключение к Redis успешно установлено.")
+    logging.info("[CELERY]✅ Подключение к Redis успешно установлено.")
 except redis.exceptions.ConnectionError as e:
-    print(f"❌ Ошибка подключения к Redis: {e}")
+    print(f"[CELERY]❌ Ошибка подключения к Redis: {e}")
     raise SystemExit("Не удалось подключиться к Redis — проверь docker-compose, порты и настройки.")
 
 # celery_app.autodiscover_tasks(['Service.celery_tasks'])

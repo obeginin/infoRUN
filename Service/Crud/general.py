@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 from Service.Crud import errors
+
 import logging
 
 # Crud\general.py
@@ -106,3 +107,5 @@ def run_query_insert(
     except SQLAlchemyError:
         logger.exception(f"[DB ERROR] {error_message}")
         raise errors.internal_server(message=error_message)
+
+
