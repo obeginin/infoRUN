@@ -1,0 +1,34 @@
+.container {
+    max-width: 600px;
+    width: 100%;
+}
+
+.auth-form-outer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-width: 600px;
+    box-sizing: border-box;
+}
+
+.form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center; 
+    align-items: center;
+    gap: 10px;
+
+    & > * {
+        width: 100%;
+    }
+}
+
+
+@media screen and (max-width: 600px) {
+    .container, .auth-form-outer {
+        min-width: 100%;
+    }
+}

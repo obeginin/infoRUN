@@ -1,0 +1,80 @@
+.input__container {
+  position: relative;
+  margin: 16px 0;
+
+  & .label {
+    position: absolute;
+    top: 16px;
+    left: 24px;
+    font-size: var(--small);
+    font-weight: var(--fw_light);
+    color: var(--text);
+    padding: 0 6px;
+    border-radius: 8px;
+    pointer-events: none;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  & input {
+    width: 100%;
+    border: 1.5px solid var(--primary);
+    padding: 18px 24px 10px 24px;
+    color: var(--text);
+    font-size: var(--base);
+    font-weight: var(--fw_light);
+    outline: none;
+    transition: border 0.2s;
+    padding-right: 40px;
+    &:-webkit-autofill,
+    &:-webkit-autofill:hover,
+    &:-webkit-autofill:focus,
+    &:-webkit-autofill:active {
+      -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important; // Заменяет синий фон
+      -webkit-text-fill-color: var(--text) !important; // Цвет текста
+    }
+
+    &.error {
+      border-color: red;
+      padding-right: 40px;
+    }
+  }
+
+  & input:focus {
+    border: 2px solid var(--primary);
+  }
+
+  &::placeholder {
+    background-color: var(--bg);
+  }
+
+  & input:focus ~ .label,
+  & input:not(:placeholder-shown):not([value=""]) ~ .label {
+    top: -12px;
+    left: 18px;
+    font-size: var(--small);
+    color: var(--primary);
+    background: var(--bg);
+    padding: 0 6px;
+  }
+}
+
+.input {
+  &.error {
+    border: 2px solid red;
+  }
+}
+
+.error__label {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: red;
+  font-size: var(--small);
+  pointer-events: none;
+  max-width: 270px;
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
