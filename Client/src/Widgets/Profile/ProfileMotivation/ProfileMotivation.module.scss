@@ -1,0 +1,26 @@
+.motivation__exam {
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+
+
+    &__img {
+        position: absolute;
+        top: -100px;
+        right: -50px;
+    }
+}
+
+
+@media screen and (max-width: 600px) {
+    .motivation__exam {
+        height: 200px;
+        &__img {
+            display: none;
+        }
+    }
+    
+}

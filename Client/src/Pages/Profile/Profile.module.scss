@@ -1,0 +1,28 @@
+.profile__dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  position: relative;
+}
+
+.profile__dashboard__content {
+  display: flex;
+  flex-direction: row;
+  gap: 40px
+}
+
+.group {
+  position: absolute;
+  z-index: -1;
+  top: -40%;
+}
+
+@media screen and (max-width: 600px) {
+  .profile__dashboard__content {
+    flex-direction: column;
+  }
+  
+  .group {
+    display: none;
+  }
+}
