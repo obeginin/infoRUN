@@ -3,7 +3,7 @@ import logging
 from logging.handlers import TimedRotatingFileHandler
 import os
 import datetime
-from config import LOG_DIR, ARCHIVE_DIR, LOG_FILE, LOG_PATH, LOG_LEVEL
+from config import LOG_DIR, ARCHIVE_LOG_DIR, LOG_FILE, LOG_PATH, LOG_LEVEL
 import time
 import shutil
 import re
@@ -32,7 +32,7 @@ class ArchiveHandler(TimedRotatingFileHandler):
         old_log_path = full_paths[0]
 
         try:
-            dest = os.path.join(ARCHIVE_DIR, os.path.basename(old_log_path))
+            dest = os.path.join(ARCHIVE_LOG_DIR, os.path.basename(old_log_path))
             shutil.move(old_log_path, dest)
             logging.getLogger().info(f"Лог перемещён в архив: {dest}")
         except Exception as e:

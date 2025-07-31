@@ -27,11 +27,11 @@ UPLOAD_STUDENTS_IMAGE_DIR.mkdir(parents=True, exist_ok=True)
 
 TEMPLATES_DIR = "templates"
 
-LOG_DIR = Path(os.getenv("LOG_DIR", "logs"))
+LOG_DIR = Path(os.getenv("LOG_DIR", "logs.log"))
 LOG_FILE = Path(os.getenv("LOG_FILE", "app")) #имя лог-файла.
-ARCHIVE_DIR = Path(os.getenv("ARCHIVE_DIR", LOG_DIR / "archive"))
+ARCHIVE_LOG_DIR = Path(os.getenv("ARCHIVE_LOG_DIR", LOG_DIR / "archive"))
 os.makedirs(LOG_DIR, exist_ok=True) # создает каталог, если его нет.
-os.makedirs(ARCHIVE_DIR, exist_ok=True)
+os.makedirs(ARCHIVE_LOG_DIR, exist_ok=True)
 LOG_PATH = os.path.join(LOG_DIR, LOG_FILE)
 
 '''Уровень логирования'''
