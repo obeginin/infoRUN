@@ -10,7 +10,7 @@ from contextlib import contextmanager
 from dotenv import load_dotenv
 import os
 #from handlers.deadline_checker import check_deadlines
-import threading
+import logging
 from pathlib import Path
 import time
 
@@ -22,12 +22,13 @@ DB_NAME_LOG=os.getenv("DB_NAME_LOG")
 DB_USER_LOG=os.getenv("DB_USER_LOG")
 DB_PASS_LOG=os.getenv("DB_PASS_LOG")
 
+# Настроим логирование Kafka
 KAFKA_LOG_FILE=os.getenv("KAFKA_LOG_FILE")
 setup_logging(log_file=KAFKA_LOG_FILE)
-print(f"Запускаем логирование с файлом: {KAFKA_LOG_FILE}")
-# Настроим логирование Celery
+logging.info(f"[KAFKA] Запускаем логирование с файлом: {KAFKA_LOG_FILE}")
+
 #kafka_logging = setup_logging(log_file=KAFKA_LOG_FILE)
-print(f"Запускаем логирование с файлом: {KAFKA_LOG_FILE}")
+#print(f"Запускаем логирование с файлом: {KAFKA_LOG_FILE}")
 # Подключение к базе данных SQL Server
 DATABASE_URL =f"mssql+pyodbc://{DB_USER_LOG}:{DB_PASS_LOG}@{DB_HOST_LOG}/{DB_NAME_LOG}?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes"
 engine = create_engine(DATABASE_URL)
@@ -38,9 +39,10 @@ def test_db_connection():
     try:
         with engine.connect() as connection:
             result = connection.execute(text("SELECT 1"))
-            print("Подключение к базе данных с логами успешно:", result.scalar())
+            logging.info(f"[KAFKA]✅ Подключение к базе данных {DB_NAME_LOG} с логами успешно: result.scalar()")
     except Exception as e:
-        print("Ошибка подключения к базе данных с логами:", e)
+        logging.warning(f"[KAFKA]❌ Ошибка подключения к базе данных с логами:", e)
+
 
 @contextmanager
 def get_db_session():
@@ -69,14 +71,14 @@ def consume_messages():
     try:
         for msg in consumer:
             message = msg.value # указывает, из какого именно топика пришло сообщение
-            print(f"Получено сообщение: {message}")
+            logging.info(f"[KAFKA] Получено сообщение: {message}")
             with get_db_session() as db:
                 try:
                     handle_action(message, db, topic=msg.topic)
                 except Exception as e:
-                    print(f"Ошибка обработки сообщения: {e}")
+                    logging.warning(f"[KAFKA] Ошибка обработки сообщения: {e}")
     except KeyboardInterrupt:
-        print("Остановлено пользователем")
+        logging.warning(f"[KAFKA] Остановлено пользователем")
 
 
 

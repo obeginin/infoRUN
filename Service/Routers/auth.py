@@ -11,7 +11,6 @@ from Service.dependencies import get_db,get_log_db, get_producer_dep
 from Service.producer import send_log, send_email_event
 from Service.Crud import errors
 
-from Service.celery_tasks.notifications import send_email_task
 
 from pydantic import EmailStr
 from datetime import datetime
@@ -213,13 +212,14 @@ def register_user(user_data: auth.UserCreate, db: Session = Depends(get_db)):
 
     logger.info(f"аааааааНовый пользователь зарегистрирован: {user_data.email}")
 
-    send_email_task.delay(
+    send_email_event_celery(
         event_type="email_registration",
-        to_email=user_data.email,
+        email=user_data.email,
         subject="Подтверждение регистрации",
-        template_name="registration_confirmation",
-        data={"confirmation_link": f"https://info-run.ru/api/auth/confirm-email?token={token}"}
+        template="registration_confirmation",
+        data={"confirmation_link": f"https://info-run.ru/auth/confirm-email?token={token}"}
     )
+
     logger.info(f"Письмо с подтверждением отправлено: {user_data.email}")
     return {"message": f"Письмо с подтверждением отправлено на почту {params["Email"]}"}
 

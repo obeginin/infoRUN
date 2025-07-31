@@ -4,7 +4,9 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import smtplib
 
-@celery_app.task(bind=True, max_retries=3, default_retry_delay=60)
+
+'''Задача отправки письма'''
+@celery_app.task(name="email.send", bind=True, max_retries=3, default_retry_delay=60)
 def send_email_task(self, event_type, to_email, subject, template_name, data):
     try:
         html_body = render_template(template_name, data)

@@ -19,16 +19,22 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 import os
 from fastapi.openapi.utils import get_openapi
+from celery import Celery
 # main.py
 '''главный файл проекта'''
 
 # Настроим логирование при запуске основного приложения FastAPI
 
-print(LOG_FILE, id(LOG_FILE))
-setup_logging(log_file=LOG_FILE)
-print(f"Запускаем логирование с файлом: {LOG_FILE}")
-print(LOG_FILE, id(LOG_FILE))
 
+setup_logging(log_file=LOG_FILE)
+logging.info(f"Запускаем логирование с файлом: {LOG_FILE}")
+
+REDIS_BROKER_URL = os.getenv("REDIS_BROKER_URL")
+# подключить Celery клиент
+celery_app = Celery(
+    'email_sender',
+    broker=REDIS_BROKER_URL,
+)
 
 
 app = FastAPI(debug=LOG_LEVEL, docs_url=None, redoc_url=None)
