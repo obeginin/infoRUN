@@ -61,4 +61,19 @@ export default class AdminAPI {
     );
     return response.json();
   }
+
+
+  static async getStudentLogs(token: string, studentID: number) {
+    const response = await fetch(
+      `${import.meta.env.VITE_BASE_URL}/api/admin/students/${studentID}/logs`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.json();
+  }
 }

@@ -7,6 +7,7 @@ interface AdminStore {
   currentUser: IUser | null;
   loading: boolean;
   error: string | null;
+  success: string | null;
   fetchUsers: (token: string) => Promise<void>;
   deleteUser: (token: string, email: string) => Promise<void>;
   reset: () => void;
@@ -19,6 +20,11 @@ interface AdminStore {
   setVisibleDialogPassword: () => void;
   setVisibleDialogDelete: () => void;
   setVisiblePopup: (user: IUser) => void;
+  changePassword: (
+    token: string,
+    id: number,
+    password: string
+  ) => Promise<void>;
 }
 
 export const useAdminStore = create<AdminStore>((set, get) => ({
@@ -29,13 +35,14 @@ export const useAdminStore = create<AdminStore>((set, get) => ({
   isVisibleDialogPassword: false,
   isVisibleDialogDelete: false,
   error: null,
+  success: null,
   searchQuery: "",
 
   fetchUsers: async (token) => {
     set({ loading: true, error: null });
     try {
       const response = await AdminAPI.getUsers(token);
-      set({ users: response, loading: false });
+      set({ users: response, loading: false, success: "Users fetched" });
     } catch (error) {
       set({ error: "Failed to fetch users" + error, loading: false });
     }
@@ -49,9 +56,24 @@ export const useAdminStore = create<AdminStore>((set, get) => ({
         users: state.users.filter((user) => user.Email !== email),
         loading: false,
         isVisibleDialogDelete: false,
+        success: "User deleted",
       }));
     } catch (error) {
       set({ error: "Failed to delete user" + error, loading: false });
+    }
+  },
+
+  changePassword: async (token, id, password) => {
+    set({ loading: true });
+    try {
+      await AdminAPI.ChangePassword(token, id, password);
+      set({
+        loading: false,
+        isVisibleDialogPassword: false,
+        success: "Password changed",
+      });
+    } catch (error) {
+      set({ error: "Failed to change password" + error, loading: false });
     }
   },
 
