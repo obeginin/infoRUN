@@ -31,6 +31,22 @@ export default class TasksAPI {
         },
       }
     );
-    return response.json()
+    return response.json();
+  }
+
+  static async getTask(student_id: number, task_id: number, token: string) {
+    const response = await fetch(
+      `${
+        import.meta.env.VITE_BASE_URL
+      }/api/students_subtasks/${student_id}/StudentTask/${task_id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.json();
   }
 }

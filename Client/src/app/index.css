@@ -20,13 +20,17 @@
   --fw_extra_bold: 700;
 
   --primary: #639aff;
-  --secondary: #7CE9F0;
-  --purple: #A483EF;
+  --secondary: #7ce9f0;
+  --purple: #a483ef;
 
   --text: #1d1d1d;
   --bg: #ffffff;
   --white_secondary: #e8ecfa;
   --white: #ffffff;
+
+  --success: #38a169;
+  --error: #e53e3e;
+  --warning: #fbbf24;
 
   --large: 64px;
   --medium: 40px;
@@ -93,6 +97,13 @@ label {
 .p-dialog .p-dialog-header {
   position: relative;
   padding-right: 48px;
+}
+
+.p-toast-message-content {
+  padding: 10px !important;
+  border-radius: 16px !important;
+  display: flex !important;
+  gap: 20px;
 }
 
 @media screen and (max-width: 1200px) {

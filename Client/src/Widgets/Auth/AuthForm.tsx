@@ -77,7 +77,7 @@ export const AuthForm = () => {
               Вход
             </Button>
             <Link href="">Забыли пароль?</Link>
-            <Link href="">Зарегистрироваться</Link>
+            <Link href="/registration">Зарегистрироваться</Link>
           </div>
         </ProfileContentContainer>
       </div>
