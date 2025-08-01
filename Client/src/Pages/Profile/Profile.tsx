@@ -7,6 +7,7 @@ import { ProfileMotivation } from "../../Widgets/Profile/ProfileMotivation/Profi
 import { ProfileProgress } from "../../Widgets/Profile/ProfileProgress/ProfileProgress";
 import styles from "./Profile.module.scss";
 import group from "../../assets/alphabet/group.svg"
+import { ProfileHistory } from "../../Widgets/Profile/ProfileHistory/ProfileHistory";
 export const Profile = () => {
   return (
     <>
@@ -22,6 +23,7 @@ export const Profile = () => {
               <ProfileMotivation />
             </div>
             <ProfileProgress />
+            <ProfileHistory />
           </div>
         </section>
       </div>

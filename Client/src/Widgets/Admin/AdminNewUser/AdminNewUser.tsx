@@ -21,7 +21,7 @@ export const AdminNewUser = () => {
     AdminAPI.adminRoles(token ? token : "")
       .then((response) => setData(response))
       .catch((error) => console.log(error));
-  }, [data, token]);
+  }, [token]);
   
   return (
     <>

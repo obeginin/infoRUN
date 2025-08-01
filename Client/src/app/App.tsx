@@ -9,6 +9,7 @@ import { Admin } from "../Pages/Admin/Admin.tsx";
 import { Registration } from "../Pages/Registration/Registration.tsx";
 import { RegistrationMailSend } from "../Widgets/Registration/RegistratiionMailSend.tsx";
 import { SuccessRegistration } from "../Widgets/Registration/SuccessRegistration/SuccessRegistration.tsx";
+import { ProfileTask } from "../Pages/Profile/ProfileTask/ProfileTask.tsx";
 function App() {
   return (
     <>
@@ -41,6 +42,14 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/profile/task/:id"
+          element={
+            <ProtectedRoute>
+              <ProfileTask />
+            </ProtectedRoute>
+          }
+          />
         <Route
           path="/admin"
           element={
