@@ -4,17 +4,29 @@ import { Paragraph } from "../../../../ui/p/Paragraph";
 import styles from "../DialogDelete/DialogDelete.module.scss";
 import { Input } from "../../../../ui/input/Input";
 import { useAdminStore } from "../../../../Pages/Admin/store";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 export const DialogPassword = () => {
   const token = localStorage.getItem("token") || "";
   const {
     currentUser,
-    deleteUser,
+    changePassword,
     isVisibleDialogPassword,
     setVisibleDialogPassword,
   } = useAdminStore();
+  const [passwordError, setPasswordError] = useState(false);
   const [newPassword, setNewPassword] = useState("");
 
+  const handleClick = () => {
+    if (newPassword.length < 6) {
+      setPasswordError(true);
+    } else {
+      changePassword(token, currentUser?.ID as number, newPassword);
+    }
+  };
+
+  useEffect(() => {
+    setPasswordError(false);
+  }, [newPassword]);
   return (
     <>
       <Dialog
@@ -31,6 +43,9 @@ export const DialogPassword = () => {
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
             label="Новый пароль"
+            error_text={
+              passwordError ? "Пароль должен быть больше 6 символов" : ""
+            }
           />
           <div className={styles.dialog__btn}>
             <Button outlined onClick={() => setVisibleDialogPassword()}>
@@ -40,7 +55,7 @@ export const DialogPassword = () => {
               type="submit"
               color="white"
               filled
-              onClick={() => deleteUser(token, currentUser?.Email || "")}
+              onClick={() => handleClick()}
             >
               Сохранить
             </Button>
