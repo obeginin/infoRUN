@@ -112,6 +112,13 @@ def not_found(
 ):
     return _error(404, error, message)
 
+# 409 — Конфликт
+def conflict(
+    error: str = "ConflictData",
+    message: str = "Конфликт данных"
+):
+    return _error(409, error, message)
+
 # 500 — Внутренняя ошибка сервера
 def internal_server(
     error: str = "ServerError",

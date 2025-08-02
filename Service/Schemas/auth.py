@@ -1,7 +1,17 @@
-from pydantic import BaseModel, constr, EmailStr
+from pydantic import BaseModel, constr, EmailStr, Field, field_validator, validator
 from typing import List
 from datetime import date
+from enum import Enum
+from typing import Optional
+import re
 
+
+class StudentField(str, Enum):
+    ID = "ID"
+    Login = "Login"
+    Email = "Email"
+
+# старая авторизация по логину
 class StudentLogin(BaseModel):
     Login: str
     Password: str
@@ -9,24 +19,85 @@ class StudentLogin(BaseModel):
     class Config:
         from_attributes = True
 
+# старая авторизация по логин / email / телефон
+class AuthRequest(BaseModel):
+    identifier: str  # логин / email / телефон
+    password: str
+
+# для регистрации
 class UserCreate(BaseModel):
     email: EmailStr
     login: str
     password: str
 
+class DeleteStudent(BaseModel):
+    ID: int = None
+    Login: str = None
+    Email: EmailStr = None
+
+class DeleteStudentQuery(BaseModel):
+    field_name: Optional[StudentField] = None
+    value: str
+
+# Общие поля для создания/обновления
+class StudentBase(BaseModel):
+    Login: str
+    Last_Name:  str = None
+    First_Name:  str = None
+    Middle_Name:  str = None
+    Email: EmailStr = None # EmailStr проверяет, что строка — корректный email
+    Phone: str = None
+    Sex:  str = None
+    BirthDate:  date = None
+    Comment:  str = None
+    RoleID:  int = None
+    IsActive:  bool = None
+
+    @validator('Login')
+    def login_no_cyrillic(cls, v):
+        if re.search(r'[а-яА-Я]', v):
+            raise ValueError('Логин не должен содержать русские буквы (кириллицу)')
+        return v
+
+    # Провекар пола
+    @field_validator("Sex")
+    @classmethod
+    def validate_sex(cls, v):
+        allowed = {"М", "Ж", None}
+        if v not in allowed:
+            raise ValueError("Пол может быть только 'М', 'Ж' или не указан")
+        return v
+
+    # Проверка что телефон состоит только из цифр
+    @validator("Phone")
+    def phone_must_be_digits(cls, v):
+        if v is None:
+            return v
+        if not v.isdigit():
+            raise ValueError("Телефон должен содержать только цифры")
+        return v
+
+
+# Используется при создании (без ID, IsDeleted и т.д.)
+class StudentCreate(StudentBase):
+    Password: str = None
+    pass
+
+# Используется при регистрации/авторизации/выдаче данных
 class StudentAuth(BaseModel):
     ID: int
     Login: str | None
     Last_Name: str | None
     First_Name: str | None
-    Email: str
+    Email: EmailStr | None
     RoleName: str | None
-    IsActive: bool
+    IsActive: bool | None
     IsDeleted: date | None
 
     class Config:
         from_attributes = True # для моделей без orm_mode в Pydantic v2
 
+# Расширенный вывод студента с правами
 class StudentOut(StudentAuth):
     Middle_Name: str | None
     Sex: str | None
