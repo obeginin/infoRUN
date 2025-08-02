@@ -2,10 +2,11 @@ from Service.config_app import TEMPLATES_DIR, ACCESS_TOKEN_EXPIRE_MINUTES, TIME_
 from Service.Models import Student
 from Service.Schemas import auth
 
-from Service.Crud.auth import get_current_student, permission_required, verify_password, hash_password, get_student_by_login, get_logs_student, get_logs_all
+from Service.Crud.auth import get_current_student, permission_required, verify_password, hash_password, \
+    get_student_by_login, get_logs_student, get_logs_all, get_student_by_field
 from Service.Crud.auth import change_password, get_all_roles, get_all_permission, get_role_id, assign_role, get_permission_role, update_role_permissions
-from Service.Crud.auth import get_student_by_email, add_new_register_student, confirm_student_email, del_student_email
-from Service.Crud.students import  get_student_id, get_all_students
+from Service.Crud.auth import get_student_by_email, add_new_register_student, confirm_student_email
+from Service.Crud.students import  get_student_id, get_all_students, del_student_id
 from Service.Security.token import create_access_token, verify_token
 from Service.dependencies import get_db,get_log_db, get_producer_dep
 from Service.producer import send_log, send_email_event
@@ -129,6 +130,106 @@ def login(
         student = student_short
     )
 
+
+# /api/auth/login
+@auth_router.post("/login/v2", response_model=auth.TokenWithStudent,
+                  summary="Аутентификация (запрос токена для пользователя (логин / email / телефон))",
+                  description="Возвращает токен, тип заголовка и небольшую информацию о пользователе, если (логин / email / телефон) и пароль корректны и пользователь активен.")
+def login(
+    auth_request: auth.AuthRequest,
+    request: Request,
+    db: Session = Depends(get_db),
+):
+    ip = request.headers.get("X-Forwarded-For") or request.client.host
+    user_agent = request.headers.get("User-Agent")
+
+    identifier = auth_request.identifier
+    password = auth_request.password
+    # Определяем тип идентификатора
+    if "@" in identifier:
+        field = "Email"
+    elif identifier.startswith("+") or identifier.isdigit():
+        field = "Phone"  # если ты хранишь телефон в поле Phone
+    else:
+        field = "Login"
+
+    # Ищем студента в базе по логину
+    student = get_student_by_field(db, field_name=field, value=identifier)
+    if not student:
+        logger.warning(f"Попытка входа с несуществующим {field}: {identifier}")
+        send_log(
+            StudentID=None,  # Или 0
+            StudentLogin=identifier,
+            action="LoginFailed",
+            details={
+                "DescriptionEvent": "Неуспешный вход",
+                "Reason": "LoginNotFound",
+                "IPAddress": ip,
+                "UserAgent": user_agent
+            }
+        )
+        raise errors.unauthorized(error="LoginNotFound", message =f"Пользователь с таким  {field}: {identifier} не найден")
+    logger.info(f"Аутентифицирован студент: ({student['ID']}) {student['Login']} ")
+
+    # Проверяем пользователь на активность
+    if not student["IsActive"]:
+        logger.warning(f"Попытка входа {student.Login} не активного пользователь!")
+        send_log(
+            StudentID=student["ID"],
+            StudentLogin=student.Login,
+            action="LoginFailed",
+            details={
+                "DescriptionEvent": "Неуспешный вход",
+                "Reason": "StudentNoActive",
+                "IPAddress": ip,
+                "UserAgent": user_agent,
+            }
+        )
+        raise errors.access_denied(error="StudentNoActive", message="Пользователь не активен!")
+
+    # Проверяем пароль
+    if not verify_password(password, student["Password"]):
+        logger.warning(f"Попытка входа {student.Login} с неправильным паролем!")
+        send_log(
+            StudentID=student["ID"],
+            StudentLogin=student.Login,
+            action="LoginFailed",
+            details={
+                "DescriptionEvent": "Неуспешный вход",
+                "Reason": "PasswordFailed",
+                "IPAddress": ip,
+                "UserAgent": user_agent
+            }
+        )
+        raise errors.unauthorized(error="PasswordFailed",message= "Пароль не верный")
+
+    # Создаём токен
+    try:
+        access_token = create_access_token(data={"sub": student["Login"]})
+    except Exception:
+        logger.exception("Ошибка при создании токена")
+        raise errors.internal_server(error="TokenGenerationError", message="Ошибка при создании токена доступа")
+
+    # Создаём Pydantic-модель из словаря (Селеризация)
+    student_short = auth.StudentAuth(**student)
+
+    # отправляем лог в kafka
+    send_log(
+        StudentID=student["ID"],
+        StudentLogin=student["Login"],
+        action="LoginSuccess",
+        details={
+            "DescriptionEvent": "Успешный вход",
+            "IPAddress": ip,
+            "UserAgent": user_agent,
+            #"Metadata": {"extra": "value"}  # по желанию
+        }
+    )
+    return auth.TokenWithStudent (
+        access_token = access_token,
+        token_type = "bearer",
+        student = student_short
+    )
 
 """
 После аутентификации фронт будет в заголовке отправлять токен, по нему с помощью функции get_current_student()
@@ -355,51 +456,7 @@ def student_change_password(data: auth.ChangePasswordRequest, db: Session = Depe
     return {"message": "Пароль успешно изменён"}
 
 
-'''Студенты
 
-@admin_router.post("/new_student", summary="Добавление нового студента")
-def confirm_email(email: EmailStr,
-                  db: Session = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
-    # try:
-    student = get_student_by_email(db, email)
-    logger.info(f"Студент cccccc {student}")
-    if student == None:
-        logger.warning(f"Студент с email {email} не найден")
-        raise errors.bad_request(message=f"Студент с email {email} не найден")
-    del_student_email(db, email)
-
-    logger.info(f"[ADMIN] Администратор:{current_student.Login} удалил студента с email: {email}")
-    send_log(
-        StudentID=student["ID"],
-        StudentLogin=student["Login"],
-        action="StudentDeleted",
-        details={
-            "DescriptionEvent": f"Администратор:{current_student.Login} удалил студента с email: {email}",
-        }
-    )
-    return {"message": f"Студент с email {email} успешно удалён"}
-
-'''
-@admin_router.post("/delete_student", summary="Удаление студента по email")
-def confirm_email(email: EmailStr, db: Session = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
-    # try:
-    student = get_student_by_email(db, email)
-    logger.info(f"Студент cccccc {student}")
-    if student == None:
-        logger.warning(f"Студент с email {email} не найден")
-        raise errors.bad_request(message=f"Студент с email {email} не найден")
-    del_student_email(db, email)
-
-    logger.info(f"[ADMIN] Администратор:{current_student.Login} удалил студента с email: {email}")
-    send_log(
-        StudentID=student["ID"],
-        StudentLogin=student["Login"],
-        action="StudentDeleted",
-        details={
-            "DescriptionEvent": f"Администратор:{current_student.Login} удалил студента с email: {email}",
-        }
-    )
-    return {"message": f"Студент с email {email} успешно удалён"}
 
 
 """Роли и разрешения"""

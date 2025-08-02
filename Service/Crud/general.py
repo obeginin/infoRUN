@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import text
-from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 from Service.Crud import errors
 
 import logging
@@ -104,6 +104,18 @@ def run_query_insert(
         # return inserted_id
 
         return result.rowcount  # обычно 1 при успешной вставке
+    except IntegrityError as e:
+        err_msg = str(e.orig).lower()
+    # прописываем разные ошибки
+        if "unique constraint" in err_msg or "unique index" in err_msg:
+            logger.warning(f"[DB] Нарушение уникального ограничения: {e.orig}")
+            raise errors.conflict(message="Введённые данные должны быть уникальны.")
+        elif "foreign key constraint" in err_msg or "foreign key violation" in err_msg:
+            logger.warning(f"[DB] Нарушение внешнего ключа: {e.orig}")
+            raise errors.bad_request(message="Связанные данные не найдены (ошибка внешнего ключа).")
+        else:
+            logger.warning(f"[DB] Нарушение ограничения целостности: {e.orig}")
+            raise errors.bad_request(message="Ошибка целостности данных.")
     except SQLAlchemyError:
         logger.exception(f"[DB ERROR] {error_message}")
         raise errors.internal_server(message=error_message)

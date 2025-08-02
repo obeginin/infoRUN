@@ -1,7 +1,7 @@
 from Service.config_app import *
 from Service.dependencies import get_db
 from Service.Models import Student
-from Service.Schemas.auth import StudentOut, StudentAuth
+from Service.Schemas.auth import StudentOut, StudentAuth, StudentBase, StudentCreate
 from Service.Security.token import SECRET_KEY, ALGORITHM
 from Service.Crud import errors,general
 
@@ -255,6 +255,27 @@ def check_permission(student, permission_name: str):
             "Permission": permission_name
         }
     )
+"""Универсальная функция получения студента"""
+def get_student_by_field(db: Session, field_name: str, value: str):
+    allowed_fields = {"ID", "Login", "Email", "Phone"} # белый список (он же помогает от sql инъекций)
+    if field_name not in allowed_fields:
+        raise ValueError(f"Недопустимое поле для поиска студента: {field_name}")
+
+    if field_name == "ID":
+        try:
+            value = int(value)
+        except ValueError:
+            raise errors.bad_request(message=f"Некорректный ID: {value}")
+
+    return general.run_query_select(
+        db,
+        query=f"""SELECT s.*, r.Name as RoleName FROM Students s
+        LEFT JOIN Roles r ON s.RoleID = r.RoleID
+        WHERE s.{field_name} = :value""",
+        params={"value": value},
+        mode="mappings_first",
+        error_message=f"Ошибка при получении студента по {field_name}: {value}"
+    )
 
 """Выбор студента из базы по его логину (Аутентификация)"""
 def get_student_by_login(db: Session, login: str):
@@ -285,6 +306,8 @@ def get_student_by_email(db: Session, email: str):
         error_message=f"Ошибка при получении студента по email: {email}"
     )
 
+
+
 def add_new_register_student(db: Session, params: dict):
     return general.run_query_insert(
         db,
@@ -305,36 +328,8 @@ def confirm_student_email(db: Session, params: dict):
         error_message="Ошибка добавления нового студента (через регистрацию)"
     )
 
-'''функция удаление студента по email'''
-def del_student_email(db: Session, email: str):
-    try:
-        logger.info(f"Удаляем задачи студента с email: {email}")
-        general.run_query_delete(
-            db,
-            query="""
-                DELETE FROM StudentTasks 
-                WHERE StudentID = (SELECT ID FROM Students WHERE Email = :email)
-                """,
-            params={"email": email},
-            commit=False
-        )
 
-        logger.info(f"Удаляем студента с email: {email}")
-        general.run_query_delete(
-            db,
-            query="""
-                DELETE FROM Students 
-                WHERE Email = :email
-                """,
-            params={"email": email},
-            commit=False
-        )
 
-        db.commit()
-    except SQLAlchemyError as e:
-        db.rollback()
-        logger.exception("Ошибка при удалении студента и связанных данных")
-        raise errors.internal_server(message="Ошибка удаления студента и связанных данных")
 
 """Выбор из базы разрешений для роли по её ID """
 def get_permission_role(db: Session, RoleID: int):

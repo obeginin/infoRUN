@@ -141,7 +141,7 @@ def test_read_all_students():
     (3, [1, 2], 200, "Назначение новых разрешений существующей роли"),
     (3, [], 200, "Очистка всех разрешений у существующей роли"),
     (9999, [1], 404, "Роль не найдена"),
-    (3, [9999], 500, "Ошибка при назначении несуществующего разрешения"),
+    (3, [9999], 400, "Ошибка при назначении несуществующего разрешения"),
 ])
 def test_assign_permissions_to_role(role_id, permission_ids, expected_status, description):
     url = f"{BASE_URL}/api/admin/roles/{role_id}/assign-permission"
