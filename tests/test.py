@@ -109,6 +109,41 @@ async def test_search_student(field_name, value):
             assert response.status_code == 404
             print(f"⚠️ Студент с {field_name} = {value} не найден (ожиданный результат)")
 
+@pytest.mark.asyncio
+async def test_activate_deactivate_student(unique_login):
+    async with httpx.AsyncClient(base_url=BASE_URL) as client:
+        headers = {"Authorization": f"Bearer {token_admin}"}
+
+        # 1. Сначала ищем студента по логину, чтобы получить ID
+        search_response = await client.get(
+            "/api/students/search",
+            headers=headers,
+            params={"field_name": "Login", "value": unique_login}
+        )
+        assert search_response.status_code == 200, f"Студент не найден: {search_response.text}"
+        student = search_response.json()
+        student_id = student["ID"]
+
+        # 2. Активация студента (flag=True)
+        activate_response = await client.post(
+            "/api/students/active",
+            headers=headers,
+            params={"id": student_id, "flag": True}
+        )
+        assert activate_response.status_code == 200, f"Ошибка активации: {activate_response.text}"
+        assert "активирован" in activate_response.json().get("message", "").lower()
+
+        # 3. Деактивация студента (flag=False)
+        deactivate_response = await client.post(
+            "/api/students/active",
+            headers=headers,
+            params={"id": student_id, "flag": False}
+        )
+        assert deactivate_response.status_code == 200, f"Ошибка деактивации: {deactivate_response.text}"
+        assert "деактивирован" in deactivate_response.json().get("message", "").lower()
+
+        print(f"✅ Студент с ID {student_id} успешно активирован и деактивирован")
+
 
 @pytest.mark.asyncio
 async def test_delete_student(unique_login):

@@ -151,6 +151,7 @@ def edit_student(id: int, data: StudentCreate, db: Session = Depends(get_db), cu
     )
     return {"message": f"Студент с логином: {student.Login} успешно изменен"}
 
+# /api/students/active (тест ✅)
 @students_router.post("/active", summary="Активация/деакцтивация студента")
 def activate_student(id: int, flag: bool, db: Session = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
 
@@ -178,6 +179,8 @@ def activate_student(id: int, flag: bool, db: Session = Depends(get_db), current
     )
     return {"message": f"Студент {student['Login']} {'активирован' if flag else 'деактивирован'} успешно"}
 
+
+# /api/students/delete_student (тест ✅)
 @students_router.post("/delete_student", summary="Удаление студента по id и сопутствующих задач")
 def confirm_email(id: int, db: Session = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
     # try:
