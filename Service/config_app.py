@@ -2,10 +2,9 @@ from dotenv import load_dotenv
 import os
 from pathlib import Path
 
-from datetime import datetime
-from pytz import timezone
+
 from fastapi.templating import Jinja2Templates
-#from config import UPLOAD_IMAGE_DIR, UPLOAD_SOLUTION_DIR, UPLOAD_FILES_DIR, UPLOAD_STUDENTS_IMAGE_DIR
+from utils.config import TIME_NOW
 load_dotenv() # загружаем переменные из файла .env
 
 
@@ -32,9 +31,6 @@ LOG_FILE = os.getenv("LOG_FILE")
 '''Уровень логирования'''
 LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
 
-#время по москве
-now_moscow = datetime.now(timezone("Europe/Moscow"))
-# Убрать таймзону, но сохранить локальное время
-TIME_NOW = now_moscow.replace(tzinfo=None)
+
 
 

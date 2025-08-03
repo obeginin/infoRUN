@@ -6,10 +6,13 @@ import subprocess
 
 subprocess.run([
     "uvicorn",
-    "main:app",
+    "Service.main:app",
     "--host", "0.0.0.0",
     "--port", "9000"
     #"--reload"
 ])
 # ручной запуск сервера через консоль
 # uvicorn Main:app --reload --port 9000
+
+#  c
+

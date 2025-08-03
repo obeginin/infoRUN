@@ -32,6 +32,8 @@ class UserCreate(BaseModel):
     password: str
     phone: str
 
+
+
 class DeleteStudent(BaseModel):
     ID: int = None
     Login: str = None
@@ -130,6 +132,14 @@ class TokenData(BaseModel):
 class AssignPermissionsRequest(BaseModel):
     permission_ids: List[int]
 
+# для валидного email
+class PasswordReset(BaseModel):
+    Email: EmailStr
+
+class PasswordResetConfirm(BaseModel):
+    token: str
+    new_password: constr(min_length=6)
+    repeat_new_password: constr(min_length=6)
 
 # для самостоятельной смены
 class ChangePasswordRequest(BaseModel):

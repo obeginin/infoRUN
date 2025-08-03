@@ -328,8 +328,65 @@ def confirm_student_email(db: Session, params: dict):
         error_message="Ошибка добавления нового студента (через регистрацию)"
     )
 
+'''Создаем временный токен для сброса пароля и деактивируем все предыдущие'''
+def save_password_reset_token(db: Session, student_id: int, token: str, expires_at: datetime):
+    # 1. Деактивируем старые токены
+    general.run_query_update(
+        db,
+        query="""
+            UPDATE PasswordResetTokens
+            SET Used = 1
+            WHERE StudentID = :student_id AND Used = 0
+        """,
+        params={"student_id": student_id},
+        error_message="Ошибка при пометке старых токенов как использованных"
+    )
 
+    # 2. Вставляем новый токен
+    general.run_query_insert(
+        db,
+        query="""
+                INSERT INTO PasswordResetTokens (StudentID, Token, ExpiresAt)
+                VALUES (:student_id, :token, :expires_at)
+            """,
+        params={
+            "student_id": student_id,
+            "token": token,
+            "expires_at": expires_at
+        },
+        error_message="Ошибка при сохранении токена сброса пароля"
+    )
 
+'''Функция получения токена для сброса пароля'''
+def get_token_record(db: Session, token: str):
+    query = """
+        SELECT ID, StudentID, Token, ExpiresAt, Used
+        FROM PasswordResetTokens
+        WHERE Token = :token
+    """
+    record = general.run_query_select(
+        db,
+        query=query,
+        params={"token": token},
+        mode="mappings_first",  # Получаем один словарь с данными
+        required=False
+    )
+    return record
+
+'''Функция отмечает токен сброса пароля как использованный'''
+def mark_token_used(db: Session, token: str):
+    query = """
+        UPDATE PasswordResetTokens
+        SET Used = 1
+        WHERE Token = :token
+    """
+    updated_rows = general.run_query_update(
+        db,
+        query=query,
+        params={"token": token},
+        error_message="Ошибка при пометке токена как использованного"
+    )
+    return updated_rows
 
 """Выбор из базы разрешений для роли по её ID """
 def get_permission_role(db: Session, RoleID: int):
