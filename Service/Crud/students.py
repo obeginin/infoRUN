@@ -45,17 +45,19 @@ def get_student_id(db: Session, Student_id: int):
 
 
 ''' функция добавления нового студента'''
-def add_student(db: Session, student: auth.StudentCreate):
+def add_student(db: Session, student: auth.StudentCreate, hashed_password:str):
     data = student.dict()
     # подставляем значение по умолчанию, если не пришло
 
     if data["IsActive"] is None:
         data["IsActive"] = True
 
+    data["Password"] = hashed_password  # Добавляем хэш пароля
+
     return general.run_query_insert(
         db,
-        query= """INSERT INTO STUDENTS (Login, Last_Name, First_Name, Middle_Name, Email, Sex, BirthDate, Comment, RoleID, IsActive) 
-        VALUES (:Login, :Last_Name, :First_Name, :Middle_Name, :Email, :Sex, :BirthDate, :Comment, :RoleID, :IsActive )""",
+        query= """INSERT INTO STUDENTS (Login, Last_Name, First_Name, Middle_Name, Email, Sex, BirthDate, Comment, Password, RoleID, IsActive) 
+        VALUES (:Login, :Last_Name, :First_Name, :Middle_Name, :Email, :Sex, :BirthDate, :Comment, :Password, :RoleID, :IsActive)""",
         params= data,
         error_message=f"Ошибка при добавлении нового студента"
     )

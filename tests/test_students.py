@@ -2,6 +2,8 @@ from config_test import BASE_URL, login_admin, pass_admin, login_user, pass_user
 
 import pytest
 import requests
+import httpx
+from uuid import uuid4
 
 STUDENT_ID = 2
 STUDENT_TASK_ID = 43
@@ -17,6 +19,34 @@ SORT_COLUMN2 = 'Attempts'
 SORT_DIRECTION2 = 'ASC'
 LIMIT = 5000
 OFFSET = 10
+
+
+@pytest.mark.asyncio
+async def test_add_new_student_success():
+    async with httpx.AsyncClient(base_url=BASE_URL) as client:
+        headers = {"Authorization": f"Bearer {token_admin}"}
+        unique_login = f"test_student_{uuid4().hex[:8]}"
+        payload = {
+            "Login": unique_login,
+            "Email": f"{unique_login}@example.com",
+            "Password": "Secret123!",
+            "Last_Name": "Иванов",
+            "First_Name": "Иван",
+            "Middle_Name": "Иванович",
+            "Sex": "М",
+            "BirthDate": "2000-01-01",
+            "Comment": "Тестовый пользователь",
+            "RoleID": 3,  # Укажи актуальный ID роли
+            "IsActive": True
+        }
+
+        response = await client.post("/api/students/new_student", headers=headers, json=payload)
+
+        assert response.status_code == 200, f"❌ Ошибка при добавлении студента: {response.text}"
+        assert response.json()["message"] == "Студент успешно добавлен"
+        print("✅ Новый студент успешно добавлен")
+
+
 
 '''Проверка роута без фильтров'''
 def test_get_all_students_tasks_ok():
