@@ -1,4 +1,4 @@
-from Service.main import celery_app
+from Service.celery_tasks.celery_app import celery_app
 
 
 # функция для вызова Celery задачи
