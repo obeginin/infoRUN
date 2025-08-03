@@ -10,6 +10,7 @@ class StudentField(str, Enum):
     ID = "ID"
     Login = "Login"
     Email = "Email"
+    Phone = "Phone"
 
 # старая авторизация по логину
 class StudentLogin(BaseModel):
@@ -29,13 +30,14 @@ class UserCreate(BaseModel):
     email: EmailStr
     login: str
     password: str
+    phone: str
 
 class DeleteStudent(BaseModel):
     ID: int = None
     Login: str = None
     Email: EmailStr = None
 
-class DeleteStudentQuery(BaseModel):
+class SearchStudentQuery(BaseModel):
     field_name: Optional[StudentField] = None
     value: str
 
@@ -133,6 +135,15 @@ class AssignPermissionsRequest(BaseModel):
 class ChangePasswordRequest(BaseModel):
     old_password: constr(min_length=6)
     new_password: constr(min_length=6)
+    # для прода
+    '''
+    new_password: str = Field(
+        ...,
+        min_length=8,
+        max_length=128,
+        pattern=r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#+=\-_]).+$",
+        description="Пароль должен содержать минимум 8 символов, включая заглавные и строчные буквы, цифры и спецсимволы"
+    )'''
     repeat_new_password: constr(min_length=6)
 
 # для смены админом

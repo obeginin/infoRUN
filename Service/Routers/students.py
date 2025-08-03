@@ -1,15 +1,18 @@
 from Service.config_app import UPLOAD_IMAGE_DIR, UPLOAD_SOLUTION_DIR, UPLOAD_FILES_DIR, UPLOAD_STUDENTS_IMAGE_DIR, TEMPLATES_DIR
 from Service.Schemas.students import StudentTaskRead, StudentTasksQueryParams, AnswerInput
+from Service.Schemas.auth import StudentAuth, StudentOut, StudentCreate, SearchStudentQuery, StudentField
+
+from Service.Crud.auth import verify_password, get_student_by_field
 from Service.Crud.auth import get_current_student, permission_required, get_role_id, hash_password
 from Service.Crud.students import edit_student_id, del_student_id, activate_student_id
 from Service.Crud import students
+from Service.Crud import errors
 
 from Service.Routers.tasks import get_files_for_subtask
 from Service.dependencies import get_db  # Зависимость для подключения к базе данных
-from Service.Crud.auth import get_current_student, verify_password, get_student_by_field
-from Service.Schemas.auth import StudentAuth, StudentOut, StudentCreate, DeleteStudentQuery
+
 from Service.producer import send_log
-from Service.Crud import errors
+
 
 from fastapi import APIRouter, Depends, Request, Query, Form,  UploadFile, File, Body
 from sqlalchemy.orm import Session
@@ -46,14 +49,40 @@ templates = Jinja2Templates(directory=TEMPLATES_DIR)
 def read_all_students(db: Session = Depends(get_db)):
     return students.get_all_students(db)
 
-# /students/api{student_id}
+# /api/students/{student_id}
 ''' Эндпоинт: Получить студента по id (/students/{student_id})'''
-@students_router.get("/api/{student_id}", response_model=StudentAuth, summary="Получить студента по его ID")
+@students_router.get("/api/{student_id}", response_model=StudentAuth, summary="Получить студента по его ID)")
 def read_student_id(student_id: int, db: Session = Depends(get_db)):
     return students.get_student_id(db, student_id)
 
 
-# /api/students/new_student
+# /api/students/search (тест ✅)
+''' Поиск студента по выбранному полю(ID, Login, Email, Phone '''
+@students_router.get("/search", summary="Поиск студента по выбранному полю(ID, Login, Email, Phone")
+def confirm_email(field_name: StudentField = Query(...),
+                  value: str = Query(...),
+                  db: Session = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
+    field_name = field_name.value
+    value = value
+
+    # ищем студента по выбранному полю
+    student = get_student_by_field(db, field_name, value)
+    if student is None:
+        logger.warning(f"Студент с {field_name} = {value} не найден")
+        raise errors.not_found(message=f"Студент с {field_name} = {value} не найден")
+
+    logger.info(f"[STUDENTS] Пользователь {current_student.Login} запросил студента с {student.Login} (ID: {student.ID})")
+    send_log(
+        StudentID=student["ID"],
+        StudentLogin=student["Login"],
+        action="StudentSearch",
+        details={
+            "DescriptionEvent": f"Пользователь {current_student.Login} запросил студента с {student.Login} (ID: {student.ID})"
+        }
+    )
+    return student
+
+# /api/students/new_student (тест ✅)
 @students_router.post(
     "/new_student",
     #response_model=list[auth.StudentBase],
@@ -76,7 +105,7 @@ def new_student(student_data: StudentCreate,
         return errors.not_found(message=f"Не удалось найти роль с id {student_data.RoleID}")
     hashed_password = hash_password(student_data.Password)
 
-    if students.add_student(db, student_data) != 1:
+    if students.add_student(db, student_data, hashed_password) != 1:
         logger.warning(f"[STUDENTS] Не удалось добавить студента — возможно, данные невалидны или уже существуют")
         raise errors.bad_request(message="Не удалось добавить студента — возможно, данные невалидны или уже существуют")
 
@@ -94,7 +123,7 @@ def new_student(student_data: StudentCreate,
     )
     return  {"message": "Студент успешно добавлен"}
 
-# /api/students/edit_student
+# /api/students/edit_student (тест ✅)
 @students_router.patch("/edit_student", summary="Изменение данных студента по id")
 def edit_student(id: int, data: StudentCreate, db: Session = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
 
@@ -174,7 +203,7 @@ def confirm_email(id: int, db: Session = Depends(get_db), current_student=Depend
 
 # /api/students/delete_student/v2
 @students_router.post("/delete_student/v2", summary="Удаление студента выбранному полю ")
-def confirm_email(request: DeleteStudentQuery = Depends(), db: Session = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
+def confirm_email(request: SearchStudentQuery = Depends(), db: Session = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
     field_name = request.field_name.value
     value = request.value
 
@@ -187,8 +216,7 @@ def confirm_email(request: DeleteStudentQuery = Depends(), db: Session = Depends
     # Удаляем студента
     del_student_id(db, student.ID)
 
-    logger.info(
-        f"[STUDENTS] Пользователь {current_student.Login} удалил студента {student.Login} (ID: {student.ID})")
+    logger.info(f"[STUDENTS] Пользователь {current_student.Login} удалил студента {student.Login} (ID: {student.ID})")
     send_log(
         StudentID=student["ID"],
         StudentLogin=student["Login"],
