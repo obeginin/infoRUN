@@ -19,7 +19,10 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 import os
 from fastapi.openapi.utils import get_openapi
-
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
+from fastapi import Request
+from starlette.status import HTTP_400_BAD_REQUEST
 # main.py
 '''главный файл проекта'''
 
@@ -98,6 +101,21 @@ def shutdown_event():
         producer.close()
 
 
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    errors = exc.errors()
+
+    # Удаляем поле ctx, чтобы убрать дублирование
+    for error in errors:
+        if "ctx" in error:
+            del error["ctx"]
+
+    logging.warning(f"[400 VALIDATION ERROR] {request.method} {request.url} - ошибки: {errors}")
+
+    return JSONResponse(
+        status_code=HTTP_400_BAD_REQUEST,
+        content={"detail": errors},
+    )
 
 """Swagger"""
 

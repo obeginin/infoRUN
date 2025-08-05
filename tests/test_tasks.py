@@ -20,7 +20,7 @@ def run_task_test(subjectID, expected_status):
     (10, 200, "Получили категории с предметами"),
     (2, 200, "Получили пустой список с категориями"),
     (None, 200, "Получили категории по всем предметам"),
-    ("aasd", 422, "Неправильный тип параметра")
+    ("aasd", 400, "Неправильный тип параметра")
 ])
 def test_tasks(subjectID, expected_status, description):
     run_task_test(subjectID, expected_status)
@@ -59,7 +59,7 @@ def run_subject_by_id_test(subject_id, expected_status):
 @pytest.mark.parametrize("subject_id, expected_status, description", [
     (1, 200, "Существующий предмет найден"),
     (9999, 404, "Несуществующий предмет вызывает ошибку 404"),
-    ("abc", 422, "Невалидный subjectID — строка вместо числа"),
+    ("abc", 400, "Невалидный subjectID — строка вместо числа"),
 ])
 def test_get_subject_by_id(subject_id, expected_status, description):
     response = run_subject_by_id_test(subject_id,expected_status)

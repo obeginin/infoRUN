@@ -82,21 +82,35 @@ def confirm_email(field_name: StudentField = Query(...),
     )
     return student
 
+
 # /api/students/new_student (тест ✅)
 @students_router.post(
     "/new_student",
     #response_model=list[auth.StudentBase],
     summary="Добавить нового студента",
     description="""
-    `Login`, `email` обязательный поля  
+    `Login`, `email` обязательный поля  (должны быть уникальными)
     `Sex` может быть: М, Ж, пустой  
     `RoleID` именно id роли, а не её имя
+    `Phone` строка, но должна состоять из цифр
     """
 )
 def new_student(student_data: StudentCreate,
                 db: Session = Depends(get_db),
                 current_student=Depends(permission_required("admin_panel"))):
-    logger.info(student_data)
+    logger.debug(student_data)
+
+    # TODO: оптимизировать одним запросом
+    student = get_student_by_field(db, field_name="Login", value=student_data.Login)
+    logger.debug(student)
+    if student:
+        logger.warning(f"Пользователь с логином: {student_data.Login} уже есть в базе!")
+        raise errors.bad_request(message=f"Пользователь с логином '{student_data.Login}' уже есть в базе")
+    student = get_student_by_field(db, field_name="Email", value=student_data.Email)
+    if student:
+        logger.warning(f"Пользователь с Email: {student_data.Email} уже есть в базе!")
+        raise errors.bad_request(message=f"Пользователь с Email '{student_data.Email}' уже есть в базе!")
+
     # ищем роль по id
     role = get_role_id(db, student_data.RoleID)
     if not role:
@@ -126,30 +140,40 @@ def new_student(student_data: StudentCreate,
 # /api/students/edit_student (тест ✅)
 @students_router.patch("/edit_student", summary="Изменение данных студента по id")
 def edit_student(id: int, data: StudentCreate, db: Session = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
-
-    student = get_student_by_field(db, field_name="ID", value=id)
-    logger.info(f"[STUDENTS] Студент {student}")
-    if student == None:
+    logger.info(f"[STUDENTS] Данные изменения студента: {data}")
+    student_by_id = get_student_by_field(db, field_name="ID", value=id)
+    logger.info(f"[STUDENTS] Студент {student_by_id}")
+    if student_by_id == None:
         logger.warning(f"[STUDENTS] Студент с id: {id} не найден")
         raise errors.bad_request(message=f"Студент с id: {id} не найден")
 
+    # TODO: оптимизировать одним запросом
+    if data.Login:
+        student = get_student_by_field(db, field_name="Login", value=data.Login)
+        if student:
+            raise errors.bad_request(message=f"Логин '{data.Login}' уже занят")
+
+    if data.Email:
+        student = get_student_by_field(db, field_name="Email", value=data.Email)
+        if student:
+            raise errors.bad_request(message=f"Email '{data.Email}' уже занят")
 
     updated = edit_student_id(db, student_ID=id, data=data)
 
     if updated != 1:
-        logger.warning(f"[STUDENTS] Ошибка при обновлении данных студента с логином: {student}")
+        logger.warning(f"[STUDENTS] Ошибка при обновлении данных студента с логином: {student_by_id.Login}")
         raise errors.internal_server(message="Ошибка при обновлении данных студента с логином: {student}")
 
-    logger.info(f"[STUDENTS] Пользователь:{current_student.Login} удалил студента с логином: {student.Login} и id: {id}")
+    logger.info(f"[STUDENTS] Пользователь:{current_student.Login} изменил студента с логином: {student_by_id.Login} и id: {id}.")
     send_log(
-        StudentID=student["ID"],
-        StudentLogin=student["Login"],
+        StudentID=student_by_id.ID,
+        StudentLogin=student_by_id.Login,
         action="StudentUpdated",
         details={
-            "DescriptionEvent": f"Пользователь:{current_student.Login} удалил студента с логином: {student.Login} и id: {id}",
+            "DescriptionEvent": f"Пользователь:{current_student.Login} изменил студента с логином: {student_by_id.Login} и id: {id}",
         }
     )
-    return {"message": f"Студент с логином: {student.Login} успешно изменен"}
+    return {"message": f"Студент с логином: {student_by_id.Login} успешно изменен"}
 
 # /api/students/active (тест ✅)
 @students_router.post("/active", summary="Активация/деакцтивация студента")

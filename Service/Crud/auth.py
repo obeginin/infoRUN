@@ -259,7 +259,8 @@ def check_permission(student, permission_name: str):
 def get_student_by_field(db: Session, field_name: str, value: str):
     allowed_fields = {"ID", "Login", "Email", "Phone"} # белый список (он же помогает от sql инъекций)
     if field_name not in allowed_fields:
-        raise ValueError(f"Недопустимое поле для поиска студента: {field_name}")
+        raise errors.bad_request(message=f"Недопустимое поле для поиска студента: {field_name}")
+
 
     if field_name == "ID":
         try:
@@ -305,8 +306,6 @@ def get_student_by_email(db: Session, email: str):
         mode="mappings_first",
         error_message=f"Ошибка при получении студента по email: {email}"
     )
-
-
 
 def add_new_register_student(db: Session, params: dict):
     return general.run_query_insert(
