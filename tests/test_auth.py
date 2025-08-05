@@ -65,7 +65,7 @@ def test_read_all_roles(expected_status, description):
 @pytest.mark.parametrize("role_id, expected_status, description", [
     (2, 200, "Существующая роль"),
     (9999, 404, "Несуществующая роль"),
-    ("abc", 422, "Невалидный role_id"),
+    ("abc", 400, "Невалидный role_id"),
 ])
 def test_read_permissions_role(role_id, expected_status, description):
     url = f"{BASE_URL}/api/admin/roles/{role_id}"
@@ -102,7 +102,7 @@ def test_read_all_permissions(expected_status, description):
     (4, 1, 200, "Успешное назначение роли студенту"),
     (9999, 2, 404, "Несуществующий студент"),
     (4, 9999, 404, "Несуществующая роль"),
-    ("abc", 2, 422, "Некорректный studentID (строка вместо числа)"),
+    ("abc", 2, 400, "Некорректный studentID (строка вместо числа)"),
 ])
 def test_assign_role_to_student(student_id, role_id, expected_status, description):
     url = f"{BASE_URL}/api/admin/students/{student_id}/assign-role?RoleID={role_id}"

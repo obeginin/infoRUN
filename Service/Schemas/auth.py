@@ -84,7 +84,7 @@ class StudentBase(BaseModel):
 
 # Используется при создании (без ID, IsDeleted и т.д.)
 class StudentCreate(StudentBase):
-    Password: str = None
+    Password: str
     pass
 
 # Используется при регистрации/авторизации/выдаче данных

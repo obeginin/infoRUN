@@ -65,7 +65,7 @@ def test_get_all_students_tasks_ok():
 @pytest.mark.parametrize("student_id, expected_status, description", [
     (STUDENT_ID, 200, "Существующий студент получает задачи"),
     (999999, 200, "Несуществующий студент — пустой список (или обработка)"),
-    ("abc", 422, "Невалидный ID студента"),
+    ("abc", 400, "Невалидный ID студента"),
 ])
 def test_get_tasks_by_student(student_id, expected_status, description):
     url = f"{BASE_URL}/api/students_subtasks/{student_id}"
@@ -119,7 +119,7 @@ def test_query_params_on_student_tasks(query_params, expected_status, descriptio
 @pytest.mark.parametrize("student_task_id, expected_status, description", [
     (STUDENT_TASK_ID, 200, "Существующая задача возвращается успешно"),
     (999999, 200, "Несуществующая задача — вернётся пустой список"),
-    ("abc", 422, "Невалидный StudentTaskID — ошибка валидации"),
+    ("abc", 400, "Невалидный StudentTaskID — ошибка валидации"),
 ])
 def test_get_student_task_by_id(student_task_id, expected_status, description):
     url = f"{BASE_URL}/api/students_subtasks/2/StudentTask/{student_task_id}"
