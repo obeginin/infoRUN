@@ -19,8 +19,8 @@ export const RegistrationMailSend = () => {
   }, []);
 
   const handleClick = () => {
-    const { email, login, password } = locate.state;
-    AuthAPI.registration(email, login, password);
+    const { email, login, password, tel } = locate.state;
+    AuthAPI.registration(email, login, password, tel);
     window.location.reload();
   };
 
