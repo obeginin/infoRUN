@@ -1,14 +1,20 @@
 from Service.config_app import UPLOAD_IMAGE_DIR, UPLOAD_SOLUTION_DIR, UPLOAD_FILES_DIR, UPLOAD_STUDENTS_IMAGE_DIR, TEMPLATES_DIR
-from Service.Schemas.students import StudentTaskRead, AnswerInput, SolutionInput, StudentTasksQueryParams
-from Service.Crud.auth import get_current_student, permission_required
+from Service.Schemas.students import StudentTaskRead, StudentTasksQueryParams, AnswerInput
+from Service.Schemas.auth import StudentAuth, StudentOut, StudentCreate, SearchStudentQuery, StudentField, StudentEdit
+
+from Service.Crud.auth import verify_password, get_student_by_field
+from Service.Crud.auth import get_current_student, permission_required, get_role_id, hash_password
+from Service.Crud.students import edit_student_id, del_student_id, activate_student_id
 from Service.Crud import students
+from Service.Crud import errors
+
 from Service.Routers.tasks import get_files_for_subtask
 from Service.dependencies import get_db  # Зависимость для подключения к базе данных
-from Service.Crud.auth import get_current_student, verify_password
-from Service.Schemas.auth import StudentAuth, StudentOut
+
 from Service.producer import send_log
 
-from fastapi import APIRouter, Depends, Request, Query, Form,  UploadFile, File
+
+from fastapi import APIRouter, Depends, Request, Query, Form,  UploadFile, File, Body
 from sqlalchemy.orm import Session
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
@@ -43,13 +49,236 @@ templates = Jinja2Templates(directory=TEMPLATES_DIR)
 def read_all_students(db: Session = Depends(get_db)):
     return students.get_all_students(db)
 
-# /students/api{student_id}
+# /api/students/{student_id}
 ''' Эндпоинт: Получить студента по id (/students/{student_id})'''
-@students_router.get("/api/{student_id}", response_model=StudentAuth, summary="Получить студента по его ID")
+@students_router.get("/api/{student_id}", response_model=StudentAuth, summary="Получить студента по его ID)")
 def read_student_id(student_id: int, db: Session = Depends(get_db)):
     return students.get_student_id(db, student_id)
 
 
+# /api/students/search (тест ✅)
+''' Поиск студента по выбранному полю(ID, Login, Email, Phone '''
+@students_router.get("/search", summary="Поиск студента по выбранному полю(ID, Login, Email, Phone")
+def confirm_email(field_name: StudentField = Query(...),
+                  value: str = Query(...),
+                  db: Session = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
+    field_name = field_name.value
+    value = value
+
+    # ищем студента по выбранному полю
+    student = get_student_by_field(db, field_name, value)
+    if student is None:
+        logger.warning(f"Студент с {field_name} = {value} не найден")
+        raise errors.not_found(message=f"Студент с {field_name} = {value} не найден")
+
+    logger.info(f"[STUDENTS] Пользователь {current_student.Login} запросил студента с {student.Login} (ID: {student.ID})")
+    send_log(
+        StudentID=student["ID"],
+        StudentLogin=student["Login"],
+        action="StudentSearch",
+        details={
+            "DescriptionEvent": f"Пользователь {current_student.Login} запросил студента с {student.Login} (ID: {student.ID})"
+        }
+    )
+    return student
+
+
+# /api/students/new_student (тест ✅)
+@students_router.post(
+    "/new_student",
+    #response_model=list[auth.StudentBase],
+    summary="Добавить нового студента",
+    description="""
+    `Login`, `email` обязательный поля  (должны быть уникальными)
+    `Sex` может быть: М, Ж, пустой  
+    `RoleID` именно id роли, а не её имя
+    `Phone` строка, но должна состоять из цифр
+    """
+)
+def new_student(student_data: StudentCreate,
+                db: Session = Depends(get_db),
+                current_student=Depends(permission_required("admin_panel"))):
+    logger.debug(student_data)
+
+    # TODO: оптимизировать одним запросом
+    student = get_student_by_field(db, field_name="Login", value=student_data.Login)
+    logger.debug(student)
+    if student:
+        logger.warning(f"Пользователь с логином: {student_data.Login} уже есть в базе!")
+        raise errors.bad_request(message=f"Пользователь с логином '{student_data.Login}' уже есть в базе")
+    student = get_student_by_field(db, field_name="Email", value=student_data.Email)
+    if student:
+        logger.warning(f"Пользователь с Email: {student_data.Email} уже есть в базе!")
+        raise errors.bad_request(message=f"Пользователь с Email '{student_data.Email}' уже есть в базе!")
+
+    # ищем роль по id
+    role = get_role_id(db, student_data.RoleID)
+    if not role:
+        logger.warning(
+            f"[STUDENTS] Не удалось найти роль с id {student_data.RoleID}")
+        return errors.not_found(message=f"Не удалось найти роль с id {student_data.RoleID}")
+    hashed_password = hash_password(student_data.Password)
+
+    if students.add_student(db, student_data, hashed_password) != 1:
+        logger.warning(f"[STUDENTS] Не удалось добавить студента — возможно, данные невалидны или уже существуют")
+        raise errors.bad_request(message="Не удалось добавить студента — возможно, данные невалидны или уже существуют")
+
+
+    logger.info(f"[STUDENTS] Пользователь '{current_student.Login}' добавил нового студента")
+    send_log(
+        StudentID=current_student.ID,
+        StudentLogin=current_student.Login,
+        action="AddStudent",
+        details={
+            "DescriptionEvent": "Администратор добавил нового студента",
+            "NewStudentLogin": student_data.Login,
+            "NewStudentEmail": student_data.Email
+        }
+    )
+    return  {"message": "Студент успешно добавлен"}
+
+# /api/students/edit_student (тест ✅)
+@students_router.patch("/edit_student", summary="Изменение данных студента по id")
+def edit_student(id: int, data: StudentEdit, db: Session = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
+    logger.info(f"[STUDENTS] Данные изменения студента: {data}")
+    student_by_id = get_student_by_field(db, field_name="ID", value=id)
+    logger.info(f"[STUDENTS] Студент {student_by_id}")
+    if student_by_id == None:
+        logger.warning(f"[STUDENTS] Студент с id: {id} не найден")
+        raise errors.bad_request(message=f"Студент с id: {id} не найден")
+    logger.info(f"Проверяем уникальность логина: {data.Login}")
+    # TODO: оптимизировать одним запросом
+    if data.Login:
+        studentWithLogin = get_student_by_field(db, field_name="Login", value=data.Login)
+        if studentWithLogin and studentWithLogin["ID"] != id:
+            raise errors.bad_request(message=f"Логин '{data.Login}' уже занят")
+    logger.info(f"Проверяем уникальность email: {data.Email}")
+    if data.Email:
+        studentWithEmail = get_student_by_field(db, field_name="Email", value=data.Email)
+        if studentWithEmail and studentWithEmail["ID"] != id:
+            raise errors.bad_request(message=f"Email '{data.Email}' уже занят")
+    logger.info(f"запуск обнволения")
+    updated = edit_student_id(db, student_ID=id, data=data)
+
+    if updated != 1:
+        logger.warning(f"[STUDENTS] Ошибка при обновлении данных студента с логином: {student_by_id.Login}")
+        raise errors.internal_server(message="Ошибка при обновлении данных студента с логином: {student}")
+
+    logger.info(f"[STUDENTS] Пользователь:{current_student.Login} изменил студента с логином: {student_by_id.Login} и id: {id}.")
+    send_log(
+        StudentID=student_by_id.ID,
+        StudentLogin=student_by_id.Login,
+        action="StudentUpdated",
+        details={
+            "DescriptionEvent": f"Пользователь:{current_student.Login} изменил студента с логином: {student_by_id.Login} и id: {id}",
+        }
+    )
+    return {"message": f"Студент с логином: {student_by_id.Login} успешно изменен"}
+
+# /api/students/active (тест ✅)
+@students_router.post("/active", summary="Активация/деакцтивация студента")
+def activate_student(id: int, flag: bool, db: Session = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
+
+    student = get_student_by_field(db, field_name="ID", value=id)
+    logger.info(f"[STUDENTS] Студент {student}")
+    if student == None:
+        logger.warning(f"[STUDENTS] Студент с id: {id} не найден")
+        raise errors.bad_request(message=f"Студент с id: {id} не найден")
+
+    updated = activate_student_id(db, id, flag)
+
+    if updated != 1:
+        logger.warning(f"[STUDENTS] Не удалось обновить статус активности студента: {student}")
+        raise errors.internal_server(message=f"Не удалось обновить статус активности студента: {student}")
+
+    logger.info(f"[STUDENTS] Пользователь {current_student.Login} {'активировал' if flag else 'деактивировал'} студента {student['Login']} (ID: {id})")
+    # Лог в Kafka (если у тебя используется send_log)
+    send_log(
+        StudentID=current_student.ID,
+        StudentLogin=current_student.Login,
+        action="StudentActivated" if flag else "StudentDeactivated",
+        details={
+            "DescriptionEvent": f"Пользователь {current_student.Login} {'активировал' if flag else 'деактивировал'} студента {student['Login']} (ID: {id})"
+        }
+    )
+    return {"message": f"Студент {student['Login']} {'активирован' if flag else 'деактивирован'} успешно"}
+
+
+# /api/students/delete_student (тест ✅)
+@students_router.post("/delete_student", summary="Удаление студента по id и сопутствующих задач")
+def confirm_email(id: int, db: Session = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
+    # try:
+    student = get_student_by_field(db, field_name="ID", value=id)
+    logger.info(f"[STUDENTS] Студент {student}")
+    if student == None:
+        logger.warning(f"[STUDENTS] Студент с id: {id} не найден")
+        raise errors.bad_request(message=f"Студент с id: {id} не найден")
+    del_student_id(db, id)
+
+    logger.info(f"[STUDENTS] Администратор:{current_student.Login} удалил студента с логином: {student.Login} и id: {id}")
+    send_log(
+        StudentID=student["ID"],
+        StudentLogin=student["Login"],
+        action="StudentDeleted",
+        details={
+            "DescriptionEvent": f"Администратор:{current_student.Login} удалил студента с логином: {student.Login}",
+        }
+    )
+    return {"message": f"Студент с логином: {student.Login} успешно удалён"}
+
+
+
+# /api/students/delete_student/v2
+@students_router.post("/delete_student/v2", summary="Удаление студента выбранному полю ")
+def confirm_email(request: SearchStudentQuery = Depends(), db: Session = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
+    field_name = request.field_name.value
+    value = request.value
+
+    # ищем студента по выбранному полю
+    student = get_student_by_field(db, field_name, value)
+    if student is None:
+        logger.warning(f"Студент с {field_name} = {value} не найден")
+        raise errors.not_found(message=f"Студент с {field_name} = {value} не найден")
+
+    # Удаляем студента
+    del_student_id(db, student.ID)
+
+    logger.info(f"[STUDENTS] Пользователь {current_student.Login} удалил студента {student.Login} (ID: {student.ID})")
+    send_log(
+        StudentID=student["ID"],
+        StudentLogin=student["Login"],
+        action="StudentDeleted",
+        details={
+            "DescriptionEvent": f"Администратор {current_student.Login} удалил студента: {student.Login} (ID: {student.ID})"
+        }
+    )
+    return {"message": f"Студент с {field_name} = {value} успешно удалён"}
+
+'''Студенты
+
+@admin_router.post("/new_student", summary="Добавление нового студента")
+def confirm_email(email: EmailStr,
+                  db: Session = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
+    # try:
+    student = get_student_by_email(db, email)
+    logger.info(f"Студент cccccc {student}")
+    if student == None:
+        logger.warning(f"Студент с email {email} не найден")
+        raise errors.bad_request(message=f"Студент с email {email} не найден")
+    del_student_id(db, email)
+
+    logger.info(f"[ADMIN] Администратор:{current_student.Login} удалил студента с email: {email}")
+    send_log(
+        StudentID=student["ID"],
+        StudentLogin=student["Login"],
+        action="StudentDeleted",
+        details={
+            "DescriptionEvent": f"Администратор:{current_student.Login} удалил студента с email: {email}",
+        }
+    )
+    return {"message": f"Студент с email {email} успешно удалён"}
+
+'''
 
 # /api/students_subtasks
 '''Эндпоинт для получения всех подзадач всех студентов'''
@@ -404,7 +633,7 @@ def read_student_all_subtasks_by_login(
 
     # Иначе преобразуем в JSON-словарики
     """Для устранения проблемы преобразования даты в формат JSON"""
-    tasks = [StudentTaskRead(**task).model_dump(mode="json") for task in tasks1]
+    tasks = [students.tudentTaskRead(**task).model_dump(mode="json") for task in tasks1]
     tasks = tasks or []
     logging.warning(f"ПАРАМЕТРЫ: StudentID={StudentID}") # логирование
 

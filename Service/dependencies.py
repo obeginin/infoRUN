@@ -1,5 +1,5 @@
-from Database import SessionLocal, LogSessionLocal # ссылаемся на файл с конфигом БД
-from producer import get_kafka_producer
+from Service.Database import SessionLocal, LogSessionLocal # ссылаемся на файл с конфигом БД
+from Service.producer import get_kafka_producer
 
 # Dependency.py
 '''файл с зависимостями '''

@@ -1,7 +1,18 @@
-from pydantic import BaseModel, constr, EmailStr
+from pydantic import BaseModel, constr, EmailStr, Field, field_validator, validator
 from typing import List
 from datetime import date
+from enum import Enum
+from typing import Optional
+import re
+from datetime import date, datetime
 
+class StudentField(str, Enum):
+    ID = "ID"
+    Login = "Login"
+    Email = "Email"
+    Phone = "Phone"
+
+# старая авторизация по логину
 class StudentLogin(BaseModel):
     Login: str
     Password: str
@@ -9,24 +20,106 @@ class StudentLogin(BaseModel):
     class Config:
         from_attributes = True
 
+# старая авторизация по логин / email / телефон
+class AuthRequest(BaseModel):
+    identifier: str  # логин / email / телефон
+    password: str
+
+# для регистрации
 class UserCreate(BaseModel):
     email: EmailStr
     login: str
     password: str
+    phone: str
 
+
+
+class DeleteStudent(BaseModel):
+    ID: int = None
+    Login: str = None
+    Email: EmailStr = None
+
+class SearchStudentQuery(BaseModel):
+    field_name: Optional[StudentField] = None
+    value: str
+
+# Общие поля для создания/обновления
+class StudentBase(BaseModel):
+    Login: str
+    Last_Name: Optional[str] = None
+    First_Name: Optional[str] = None
+    Middle_Name: Optional[str] = None
+    Email: Optional[EmailStr] = None
+    Phone: Optional[str] = None
+    Sex: Optional[str] = None
+    BirthDate: Optional[date] = None
+    Comment: Optional[str] = None
+    RoleID: Optional[int] = None
+    IsActive: Optional[bool] = None
+
+    @validator('Login')
+    def login_no_cyrillic(cls, v):
+        if re.search(r'[а-яА-Я]', v):
+            raise ValueError('Логин не должен содержать русские буквы (кириллицу)')
+        return v
+
+    # Проверка что телефон состоит только из цифр
+    @validator("Phone", pre=True)
+    def empty_phone_to_none(cls, v):
+        return None if v == "" else v
+
+    @validator("Phone")
+    def phone_must_be_digits(cls, v):
+        if v is None:
+            return v
+        if not v.isdigit():
+            raise ValueError("Телефон должен содержать только цифры")
+        return v
+
+    # Провекар пола
+    @field_validator("Sex")
+    @classmethod
+    def validate_sex(cls, v):
+        allowed = {"М", "Ж", None}
+        if v not in allowed:
+            raise ValueError("Пол может быть только 'М', 'Ж' или не указан")
+        return v
+
+    @validator('BirthDate', pre=True)
+    def empty_date_to_none(cls, v):
+        if not v:
+            return None
+        if isinstance(v, str):
+            try:
+                return datetime.fromisoformat(v).date()
+            except ValueError:
+                raise ValueError("Неверный формат даты")
+        if isinstance(v, datetime):
+            return v.date()
+        return v
+
+# Используется при создании (без ID, IsDeleted и т.д.)
+class StudentCreate(StudentBase):
+    Password: str
+
+class StudentEdit(StudentBase):
+    Password: str = None
+
+# Используется при регистрации/авторизации/выдаче данных
 class StudentAuth(BaseModel):
     ID: int
     Login: str | None
     Last_Name: str | None
     First_Name: str | None
-    Email: str
+    Email: EmailStr | None
     RoleName: str | None
-    IsActive: bool
+    IsActive: bool | None
     IsDeleted: date | None
 
     class Config:
         from_attributes = True # для моделей без orm_mode в Pydantic v2
 
+# Расширенный вывод студента с правами
 class StudentOut(StudentAuth):
     Middle_Name: str | None
     Sex: str | None
@@ -57,11 +150,28 @@ class TokenData(BaseModel):
 class AssignPermissionsRequest(BaseModel):
     permission_ids: List[int]
 
+# для валидного email
+class PasswordReset(BaseModel):
+    Email: EmailStr
+
+class PasswordResetConfirm(BaseModel):
+    token: str
+    new_password: constr(min_length=6)
+    repeat_new_password: constr(min_length=6)
 
 # для самостоятельной смены
 class ChangePasswordRequest(BaseModel):
     old_password: constr(min_length=6)
     new_password: constr(min_length=6)
+    # для прода
+    '''
+    new_password: str = Field(
+        ...,
+        min_length=8,
+        max_length=128,
+        pattern=r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#+=\-_]).+$",
+        description="Пароль должен содержать минимум 8 символов, включая заглавные и строчные буквы, цифры и спецсимволы"
+    )'''
     repeat_new_password: constr(min_length=6)
 
 # для смены админом

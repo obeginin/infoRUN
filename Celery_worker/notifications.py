@@ -3,11 +3,16 @@ from .email_worker import celery_app, SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import smtplib
+from jinja2 import Template
+import logging
+logger = logging.getLogger(__name__)
 
 
 '''Задача отправки письма'''
 @celery_app.task(name="email.send", bind=True, max_retries=3, default_retry_delay=60)
 def send_email_task(self, event_type, to_email, subject, template_name, data):
+    logging.info(f"[CELERY EMAIL] Старт задачи отправки email — тип: {event_type}, получатель: {to_email}")
+
     try:
         html_body = render_template(template_name, data)
 
@@ -17,21 +22,31 @@ def send_email_task(self, event_type, to_email, subject, template_name, data):
         msg["To"] = to_email
         msg.attach(MIMEText(html_body, "html", "utf-8"))
 
+        logging.info(f"[CELERY EMAIL] Подключение к SMTP: {SMTP_HOST}:{SMTP_PORT}")
         with smtplib.SMTP(SMTP_HOST, SMTP_PORT) as server:
             server.starttls()
             server.login(SMTP_USER, SMTP_PASS)
             server.sendmail(FROM_EMAIL, [to_email], msg.as_string())
+        logging.info(f"[CELERY EMAIL] ✅ Письмо '{event_type}' успешно отправлено на {to_email}")
 
-        #logging.info(f"[CELERY EMAIL] Отправлено '{event_type}' письмо на {to_email}")
     except Exception as exc:
-        #logging.error(f"[CELERY EMAIL] Ошибка при отправке '{event_type}' на {to_email}: {exc}")
+        logging.exception(f"[CELERY EMAIL] ❌ Ошибка при отправке '{event_type}' письма на {to_email}: {exc}")
         raise self.retry(exc=exc)
 
 def render_template(template_name: str, data: dict) -> str:
-    # Можно использовать Jinja2, как было
-    from jinja2 import Template
+    logging.info(f"[EMAIL TEMPLATE] Запрос шаблона: '{template_name}'")
+    logging.info(f"[EMAIL TEMPLATE] Данные для шаблона: {data}")
+    # шаблон с письмом для регистрации
     if template_name == "registration_confirmation":
         tmpl = Template("Для подтверждения регистрации перейдите по ссылке: <a href='{{ confirmation_link }}'>Подтвердить</a>")
         return tmpl.render(**data)
-    # остальные шаблоны...
+    # шаблон с письмом для сброса пароля
+    elif template_name == "password_reset":
+        tmpl = Template(
+            """Для сброса пароля перейдите по ссылке ниже:<br>
+        <a href="{{ reset_link }}">{{ reset_link }}</a><br>
+        Ссылка действительна {{ expires_hours }} час(а). 
+            """)
+        return tmpl.render(**data)
+    logging.warning(f"[EMAIL TEMPLATE] ❌ Неизвестный шаблон: '{template_name}'")
     return "Шаблон не найден"
