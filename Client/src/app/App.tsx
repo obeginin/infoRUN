@@ -10,6 +10,8 @@ import { Registration } from "../Pages/Registration/Registration.tsx";
 import { RegistrationMailSend } from "../Widgets/Registration/RegistratiionMailSend.tsx";
 import { SuccessRegistration } from "../Widgets/Registration/SuccessRegistration/SuccessRegistration.tsx";
 import { ProfileTask } from "../Pages/Profile/ProfileTask/ProfileTask.tsx";
+import { ForgotPassword } from "../Pages/ForgotPassword/ForgotPassword.tsx";
+import { ResetPassword } from "../Pages/ForgotPassword/ResetPassword/ResetPassword.tsx";
 function App() {
   return (
     <>
@@ -22,10 +24,9 @@ function App() {
           path="/registration/mail-send"
           element={<RegistrationMailSend />}
         />
-        <Route
-          path="/auth/confirm-email"
-          element={<SuccessRegistration />}
-        />
+        <Route path="/auth/confirm-email" element={<SuccessRegistration />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/auth/reset-password" element={<ResetPassword />} />
         <Route
           path="/profile"
           element={
@@ -49,7 +50,7 @@ function App() {
               <ProfileTask />
             </ProtectedRoute>
           }
-          />
+        />
         <Route
           path="/admin"
           element={

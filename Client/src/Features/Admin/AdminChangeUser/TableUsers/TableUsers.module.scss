@@ -4,7 +4,6 @@
   font-family: "Lato", sans-serif;
   font-size: var(--small);
 
-
   thead {
     background: var(--bg);
     position: sticky;
@@ -13,7 +12,7 @@
 
     tr {
       th {
-        padding: 8px 12px;
+        padding: 5px 12px;
         text-align: left;
         color: var(--text);
       }
@@ -34,6 +33,14 @@
         padding: 8px 12px;
         vertical-align: middle;
         position: relative;
+        max-width: 140px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+
+        &:last-child {
+          overflow: visible;
+        }
       }
     }
   }
