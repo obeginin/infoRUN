@@ -2,7 +2,11 @@ import styles from "./Popup.module.scss";
 import { useAdminStore } from "../../../../Pages/Admin/store";
 
 export const Popup = () => {
-  const { setVisibleDialogPassword, setVisibleDialogDelete } = useAdminStore();
+  const {
+    setVisibleDialogPassword,
+    setVisibleDialogDelete,
+    setVisibleDialogEdit,
+  } = useAdminStore();
   return (
     <>
       <div className={styles.popup}>
@@ -14,6 +18,9 @@ export const Popup = () => {
           onClick={() => setVisibleDialogPassword()}
         >
           Изменить пароль
+        </button>
+        <button className={styles.btn} onClick={() => setVisibleDialogEdit()}>
+          Изменить пользователя
         </button>
       </div>
     </>

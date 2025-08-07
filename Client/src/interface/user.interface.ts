@@ -5,10 +5,13 @@ export interface IUser {
     Last_Name: string;
     Middle_Name: string;
     Email: string;
-    BirthDate: string;
+    BirthDate: Date | string;
     Sex: string;
     RoleName: string;
     Comment: string;
     IsActive: boolean;
     IsDeleted: boolean;
+    RoleID: number;
+    Password: string;
+    Phone: string;
 }

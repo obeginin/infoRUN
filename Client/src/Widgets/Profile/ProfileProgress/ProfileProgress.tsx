@@ -55,7 +55,7 @@ export const ProfileProgress = () => {
             progress.slice(0, 5).map((item) => (
               <Task key={item.StudentTaskID}>
                 <Paragraph>
-                  Задание {item.SubTaskID}: {item.VariantName}
+                  Задание {item.SubTaskID}: {item.TaskTitle} {item.VariantName}
                 </Paragraph>
               </Task>
             ))

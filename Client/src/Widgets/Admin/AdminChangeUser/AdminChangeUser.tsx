@@ -14,6 +14,7 @@ const TableUsers = lazy(
 );
 import "primereact/resources/themes/lara-light-cyan/theme.css";
 import { Spinner } from "../../../ui/LoadingSpinner/LoadingSpinner";
+import { DialogEdit } from "../../../Features/Admin/AdminChangeUser/DialogEdit/DialogEdit";
 
 export const AdminChangeUser = () => {
   const toast = useRef<Toast>(null);
@@ -53,7 +54,7 @@ export const AdminChangeUser = () => {
     <>
       <Toast ref={toast} position="bottom-left" />
       <ProfileContentContainer>
-        <Button disabled filled>
+        <Button disabled filled color="white">
           Назначение ролей
         </Button>
         <Input
@@ -74,6 +75,7 @@ export const AdminChangeUser = () => {
 
       <DialogDelete />
       <DialogPassword />
+      <DialogEdit />
     </>
   );
 };
