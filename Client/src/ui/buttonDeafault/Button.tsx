@@ -1,51 +1,3 @@
-// import styles from "./Button.module.scss";
-
-// interface ButtonProps {
-//   children: React.ReactNode;
-//   disabled?: boolean;
-//   onClick?: () => void;
-//   radius?: string;
-//   filled?: boolean;
-//   outlined?: boolean;
-//   border?: "primary" | "white";
-//   color?: "primary" | "secondary" | "white" | "text";
-//   style?: React.CSSProperties;
-// }
-
-// export const Button = ({
-//   children,
-//   disabled = false,
-//   onClick,
-//   radius = "32px",
-//   filled = false,
-//   border,
-//   color = "text",
-  
-// }: ButtonProps) => {
-//   return (
-//     <>
-//       <button
-//         style={{
-//           style ? style : {,
-
-//           borderRadius: radius,
-//           backgroundColor: filled ? "var(--primary)" : "transparent",
-//           color: color ? `var(--${color})` : filled ? "var(--bg)" : "var(--text)",
-//           border: border
-//             ? `1px solid var(--${border})`
-//             : "1px solid var(--primary)",
-//         }}
-//         className={`${styles.button} ${disabled ? styles.disabled : ""}`}
-//         disabled={disabled}
-//         onClick={onClick}
-//       >
-//         {children}
-//       </button>
-//     </>
-//   );
-// };
-
-
 import styles from "./Button.module.scss";
 
 interface ButtonProps {
@@ -59,6 +11,8 @@ interface ButtonProps {
   color?: "primary" | "secondary" | "white" | "text";
   style?: React.CSSProperties;
   type?: "button" | "submit" | "reset";
+  width?: "full" | "auto";
+  loading?: boolean;
 }
 
 export const Button = ({
@@ -71,9 +25,12 @@ export const Button = ({
   outlined = false,
   color = "text",
   style,
-  type
+  type,
+  width = "auto",
+  loading = false,
 }: ButtonProps) => {
   const baseStyles = {
+    width: width === "full" ? "100%" : "auto",
     borderRadius: radius,
     backgroundColor: filled ? "var(--primary)" : "transparent",
     color: color ? `var(--${color})` : filled ? "var(--bg)" : "var(--text)",
@@ -86,6 +43,10 @@ export const Button = ({
 
   const finalStyles = style ? style : baseStyles;
 
+  if (loading) {
+    disabled = true;
+  }
+  
   return (
     <button
       type={type}
@@ -96,7 +57,14 @@ export const Button = ({
       disabled={disabled}
       onClick={onClick}
     >
-      {children}
+      {loading ? (
+        <span
+          style={{ fontSize: "1.2rem" }}
+          className={`${styles.spinner} `}
+        ></span>
+      ) : (
+        children
+      )}
     </button>
   );
 };

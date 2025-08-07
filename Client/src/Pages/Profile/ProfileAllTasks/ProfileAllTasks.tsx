@@ -64,9 +64,12 @@ export const ProfileAllTasks = () => {
             <div className={styles.content}>
               {isSuccess &&
                 data.map((item, index) => (
-                  <Task key={index} onClick={() => nav(`/profile/task/${item.TaskID}`)}>
+                  <Task
+                    key={index}
+                    onClick={() => nav(`/profile/task/${item.TaskID}`)}
+                  >
                     <Paragraph>
-                      {item.SubTaskID}: {item.VariantName}
+                      {item.SubTaskID}: {item.TaskTitle} {item.VariantName}
                     </Paragraph>
                     <Paragraph>{item.Score}</Paragraph>
                   </Task>

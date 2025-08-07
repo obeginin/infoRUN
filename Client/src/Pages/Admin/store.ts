@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import type { IUser } from "../../interface/user.interface";
 import AdminAPI from "../../API/admin";
+import StudentsAPI from "../../API/students";
 
 interface AdminStore {
   users: IUser[];
@@ -9,7 +10,18 @@ interface AdminStore {
   error: string | null;
   success: string | null;
   fetchUsers: (token: string) => Promise<void>;
-  deleteUser: (token: string, email: string) => Promise<void>;
+  deleteUser: (token: string, id: number) => Promise<void>;
+  addNewUser: (
+    token: string,
+    login: string,
+    last_name: string,
+    first_name: string,
+    email: string,
+    phone: string,
+    sex: string,
+    roleId: number,
+    password: string
+  ) => Promise<void>;
   reset: () => void;
   searchQuery: string;
   setSearchQuery: (query: string) => void;
@@ -17,12 +29,29 @@ interface AdminStore {
   isVisiblePopup: boolean;
   isVisibleDialogPassword: boolean;
   isVisibleDialogDelete: boolean;
+  isVisibleDialogEdit: boolean;
   setVisibleDialogPassword: () => void;
   setVisibleDialogDelete: () => void;
+  setVisibleDialogEdit: () => void;
   setVisiblePopup: (user: IUser) => void;
   changePassword: (
     token: string,
     id: number,
+    password: string
+  ) => Promise<void>;
+  editUser: (
+    token: string,
+    id: number,
+    login: string,
+    last_name: string,
+    first_name: string,
+    middle_name: string,
+    email: string,
+    phone: string,
+    sex: string,
+    birth_date: Date | string,
+    comment: string,
+    roleId: number,
     password: string
   ) => Promise<void>;
 }
@@ -34,6 +63,7 @@ export const useAdminStore = create<AdminStore>((set, get) => ({
   isVisiblePopup: false,
   isVisibleDialogPassword: false,
   isVisibleDialogDelete: false,
+  isVisibleDialogEdit: false,
   error: null,
   success: null,
   searchQuery: "",
@@ -48,12 +78,12 @@ export const useAdminStore = create<AdminStore>((set, get) => ({
     }
   },
 
-  deleteUser: async (token, email) => {
+  deleteUser: async (token, id) => {
     set({ loading: true });
     try {
-      await AdminAPI.DeleteUser(token, email);
+      await StudentsAPI.deleteStudent(token, id);
       set((state) => ({
-        users: state.users.filter((user) => user.Email !== email),
+        users: state.users.filter((user) => user.ID !== id),
         loading: false,
         isVisibleDialogDelete: false,
         success: "User deleted",
@@ -91,6 +121,83 @@ export const useAdminStore = create<AdminStore>((set, get) => ({
     );
   },
 
+  addNewUser: async (
+    token,
+    login,
+    last_name,
+    first_name,
+    email,
+    phone,
+    sex,
+    roleId,
+    password
+  ) => {
+    set({ loading: true });
+    try {
+      await StudentsAPI.addNewUser(
+        token,
+        login,
+        last_name,
+        first_name,
+        email,
+        phone,
+        sex,
+        roleId,
+        password
+      );
+      set({ loading: false, success: "User added" });
+    } catch (error) {
+      set({ error: "Failed to add user" + error, loading: false });
+    }
+  },
+
+  editUser: async (
+    token,
+    id,
+    login,
+    last_name,
+    first_name,
+    middle_name,
+    email,
+    phone,
+    sex,
+    birth_date,
+    comment,
+    roleId,
+    password
+  ) => {
+    set({ loading: true });
+    try {
+      await StudentsAPI.editUser(
+        token,
+        id,
+        login,
+        last_name,
+        first_name,
+        middle_name,
+        email,
+        phone,
+        sex,
+        birth_date as string,
+        comment,
+        roleId,
+        password
+      );
+      set({
+        loading: false,
+        success: "User edited",
+        isVisibleDialogEdit: false,
+      });
+      get().fetchUsers(token);
+    } catch (error) {
+      set({
+        error: "Failed to edit user" + error,
+        loading: false,
+        isVisibleDialogEdit: false,
+      });
+    }
+  },
+
   setSearchQuery: (query) => set({ searchQuery: query }),
 
   setVisiblePopup: (user: IUser): void =>
@@ -107,7 +214,18 @@ export const useAdminStore = create<AdminStore>((set, get) => ({
     }),
 
   setVisibleDialogDelete: (): void =>
-    set({ isVisibleDialogDelete: !get().isVisibleDialogDelete }),
+    set({
+      isVisibleDialogDelete: !get().isVisibleDialogDelete,
+      currentUser: get().currentUser,
+      isVisiblePopup: false,
+    }),
+
+  setVisibleDialogEdit: (): void =>
+    set({
+      isVisibleDialogEdit: !get().isVisibleDialogEdit,
+      currentUser: get().currentUser,
+      isVisiblePopup: false,
+    }),
 
   reset: () => set({ users: [], error: null }),
 }));

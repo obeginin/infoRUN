@@ -1,8 +1,8 @@
-import { Dialog } from "primereact/dialog";
 import { Button } from "../../../../ui/buttonDeafault/Button";
 import { Paragraph } from "../../../../ui/p/Paragraph";
 import styles from "./DialogDelete.module.scss";
 import { useAdminStore } from "../../../../Pages/Admin/store";
+import { IDialog } from "../../../../ui/IDialog/IDialog";
 export const DialogDelete = () => {
   const token = localStorage.getItem("token") || "";
   const {
@@ -13,10 +13,9 @@ export const DialogDelete = () => {
   } = useAdminStore();
   return (
     <>
-      <Dialog
+      <IDialog
         visible={isVisibleDialogDelete}
-        onHide={() => setVisibleDialogDelete()}
-        style={{ width: "370px", maxHeight: "500px" }}
+        setVdisible={setVisibleDialogDelete}
       >
         <div className={styles.dialog}>
           <Paragraph size="medium">Вы уверены?</Paragraph>
@@ -31,13 +30,13 @@ export const DialogDelete = () => {
               type="submit"
               color="white"
               filled
-              onClick={() => deleteUser(token, currentUser?.Email || "")}
+              onClick={() => deleteUser(token, currentUser?.ID as number)}
             >
               Удалить
             </Button>
           </div>
         </div>
-      </Dialog>
+      </IDialog>
     </>
   );
 };

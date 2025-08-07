@@ -11,7 +11,6 @@ interface User {
   RoleName: string;
 }
 
-
 interface ErrorDetail {
   error: string;
   message: string;
@@ -28,7 +27,7 @@ export const useUserStore = create(
       (set) => ({
         login: async (login: string, password: string) => {
           try {
-            const data = await AuthAPI.login(login, password);
+            const data = await AuthAPI.loginV2(login, password);
             if (data.detail) {
               set({
                 error: {

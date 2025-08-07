@@ -1,5 +1,5 @@
 export default class AuthAPI {
-  static async registration(email: string, login: string, password: string) {
+  static async registration(email: string, login: string, password: string, tel: string) {
     const response = await fetch(
       `${import.meta.env.VITE_BASE_URL}/api/auth/register`,
       {
@@ -11,6 +11,7 @@ export default class AuthAPI {
           email: email,
           login: login,
           password: password,
+          phone: tel
         }),
       }
     );
