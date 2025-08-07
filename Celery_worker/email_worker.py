@@ -26,7 +26,11 @@ setup_logging(log_file=CELERY_LOG_FILE)
 logging.info(f"[CELERY] Запускаем логирование с файлом: {CELERY_LOG_FILE}")
 
 # Создаём celery app
-celery_app = Celery("email_sender", broker=REDIS_BROKER_URL, backend=REDIS_RESULT_BACKEND, include=["Celery_worker.notifications"])
+celery_app = Celery(
+    "email_sender",
+    broker=REDIS_BROKER_URL,
+    backend=REDIS_RESULT_BACKEND,
+    include=["Celery_worker.notifications"])
 
 # Конфигурация
 celery_app.conf.update(

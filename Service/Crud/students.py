@@ -1,10 +1,12 @@
 from Service.Models import Student
 from Service.Schemas.students import StudentTaskRead
+from Service.Schemas import auth
 from Service.Crud import errors,general
 
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 from fastapi import HTTPException
+from sqlalchemy.exc import SQLAlchemyError
 import logging
 
 # Crud\Students.py
@@ -40,6 +42,94 @@ def get_student_id(db: Session, Student_id: int):
         required=True,
         error_message=f"Ошибка при получения студента из БД"
     )
+
+
+''' функция добавления нового студента'''
+def add_student(db: Session, student: auth.StudentCreate, hashed_password:str):
+    data = student.dict()
+    # подставляем значение по умолчанию, если не пришло
+
+    if data["IsActive"] is None:
+        data["IsActive"] = True
+
+    data["Password"] = hashed_password  # Добавляем хэш пароля
+
+    return general.run_query_insert(
+        db,
+        query= """INSERT INTO STUDENTS (Login, Last_Name, First_Name, Middle_Name, Email, Sex, BirthDate, Comment, Password, RoleID, IsActive) 
+        VALUES (:Login, :Last_Name, :First_Name, :Middle_Name, :Email, :Sex, :BirthDate, :Comment, :Password, :RoleID, :IsActive)""",
+        params= data,
+        error_message=f"Ошибка при добавлении нового студента"
+    )
+
+
+
+
+def edit_student_id(db: Session, student_ID: int, data: auth.StudentCreate):
+    # превращаем в словарь, убирая пустые значения
+    update_data = {k: v for k, v in data.dict().items() if v is not None}
+
+    if not update_data:
+        logger.warning(f"Нет данных для обновления")
+        raise errors.bad_request(message="Нет данных для обновления")
+
+    # формируем данные для вставки в SQL запрос
+    set_clause = ", ".join([f"{key} = :{key}" for key in update_data])
+    update_data["id"] = student_ID  # добавляем ID для условия WHERE
+
+    return general.run_query_update(
+        db,
+        query=f"""
+                update Students 
+                set {set_clause}
+                where ID = :id
+                """,
+        params=update_data,
+        error_message=f"Ошибка обновления данных студента с id:{student_ID}"
+    )
+
+def activate_student_id(db: Session, student_ID: int, flag: bool):
+    return general.run_query_update(
+        db,
+        query="""
+                update Students 
+                set isActive = :flag
+                where ID = :id
+                """,
+        params={"flag": flag, "id": student_ID},
+        error_message=f"Ошибка при обновлении активности студента с ID:{student_ID}"
+    )
+
+'''функция удаление студента по id'''
+def del_student_id(db: Session, id: int):
+    try:
+        logger.info(f"Удаляем задачи студента с id: {id}")
+        general.run_query_delete(
+            db,
+            query="""
+                DELETE FROM StudentTasks 
+                WHERE StudentID = :id
+                """,
+            params={"id": id},
+            commit=False
+        )
+
+        logger.info(f"Удаляем студента с id:{id}")
+        general.run_query_delete(
+            db,
+            query="""
+                DELETE FROM Students 
+                WHERE ID = :id
+                """,
+            params={"id": id},
+            commit=False
+        )
+
+        db.commit()
+    except SQLAlchemyError as e:
+        db.rollback()
+        logger.exception(f"Ошибка при удалении студента с id:{id} и связанных данных")
+        raise errors.internal_server(message=f"Ошибка удаления студента с id:{id} и связанных данных")
 
 
 '''функция которая работает по хранимке'''
@@ -113,7 +203,7 @@ def get_students_all_tasks(
 
 
 ''' Получения студента по заданному полю(id, логин)'''
-def get_student_by_field(db: Session, value: str, by: str = "id"):
+'''def get_student_by_field(db: Session, value: str, by: str = "id"):
     if by == "id":
         try:
             student_id = int(value)
@@ -128,7 +218,7 @@ def get_student_by_field(db: Session, value: str, by: str = "id"):
     if not student:
         raise HTTPException(status_code=404, detail="Студент не найден")
 
-    return student
+    return student'''
 
 ''' Получения всех задач всех студентов '''
 def get_all_students_tasks(db: Session):

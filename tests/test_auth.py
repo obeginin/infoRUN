@@ -4,7 +4,7 @@ import pytest
 
 
 
-
+# В test_get_logs надо менять id пользователй
 
 '''Аутентификация'''
 def test_successful_login():
@@ -65,7 +65,7 @@ def test_read_all_roles(expected_status, description):
 @pytest.mark.parametrize("role_id, expected_status, description", [
     (2, 200, "Существующая роль"),
     (9999, 404, "Несуществующая роль"),
-    ("abc", 422, "Невалидный role_id"),
+    ("abc", 400, "Невалидный role_id"),
 ])
 def test_read_permissions_role(role_id, expected_status, description):
     url = f"{BASE_URL}/api/admin/roles/{role_id}"
@@ -102,7 +102,7 @@ def test_read_all_permissions(expected_status, description):
     (4, 1, 200, "Успешное назначение роли студенту"),
     (9999, 2, 404, "Несуществующий студент"),
     (4, 9999, 404, "Несуществующая роль"),
-    ("abc", 2, 422, "Некорректный studentID (строка вместо числа)"),
+    ("abc", 2, 400, "Некорректный studentID (строка вместо числа)"),
 ])
 def test_assign_role_to_student(student_id, role_id, expected_status, description):
     url = f"{BASE_URL}/api/admin/students/{student_id}/assign-role?RoleID={role_id}"
@@ -141,7 +141,7 @@ def test_read_all_students():
     (3, [1, 2], 200, "Назначение новых разрешений существующей роли"),
     (3, [], 200, "Очистка всех разрешений у существующей роли"),
     (9999, [1], 404, "Роль не найдена"),
-    (3, [9999], 500, "Ошибка при назначении несуществующего разрешения"),
+    (3, [9999], 400, "Ошибка при назначении несуществующего разрешения"),
 ])
 def test_assign_permissions_to_role(role_id, permission_ids, expected_status, description):
     url = f"{BASE_URL}/api/admin/roles/{role_id}/assign-permission"
@@ -159,3 +159,38 @@ def test_assign_permissions_to_role(role_id, permission_ids, expected_status, de
         assert isinstance(json.get("removed", []), list)
 
     #print(f"✅ {description} — статус {response.status_code}")
+
+
+@pytest.mark.parametrize("token, expected_status, description", [
+    (token_admin, 200, "Админ получает все логи"),
+    (token, 403, "Обычный пользователь не имеет доступа")
+])
+def test_get_all_logs(token, expected_status, description):
+    url = f"{BASE_URL}/api/admin/students/logs"
+    headers = {"Authorization": f"Bearer {token}"}
+    response = requests.get(url, headers=headers)
+
+    assert response.status_code == expected_status, f"Unexpected status: {description}"
+
+    if expected_status == 200:
+        data = response.json()
+        assert isinstance(data, list), "Expected response to be a list of logs"
+        # можно дополнительно проверить лимит по умолчанию:
+        assert len(data) <= 50, "Default limit exceeded"
+
+@pytest.mark.parametrize("requester_token, requested_student_id, expected_status", [
+    (token_admin, 1, 200),          # админ может смотреть логи любого пользователя
+    # ВОТ ЗДЕСЬ НАДО ПОМЕНЯТЬ ВТОРОЕ ЗНАЧЕНИЕ НА АКТУАЛЬНОЕ!
+    (token, 6, 200),           # пользователь смотрит свои логи — ок
+    (token, 3, 403),           # пользователь смотрит чужие логи — доступ запрещён
+])
+def test_get_logs(requester_token, requested_student_id, expected_status):
+    url = f"{BASE_URL}/api/admin/students/{requested_student_id}/logs"
+    headers = {"Authorization": f"Bearer {requester_token}"}
+    response = requests.get(url, headers=headers)
+
+    assert response.status_code == expected_status, f"Unexpected status for user token with studentID {requested_student_id}"
+    if expected_status == 200:
+        # Проверяем, что в ответе есть список (массив) логов
+        data = response.json()
+        assert isinstance(data, list), "Expected list of logs"
