@@ -30,10 +30,28 @@ from starlette.status import HTTP_400_BAD_REQUEST
 setup_logging(log_file=LOG_FILE)
 logging.info(f"Запускаем логирование с файлом: {LOG_FILE}")
 
-
-
-
 app = FastAPI(debug=LOG_LEVEL, docs_url=None, redoc_url=None)
+'''origins = [
+    "http://localhost:5174",   # твой frontend (vite)
+    "https://info-run.ru",     # если понадобится
+]'''
+origins = [
+    "http://localhost:5173",       # локальный фронт (Vite)
+    "http://127.0.0.1:5173",       # иногда нужен этот
+    "https://info-run.ru",         # если фронт будет на проде
+]
+# для запросов с фронта
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,                   # ✅ разрешаешь запросы с фронта
+    allow_credentials=True,                  # ✅ разрешаешь куки / авторизацию
+    allow_methods=["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"],                     # ✅ разрешаешь любые HTTP-методы (GET, POST, PUT и т.д.)
+    allow_headers=["*"],                     # ✅ разрешаешь любые заголовки (например, Authorization)
+)
+app.add_middleware(LoggingMiddleware) # Middleware для логов всех запросов
+# Путь до билд-фронта
+frontend_path = os.path.join(os.path.dirname(__file__), "..", "Client", "dist")
+
 producer = get_kafka_producer()
 # Регистрируем роутер
 app.include_router(auth.auth_router) # Регистрируем роутер Аутентификации
@@ -49,7 +67,7 @@ app.include_router(students.students_router)  # Регистрируем роу�
 app.include_router(students.students_subtasks_router) # Регистрируем роутер для задач студентов
 
 
-app.add_middleware(LoggingMiddleware) # Middleware для логов всех запросов
+
 #app.include_router(files.router)
 
 #app.include_router(web_auth.router) # подключаем home
@@ -57,26 +75,11 @@ app.add_middleware(LoggingMiddleware) # Middleware для логов всех з
 app.mount("/Uploads", StaticFiles(directory="Uploads"), name="uploads") # для файлов
 templates = Jinja2Templates(directory=TEMPLATES_DIR)
 
-# Путь до билд-фронта
-frontend_path = os.path.join(os.path.dirname(__file__), "..", "Client", "dist")
+
 # Подключаем статику
 app.mount("/assets", StaticFiles(directory=os.path.join(frontend_path, "assets")), name="assets")
 
-'''origins = [
-    "http://localhost:5174",   # твой frontend (vite)
-    "https://info-run.ru",     # если понадобится
-]'''
-origins = [
-    "*"    # если понадобится
-]
-# для запросов с фронта
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,  # ✅ разрешаешь запросы с фронта
-    allow_credentials=True,                  # ✅ разрешаешь куки / авторизацию
-    allow_methods=["*"],                     # ✅ разрешаешь любые HTTP-методы (GET, POST, PUT и т.д.)
-    allow_headers=["*"],                     # ✅ разрешаешь любые заголовки (например, Authorization)
-)
+
 
 
 def check_db_connection(engine, name):

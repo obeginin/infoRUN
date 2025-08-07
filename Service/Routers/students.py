@@ -1,6 +1,6 @@
 from Service.config_app import UPLOAD_IMAGE_DIR, UPLOAD_SOLUTION_DIR, UPLOAD_FILES_DIR, UPLOAD_STUDENTS_IMAGE_DIR, TEMPLATES_DIR
 from Service.Schemas.students import StudentTaskRead, StudentTasksQueryParams, AnswerInput
-from Service.Schemas.auth import StudentAuth, StudentOut, StudentCreate, SearchStudentQuery, StudentField
+from Service.Schemas.auth import StudentAuth, StudentOut, StudentCreate, SearchStudentQuery, StudentField, StudentEdit
 
 from Service.Crud.auth import verify_password, get_student_by_field
 from Service.Crud.auth import get_current_student, permission_required, get_role_id, hash_password
@@ -139,25 +139,25 @@ def new_student(student_data: StudentCreate,
 
 # /api/students/edit_student (тест ✅)
 @students_router.patch("/edit_student", summary="Изменение данных студента по id")
-def edit_student(id: int, data: StudentCreate, db: Session = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
+def edit_student(id: int, data: StudentEdit, db: Session = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
     logger.info(f"[STUDENTS] Данные изменения студента: {data}")
     student_by_id = get_student_by_field(db, field_name="ID", value=id)
     logger.info(f"[STUDENTS] Студент {student_by_id}")
     if student_by_id == None:
         logger.warning(f"[STUDENTS] Студент с id: {id} не найден")
         raise errors.bad_request(message=f"Студент с id: {id} не найден")
-
+    logger.info(f"Проверяем уникальность логина: {data.Login}")
     # TODO: оптимизировать одним запросом
     if data.Login:
-        student = get_student_by_field(db, field_name="Login", value=data.Login)
-        if student:
+        studentWithLogin = get_student_by_field(db, field_name="Login", value=data.Login)
+        if studentWithLogin and studentWithLogin["ID"] != id:
             raise errors.bad_request(message=f"Логин '{data.Login}' уже занят")
-
+    logger.info(f"Проверяем уникальность email: {data.Email}")
     if data.Email:
-        student = get_student_by_field(db, field_name="Email", value=data.Email)
-        if student:
+        studentWithEmail = get_student_by_field(db, field_name="Email", value=data.Email)
+        if studentWithEmail and studentWithEmail["ID"] != id:
             raise errors.bad_request(message=f"Email '{data.Email}' уже занят")
-
+    logger.info(f"запуск обнволения")
     updated = edit_student_id(db, student_ID=id, data=data)
 
     if updated != 1:
