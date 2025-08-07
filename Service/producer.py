@@ -1,6 +1,6 @@
 from kafka import KafkaProducer
 from dotenv import load_dotenv
-from config_app import TIME_NOW
+from Service.config_app import TIME_NOW
 from kafka.errors import KafkaError
 import json
 from datetime import datetime
@@ -91,9 +91,10 @@ def send_email_event(event_type: str, email: str, subject: str, template: str, d
         logging.warning("[Kafka] Producer not available. Email not sent.")
         return
 
+    iso_string = datetime.strptime(TIME_NOW(), "%Y-%m-%d %H:%M:%S").isoformat()
     message = {
         "event_type": event_type,
-        "timestamp": TIME_NOW.isoformat(),
+        "timestamp": iso_string,
         "email": email,
         "subject": subject,
         "template": template,
