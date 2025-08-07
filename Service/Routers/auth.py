@@ -348,7 +348,7 @@ def password_reset_request(request: auth.PasswordReset, db: Session = Depends(ge
     token = secrets.token_urlsafe(32)
 
     # 3. Сохранить токен и время истечения в базе (создать таблицу password_reset_tokens, например)
-    expires_at = TIME_NOW() + timedelta(hours=1)
+    expires_at = datetime.strptime(TIME_NOW(), "%Y-%m-%d %H:%M:%S") + timedelta(hours=1)
 
     save_password_reset_token(db, student.ID, token, expires_at)
 

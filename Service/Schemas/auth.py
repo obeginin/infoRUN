@@ -4,7 +4,7 @@ from datetime import date
 from enum import Enum
 from typing import Optional
 import re
-
+from datetime import date, datetime
 
 class StudentField(str, Enum):
     ID = "ID"
@@ -46,21 +46,34 @@ class SearchStudentQuery(BaseModel):
 # Общие поля для создания/обновления
 class StudentBase(BaseModel):
     Login: str
-    Last_Name:  str = None
-    First_Name:  str = None
-    Middle_Name:  str = None
-    Email: EmailStr = None # EmailStr проверяет, что строка — корректный email
-    Phone: str = None
-    Sex:  str = None
-    BirthDate:  date = None
-    Comment:  str = None
-    RoleID:  int = None
-    IsActive:  bool = None
+    Last_Name: Optional[str] = None
+    First_Name: Optional[str] = None
+    Middle_Name: Optional[str] = None
+    Email: Optional[EmailStr] = None
+    Phone: Optional[str] = None
+    Sex: Optional[str] = None
+    BirthDate: Optional[date] = None
+    Comment: Optional[str] = None
+    RoleID: Optional[int] = None
+    IsActive: Optional[bool] = None
 
     @validator('Login')
     def login_no_cyrillic(cls, v):
         if re.search(r'[а-яА-Я]', v):
             raise ValueError('Логин не должен содержать русские буквы (кириллицу)')
+        return v
+
+    # Проверка что телефон состоит только из цифр
+    @validator("Phone", pre=True)
+    def empty_phone_to_none(cls, v):
+        return None if v == "" else v
+
+    @validator("Phone")
+    def phone_must_be_digits(cls, v):
+        if v is None:
+            return v
+        if not v.isdigit():
+            raise ValueError("Телефон должен содержать только цифры")
         return v
 
     # Провекар пола
@@ -72,20 +85,25 @@ class StudentBase(BaseModel):
             raise ValueError("Пол может быть только 'М', 'Ж' или не указан")
         return v
 
-    # Проверка что телефон состоит только из цифр
-    @validator("Phone")
-    def phone_must_be_digits(cls, v):
-        if v is None:
-            return v
-        if not v.isdigit():
-            raise ValueError("Телефон должен содержать только цифры")
+    @validator('BirthDate', pre=True)
+    def empty_date_to_none(cls, v):
+        if not v:
+            return None
+        if isinstance(v, str):
+            try:
+                return datetime.fromisoformat(v).date()
+            except ValueError:
+                raise ValueError("Неверный формат даты")
+        if isinstance(v, datetime):
+            return v.date()
         return v
-
 
 # Используется при создании (без ID, IsDeleted и т.д.)
 class StudentCreate(StudentBase):
     Password: str
-    pass
+
+class StudentEdit(StudentBase):
+    Password: str = None
 
 # Используется при регистрации/авторизации/выдаче данных
 class StudentAuth(BaseModel):
