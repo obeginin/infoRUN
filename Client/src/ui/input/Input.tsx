@@ -17,7 +17,7 @@ export const Input = ({
   onChange,
   radius = "32px",
   error_text,
-  required=false
+  required = false,
 }: InputProps) => {
   return (
     <div className={styles.input__container}>
@@ -27,7 +27,9 @@ export const Input = ({
         className={styles.input + `${error_text ? " " + styles.error : ""}`}
         value={value}
         onChange={onChange}
-        style={{ borderRadius: radius }}
+        style={{
+          borderRadius: radius,
+        }}
       />
       <label className={styles.label}>{label}</label>
       {error_text && (

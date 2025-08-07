@@ -10,9 +10,11 @@ export const RegistrationForm = () => {
   const [Login, setLogin] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [tel, setTel] = useState("");
   const [loginError, setLoginError] = useState(false);
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
+  // const [telError, setTelError] = useState(false);
   const nav = useNavigate();
 
   const handleClick = () => {
@@ -29,9 +31,9 @@ export const RegistrationForm = () => {
       return;
     }
 
-    AuthAPI.registration(email, Login, password);
+    AuthAPI.registration(email, Login, password, tel);
     nav("/registration/mail-send", {
-      state: { email: email, login: Login, password: password },
+      state: { email: email, login: Login, password: password, tel: tel },
     });
   };
 
@@ -81,15 +83,21 @@ export const RegistrationForm = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+            <Input
+              radius="16px"
+              required
+              type="number"
+              label="Телефон"
+              value={tel}
+              onChange={(e) => setTel(e.target.value)}
+            />
 
             <Button
               type="submit"
               onClick={() => handleClick()}
-              style={{
-                border: "none",
-                background: "none",
-                color: "var(--primary)",
-              }}
+              filled 
+              width="full"
+              color="white"
             >
               Далее
             </Button>
