@@ -21,14 +21,14 @@ export const AuthForm = () => {
 
   const handleClick = () => {
     userLogin(login, password);
-    
-    if(error?.error === "LoginNotFoud") {
-      setLogin('')
-    };
 
-    if(error?.error === "PasswordFailed") {
-      setPassword('')
-    };
+    if (error?.error === "LoginNotFoud") {
+      setLogin("");
+    }
+
+    if (error?.error === "PasswordFailed") {
+      setPassword("");
+    }
   };
 
   useEffect(() => {
@@ -73,10 +73,16 @@ export const AuthForm = () => {
               radius="16px"
               error_text={passwordError ? error?.message : ""}
             />
-            <Button onClick={() => handleClick()} filled radius="16px">
+            <Button
+              onClick={() => handleClick()}
+              filled
+              color="white"
+              width="full"
+              radius="16px"
+            >
               Вход
             </Button>
-            <Link href="">Забыли пароль?</Link>
+            <Link href="/forgot-password">Забыли пароль?</Link>
             <Link href="/registration">Зарегистрироваться</Link>
           </div>
         </ProfileContentContainer>

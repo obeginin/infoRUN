@@ -1,10 +1,10 @@
-import { Dialog } from "primereact/dialog";
 import { Button } from "../../../../ui/buttonDeafault/Button";
 import { Paragraph } from "../../../../ui/p/Paragraph";
 import styles from "../DialogDelete/DialogDelete.module.scss";
 import { Input } from "../../../../ui/input/Input";
 import { useAdminStore } from "../../../../Pages/Admin/store";
 import { useEffect, useState } from "react";
+import { IDialog } from "../../../../ui/IDialog/IDialog";
 export const DialogPassword = () => {
   const token = localStorage.getItem("token") || "";
   const {
@@ -29,10 +29,9 @@ export const DialogPassword = () => {
   }, [newPassword]);
   return (
     <>
-      <Dialog
+      <IDialog
         visible={isVisibleDialogPassword}
-        onHide={() => setVisibleDialogPassword()}
-        style={{ width: "370px", maxHeight: "500px" }}
+        setVdisible={setVisibleDialogPassword}
       >
         <div className={styles.dialog}>
           <Paragraph size="medium">Изменить пароль пользователю</Paragraph>
@@ -61,7 +60,7 @@ export const DialogPassword = () => {
             </Button>
           </div>
         </div>
-      </Dialog>
+      </IDialog>
     </>
   );
 };

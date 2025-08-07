@@ -2,13 +2,13 @@
   z-index: 100;
   position: absolute;
   top: 20px;
-  left: 20px;
-  width: 100%;
+  right: 50px;
+  width: 200px;
   height: 100%;
-  padding: 50px;
+  padding: 60px;
   background-color: var(--bg);
   border-radius: 16px;
-  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
   border: 1px solid var(--primary);
   box-shadow: 0px 0px 200px 0px #0000001a;
   display: flex;
@@ -46,4 +46,13 @@
     cursor: pointer;
     transition: background 0.15s;
   }
+}
+
+
+
+@media screen and (max-width: 600px) {
+  .popup {
+    right: 20px;
+  }
+  
 }
