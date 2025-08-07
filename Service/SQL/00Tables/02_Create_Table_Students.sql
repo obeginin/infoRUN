@@ -17,14 +17,15 @@ BEGIN
 			Last_Name nvarchar(50),
 			First_Name nvarchar(50),
 			Middle_Name nvarchar(50),
-			Email nvarchar(50),
-			Sex nvarchar(2),
+			Email nvarchar(50) UNIQUE,
+			Phone nvarchar(25) UNIQUE,
+			Sex nvarchar(2) CHECK (Sex IN (N'М', N'Ж') OR Sex IS NULL),
 			BirthDate datetime,
 			Comment nvarchar(MAX),
 			Password VARCHAR(255),					-- Хеш пароля (надо сделать NOT NULL)
 			--Role nvarchar(15),					-- роль (админс, user) СТАРОЕ УДАЛИТЬ!!!!
-			RoleID INT NOT NULL,					-- id роли
-			IsActive BIT NOT NULL DEFAULT 1,		-- bit - булевый тип
+			RoleID INT NOT NULL DEFAULT 3,			-- id роли (по умолчанию поставил Ученик)
+			IsActive BIT NOT NULL DEFAULT 1,		-- bit - булевый тип (по умолчанию включен
 			IsDeleted datetime NULL,				-- 
 			IsConfirmed BIT NOT NULL DEFAULT 0,		-- подтверждение email
 			FOREIGN KEY (RoleID) REFERENCES Roles(RoleID)
@@ -41,7 +42,7 @@ update Students set RoleID=1 where id in (2, 8)
 
 select * from students
 Добавить новый столбец
-ALTER TABLE Students ADD RoleID INT;
+ALTER TABLE Students ADD Phone nvarchar(25);
 Добавить внешний ключ по этому столбцу
 ALTER TABLE Students
 ADD CONSTRAINT FK_Students_RoleID FOREIGN KEY (RoleID) REFERENCES Roles(RoleID);

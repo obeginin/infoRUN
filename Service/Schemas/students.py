@@ -2,6 +2,7 @@ from pydantic import BaseModel, Field
 from datetime import datetime
 from typing import Optional
 from enum import Enum
+from datetime import date
 from fastapi import Query
 from pydantic import ConfigDict
 # Schemas\students.py
@@ -11,8 +12,6 @@ from pydantic import ConfigDict
 
 
 
-
-# Базовая модель StudentTask
 
 
 # 🔍 Расширение для отображения задачи с деталями (наследуем от StudentTaskBase)

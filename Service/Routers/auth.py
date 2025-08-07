@@ -2,17 +2,18 @@ from Service.config_app import TEMPLATES_DIR, ACCESS_TOKEN_EXPIRE_MINUTES, TIME_
 from Service.Models import Student
 from Service.Schemas import auth
 
-from Service.Crud.auth import get_current_student, permission_required, verify_password, hash_password, get_student_by_login, get_logs_student, get_logs_all
+from Service.Crud.auth import get_current_student, permission_required, verify_password, hash_password, \
+    get_student_by_login, get_logs_student, get_logs_all, get_student_by_field, save_password_reset_token, \
+    get_token_record, mark_token_used
 from Service.Crud.auth import change_password, get_all_roles, get_all_permission, get_role_id, assign_role, get_permission_role, update_role_permissions
-from Service.Crud.auth import get_student_by_email, add_new_register_student, confirm_student_email, del_student_email
-from Service.Crud.students import  get_student_id, get_all_students
+from Service.Crud.auth import get_student_by_email, add_new_register_student, confirm_student_email
+from Service.Crud.students import  get_student_id, get_all_students, del_student_id
 from Service.Security.token import create_access_token, verify_token
 from Service.dependencies import get_db,get_log_db, get_producer_dep
 from Service.producer import send_log, send_email_event
 from Service.Crud import errors
+from Service.celery_tasks.email_sender import send_email_event_celery
 
-
-from pydantic import EmailStr
 from datetime import datetime
 from datetime import timedelta
 from typing import List
@@ -24,6 +25,7 @@ from sqlalchemy import text
 from fastapi.encoders import jsonable_encoder
 from fastapi.templating import Jinja2Templates
 from passlib.context import CryptContext
+import secrets
 from fastapi.responses import RedirectResponse
 from fastapi.responses import HTMLResponse
 import logging
@@ -130,6 +132,106 @@ def login(
     )
 
 
+# /api/auth/login
+@auth_router.post("/login/v2", response_model=auth.TokenWithStudent,
+                  summary="Аутентификация (запрос токена для пользователя (логин / email / телефон))",
+                  description="Возвращает токен, тип заголовка и небольшую информацию о пользователе, если (логин / email / телефон) и пароль корректны и пользователь активен.")
+def login(
+    auth_request: auth.AuthRequest,
+    request: Request,
+    db: Session = Depends(get_db),
+):
+    ip = request.headers.get("X-Forwarded-For") or request.client.host
+    user_agent = request.headers.get("User-Agent")
+
+    identifier = auth_request.identifier
+    password = auth_request.password
+    # Определяем тип идентификатора
+    if "@" in identifier:
+        field = "Email"
+    elif identifier.startswith("+") or identifier.isdigit():
+        field = "Phone"  # если ты хранишь телефон в поле Phone
+    else:
+        field = "Login"
+
+    # Ищем студента в базе по логину
+    student = get_student_by_field(db, field_name=field, value=identifier)
+    if not student:
+        logger.warning(f"Попытка входа с несуществующим {field}: {identifier}")
+        send_log(
+            StudentID=None,  # Или 0
+            StudentLogin=identifier,
+            action="LoginFailed",
+            details={
+                "DescriptionEvent": "Неуспешный вход",
+                "Reason": "LoginNotFound",
+                "IPAddress": ip,
+                "UserAgent": user_agent
+            }
+        )
+        raise errors.unauthorized(error="LoginNotFound", message =f"Пользователь с таким  {field}: {identifier} не найден")
+    logger.info(f"Аутентифицирован студент: ({student['ID']}) {student['Login']} ")
+
+    # Проверяем пользователь на активность
+    if not student["IsActive"]:
+        logger.warning(f"Попытка входа {student.Login} не активного пользователь!")
+        send_log(
+            StudentID=student["ID"],
+            StudentLogin=student.Login,
+            action="LoginFailed",
+            details={
+                "DescriptionEvent": "Неуспешный вход",
+                "Reason": "StudentNoActive",
+                "IPAddress": ip,
+                "UserAgent": user_agent,
+            }
+        )
+        raise errors.access_denied(error="StudentNoActive", message="Пользователь не активен!")
+
+    # Проверяем пароль
+    if not verify_password(password, student["Password"]):
+        logger.warning(f"Попытка входа {student.Login} с неправильным паролем!")
+        send_log(
+            StudentID=student["ID"],
+            StudentLogin=student.Login,
+            action="LoginFailed",
+            details={
+                "DescriptionEvent": "Неуспешный вход",
+                "Reason": "PasswordFailed",
+                "IPAddress": ip,
+                "UserAgent": user_agent
+            }
+        )
+        raise errors.unauthorized(error="PasswordFailed",message= "Пароль не верный")
+
+    # Создаём токен
+    try:
+        access_token = create_access_token(data={"sub": student["Login"]})
+    except Exception:
+        logger.exception("Ошибка при создании токена")
+        raise errors.internal_server(error="TokenGenerationError", message="Ошибка при создании токена доступа")
+
+    # Создаём Pydantic-модель из словаря (Селеризация)
+    student_short = auth.StudentAuth(**student)
+
+    # отправляем лог в kafka
+    send_log(
+        StudentID=student["ID"],
+        StudentLogin=student["Login"],
+        action="LoginSuccess",
+        details={
+            "DescriptionEvent": "Успешный вход",
+            "IPAddress": ip,
+            "UserAgent": user_agent,
+            #"Metadata": {"extra": "value"}  # по желанию
+        }
+    )
+    return auth.TokenWithStudent (
+        access_token = access_token,
+        token_type = "bearer",
+        student = student_short
+    )
+
 """
 После аутентификации фронт будет в заголовке отправлять токен, по нему с помощью функции get_current_student()
 получаем информации о пользователе (данный роут нужен для Backend)
@@ -147,9 +249,11 @@ def check_token(request: Request, current_student = Depends(get_current_student)
 def register_user(user_data: auth.UserCreate, db: Session = Depends(get_db)):
     student = get_student_by_email(db, user_data.email)
     if student:
+        logger.warning(f"Пользователь с Email: {user_data.email} уже зарегистрирован!")
         raise errors.bad_request(message="Пользователь с таким Email уже зарегистрирован")
     student = get_student_by_login(db, user_data.login)
     if student:
+        logger.warning(f"Пользователь с Login: {user_data.login} уже зарегистрирован!")
         raise errors.bad_request(message="Пользователь с таким Login уже зарегистрирован")
     # хэшируем пароль
     hashed_password = hash_password(user_data.password)
@@ -189,9 +293,11 @@ def register_user(user_data: auth.UserCreate, db: Session = Depends(get_db)):
 def register_user(user_data: auth.UserCreate, db: Session = Depends(get_db)):
     student = get_student_by_email(db, user_data.email)
     if student:
+        logger.warning(f"Пользователь с Email: {user_data.email} уже зарегистрирован!")
         raise errors.bad_request(message="Пользователь с таким Email уже зарегистрирован")
     student = get_student_by_login(db, user_data.login)
     if student:
+        logger.warning(f"Пользователь с Login: {user_data.login} уже зарегистрирован!")
         raise errors.bad_request(message="Пользователь с таким Login уже зарегистрирован")
     # хэшируем пароль
     hashed_password = hash_password(user_data.password)
@@ -220,12 +326,64 @@ def register_user(user_data: auth.UserCreate, db: Session = Depends(get_db)):
         data={"confirmation_link": f"https://info-run.ru/auth/confirm-email?token={token}"}
     )
 
-    logger.info(f"Письмо с подтверждением отправлено: {user_data.email}")
     return {"message": f"Письмо с подтверждением отправлено на почту {params["Email"]}"}
 
 
 
+# /api/auth/password_reset
+'''Сброс пароля через email'''
+@auth_router.post("/password_reset", summary="Запрос на сброс пароля",
+                  description="""Высылается письмо с ссылкой для сброса пароля с использованием временного токена, который вшит в ссылку 
+                              `https://info-run.ru/auth/reset-password?token={token}`  
+                              далее используется роут `/api/auth/reset_password` непосредственно для изменения пароля""")
+def password_reset_request(request: auth.PasswordReset, db: Session = Depends(get_db)):
+    # 1. Найти пользователя по email
+    student = get_student_by_field(db, "Email", request.Email)
+    if not student:
+        logger.warning(f"[AUTH] Студент с email: {request.Email} не найден в базе!")
+        # Лучше не выдавать явно, что email не найден, чтобы не дать подсказок
+        return {"message": f"Студент с email: {request.Email} не найден в базе"}
 
+    # 2. Сгенерировать уникальный токен
+    token = secrets.token_urlsafe(32)
+
+    # 3. Сохранить токен и время истечения в базе (создать таблицу password_reset_tokens, например)
+    expires_at = datetime.strptime(TIME_NOW(), "%Y-%m-%d %H:%M:%S") + timedelta(hours=1)
+
+    save_password_reset_token(db, student.ID, token, expires_at)
+
+    logger.info(f"Письмо с инструкцией для сброса пароля отправлено на Email: {request.Email}")
+    send_email_event_celery(
+        event_type="password_reset",
+        email=student.Email,
+        subject="Сброс пароля через email",
+        template="password_reset",
+        data={"reset_link": f"https://info-run.ru/auth/reset-password?token={token}"}
+    )
+    return {"message": f"Письмо с инструкцией для сброса пароля отправлено на Email: {request.Email}."}
+
+@auth_router.post("/reset_password", summary="Сброс пароля по токену",
+                  description="на один токен идет только один сброс пароля, для повторного сброса надо запрашивать новый токен")
+def reset_password(data: auth.PasswordResetConfirm, db: Session = Depends(get_db)):
+    # 1. Получаем запись токена из базы
+    token_record = get_token_record(db, data.token)
+    if not token_record or token_record["Used"] or token_record["ExpiresAt"] < TIME_NOW():
+        logger.warning(f"[AUTH] Неверный или просроченный токен")
+        raise errors.bad_request(message="Неверный или просроченный токен")
+
+    # 2. Проверяем совпадение паролей
+    if data.new_password != data.repeat_new_password:
+        logger.warning(f"[AUTH] Пароли не совпадают!")
+        raise errors.bad_request(message="Пароли не совпадают")
+
+    # 3. Хешируем и обновляем пароль пользователя
+    hashed_password = hash_password(data.new_password)
+    change_password(db, token_record["StudentID"], hashed_password)
+    logger.info(f"[AUTH] Пользователя: {token_record.StudentID} успешно сбросил пароль через Email!")
+    # 4. Помечаем токен как использованный
+    mark_token_used(db, data.token)
+
+    return {"message": "Пароль успешно сброшен"}
 
 '''Подтверждение email'''
 @auth_router.get("/confirm-email", summary="Подтверждение email",
@@ -246,7 +404,7 @@ def confirm_email(token: str, db: Session = Depends(get_db)):
 
 
     # обновляем данные
-    result = confirm_student_email(db, {"email": email, "now": TIME_NOW})
+    result = confirm_student_email(db, {"email": email, "now": TIME_NOW()})
     if result != 1:
         logger.warning(f"Пользователь не найден или уже подтверждён")
         raise errors.bad_request(message="Пользователь не найден или уже подтверждён")
@@ -355,51 +513,7 @@ def student_change_password(data: auth.ChangePasswordRequest, db: Session = Depe
     return {"message": "Пароль успешно изменён"}
 
 
-'''Студенты
 
-@admin_router.post("/new_student", summary="Добавление нового студента")
-def confirm_email(email: EmailStr,
-                  db: Session = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
-    # try:
-    student = get_student_by_email(db, email)
-    logger.info(f"Студент cccccc {student}")
-    if student == None:
-        logger.warning(f"Студент с email {email} не найден")
-        raise errors.bad_request(message=f"Студент с email {email} не найден")
-    del_student_email(db, email)
-
-    logger.info(f"[ADMIN] Администратор:{current_student.Login} удалил студента с email: {email}")
-    send_log(
-        StudentID=student["ID"],
-        StudentLogin=student["Login"],
-        action="StudentDeleted",
-        details={
-            "DescriptionEvent": f"Администратор:{current_student.Login} удалил студента с email: {email}",
-        }
-    )
-    return {"message": f"Студент с email {email} успешно удалён"}
-
-'''
-@admin_router.post("/delete_student", summary="Удаление студента по email")
-def confirm_email(email: EmailStr, db: Session = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
-    # try:
-    student = get_student_by_email(db, email)
-    logger.info(f"Студент cccccc {student}")
-    if student == None:
-        logger.warning(f"Студент с email {email} не найден")
-        raise errors.bad_request(message=f"Студент с email {email} не найден")
-    del_student_email(db, email)
-
-    logger.info(f"[ADMIN] Администратор:{current_student.Login} удалил студента с email: {email}")
-    send_log(
-        StudentID=student["ID"],
-        StudentLogin=student["Login"],
-        action="StudentDeleted",
-        details={
-            "DescriptionEvent": f"Администратор:{current_student.Login} удалил студента с email: {email}",
-        }
-    )
-    return {"message": f"Студент с email {email} успешно удалён"}
 
 
 """Роли и разрешения"""

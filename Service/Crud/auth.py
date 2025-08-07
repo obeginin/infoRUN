@@ -1,7 +1,7 @@
 from Service.config_app import *
 from Service.dependencies import get_db
 from Service.Models import Student
-from Service.Schemas.auth import StudentOut, StudentAuth
+from Service.Schemas.auth import StudentOut, StudentAuth, StudentBase, StudentCreate
 from Service.Security.token import SECRET_KEY, ALGORITHM
 from Service.Crud import errors,general
 
@@ -255,6 +255,28 @@ def check_permission(student, permission_name: str):
             "Permission": permission_name
         }
     )
+"""Универсальная функция получения студента"""
+def get_student_by_field(db: Session, field_name: str, value: str):
+    allowed_fields = {"ID", "Login", "Email", "Phone"} # белый список (он же помогает от sql инъекций)
+    if field_name not in allowed_fields:
+        raise errors.bad_request(message=f"Недопустимое поле для поиска студента: {field_name}")
+
+
+    if field_name == "ID":
+        try:
+            value = int(value)
+        except ValueError:
+            raise errors.bad_request(message=f"Некорректный ID: {value}")
+
+    return general.run_query_select(
+        db,
+        query=f"""SELECT s.*, r.Name as RoleName FROM Students s
+        LEFT JOIN Roles r ON s.RoleID = r.RoleID
+        WHERE s.{field_name} = :value""",
+        params={"value": value},
+        mode="mappings_first",
+        error_message=f"Ошибка при получении студента по {field_name}: {value}"
+    )
 
 """Выбор студента из базы по его логину (Аутентификация)"""
 def get_student_by_login(db: Session, login: str):
@@ -305,36 +327,65 @@ def confirm_student_email(db: Session, params: dict):
         error_message="Ошибка добавления нового студента (через регистрацию)"
     )
 
-'''функция удаление студента по email'''
-def del_student_email(db: Session, email: str):
-    try:
-        logger.info(f"Удаляем задачи студента с email: {email}")
-        general.run_query_delete(
-            db,
-            query="""
-                DELETE FROM StudentTasks 
-                WHERE StudentID = (SELECT ID FROM Students WHERE Email = :email)
-                """,
-            params={"email": email},
-            commit=False
-        )
+'''Создаем временный токен для сброса пароля и деактивируем все предыдущие'''
+def save_password_reset_token(db: Session, student_id: int, token: str, expires_at: datetime):
+    # 1. Деактивируем старые токены
+    general.run_query_update(
+        db,
+        query="""
+            UPDATE PasswordResetTokens
+            SET Used = 1
+            WHERE StudentID = :student_id AND Used = 0
+        """,
+        params={"student_id": student_id},
+        error_message="Ошибка при пометке старых токенов как использованных"
+    )
 
-        logger.info(f"Удаляем студента с email: {email}")
-        general.run_query_delete(
-            db,
-            query="""
-                DELETE FROM Students 
-                WHERE Email = :email
-                """,
-            params={"email": email},
-            commit=False
-        )
+    # 2. Вставляем новый токен
+    general.run_query_insert(
+        db,
+        query="""
+                INSERT INTO PasswordResetTokens (StudentID, Token, ExpiresAt)
+                VALUES (:student_id, :token, :expires_at)
+            """,
+        params={
+            "student_id": student_id,
+            "token": token,
+            "expires_at": expires_at
+        },
+        error_message="Ошибка при сохранении токена сброса пароля"
+    )
 
-        db.commit()
-    except SQLAlchemyError as e:
-        db.rollback()
-        logger.exception("Ошибка при удалении студента и связанных данных")
-        raise errors.internal_server(message="Ошибка удаления студента и связанных данных")
+'''Функция получения токена для сброса пароля'''
+def get_token_record(db: Session, token: str):
+    query = """
+        SELECT ID, StudentID, Token, ExpiresAt, Used
+        FROM PasswordResetTokens
+        WHERE Token = :token
+    """
+    record = general.run_query_select(
+        db,
+        query=query,
+        params={"token": token},
+        mode="mappings_first",  # Получаем один словарь с данными
+        required=False
+    )
+    return record
+
+'''Функция отмечает токен сброса пароля как использованный'''
+def mark_token_used(db: Session, token: str):
+    query = """
+        UPDATE PasswordResetTokens
+        SET Used = 1
+        WHERE Token = :token
+    """
+    updated_rows = general.run_query_update(
+        db,
+        query=query,
+        params={"token": token},
+        error_message="Ошибка при пометке токена как использованного"
+    )
+    return updated_rows
 
 """Выбор из базы разрешений для роли по её ID """
 def get_permission_role(db: Session, RoleID: int):
