@@ -3,7 +3,7 @@ import subprocess
 #subprocess.run(["python", "main.py"])
 # Запуск сервера через subprocess (Не работает --reload)
 #subprocess.run(["uvicorn", "main:app", "--reload", "--port", "9000"])
-
+#BASE_DIR = "~/Documents/inforun-new"
 subprocess.run([
     "uvicorn",
     "Service.main:app",
