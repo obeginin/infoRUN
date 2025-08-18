@@ -191,3 +191,8 @@ class Permission(BaseModel):
 
 class AssignRoleQuery(BaseModel):
     RoleID: int
+
+class EmailRequest(BaseModel):
+    to_email: EmailStr
+    subject: str
+    body: str
