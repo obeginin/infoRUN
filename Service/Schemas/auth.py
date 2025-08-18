@@ -103,7 +103,7 @@ class StudentCreate(StudentBase):
     Password: str
 
 class StudentEdit(StudentBase):
-    Password: str = None
+    Password: Optional[str] = None
 
 # Используется при регистрации/авторизации/выдаче данных
 class StudentAuth(BaseModel):
