@@ -38,6 +38,8 @@ app = FastAPI(debug=LOG_LEVEL, docs_url=None, redoc_url=None)
 origins = [
     "http://localhost:5173",       # локальный фронт (Vite)
     "http://127.0.0.1:5173",       # иногда нужен этот
+    "http://localhost:3000",       # локальный фронт (Vite)
+    "http://127.0.0.1:3000",
     "https://info-run.ru",         # если фронт будет на проде
 ]
 # для запросов с фронта
