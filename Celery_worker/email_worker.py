@@ -2,12 +2,33 @@ from utils.log import setup_logging
 
 from celery import Celery
 from dotenv import load_dotenv
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 import redis
 import os
 import logging
+from celery.schedules import crontab
 
 #from Service.celery_tasks.notifications import send_email_task
 load_dotenv()
+
+
+# Database.py
+'''файл с настройкой подключения к основной базе'''
+DB_NAME = os.getenv("DB_NAME")
+DB_HOST = os.getenv("DB_HOST")
+DB_USER = os.getenv("DB_USER")
+DB_PASS = os.getenv("DB_PASS")
+# Строка подключения для pymssql
+DATABASE_URL = (
+    f"mssql+pyodbc://{DB_USER}:{DB_PASS}@{DB_HOST}/{DB_NAME}"
+    #f"mssql+pyodbc://{DB_HOST}/{DB_NAME}"
+    "?driver=ODBC+Driver+18+for+SQL+Server"
+    #"&trusted_connection=yes"
+    "&TrustServerCertificate=yes")
+
+engine = create_engine(DATABASE_URL)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 # SMTP-параметры
 SMTP_HOST = os.getenv("SMTP_HOST")
 SMTP_PORT = int(os.getenv("SMTP_PORT", 587))
@@ -32,6 +53,9 @@ celery_app = Celery(
     backend=REDIS_RESULT_BACKEND,
     include=["Celery_worker.notifications"])
 
+
+
+
 # Конфигурация
 celery_app.conf.update(
     task_serializer='json',
@@ -39,7 +63,15 @@ celery_app.conf.update(
     result_serializer='json',
     timezone='Europe/Moscow',
     enable_utc=True,
+    worker_hijack_root_logger=False  # отключаем перехват root logger
 )
+
+'''celery_app.conf.beat_schedule = {
+    "retry_failed_emails": {
+        "task": "email.retry_failed",
+        "schedule": crontab(minute="*/1"),  # каждую минуту
+    },
+}'''
 # Проверка подключения к Redis
 try:
     redis_client = redis.Redis.from_url(REDIS_BROKER_URL)
