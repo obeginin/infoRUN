@@ -7,13 +7,14 @@
 
 ## Технологический стек
 
-- **Backend:** Python, FastAPI, Celery, Kafka, Redis  
+- **Backend:** Python, FastAPI, SQLAlchemyCelery, Kafka, Redis  
 - **Database:** SQL Server (планируется переход на Postgres)  
 - **Frontend:** React (планируется переход на Next.js)  
 - **DevOps:** Docker, Docker Compose, Nginx  
 - **Version Control:** Git  
 - **Тестирование:** Pytest  
-- **Документация API:** Swagger / OpenAPI  
+- **Документация API:** Swagger / OpenAPI
+- **База знаний:** BookStack
 
 ---
 
@@ -25,7 +26,8 @@
 - Работа с базой данных: схемы, сложные SQL-запросы, хранимые процедуры для выборки задач с различными параметрами  
 - Контейнеризация приложения через Docker, настройка Nginx для проксирования и обеспечения доступности сервиса  
 - Ведение проекта на GitHub, настройка CI/CD на базовом уровне (Docker Compose)  
-- Документирование API с помощью Swagger / OpenAPI  
+- Документирование API с помощью Swagger / OpenAPI
+- Развернута база знаний на основе BookStack  
 
 ---
 
