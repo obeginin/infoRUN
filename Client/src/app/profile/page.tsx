@@ -17,6 +17,7 @@ export default function Profile() {
         <BreadCrumb currentPage="Личный кабинет" />
         <section>
           <div className={styles.profile__dashboard}>
+            
             <Image src={group} alt="" className={styles.group} />
             <ProfileGreatings />
             <div className={styles.profile__dashboard__content}>
