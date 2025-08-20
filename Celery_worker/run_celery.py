@@ -1,7 +1,6 @@
 import subprocess
 import sys
 
-# worker
 def run_celery():
 
     cmd = [

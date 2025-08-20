@@ -101,19 +101,15 @@ def new_student(student_data: StudentCreate,
     logger.debug(student_data)
 
     # TODO: оптимизировать одним запросом
-    studentWithLogin = get_student_by_field(db, field_name="Login", value=student_data.Login)
-    logger.debug(studentWithLogin)
-    if studentWithLogin:
+    student = get_student_by_field(db, field_name="Login", value=student_data.Login)
+    logger.debug(student)
+    if student:
         logger.warning(f"Пользователь с логином: {student_data.Login} уже есть в базе!")
         raise errors.bad_request(message=f"Пользователь с логином '{student_data.Login}' уже есть в базе")
-    studentWithEmail = get_student_by_field(db, field_name="Email", value=student_data.Email)
-    if studentWithEmail:
+    student = get_student_by_field(db, field_name="Email", value=student_data.Email)
+    if student:
         logger.warning(f"Пользователь с Email: {student_data.Email} уже есть в базе!")
         raise errors.bad_request(message=f"Пользователь с Email '{student_data.Email}' уже есть в базе!")
-    studentWithPhone = get_student_by_field(db, field_name="Phone", value=student_data.Phone)
-    if studentWithPhone:
-        logger.warning(f"Пользователь с телефоном: {student_data.Phone} уже есть в базе!")
-        raise errors.bad_request(message=f"Пользователь с телефоном '{student_data.Phone}' уже есть в базе!")
 
     # ищем роль по id
     role = get_role_id(db, student_data.RoleID)
@@ -155,22 +151,13 @@ def edit_student(id: int, data: StudentEdit, db: Session = Depends(get_db), curr
     if data.Login:
         studentWithLogin = get_student_by_field(db, field_name="Login", value=data.Login)
         if studentWithLogin and studentWithLogin["ID"] != id:
-            logger.warning(f"[STUDENTS] Логин '{data.Login}' уже занят")
             raise errors.bad_request(message=f"Логин '{data.Login}' уже занят")
     logger.info(f"Проверяем уникальность email: {data.Email}")
     if data.Email:
         studentWithEmail = get_student_by_field(db, field_name="Email", value=data.Email)
         if studentWithEmail and studentWithEmail["ID"] != id:
-            logger.warning(f"[STUDENTS] Email '{data.Email}' уже занят")
             raise errors.bad_request(message=f"Email '{data.Email}' уже занят")
-    if data.Phone:
-        studentWithPhone = get_student_by_field(db, field_name="Phone", value=data.Phone)
-        if studentWithPhone and studentWithPhone["ID"] != id:
-            logger.warning(f"[STUDENTS] Телефон '{data.Phone}' уже заня")
-            raise errors.bad_request(message=f"Телефон '{data.Phone}' уже занят")
-    data.Password = hash_password(data.Password)
-
-    logger.info(f"запуск обновления данных студента с id={id}")
+    logger.info(f"запуск обнволения")
     updated = edit_student_id(db, student_ID=id, data=data)
 
     if updated != 1:
