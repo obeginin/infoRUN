@@ -103,7 +103,7 @@ class StudentCreate(StudentBase):
     Password: str
 
 class StudentEdit(StudentBase):
-    Password: Optional[str] = None
+    Password: str = None
 
 # Используется при регистрации/авторизации/выдаче данных
 class StudentAuth(BaseModel):
@@ -191,8 +191,3 @@ class Permission(BaseModel):
 
 class AssignRoleQuery(BaseModel):
     RoleID: int
-
-class EmailRequest(BaseModel):
-    to_email: EmailStr
-    subject: str
-    body: str

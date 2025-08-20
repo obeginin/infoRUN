@@ -1,0 +1,16 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    max-height: 100vh;
+    gap: 50px;
+    position: relative;
+}
+
+
+@media screen and (max-width: 600px) {
+    .container {
+        min-height: auto;
+        // margin-bottom: 100px;
+    }
+    
+}

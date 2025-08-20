@@ -1,0 +1,85 @@
+.profile__dashboard__content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.progress__item {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid var(--primary);
+  border-radius: 16px;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.task {
+  display: flex;
+  gap: 10px;
+}
+
+.skeleton__item {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid var(--primary);
+  border-radius: 16px;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.answer {
+  width: 100%;
+  display: grid;
+  align-items: center;
+  grid-template-columns: 5fr 1fr;
+  gap: 10px;
+}
+
+.collapsible {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease-in-out;
+}
+
+.open {
+  max-height: 1500px;
+}
+
+.collapsibleInner {
+  overflow: hidden;
+  & > div {
+    min-height: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+  }
+}
+
+.filter__buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding: 10px 0;
+
+  backdrop-filter: blur(10px);
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 16px;
+}

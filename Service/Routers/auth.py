@@ -319,14 +319,11 @@ def register_user(user_data: auth.UserCreate, db: Session = Depends(get_db)):
     logger.info(f"аааааааНовый пользователь зарегистрирован: {user_data.email}")
 
     send_email_event_celery(
-        request=auth.EmailRequest(
-            to_email=user_data.email,
-            subject="Подтверждение регистрации",
-            body=f"Для подтверждения регистрации перейдите по ссылке: "
-                 f"https://info-run.ru/registration/confirm-email/success?token={token}"
-        ),
         event_type="email_registration",
-        db=db
+        email=user_data.email,
+        subject="Подтверждение регистрации",
+        template="registration_confirmation",
+        data={"confirmation_link": f"https://info-run.ru/auth/confirm-email?token={token}"}
     )
 
     return {"message": f"Письмо с подтверждением отправлено на почту {params["Email"]}"}
@@ -356,18 +353,13 @@ def password_reset_request(request: auth.PasswordReset, db: Session = Depends(ge
     save_password_reset_token(db, student.ID, token, expires_at)
 
     logger.info(f"Письмо с инструкцией для сброса пароля отправлено на Email: {request.Email}")
-
     send_email_event_celery(
-        request=auth.EmailRequest(
-            to_email=student.Email,
-            subject="Сброс пароля через email",
-            body=f"Для сброса пароля перейдите по ссылке: "
-                 f"https://info-run.ru/forgot-password/success?token={token}"
-        ),
         event_type="password_reset",
-        db=db
+        email=student.Email,
+        subject="Сброс пароля через email",
+        template="password_reset",
+        data={"reset_link": f"https://info-run.ru/auth/reset-password?token={token}"}
     )
-
     return {"message": f"Письмо с инструкцией для сброса пароля отправлено на Email: {request.Email}."}
 
 @auth_router.post("/reset_password", summary="Сброс пароля по токену",
