@@ -31,13 +31,12 @@ setup_logging(log_file=LOG_FILE)
 logging.info(f"Запускаем логирование с файлом: {LOG_FILE}")
 
 app = FastAPI(debug=LOG_LEVEL, docs_url=None, redoc_url=None)
-'''origins = [
-    "http://localhost:5174",   # твой frontend (vite)
-    "https://info-run.ru",     # если понадобится
-]'''
+
 origins = [
     "http://localhost:5173",       # локальный фронт (Vite)
     "http://127.0.0.1:5173",       # иногда нужен этот
+    "http://localhost:3000",       # локальный фронт (Vite)
+    "http://127.0.0.1:3000",
     "https://info-run.ru",         # если фронт будет на проде
 ]
 # для запросов с фронта
@@ -51,6 +50,8 @@ app.add_middleware(
 app.add_middleware(LoggingMiddleware) # Middleware для логов всех запросов
 # Путь до билд-фронта
 frontend_path = os.path.join(os.path.dirname(__file__), "..", "Client", "dist")
+dist_static_dir = os.path.join(os.path.dirname(__file__), "..", "Client", "dist", "_next")
+
 
 producer = get_kafka_producer()
 # Регистрируем роутер
@@ -76,9 +77,10 @@ app.mount("/Uploads", StaticFiles(directory="Uploads"), name="uploads") # для
 templates = Jinja2Templates(directory=TEMPLATES_DIR)
 
 
-# Подключаем статику
-app.mount("/assets", StaticFiles(directory=os.path.join(frontend_path, "assets")), name="assets")
 
+# Подключаем статику
+#app.mount("/", StaticFiles(directory=frontend_path, html=True), name="frontend")
+app.mount("/_next", StaticFiles(directory=dist_static_dir), name="next")
 
 
 

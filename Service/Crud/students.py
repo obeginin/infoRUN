@@ -56,8 +56,8 @@ def add_student(db: Session, student: auth.StudentCreate, hashed_password:str):
 
     return general.run_query_insert(
         db,
-        query= """INSERT INTO STUDENTS (Login, Last_Name, First_Name, Middle_Name, Email, Sex, BirthDate, Comment, Password, RoleID, IsActive) 
-        VALUES (:Login, :Last_Name, :First_Name, :Middle_Name, :Email, :Sex, :BirthDate, :Comment, :Password, :RoleID, :IsActive)""",
+        query= """INSERT INTO STUDENTS (Login, Last_Name, First_Name, Middle_Name, Email, Sex, BirthDate, Comment, Password, RoleID, IsActive, Phone) 
+        VALUES (:Login, :Last_Name, :First_Name, :Middle_Name, :Email, :Sex, :BirthDate, :Comment, :Password, :RoleID, :IsActive, :Phone)""",
         params= data,
         error_message=f"Ошибка при добавлении нового студента"
     )
