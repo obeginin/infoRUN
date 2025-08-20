@@ -40,7 +40,7 @@ engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 # проверка связи с БД
-def test_db_connection():
+def db_connection():
     try:
         with engine.connect() as connection:
             result = connection.execute(text("SELECT 1"))
@@ -88,7 +88,7 @@ def consume_messages():
 
 
 if __name__ == "__main__":
-    test_db_connection()
+    db_connection()
     # Запуск cron-потока
     #threading.Thread(target=run_deadline_checker, daemon=True).start()
 
