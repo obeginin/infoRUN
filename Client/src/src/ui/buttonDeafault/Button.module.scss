@@ -1,0 +1,49 @@
+.button {
+  // padding: 15px 25px;
+  border: 1px solid var(--primary);
+  border-radius: 32px;
+  font-size: var(--base);
+  font-weight: var(--fw_light);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  &.disabled {
+    pointer-events: none;
+    color: var(--text);
+  }
+
+  &.active {
+    &:hover {
+      box-shadow: 0 0 20px var(--primary);
+    }
+
+    &:active {
+      transform: scale(1.05);
+    }
+  }
+}
+
+.spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: currentColor;
+  animation: pulseSpin 1.5s ease-in-out infinite;
+}
+
+@keyframes pulseSpin {
+  0% {
+    transform: rotate(0deg) scale(0.8);
+    opacity: 0.5;
+  }
+  50% {
+    transform: rotate(180deg) scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: rotate(360deg) scale(0.8);
+    opacity: 0.5;
+  }
+}
