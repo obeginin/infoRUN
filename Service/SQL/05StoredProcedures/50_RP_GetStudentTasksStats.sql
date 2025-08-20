@@ -11,9 +11,9 @@ AS
 BEGIN
     SELECT 
         COUNT(*) AS TotalSubTasks,
-        COUNT(CASE WHEN CompletionStatus = 'Выполнено' THEN 1 END) AS CompletedSubTasks,
-        COUNT(CASE WHEN CompletionStatus = 'В процессе' THEN 1 END) AS InProgressSubTasks,
-        COUNT(CASE WHEN CompletionStatus IS NULL OR CompletionStatus = 'Не приступал' THEN 1 END) AS NotStartedSubTasks,
+        COUNT(CASE WHEN CompletionStatus = 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ' THEN 1 END) AS CompletedSubTasks,
+        COUNT(CASE WHEN CompletionStatus = 'пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ' THEN 1 END) AS InProgressSubTasks,
+        COUNT(CASE WHEN CompletionStatus IS NULL OR CompletionStatus = 'пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ' THEN 1 END) AS NotStartedSubTasks,
         AVG(CAST(Score AS FLOAT)) AS AverageScore,
         MIN(StartDate) AS FirstStartDate,
 		MAX(CompletionDate) AS LastCompletedDate
@@ -31,7 +31,7 @@ BEGIN
 END
 GO
 /*
-exec GetStudentTaskStats @StudentID=2
-exec GetStudentTaskStats @SubjectID=10
-exec GetStudentTaskStats @VariantID=8
+exec GetStudentTasksStats @StudentID=2
+exec GetStudentTasksStats @SubjectID=10
+exec GetStudentTasksStats @VariantID=8
 */
