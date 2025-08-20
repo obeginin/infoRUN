@@ -1,0 +1,68 @@
+'use client';
+
+import { Button } from "@/src/ui/buttonDeafault/Button";
+import { Paragraph } from "@/src/ui/p/Paragraph";
+import styles from "../DialogDelete/DialogDelete.module.scss";
+import { Input } from "@/src/ui/input/Input";
+import { useAdminStore } from "@/src/store/adminStore";
+import { useEffect, useState } from "react";
+import { IDialog } from "../../../../ui/IDialog/IDialog";
+export const DialogPassword = () => {
+  const token = localStorage.getItem("token") || "";
+  const {
+    currentUser,
+    changePassword,
+    isVisibleDialogPassword,
+    setVisibleDialogPassword,
+  } = useAdminStore();
+  const [passwordError, setPasswordError] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+
+  const handleClick = () => {
+    if (newPassword.length < 6) {
+      setPasswordError(true);
+    } else {
+      changePassword(token, currentUser?.ID as number, newPassword);
+    }
+  };
+
+  useEffect(() => {
+    setPasswordError(false);
+  }, [newPassword]);
+  return (
+    <>
+      <IDialog
+        visible={isVisibleDialogPassword}
+        setVdisible={setVisibleDialogPassword}
+      >
+        <div className={styles.dialog}>
+          <Paragraph size="medium">Изменить пароль пользователю</Paragraph>
+          <Paragraph>Логин: {currentUser?.Login}</Paragraph>
+          <Paragraph>Имя: {currentUser?.First_Name}</Paragraph>
+          <Paragraph>Email: {currentUser?.Email}</Paragraph>
+          <Input
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            label="Новый пароль"
+            error_text={
+              passwordError ? "Пароль должен быть больше 6 символов" : ""
+            }
+          />
+          <div className={styles.dialog__btn}>
+            <Button outlined onClick={() => setVisibleDialogPassword()}>
+              Отменить
+            </Button>
+            <Button
+              type="submit"
+              color="white"
+              filled
+              onClick={() => handleClick()}
+            >
+              Сохранить
+            </Button>
+          </div>
+        </div>
+      </IDialog>
+    </>
+  );
+};
