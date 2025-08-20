@@ -49,8 +49,8 @@ app.add_middleware(
 )
 app.add_middleware(LoggingMiddleware) # Middleware для логов всех запросов
 # Путь до билд-фронта
-frontend_path = os.path.join(os.path.dirname(__file__), "..", "Client", "dist")
-dist_static_dir = os.path.join(os.path.dirname(__file__), "..", "Client", "dist", "_next")
+#frontend_path = os.path.join(os.path.dirname(__file__), "..", "Client", "dist")
+#dist_static_dir = os.path.join(os.path.dirname(__file__), "..", "Client", "dist", "_next")
 
 
 producer = get_kafka_producer()
@@ -80,7 +80,7 @@ templates = Jinja2Templates(directory=TEMPLATES_DIR)
 
 # Подключаем статику
 #app.mount("/", StaticFiles(directory=frontend_path, html=True), name="frontend")
-app.mount("/_next", StaticFiles(directory=dist_static_dir), name="next")
+#app.mount("/_next", StaticFiles(directory=dist_static_dir), name="next")
 
 
 
@@ -139,12 +139,12 @@ async def openapi():
     return app.openapi()
 
 # Обработка остальных маршрутов (если SPA)
-@app.get("/{full_path:path}")
+'''@app.get("/{full_path:path}")
 def read_spa(full_path: str):
     excluded_paths = ("api", "docs", "openapi.json", "redoc")
     if any(full_path == p or full_path.startswith(p + "/") for p in excluded_paths):
         raise HTTPException(status_code=404)
-    return FileResponse(os.path.join(frontend_path, "index.html"))
+    return FileResponse(os.path.join(frontend_path, "index.html"))'''
 
 '''Функция для добавления токена авторизации в SWAGGER'''
 def custom_openapi():
