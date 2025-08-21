@@ -19,6 +19,7 @@ env/
 # Игнорировать настройки среды
 .idea/
 *.iml
+*.xml
 
 .DS_Store
 __pycache__/
