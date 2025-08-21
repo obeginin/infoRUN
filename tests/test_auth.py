@@ -38,7 +38,7 @@ def test_logout():
     token = res.json()["access_token"]
 
     headers = {"Authorization": f"Bearer {token}"}
-    res = requests.get(f"{BASE_URL}/api/auth/logout", headers=headers)
+    res = requests.post(f"{BASE_URL}/api/auth/logout", headers=headers)
 
     assert res.status_code == 200
     assert res.json() == {"detail": "LOGOUT"}

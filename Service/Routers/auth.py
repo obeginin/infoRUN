@@ -338,7 +338,7 @@ def register_user(user_data: auth.UserCreate, db: Session = Depends(get_db)):
 @auth_router.post("/password_reset", summary="Запрос на сброс пароля",
                   description="""Высылается письмо с ссылкой для сброса пароля с использованием временного токена, который вшит в ссылку 
                               `https://info-run.ru/auth/reset-password?token={token}`  
-                              далее используется роут `/api/auth/reset_password` непосредственно для изменения пароля""")
+                              далее используется роут `/api/auth/password_reset_with_token` непосредственно для изменения пароля""")
 def password_reset_request(request: auth.PasswordReset, db: Session = Depends(get_db)):
     # 1. Найти пользователя по email
     student = get_student_by_field(db, "Email", request.Email)
@@ -370,7 +370,7 @@ def password_reset_request(request: auth.PasswordReset, db: Session = Depends(ge
 
     return {"message": f"Письмо с инструкцией для сброса пароля отправлено на Email: {request.Email}."}
 
-@auth_router.post("/reset_password", summary="Сброс пароля по токену",
+@auth_router.post("/password_reset_with_token", summary="Сброс пароля по токену",
                   description="на один токен идет только один сброс пароля, для повторного сброса надо запрашивать новый токен")
 def reset_password(data: auth.PasswordResetConfirm, db: Session = Depends(get_db)):
     # 1. Получаем запись токена из базы
@@ -424,7 +424,7 @@ def confirm_email(token: str, db: Session = Depends(get_db)):
 
 # /api/auth/logout
 '''Реализация выхода (удаления cookie с токеном)'''
-@auth_router.get("/logout", summary="Выход, удаление токена при использовании 'HttpOnly cookie'",
+@auth_router.post("/logout", summary="Выход, удаление токена при использовании 'HttpOnly cookie'",
                  description="Необходимо в заголовке отправлять токен (требуется для логироания выхода пользователя")
 async def logout(
         request: Request,
