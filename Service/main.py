@@ -37,6 +37,7 @@ origins = [
     "http://127.0.0.1:5173",       # иногда нужен этот
     "http://localhost:3000",       # локальный фронт (Vite)
     "http://127.0.0.1:3000",
+    "http://10.8.0.9:3000",
     "https://info-run.ru",         # если фронт будет на проде
 ]
 # для запросов с фронта
@@ -124,17 +125,22 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 
 """Swagger"""
 
-@app.get("/docs", dependencies=[Depends(get_swagger_user)])
+@app.get("/api/docs", dependencies=[Depends(get_swagger_user)])
 async def get_documentation():
-    return get_swagger_ui_html(openapi_url=app.openapi_url, title="Документация API")
+    return get_swagger_ui_html(
+        openapi_url="/api/openapi.json",  # <- важно
+        title="Документация API"
+    )
 
-
-@app.get("/redoc", dependencies=[Depends(get_swagger_user)])
+@app.get("/api/redoc", dependencies=[Depends(get_swagger_user)])
 async def get_redoc_documentation():
-    return get_redoc_html(openapi_url=app.openapi_url, title="Документация API")
+    return get_redoc_html(
+        openapi_url="/api/openapi.json",
+        title="Документация API"
+    )
 
 # openapi.json без защиты
-@app.get("/openapi.json")
+@app.get("/api/openapi.json")
 async def openapi():
     return app.openapi()
 

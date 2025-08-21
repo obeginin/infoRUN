@@ -1,14 +1,14 @@
 {
-  "/_not-found/page": "/_not-found",
   "/favicon.ico/route": "/favicon.ico",
-  "/registration/page": "/registration",
+  "/_not-found/page": "/_not-found",
   "/page": "/",
-  "/admin/page": "/admin",
+  "/registration/page": "/registration",
   "/auth/page": "/auth",
-  "/profile/page": "/profile",
+  "/admin/page": "/admin",
   "/forgot-password/page": "/forgot-password",
+  "/profile/page": "/profile",
   "/registration/confirm-email/page": "/registration/confirm-email",
-  "/forgot-password/success/page": "/forgot-password/success",
+  "/registration/confirm-email/success/page": "/registration/confirm-email/success",
   "/profile/all-tasks/page": "/profile/all-tasks",
-  "/registration/confirm-email/success/page": "/registration/confirm-email/success"
+  "/forgot-password/success/page": "/forgot-password/success"
 }
