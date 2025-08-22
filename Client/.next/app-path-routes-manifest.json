@@ -4,11 +4,11 @@
   "/page": "/",
   "/registration/page": "/registration",
   "/auth/page": "/auth",
-  "/admin/page": "/admin",
   "/forgot-password/page": "/forgot-password",
   "/profile/page": "/profile",
+  "/admin/page": "/admin",
   "/registration/confirm-email/page": "/registration/confirm-email",
-  "/registration/confirm-email/success/page": "/registration/confirm-email/success",
   "/profile/all-tasks/page": "/profile/all-tasks",
-  "/forgot-password/success/page": "/forgot-password/success"
+  "/forgot-password/success/page": "/forgot-password/success",
+  "/registration/confirm-email/success/page": "/registration/confirm-email/success"
 }

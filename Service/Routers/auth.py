@@ -351,7 +351,8 @@ def password_reset_request(request: auth.PasswordReset, db: Session = Depends(ge
     token = secrets.token_urlsafe(32)
 
     # 3. Сохранить токен и время истечения в базе (создать таблицу password_reset_tokens, например)
-    expires_at = datetime.strptime(TIME_NOW(), "%Y-%m-%d %H:%M:%S") + timedelta(hours=1)
+    expires_at = TIME_NOW() + timedelta(hours=1)
+    #expires_at = datetime.strptime(TIME_NOW(), "%Y-%m-%d %H:%M:%S") + timedelta(hours=1)
 
     save_password_reset_token(db, student.ID, token, expires_at)
 
@@ -375,6 +376,9 @@ def password_reset_request(request: auth.PasswordReset, db: Session = Depends(ge
 def reset_password(data: auth.PasswordResetConfirm, db: Session = Depends(get_db)):
     # 1. Получаем запись токена из базы
     token_record = get_token_record(db, data.token)
+    #time = datetime.strptime(TIME_NOW(), "%Y-%m-%d %H:%M:%S").isoformat()
+    logger.info(f"ExpiresAt: {token_record['ExpiresAt']}, now time: {TIME_NOW()}")
+
     if not token_record or token_record["Used"] or token_record["ExpiresAt"] < TIME_NOW():
         logger.warning(f"[AUTH] Неверный или просроченный токен")
         raise errors.bad_request(message="Неверный или просроченный токен")
