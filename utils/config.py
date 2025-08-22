@@ -25,8 +25,9 @@ os.makedirs(ARCHIVE_LOG_DIR, exist_ok=True)
 #время по москве
 def TIME_NOW():
     now_moscow = datetime.now(timezone("Europe/Moscow")) # Убрать таймзону, но сохранить локальное время
-    local_time = now_moscow.replace(tzinfo=None)  # без +03:00
-    return local_time.strftime("%Y-%m-%d %H:%M:%S") # АКТУАЛЬНОЕ время
+    return now_moscow.replace(tzinfo=None)  # без +03:00
+
+    #return local_time.strftime("%Y-%m-%d %H:%M:%S") # АКТУАЛЬНОЕ время
 
 '''Уровень логирования'''
 LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
