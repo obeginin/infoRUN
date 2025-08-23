@@ -8,7 +8,7 @@ from Service.Crud.students import edit_student_id, del_student_id, activate_stud
 from Service.Crud import students
 from Service.Crud import errors
 
-from Service.Routers.tasks import get_files_for_subtask
+from Service.Routers.subtasks import get_files_for_subtask
 from Service.dependencies import get_db  # Зависимость для подключения к базе данных
 
 from Service.producer import send_log
