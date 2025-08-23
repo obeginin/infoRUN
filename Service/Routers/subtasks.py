@@ -55,6 +55,13 @@ async def create_subtask(
     db: Session = Depends(get_db),
     current_student=Depends(auth.permission_required("create_tasks"))
 ):
+    logging.info(f"[SUBTASKS] === Поступил запрос на создание подзадачи ===")
+    logging.info(f"[SUBTASKS] TaskID={task_id}, SubTaskNumber={subtask_number}, VariantID={variant_id}")
+    logging.info(f"[SUBTASKS] [SUBTASKS] Description={description}, Answer={answer}, SolutionPath={solution_path}")
+    logging.info(f"Blocks (raw)={blocks}")
+    logging.info(f"[SUBTASKS] Получено файлов: {len(files) if files else 0}")
+    for idx, f in enumerate(files or [], start=1):
+        logging.info(f"[SUBTASKS] Файл {idx}: {f.filename if f else 'None'}")
     try:
         blocks_json = json.loads(blocks)
         if not isinstance(blocks_json, list):
@@ -79,7 +86,8 @@ async def create_subtask(
         "Description": description,
         "Answer": answer,
         "SolutionPath": solution_path,
-        "Blocks": blocks_list
+        "Blocks": blocks_list,
+        "Creator": current_student.Login
     }
 
     try:

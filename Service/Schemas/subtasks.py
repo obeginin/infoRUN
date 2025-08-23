@@ -23,5 +23,6 @@ class SubTaskCreate(BaseModel):
     Answer: Optional[str] = None
     SolutionPath: Optional[str] = None
     Blocks: List[Block]
+    Creator: str
 
 
