@@ -34,3 +34,10 @@ drop table SubTasks
 */
 
 
+CREATE TABLE SubTasksImages (
+		ID INT IDENTITY(1,1) PRIMARY KEY,
+		SubTaskID INT REFERENCES SubTasks(SubTaskID) ON DELETE CASCADE,
+		FileName NVARCHAR(255) NOT NULL,
+		FilePath NVARCHAR(500) NOT NULL,
+		UploadDate DATETIME DEFAULT GETDATE()
+		);

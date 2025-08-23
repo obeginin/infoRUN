@@ -90,20 +90,28 @@ def run_query_insert(
     query: str,
     params: dict = None,
     commit: bool = True,
-    error_message: str = "Ошибка вставки в БД"
+    error_message: str = "Ошибка вставки в БД",
+    return_id: bool = False
 ):
     try:
         result = db.execute(text(query), params or {})
+        if return_id:
+            inserted_id = result.fetchone()[0]  # только для INSERT с OUTPUT
+            if commit:
+                db.commit()
+            return inserted_id
+
+        # если return_id=False — просто возвращаем количество строк
         if commit:
             db.commit()
-
+        return result.rowcount
         #inserted_id = result.scalar()  # Получаем ID из OUTPUT
         #return inserted_id
         # Если нужно получить id вставленной записи (PostgreSQL и др.):
         # inserted_id = result.scalar()
         # return inserted_id
 
-        return result.rowcount  # обычно 1 при успешной вставке
+
     except IntegrityError as e:
         err_msg = str(e.orig).lower()
     # прописываем разные ошибки
