@@ -112,7 +112,7 @@ async def save_subtask(db, subtask_obj, files_blocks: list, files_solution: list
         logging.info(f"Обновление подзадачи {subtask_id} с блоками: {params_2}")
         general.run_query_update(db, update_subtask_query, params_2)
 
-        # Возвращаем результат с количеством вставленных файлов
+
         #return subtask_id
         return {
             "SubTaskID": subtask_id,

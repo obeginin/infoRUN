@@ -16,10 +16,9 @@ from typing import List
 from pathlib import Path
 from typing import Dict, Optional
 import shutil
-from fastapi.responses import RedirectResponse
+
 from dotenv import load_dotenv
-from fastapi.responses import JSONResponse
-from fastapi.encoders import jsonable_encoder
+
 import logging
 
 # Routers\tasks.py
@@ -31,7 +30,6 @@ logger = logging.getLogger(__name__) # создание логгера для т
 
 '''Маршруты добавляются к основному адресу сайта localhost:9000/'''
 task_router  = APIRouter(prefix="/api/tasks", tags=["tasks"])
-
 
 
 
