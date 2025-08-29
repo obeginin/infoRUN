@@ -3,14 +3,14 @@
   "/_not-found/page": "/_not-found",
   "/page": "/",
   "/registration/page": "/registration",
-  "/forgot-password/page": "/forgot-password",
-  "/admin/page": "/admin",
   "/auth/page": "/auth",
+  "/forgot-password/page": "/forgot-password",
   "/profile/page": "/profile",
+  "/admin/page": "/admin",
   "/registration/confirm-email/page": "/registration/confirm-email",
   "/profile/all-tasks/page": "/profile/all-tasks",
-  "/forgot-password/success/page": "/forgot-password/success",
   "/profile/create-task/page": "/profile/create-task",
+  "/forgot-password/success/page": "/forgot-password/success",
   "/registration/confirm-email/success/page": "/registration/confirm-email/success",
   "/profile/create-task/constructor/page": "/profile/create-task/constructor"
 }

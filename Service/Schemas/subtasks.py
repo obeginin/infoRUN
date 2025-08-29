@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional, List, Any
+from datetime import datetime
 
 class Block(BaseModel):
     type: str
@@ -25,4 +26,23 @@ class SubTaskCreate(BaseModel):
     Blocks: List[Block]
     Creator: str
 
+class SubTaskUpdate(BaseModel):
+    TaskID: int
+    VariantID: int
+    SubTaskNumber: int
+    ImagePath: str | None = None
+    Description: str | None = None
+    Answer: str | None = None
+    SolutionPath: str | None = None
 
+
+class FileSchema(BaseModel):
+    ID: int
+    FileName: str
+    FilePath: str
+    UploadDate: Optional[datetime] = None
+
+    class Config:
+        model_config = {
+            "from_attributes": True
+        }

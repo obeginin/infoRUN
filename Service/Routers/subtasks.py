@@ -6,7 +6,7 @@ from Service.Crud import tasks as task_crud
 from Service.Crud import errors
 from Service.dependencies import get_db
 from Service.Models import Student, SubTaskFiles
-from Service.Schemas import tasks
+from Service.Schemas import subtasks as subtasks_schema
 from Service.producer import send_log
 
 from fastapi.concurrency import run_in_threadpool
@@ -75,7 +75,11 @@ async def get_subtask(
         # 4. Формируем ответ
         response_data = {
             "SubTaskID": subtask.SubTaskID,
+            "SubjectID": subtask.SubjectID,
+            "SubjectName": subtask.SubjectName,
+            "Description": subtask.Description,
             "TaskID": subtask.TaskID,
+            "TaskTitle": subtask.TaskTitle,
             "SubTaskNumber": subtask.SubTaskNumber,
             "VariantID": subtask.VariantID,
             "VariantName": subtask.VariantName,
@@ -110,35 +114,31 @@ async def get_subtask(
         return {"status": "error", "message": str(e)}
 
 
-@subtask_router.post("/create", summary="Создание задачи с файлами и блоками", description="""Создает задачу с текстовыми, графическими и другими блоками.  
-Поддерживает прикрепление файлов через multipart/form-data.""")
+@subtask_router.post("/create", summary="Создание задачи с файлами и блоками",
+                     description="""Создает задачу с текстовыми, графическими и другими блоками.  
+Поддерживает прикрепление файлов через multipart/form-data.  
+возвращает `files_blocks` - количество вставленных файлов с изображением задачи  
+`files_solution` - количество вставленных файлов с решением задачи  
+`files` - количество вставленных дополнительных файлов к задачи""")
 async def create_subtask(
-        subject_id: int = Form(..., description="ID предмета"),
         task_id: int = Form(..., description="ID категории"),
-        subtask_number: int = Form(None, description="Номер задачи"),
+        subtask_number: int = Form(None, description="Номер задачи в категории"),
         variant_id: int = Form(None, description="ID варианта (если есть)"),
-        variant_name: str = Form("", description="Название варианта"),
-        type_variant: str = Form("", description="тип варианта"),
-        year_variant: int = Form("", description="год варианта"),
-        number_variant: str = Form("", description="специальный номер варианта"),
-        difficulty_level: str = Form("", description="Сложность варианта"),
-        comment: str = Form("", description="Комменатрий"),
         blocks: str = Form(..., description='JSON список блоков: [{"type":"text","content":"Текст"},{"type":"image","content":"image.png"}]'),
-        files: List[UploadFile] = File([], description="Список файлов"),
+        files_blocks: List[UploadFile] = File([], description="Список файлов для блоков"),
         answer: str = Form("", description="Ответ на задачу"),
-        solution_path: str = Form("", description="Ссылка на решение"),
-    db: Session = Depends(get_db),
+        files_solution: List[UploadFile] = File([], description="Список файлов для решения"),
+        files: List[UploadFile] = File([], description="Список дополнительных файлов к задаче"),
+        db: Session = Depends(get_db),
     current_student=Depends(auth.permission_required("create_tasks"))
 ):
     logging.info(f"[SUBTASKS] === Поступил запрос на создание задачи ===")
-    logging.info(f"[SUBTASKS] TaskID={task_id}, SubTaskNumber={subtask_number}, VariantID={variant_id}")
-    logging.info(f"[SUBTASKS] Answer={answer}, SolutionPath={solution_path}")
+    logging.info(f"[SUBTASKS] TaskID={task_id}, SubTaskNumber={subtask_number}, VariantID={variant_id}, Answer={answer}")
     logging.info(f"[SUBTASKS] Blocks (raw)={blocks}")
-    logging.info(f"[SUBTASKS] Получено файлов: {len(files) if files else 0}")
-    for idx, f in enumerate(files or [], start=1):
-        logging.info(f"[SUBTASKS] Файл {idx}: {f.filename if f else 'None'}")
+
+    # парсим строку JSON
     try:
-        blocks_json = json.loads(blocks)
+        blocks_json = json.loads(blocks) # преобразует строку JSON в Python-объект:
         if not isinstance(blocks_json, list):
             raise ValueError("blocks должен быть списком")
         blocks_list = [Block(**b) for b in blocks_json]
@@ -148,20 +148,42 @@ async def create_subtask(
         logging.error(f"Ошибка с блоками: {e}")
         return {"status": "error", "message": str(e)}
 
+    logging.info(f"[SUBTASKS] Получено файлов с изображением задачи: {len(files_blocks) if files_blocks else 0}")
+    for idx, f in enumerate(files_blocks or [], start=1):
+        logging.info(f"[SUBTASKS] Файл {idx}: {f.filename if f else 'None'}")
+
+    # Проверки файлов с изображением
+    if files_blocks:
+        for file in files_blocks:
+            if not getattr(file, "filename", None):
+                logging.warning("Файл без имени пропущен")
+
+    logging.info(f"[SUBTASKS] Получено файлов c решением: {len(files_solution) if files_solution else 0}")
+    # Проверки файлов с решением
+    for idx, f in enumerate(files_solution or [], start=1):
+        logging.info(f"[SUBTASKS] Файл {idx}: {f.filename if f else 'None'}")
+    # Проверки файлов
+    if files_solution:
+        for file2 in files_solution:
+            if not getattr(file2, "filename", None):
+                logging.warning("Файл без имени пропущен")
+
+    logging.info(f"[SUBTASKS] Получено дополнительных файлов к задаче: {len(files) if files else 0}")
+    # Проверки файлов с решением
+    for idx, f in enumerate(files or [], start=1):
+        logging.info(f"[SUBTASKS] Дополнительный файл {idx}: {f.filename if f else 'None'}")
     # Проверки файлов
     if files:
-        for file in files:
-            if not getattr(file, "filename", None):
+        for file3 in files:
+            if not getattr(file3, "filename", None):
                 logging.warning("Файл без имени пропущен")
 
     subtask_data = {
         "TaskID": task_id,
         "SubTaskNumber": subtask_number,
         "VariantID": variant_id,
-        "Description": description,
-        "Answer": answer,
-        "SolutionPath": solution_path,
         "Blocks": blocks_list,
+        "Answer": answer,
         "Creator": current_student.Login
     }
 
@@ -173,7 +195,7 @@ async def create_subtask(
 
     # 4 Вызываем функцию сохранения
     try:
-        result = await subtasks.save_subtask(db, subtask_obj, files)
+        result = await subtasks.save_subtask(db, subtask_obj, files_blocks, files_solution, files)
         logging.info(result)
         logging.info(f"Пользователь {current_student.Login} успешно создал задачу id={result["SubTaskID"]}")
 
@@ -208,7 +230,7 @@ def download_file(file_id: int, db: Session = Depends(get_db)):
     return FileResponse(path=db_file.FilePath, filename=db_file.FileName)
 
 '''получение всех файлов задачи'''
-@subtask_router.get("/files/{subtask_id}", response_model=List[tasks.FileSchema], summary="роут с получением всех файлов задачи")
+@subtask_router.get("/files/{subtask_id}", response_model=List[subtasks_schema.FileSchema], summary="роут с получением всех файлов задачи")
 def get_files_for_subtask(subtask_id: int, db: Session = Depends(get_db)):
     files = db.execute(text("""
         SELECT ID, FileName, FilePath, UploadDate
@@ -357,7 +379,7 @@ def post_edit_subtask_form(
         print(f"File: filename={f.filename}, content_type={f.content_type}, type={type(f)}")
     uploaded_files = task_crud.upload_file(SubTaskID, TaskID, SubTaskNumber, Files, db)
     print(uploaded_files)
-    subtask_data = tasks.SubTaskUpdate(
+    subtask_data = subtasks_schema.SubTaskUpdate(
         TaskID=TaskID,
         VariantID=variant_id,
         SubTaskNumber=SubTaskNumber,

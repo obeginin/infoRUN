@@ -1,6 +1,6 @@
 from Service.config_app import TEMPLATES_DIR, LOG_LEVEL, LOG_FILE
 from fastapi import FastAPI, Depends, Request, HTTPException
-from Service.Routers import tasks, subtasks,students,auth,files  # Импортируем роутер задач
+from Service.Routers import tasks, subtasks,students,auth,subjects, variants  # Импортируем роутер задач
 from fastapi.openapi.docs import get_swagger_ui_html, get_redoc_html
 from fastapi.staticfiles import StaticFiles
 from Service.Crud.auth import get_swagger_user
@@ -75,11 +75,10 @@ producer = get_kafka_producer()
 app.include_router(auth.auth_router) # Регистрируем роутер Аутентификации
 app.include_router(auth.admin_router)
 app.include_router(auth.home_router)
-app.include_router(tasks.subject_router)  # маршрут для предметов
+app.include_router(subjects.subject_router)  # маршрут для предметов
 app.include_router(tasks.task_router) # подключает маршруты из routers/tasks.py.
 app.include_router(subtasks.subtask_router)  # Регистрируем роутер для подзадач
-app.include_router(tasks.task_js_router) # Регистрируем роутер для html файлов с js
-app.include_router(tasks.varinant_router) # Регистрируем роутер для html файлов с jinja2
+app.include_router(variants.varinant_router) # Регистрируем роутер для html файлов с jinja2
 
 app.include_router(students.students_router)  # Регистрируем роутер для студентов
 app.include_router(students.students_subtasks_router) # Регистрируем роутер для задач студентов

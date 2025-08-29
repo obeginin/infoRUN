@@ -24,18 +24,7 @@ class TaskListResponse(BaseModel):
     tasks: List[TaskRead]
 
 
-class SubjectRead(BaseModel):
-    ID: int
-    Name: str
-    Description: str
 
-    class Config:
-        from_attributes = True
-
-class SubjectListResponse(BaseModel):
-    message: str
-    count: Optional[int] = None
-    subjects: List[SubjectRead]
 
 
 # для подзадач
@@ -54,7 +43,7 @@ class SubTaskRead(BaseModel):
     class Config:
         from_attributes = True
 
-'''!!!!!!!!!'''
+
 class TaskSubtaskRelation(BaseModel):
     task_id: int
     subtask_id: int
@@ -67,27 +56,5 @@ class SubTaskCreate(BaseModel):
     Answer: str
     SolutionPath: Optional[str] = None
 
-class SubTaskUpdate(BaseModel):
-    TaskID: int
-    VariantID: int
-    SubTaskNumber: int
-    ImagePath: str | None = None
-    Description: str | None = None
-    Answer: str | None = None
-    SolutionPath: str | None = None
 
-class FileSchema(BaseModel):
-    ID: int
-    FileName: str
-    FilePath: str
-    UploadDate: Optional[datetime] = None
 
-    class Config:
-        model_config = {
-            "from_attributes": True
-        }
-
-class SubjectOut(BaseModel):
-    ID: int
-    Name: str
-    Description: str | None = None
