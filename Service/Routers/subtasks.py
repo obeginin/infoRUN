@@ -37,28 +37,103 @@ logger = logging.getLogger(__name__) # создание логгера для т
 subtask_router  = APIRouter(prefix="/api/subtasks", tags=["subtasks"])
 
 
+@subtask_router.get(
+    "/{subtask_id}",
+    summary="Получение задачи с блоками и файлами",
+    description="Возвращает задачу с текстовыми, графическими и другими блоками, а также прикрепленные файлы."
+)
+async def get_subtask(
+    subtask_id: int,
+    db: Session = Depends(get_db),
+    current_student=Depends(auth.permission_required("view_tasks"))
+):
+    logging.info(f"[SUBTASKS] === Поступил запрос на получение задачи ID={subtask_id} ===")
+    try:
+        # 1. Получаем задачу из базы
+        subtask = await subtasks.view_subtask(db,subtask_id)
+
+        if not subtask:
+            logging.warning(f"Задача с ID={subtask_id} не найдена")
+            return {"status": "error", "message": "задача не найдена"}
+
+        # 2. Преобразуем блоки из строки JSON, если они в базе хранятся в JSON-формате
+        try:
+            blocks_list = json.loads(subtask["Blocks"]) if subtask.get("Blocks") else []
+        except json.JSONDecodeError as e:
+            logging.error(f"Ошибка парсинга блоков у задачи ID={subtask_id}: {e}")
+            blocks_list = []
+
+        # 3. Получаем прикрепленные файлы (если они хранятся в отдельной таблице)
+        files = await subtasks.view_files(db,subtask_id)
+
+        file_list = [
+            {"FileID": f["ID"], "FileName": f["FileName"], "FilePath": f["FilePath"]}
+            for f in files
+        ]
 
 
+        # 4. Формируем ответ
+        response_data = {
+            "SubTaskID": subtask.SubTaskID,
+            "TaskID": subtask.TaskID,
+            "SubTaskNumber": subtask.SubTaskNumber,
+            "VariantID": subtask.VariantID,
+            "VariantName": subtask.VariantName,
+            "TypeVariant": subtask.TypeVariant,
+            "YearVariant": subtask.YearVariant,
+            "NumberVarinat": subtask.NumberVarinat,
+            "DifficultyLevel": subtask.DifficultyLevel,
+            "Comment": subtask.Comment,
+            "Creator": subtask.Creator,
+            "UploadDate": subtask.UploadDate,
+            "Blocks": blocks_list,
+            "Files": file_list,
+            #"SolutionPath": subtask.SolutionPath,
+        }
+
+        logging.info(f"[SUBTASKS] Задача ID={subtask_id} успешно получена")
+
+        await run_in_threadpool(
+            send_log,
+            StudentID=current_student.ID,
+            StudentLogin=current_student.Login,
+            action="VIEW_SUBTASK",
+            details={
+                "SubTaskID": subtask_id,
+                "DescriptionEvent": f"Пользователь {current_student.Login} просмотрел задачу ID={subtask_id}"
+            }
+        )
+        return {"status": "success", "data": response_data}
+
+    except Exception as e:
+        logging.exception("Ошибка при получении задачи")
+        return {"status": "error", "message": str(e)}
 
 
-@subtask_router.post("/create", summary="Создание подзадачи с файлами и блоками", description="""Создает подзадачу с текстовыми, графическими и другими блоками.  
+@subtask_router.post("/create", summary="Создание задачи с файлами и блоками", description="""Создает задачу с текстовыми, графическими и другими блоками.  
 Поддерживает прикрепление файлов через multipart/form-data.""")
 async def create_subtask(
-        task_id: int = Form(..., description="ID родительской задачи"),
-        subtask_number: int = Form(None, description="Номер подзадачи"),
+        subject_id: int = Form(..., description="ID предмета"),
+        task_id: int = Form(..., description="ID категории"),
+        subtask_number: int = Form(None, description="Номер задачи"),
         variant_id: int = Form(None, description="ID варианта (если есть)"),
-        description: str = Form("", description="Описание подзадачи"),
-        answer: str = Form("", description="Ответ на подзадачу"),
-        solution_path: str = Form("", description="Ссылка на решение"),
-        blocks: str = Form(..., description='JSON список блоков: [{"type":"text","content":"Текст"},{"type":"image","content":"URL"}]'),
+        variant_name: str = Form("", description="Название варианта"),
+        type_variant: str = Form("", description="тип варианта"),
+        year_variant: int = Form("", description="год варианта"),
+        number_variant: str = Form("", description="специальный номер варианта"),
+        difficulty_level: str = Form("", description="Сложность варианта"),
+        comment: str = Form("", description="Комменатрий"),
+        blocks: str = Form(..., description='JSON список блоков: [{"type":"text","content":"Текст"},{"type":"image","content":"image.png"}]'),
         files: List[UploadFile] = File([], description="Список файлов"),
+        answer: str = Form("", description="Ответ на задачу"),
+        solution_path: str = Form("", description="Ссылка на решение"),
     db: Session = Depends(get_db),
     current_student=Depends(auth.permission_required("create_tasks"))
 ):
-    logging.info(f"[SUBTASKS] === Поступил запрос на создание подзадачи ===")
+    logging.info(f"[SUBTASKS] === Поступил запрос на создание задачи ===")
     logging.info(f"[SUBTASKS] TaskID={task_id}, SubTaskNumber={subtask_number}, VariantID={variant_id}")
-    logging.info(f"[SUBTASKS] [SUBTASKS] Description={description}, Answer={answer}, SolutionPath={solution_path}")
-    logging.info(f"Blocks (raw)={blocks}")
+    logging.info(f"[SUBTASKS] Answer={answer}, SolutionPath={solution_path}")
+    logging.info(f"[SUBTASKS] Blocks (raw)={blocks}")
     logging.info(f"[SUBTASKS] Получено файлов: {len(files) if files else 0}")
     for idx, f in enumerate(files or [], start=1):
         logging.info(f"[SUBTASKS] Файл {idx}: {f.filename if f else 'None'}")
@@ -94,7 +169,7 @@ async def create_subtask(
         subtask_obj = SubTaskCreate(**subtask_data)  # **kwargs распаковка словаря
     except Exception as e:
         logging.error(f"Ошибка при создании SubTaskCreate: {e}")
-        return {"status": "error", "message": f"Ошибка создания подзадачи: {e}"}
+        return {"status": "error", "message": f"Ошибка создания задачи: {e}"}
 
     # 4 Вызываем функцию сохранения
     try:
@@ -116,7 +191,7 @@ async def create_subtask(
         return {"status": "success", "data": result}
 
     except Exception as e:
-        logging.exception("Не удалось создать подзадачу")
+        logging.exception("Не удалось создать задачу")
         return {"status": "error", "message": str(e)}
 
 

@@ -75,11 +75,11 @@ BEGIN
 
 		
     FROM StudentTasks st
-        JOIN Students sd ON sd.ID = st.StudentID 
-        JOIN SubTasks s ON s.SubTaskID = st.SubTaskID
-		JOIN Tasks t on t.TaskID = s.TaskID
-		JOIN Variants v on v.VariantID = s.VariantID 
-		JOIN Subjects sj on sj.ID=t.SubjectID
+        LEFT JOIN Students sd ON sd.ID = st.StudentID 
+        LEFT JOIN SubTasks s ON s.SubTaskID = st.SubTaskID
+		LEFT JOIN Tasks t on t.TaskID = s.TaskID
+		LEFT JOIN Variants v on v.VariantID = s.VariantID 
+		LEFT JOIN Subjects sj on sj.ID=t.SubjectID
     WHERE 
 			(@StudentTaskID IS NULL OR st.StudentTaskID = @StudentTaskID) 
 		AND (@StudentID IS NULL OR st.StudentID = @StudentID) 
@@ -191,7 +191,7 @@ FETCH NEXT ISNULL(@Limit, 500000) ROWS ONLY
 END
 GO
 
-
+select * from StudentTasks where StudentID=2
 /*SELECT DISTINCT CompletionStatus FROM StudentTasks;
 
 

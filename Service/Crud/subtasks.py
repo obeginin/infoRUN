@@ -15,7 +15,39 @@ import logging
 from typing import List
 from Service.config_app import UPLOAD_IMAGE_DIR
 
-setup_logging(log_file=LOG_FILE)
+# Crud\subtasks.py
+
+logger = logging.getLogger(__name__)
+
+async def view_subtask(db: Session, subtask_id):
+    query = """EXEC GetSubtask @SubTaskID = :subtask_id"""
+    params = { "subtask_id": subtask_id}
+    logging.info("=== Запуск view_subtask ===")
+    logging.info(f"Получение задачи с id: {subtask_id}")
+    return general.run_query_select(
+        db=db,
+        query=query,
+        params=params,
+        mode="mappings_first",  # Возвращаем список словарей
+        required=False,
+        error_message=f"[EXEC] Не удалось получить задачу с id:{subtask_id}"
+    )
+
+async def view_files(db: Session, subtask_id):
+    query = """select * from SubTaskFiles where SubTaskID = :subtask_id"""
+    params = {"subtask_id": subtask_id}
+    logging.info("=== Запуск view_files ===")
+    logging.info(f"Полученные файлов задачи с id: {subtask_id}")
+    return general.run_query_select(
+        db=db,
+        query=query,
+        params=params,
+        mode="mappings_all",  # Возвращаем список словарей
+        required=False,
+        error_message=f"Не удалось получить файлы для задачи с id:{subtask_id}"
+    )
+
+
 async def save_subtask(db, subtask_obj, files: list):
         #blocks_json = json.dumps([b.dict() for b in subtask_obj.Blocks])
     logging.info("=== Запуск save_subtask ===")

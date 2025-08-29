@@ -75,6 +75,18 @@
       "namedRegex": "^/profile/all\\-tasks(?:/)?$"
     },
     {
+      "page": "/profile/create-task",
+      "regex": "^/profile/create\\-task(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/profile/create\\-task(?:/)?$"
+    },
+    {
+      "page": "/profile/create-task/constructor",
+      "regex": "^/profile/create\\-task/constructor(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/profile/create\\-task/constructor(?:/)?$"
+    },
+    {
       "page": "/registration",
       "regex": "^/registration(?:/)?$",
       "routeKeys": {},

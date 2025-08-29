@@ -27,8 +27,9 @@ from starlette.status import HTTP_400_BAD_REQUEST
 '''главный файл проекта'''
 
 # Настроим логирование при успешном запуске основного приложения FastAPI
+
 setup_logging(log_file=LOG_FILE)
-logging.info(f"Запускаем логирование с файлом: {LOG_FILE}")
+
 
 app = FastAPI(debug=LOG_LEVEL, docs_url=None, redoc_url=None)
 
@@ -53,6 +54,21 @@ app.add_middleware(LoggingMiddleware) # Middleware для логов всех з
 #frontend_path = os.path.join(os.path.dirname(__file__), "..", "Client", "dist")
 #dist_static_dir = os.path.join(os.path.dirname(__file__), "..", "Client", "dist", "_next")
 
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    errors = exc.errors()
+
+    # Удаляем поле ctx, чтобы убрать дублирование
+    for error in errors:
+        if "ctx" in error:
+            del error["ctx"]
+
+    logging.warning(f"[400 VALIDATION ERROR] {request.method} {request.url} - ошибки: {errors}")
+
+    return JSONResponse(
+        status_code=HTTP_400_BAD_REQUEST,
+        content={"detail": errors},
+    )
 
 producer = get_kafka_producer()
 # Регистрируем роутер
@@ -107,21 +123,7 @@ def shutdown_event():
         producer.close()
 
 
-@app.exception_handler(RequestValidationError)
-async def validation_exception_handler(request: Request, exc: RequestValidationError):
-    errors = exc.errors()
 
-    # Удаляем поле ctx, чтобы убрать дублирование
-    for error in errors:
-        if "ctx" in error:
-            del error["ctx"]
-
-    logging.warning(f"[400 VALIDATION ERROR] {request.method} {request.url} - ошибки: {errors}")
-
-    return JSONResponse(
-        status_code=HTTP_400_BAD_REQUEST,
-        content={"detail": errors},
-    )
 
 """Swagger"""
 

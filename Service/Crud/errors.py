@@ -1,6 +1,10 @@
 from fastapi import HTTPException
 from typing import Optional
+import logging
 
+# Crud\errors.py
+
+logger = logging.getLogger(__name__)
 #ActionEvent
 '''
 LOGIN_SUCCESS = "LoginSuccess"
