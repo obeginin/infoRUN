@@ -11,7 +11,8 @@ from celery.schedules import crontab
 
 #from Service.celery_tasks.notifications import send_email_task
 load_dotenv()
-
+import logging
+logger = logging.getLogger(__name__)
 
 # Database.py
 '''файл с настройкой подключения к основной базе'''
@@ -48,10 +49,10 @@ logging.info(f"[CELERY] Запускаем логирование с файло�
 
 # Создаём celery app
 celery_app = Celery(
-    "email_sender",
+    "worker",
     broker=REDIS_BROKER_URL,
     backend=REDIS_RESULT_BACKEND,
-    include=["Celery_worker.notifications"])
+    include=["Celery_worker.notifications", "Celery_worker.files"])
 
 
 

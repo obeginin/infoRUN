@@ -47,13 +47,13 @@ async def view_files(db: Session, subtask_id):
     )
 
 
-async def save_subtask(db, subtask_obj, files_blocks: list, files_solution: list, files: list):
+async def save_subtask(db, subtask_obj, files_blocks: list):
         #blocks_json = json.dumps([b.dict() for b in subtask_obj.Blocks])
     logging.info("=== Запуск save_subtask ===")
     logging.info(f"Полученные данные подзадачи: {subtask_obj}")
     logging.info(f"Количество загруженных файлов с изображением задачи: {len(files_blocks)}")
-    logging.info(f"Количество загруженных файлов с решением задачи: {len(files_solution)}")
-    logging.info(f"Количество загруженных дополнительных файлов к задаче: {len(files)}")
+    #logging.info(f"Количество загруженных файлов с решением задачи: {len(files_solution)}")
+    #logging.info(f"Количество загруженных дополнительных файлов к задаче: {len(files)}")
     for f in files_blocks:
         logging.info(f"Файл: {f.filename}")
     try:
@@ -144,3 +144,28 @@ def save_files(db, files: list, subtask_id: int, folder: str, prefix: str, table
         general.run_query_insert(db, insert_query, {"SubTaskID": subtask_id, "FileName": filename, "FilePath": full_path})
 
     return file_map
+
+def save_temp_files(db: Session, subtask_id: int, student_id: int, temp_solution_paths: list, temp_files_paths: list) -> int:
+    """
+    Сохраняет временные пути файлов подзадачи в таблицу SubTaskTemp
+    и возвращает ID записи.
+    """
+    insert_query = """
+        INSERT INTO SubTaskTemp (SubTaskID, StudentID, SolutionTempPath, FilesTempPaths)
+        OUTPUT INSERTED.ID
+        VALUES (:SubTaskID, :StudentID, :SolutionTempPath, :FilesTempPaths)
+    """
+
+    inserted_id = general.run_query_insert(
+        db=db,
+        query=insert_query,
+        params={
+            "SubTaskID": subtask_id,
+            "StudentID": student_id,
+            "SolutionTempPath": json.dumps(temp_solution_paths),
+            "FilesTempPaths": json.dumps(temp_files_paths)
+        },
+        return_id=True
+    )
+
+    return inserted_id

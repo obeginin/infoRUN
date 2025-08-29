@@ -3,12 +3,14 @@ from Service.config_app import UPLOAD_IMAGE_DIR, UPLOAD_SOLUTION_DIR, UPLOAD_FIL
 from Service.Crud import subtasks
 from Service.Crud import auth
 from Service.Crud import tasks as task_crud
-from Service.Crud import errors
+from Service.Crud import errors,general
 from Service.dependencies import get_db
 from Service.Models import Student, SubTaskFiles
 from Service.Schemas import subtasks as subtasks_schema
 from Service.producer import send_log
+from Service.celery_tasks.celery_app import celery_app
 
+from uuid import uuid4
 from fastapi.concurrency import run_in_threadpool
 from fastapi import APIRouter, Depends, Request, Form, UploadFile, File, Query, HTTPException
 from sqlalchemy import text
@@ -195,7 +197,7 @@ async def create_subtask(
 
     # 4 Вызываем функцию сохранения
     try:
-        result = await subtasks.save_subtask(db, subtask_obj, files_blocks, files_solution, files)
+        result = await subtasks.save_subtask(db, subtask_obj, files_blocks)
         logging.info(result)
         logging.info(f"Пользователь {current_student.Login} успешно создал задачу id={result["SubTaskID"]}")
 
@@ -210,8 +212,41 @@ async def create_subtask(
             }
         )
 
-        return {"status": "success", "data": result}
 
+        logging.info(f"Сохраняем временные файлы с решением")
+        # --- Сохраняем файлы во временную папку ---
+        temp_solution_paths = []
+        for file in files_solution:
+            temp_path = TEMPLATES_DIR/ f"{uuid4()}_{file.filename}"
+            with open(temp_path, "wb") as f:
+                f.write(await file.read())
+            temp_solution_paths.append(str(temp_path))
+        logging.info(f"temp_solution_paths: {temp_solution_paths}")
+
+        logging.info(f"Сохраняем временные дополнительные файлы")
+        temp_extra_paths = []
+        for file in files:
+            temp_path = TEMPLATES_DIR/ f"{uuid4()}_{file.filename}"
+            with open(temp_path, "wb") as f:
+                f.write(await file.read())
+            temp_extra_paths.append(str(temp_path))
+        logging.info(f"temp_extra_paths: {temp_extra_paths}")
+        # --- Создаем запись о временных файлах ---
+
+        temp_record_id = subtasks.save_temp_files(
+            db=db,
+            subtask_id=result["SubTaskID"],
+            student_id=current_student.ID,  # используем правильный атрибут ID
+            temp_solution_paths=temp_solution_paths,
+            temp_files_paths=temp_extra_paths
+        )
+        logging.info(f"temp_record_id: {temp_record_id} из таблицы SubTaskTemp")
+        # --- Ставим задачу в Celery ---
+        celery_app.send_task(
+            name="save_subtask_files",  # имя задачи из Celery_worker.files.py
+            kwargs={"temp_record_id": temp_record_id}  # аргументы задачи
+        )
+        return {"status": "success", "data": result}
     except Exception as e:
         logging.exception("Не удалось создать задачу")
         return {"status": "error", "message": str(e)}

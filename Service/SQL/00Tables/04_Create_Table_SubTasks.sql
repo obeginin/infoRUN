@@ -58,3 +58,17 @@ CREATE TABLE SubTaskSolutions (
 	FilePath NVARCHAR(500) NOT NULL,
 	UploadDate DATETIME DEFAULT GETDATE()
 	);
+
+-- таблица для хранения временных файлов
+CREATE TABLE SubTaskTemp (
+    ID INT IDENTITY(1,1) PRIMARY KEY,
+    SubTaskID INT NOT NULL,
+    StudentID INT NOT NULL,
+    SolutionTempPath NVARCHAR(MAX) NULL,				-- путь к файлам с решением
+    FilesTempPaths NVARCHAR(MAX) NULL,					-- дополнительные файлы
+    CreatedAt DATETIME2 DEFAULT GETDATE(),				
+    CONSTRAINT FK_SubTaskSolutionsTemp_SubTasks FOREIGN KEY (SubTaskID)
+        REFERENCES SubTasks(SubTaskID)
+);
+
+SELECT * FROM SubTaskTemp WHERE ID = :id
