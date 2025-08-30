@@ -71,4 +71,7 @@ CREATE TABLE SubTaskTemp (
         REFERENCES SubTasks(SubTaskID)
 );
 
-SELECT * FROM SubTaskTemp WHERE ID = :id
+SELECT * FROM SubTaskTemp order by SubTaskID desc
+SELECT * FROM SubTasksImages  order by SubTaskID desc
+SELECT * FROM SubTaskSolutions order by SubTaskID desc
+SELECT * FROM SubTaskFiles order by SubTaskID desc

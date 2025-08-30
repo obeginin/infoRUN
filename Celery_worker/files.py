@@ -27,6 +27,10 @@ def save_subtask_files_task(self, temp_record_id: int):
         logging.info(f"[CELERY WORKER]: subtask_id: {subtask_id}")
         # --- Сохраняем файлы с решением ---
         solution_files = json.loads(temp_record["SolutionTempPath"] or "[]")
+        for temp_path in solution_files:
+            logging.info(f"[CELERY WORKER] Looking for file: {temp_path}")
+            if not os.path.exists(temp_path):
+                logging.error(f"[CELERY WORKER] File NOT FOUND: {temp_path}")
         for idx, temp_path in enumerate(solution_files):
             ext = temp_path.split('.')[-1]
             filename = f"sol_subtask_{subtask_id}_{idx + 1}.{ext}"

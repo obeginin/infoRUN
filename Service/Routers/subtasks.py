@@ -1,6 +1,6 @@
 from Service.Schemas.subtasks import SubTaskCreate, Block #, SubTaskResponse
 from Service.config_app import UPLOAD_IMAGE_DIR, UPLOAD_SOLUTION_DIR, UPLOAD_FILES_DIR, TEMPLATES_DIR
-from Service.Crud import subtasks
+from Service.Crud import subtasks_crud
 from Service.Crud import auth
 from Service.Crud import tasks as task_crud
 from Service.Crud import errors,general
@@ -52,7 +52,7 @@ async def get_subtask(
     logging.info(f"[SUBTASKS] === Поступил запрос на получение задачи ID={subtask_id} ===")
     try:
         # 1. Получаем задачу из базы
-        subtask = await subtasks.view_subtask(db,subtask_id)
+        subtask = await subtasks_crud.view_subtask(db,subtask_id)
 
         if not subtask:
             logging.warning(f"Задача с ID={subtask_id} не найдена")
@@ -66,7 +66,7 @@ async def get_subtask(
             blocks_list = []
 
         # 3. Получаем прикрепленные файлы (если они хранятся в отдельной таблице)
-        files = await subtasks.view_files(db,subtask_id)
+        files = await subtasks_crud.view_files(db,subtask_id)
 
         file_list = [
             {"FileID": f["ID"], "FileName": f["FileName"], "FilePath": f["FilePath"]}
@@ -150,35 +150,10 @@ async def create_subtask(
         logging.error(f"Ошибка с блоками: {e}")
         return {"status": "error", "message": str(e)}
 
-    logging.info(f"[SUBTASKS] Получено файлов с изображением задачи: {len(files_blocks) if files_blocks else 0}")
-    for idx, f in enumerate(files_blocks or [], start=1):
-        logging.info(f"[SUBTASKS] Файл {idx}: {f.filename if f else 'None'}")
-
-    # Проверки файлов с изображением
-    if files_blocks:
-        for file in files_blocks:
-            if not getattr(file, "filename", None):
-                logging.warning("Файл без имени пропущен")
-
-    logging.info(f"[SUBTASKS] Получено файлов c решением: {len(files_solution) if files_solution else 0}")
-    # Проверки файлов с решением
-    for idx, f in enumerate(files_solution or [], start=1):
-        logging.info(f"[SUBTASKS] Файл {idx}: {f.filename if f else 'None'}")
-    # Проверки файлов
-    if files_solution:
-        for file2 in files_solution:
-            if not getattr(file2, "filename", None):
-                logging.warning("Файл без имени пропущен")
-
-    logging.info(f"[SUBTASKS] Получено дополнительных файлов к задаче: {len(files) if files else 0}")
-    # Проверки файлов с решением
-    for idx, f in enumerate(files or [], start=1):
-        logging.info(f"[SUBTASKS] Дополнительный файл {idx}: {f.filename if f else 'None'}")
-    # Проверки файлов
-    if files:
-        for file3 in files:
-            if not getattr(file3, "filename", None):
-                logging.warning("Файл без имени пропущен")
+    # проверяем файлы
+    subtasks_crud.log_and_validate_files(files_blocks, "блоки")
+    subtasks_crud.log_and_validate_files(files_solution, "решения")
+    subtasks_crud.log_and_validate_files(files, "дополнительные")
 
     subtask_data = {
         "TaskID": task_id,
@@ -192,55 +167,44 @@ async def create_subtask(
     try:
         subtask_obj = SubTaskCreate(**subtask_data)  # **kwargs распаковка словаря
     except Exception as e:
-        logging.error(f"Ошибка при создании SubTaskCreate: {e}")
+        logging.error(f"[SUBTASKS] Ошибка при создании SubTaskCreate: {e}")
         return {"status": "error", "message": f"Ошибка создания задачи: {e}"}
 
-    # 4 Вызываем функцию сохранения
+    # 4 Создаем новую задачу
     try:
-        result = await subtasks.save_subtask(db, subtask_obj, files_blocks)
-        logging.info(result)
-        logging.info(f"Пользователь {current_student.Login} успешно создал задачу id={result["SubTaskID"]}")
+        result = await subtasks_crud.save_subtask(db, subtask_obj, files_blocks)
+        subtask_id = result["SubTaskID"]
+        logging.info(f"[SUBTASKS] Пользователь {current_student.Login} успешно создал задачу id={subtask_id}")
 
+        # логируем в Kafka
         await run_in_threadpool(
             send_log,
             StudentID=current_student.ID,
             StudentLogin=current_student.Login,
             action="CREATE_SUBTASK",
             details={
-                "SubTaskID": result["SubTaskID"],
-                "DescriptionEvent": f"Пользователь {current_student.Login} успешно создал задачу id={result["SubTaskID"]})"
+                "SubTaskID": subtask_id,
+                "DescriptionEvent": f"Пользователь {current_student.Login} успешно создал задачу id={subtask_id})"
             }
         )
 
+        # сохраняем временные файлы
+        logging.info(f"[SUBTASKS] Сохраняем временные файлы с решением")
+        temp_solution_paths = await subtasks_crud.save_temp_files(files_solution, TEMPLATES_DIR)
+        logging.info(f"[SUBTASKS] Сохраняем временные дополнительные файлы")
+        temp_extra_paths = await subtasks_crud.save_temp_files(files, TEMPLATES_DIR)
 
-        logging.info(f"Сохраняем временные файлы с решением")
-        # --- Сохраняем файлы во временную папку ---
-        temp_solution_paths = []
-        for file in files_solution:
-            temp_path = TEMPLATES_DIR/ f"{uuid4()}_{file.filename}"
-            with open(temp_path, "wb") as f:
-                f.write(await file.read())
-            temp_solution_paths.append(str(temp_path))
-        logging.info(f"temp_solution_paths: {temp_solution_paths}")
 
-        logging.info(f"Сохраняем временные дополнительные файлы")
-        temp_extra_paths = []
-        for file in files:
-            temp_path = TEMPLATES_DIR/ f"{uuid4()}_{file.filename}"
-            with open(temp_path, "wb") as f:
-                f.write(await file.read())
-            temp_extra_paths.append(str(temp_path))
-        logging.info(f"temp_extra_paths: {temp_extra_paths}")
-        # --- Создаем запись о временных файлах ---
-
-        temp_record_id = subtasks.save_temp_files(
+        # сохраняем пути во временную таблицу
+        temp_record_id = subtasks_crud.save_subtask_temp_record(
             db=db,
             subtask_id=result["SubTaskID"],
             student_id=current_student.ID,  # используем правильный атрибут ID
             temp_solution_paths=temp_solution_paths,
             temp_files_paths=temp_extra_paths
         )
-        logging.info(f"temp_record_id: {temp_record_id} из таблицы SubTaskTemp")
+
+        logging.info(f"[SUBTASKS] temp_record_id: {temp_record_id} из таблицы SubTaskTemp")
         # --- Ставим задачу в Celery ---
         celery_app.send_task(
             name="save_subtask_files",  # имя задачи из Celery_worker.files.py
@@ -327,7 +291,7 @@ def post_edit_subtask_form(
     SolutionFile: UploadFile = File(None),
     db: Session = Depends(get_db)
 ):
-    logger.info(f"Редактируем подзадачу ID={SubTaskID}")
+    logger.info(f"[SUBTASKS] Редактируем подзадачу ID={SubTaskID}")
 
     current_variant_id = db.execute(text("SELECT VariantID FROM SubTasks WHERE SubTaskID = :id"),
                                     {"id": SubTaskID}).scalar()
@@ -369,7 +333,7 @@ def post_edit_subtask_form(
         with filepath.open("wb") as buffer:
             shutil.copyfileobj(ImageFile.file, buffer)
 
-        logger.info(f"Изображение сохранено как {filepath}")
+        logger.info(f"[SUBTASKS] Изображение сохранено как {filepath}")
     else:
         # Файл не загружен
         if not image_path:
@@ -401,7 +365,7 @@ def post_edit_subtask_form(
         with filepath.open("wb") as buffer:
             shutil.copyfileobj(SolutionFile.file, buffer)
 
-        logger.info(f"Решение сохранено как {filepath}")
+        logger.info(f"[SUBTASKS] Решение сохранено как {filepath}")
     else:
         # Файл не загружен
         if not solution_path:

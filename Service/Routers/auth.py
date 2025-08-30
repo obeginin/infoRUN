@@ -320,10 +320,10 @@ def register_user(user_data: auth.UserCreate, db: Session = Depends(get_db)):
 
     send_email_event_celery(
         request=auth.EmailRequest(
-            to_email=user_data.email,
-            subject="Подтверждение регистрации",
-            body=f"Для подтверждения регистрации перейдите по ссылке: "
-                 f"https://info-run.ru/registration/confirm-email/success?token={token}"
+        to_email=user_data.email,
+        subject="Подтверждение регистрации",
+        body=f"Для подтверждения регистрации перейдите по ссылке: "
+             f"https://info-run.ru/registration/confirm-email/success?token={token}"
         ),
         event_type="email_registration",
         db=db
