@@ -1,5 +1,4 @@
 from utils.log import setup_logging
-
 from celery import Celery
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
@@ -7,11 +6,11 @@ from sqlalchemy.orm import sessionmaker
 import redis
 import os
 import logging
-from celery.schedules import crontab
 
-#from Service.celery_tasks.notifications import send_email_task
+
+
 load_dotenv()
-import logging
+
 logger = logging.getLogger(__name__)
 
 # Database.py
