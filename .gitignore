@@ -17,3 +17,7 @@ env/
 # Игнорировать настройки среды
 .idea/
 *.iml
+
+/Client/.next
+/Client/dist
+/Client/node_modules
