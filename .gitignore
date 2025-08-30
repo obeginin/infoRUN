@@ -2,7 +2,6 @@
 _notGit/
 Uploads/
 logs/
-pids/
 
 # Исключить файл логов
 logs/app.log
@@ -10,7 +9,6 @@ logs/app.log
 
 # Исключить виртуальное окружение
 venv/
-.venv/
 env/
 
 # Исключить файл с переменными окружения
@@ -20,6 +18,9 @@ env/
 .idea/
 *.iml
 
+/Client/.next
+/Client/dist
+/Client/node_modules
 .DS_Store
 __pycache__/
 *.pyc
