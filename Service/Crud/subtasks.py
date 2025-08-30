@@ -13,6 +13,7 @@ from pathlib import Path
 import logging
 from typing import List
 from uuid import uuid4
+import base64
 from Service.config_app import UPLOAD_IMAGE_DIR
 
 # Crud\subtasks.py
@@ -124,24 +125,13 @@ async def save_subtask(db, subtask_obj, files_blocks: list):
         logging.exception("Ошибка при создании подзадачи")
         return {"error": str(e)}
 
-'''Логирование и проверка списка файлов'''
-def log_and_validate_files(files: Optional[List], label: str):
-    count = len(files) if files else 0
-    logging.info(f"[SUBTASKS_CRUD] Получено файлов ({label}): {count}")
-
-    for idx, file in enumerate(files or [], start=1):
-        filename = getattr(file, "filename", None)
-        logging.info(f"[SUBTASKS_CRUD] Файл {idx} ({label}): {filename if filename else 'None'}")
-        if not filename:
-            logging.warning(f"[SUBTASKS_CRUD] Файл без имени пропущен ({label})")
-
 
 '''функция сохранения файлов'''
 def save_files(db, files: list, subtask_id: int, folder: str, prefix: str, table: str):
     file_map = {}
     for idx, file in enumerate(files or []):
         ext = file.filename.split('.')[-1]
-        filename = f"{prefix}_{subtask_id}_{idx + 1}.{ext}"
+        filename = f"{prefix}_{subtask_id}_{idx+1}.{ext}"
         full_path = os.path.join(folder, filename)
         try:
             with open(full_path, "wb") as f:
@@ -157,6 +147,46 @@ def save_files(db, files: list, subtask_id: int, folder: str, prefix: str, table
 
     return file_map
 
+async def prepare_files_data(files: List[UploadFile], file_type: str = "file") -> list:
+    """
+    Преобразует список UploadFile в сериализуемый список с base64 и логирует каждый файл.
+
+    Args:
+        files: список UploadFile
+        file_type: строка для логов, например "решение" или "дополнительный"
+
+    Returns:
+        list: список словарей с filename, content_type и base64-данными
+    """
+    logging.info(
+        f"[SUBTASKS_CRUD] Запуск функции prepare_files_data")
+
+    files_data = []
+    for idx, f in enumerate(files, start=1):
+        content = await f.read()
+        files_data.append({
+            "filename": f.filename,
+            "content_type": f.content_type,
+            "data": base64.b64encode(content).decode('utf-8')
+        })
+        logging.info(f"[SUBTASKS_CRUD] {file_type.capitalize()} файл {idx}: {f.filename}, content_type={f.content_type}, size={len(content)} bytes")
+    return files_data
+
+# TODO: пока не нужна, но может пригодтся (перенес логику записи в Celery)
+'''Логирование и проверка списка файлов'''
+def log_and_validate_files(files: Optional[List], label: str):
+    count = len(files) if files else 0
+    logging.info(f"[SUBTASKS_CRUD] Получено файлов ({label}): {count}")
+
+    for idx, file in enumerate(files or [], start=1):
+        filename = getattr(file, "filename", None)
+        logging.info(f"[SUBTASKS_CRUD] Файл {idx} ({label}): {filename if filename else 'None'}")
+        if not filename:
+            logging.warning(f"[SUBTASKS_CRUD] Файл без имени пропущен ({label})")
+
+
+
+# TODO: пока не нужна, но может пригодтся (перенес логику записи в Celery)
 '''Сохраняет список файлов во временную директорию с уникальными именами'''
 async def save_temp_files(files: List[UploadFile], target_dir: Path) -> List[str]:
     """
@@ -180,6 +210,7 @@ async def save_temp_files(files: List[UploadFile], target_dir: Path) -> List[str
     logging.info(f"[SUBTASKS] Всего файлов сохранено: {len(saved_paths)}")
     return saved_paths
 
+# TODO: пока не нужна, но может пригодтся (перенес логику записи в Celery)
 """Сохраняет временные пути файлов подзадачи в таблицу SubTaskTemp и возвращает ID записи"""
 def save_subtask_temp_record(db: Session, subtask_id: int, student_id: int, temp_solution_paths: list, temp_files_paths: list) -> int:
 
