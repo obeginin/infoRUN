@@ -1,5 +1,5 @@
 from Celery_worker.worker import celery_app, SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, FROM_EMAIL, SessionLocal
-
+from utils import errors,general
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import smtplib

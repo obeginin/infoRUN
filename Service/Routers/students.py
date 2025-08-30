@@ -6,7 +6,7 @@ from Service.Crud.auth import verify_password, get_student_by_field
 from Service.Crud.auth import get_current_student, permission_required, get_role_id, hash_password
 from Service.Crud.students import edit_student_id, del_student_id, activate_student_id
 from Service.Crud import students
-from Service.Crud import errors
+from utils import errors,general
 
 from Service.Routers.subtasks import get_files_for_subtask
 from Service.dependencies import get_db  # Зависимость для подключения к базе данных

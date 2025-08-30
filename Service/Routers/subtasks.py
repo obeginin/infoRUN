@@ -3,7 +3,7 @@ from Service.config_app import UPLOAD_IMAGE_DIR, UPLOAD_SOLUTION_DIR, UPLOAD_FIL
 from Service.Crud import subtasks as subtasks_crud
 from Service.Crud import auth
 from Service.Crud import tasks as task_crud
-from Service.Crud import errors,general
+from utils import errors,general
 from Service.dependencies import get_db
 from Service.Models import Student, SubTaskFiles
 from Service.Schemas import subtasks as subtasks_schema

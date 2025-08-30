@@ -11,7 +11,7 @@ from Service.Crud.students import  get_student_id, get_all_students, del_student
 from Service.Security.token import create_access_token, verify_token
 from Service.dependencies import get_db,get_log_db, get_producer_dep
 from Service.producer import send_log, send_email_event
-from Service.Crud import errors
+from utils import errors,general
 from Service.celery_tasks.email_sender import send_email_event_celery
 
 from datetime import datetime

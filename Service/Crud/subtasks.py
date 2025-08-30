@@ -1,6 +1,6 @@
 from Service.config_app import UPLOAD_IMAGE_DIR, UPLOAD_SOLUTION_DIR, UPLOAD_FILES_DIR, LOG_FILE
 from Service.Models import SubTaskFiles
-from Service.Crud import errors,general
+from utils import errors,general
 from utils.log import setup_logging
 from sqlalchemy.orm import Session
 from sqlalchemy import text

@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError
-from Service.Crud import errors
+from utils import errors,general
 
 import logging
 

@@ -3,7 +3,7 @@ from Service.dependencies import get_db
 from Service.Models import Student
 from Service.Schemas.auth import StudentOut, StudentAuth, StudentBase, StudentCreate
 from Service.Security.token import SECRET_KEY, ALGORITHM
-from Service.Crud import errors,general
+from utils import errors,general
 
 #from Service.Crud.students import get_student_by_login
 from fastapi import Depends, HTTPException, status, Request
