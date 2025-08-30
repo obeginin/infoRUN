@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 5, "column": 0}, "map": {"version":3,"sources":["file:///Users/macbookpro/Documents/inforun-new/infoRUN/Client/src/app/profile/create-task/constructor/layout.tsx"],"sourcesContent":["import { ProtectedRoute } from \"@/src/Processes/ProtectedRoute/ProtectedRoute\";\nimport type { Metadata } from \"next\";\n\nexport const metadata: Metadata = {\n  title: \"Создание задания\",\n  description:\n    \"Онлайн-платформа для подготовки к ЕГЭ — твой личный репетитор 24/7!\",\n};\n\nexport default function TaskConstructorLayout({\n  children,\n}: Readonly<{\n  children: React.ReactNode;\n}>) {\n  return <ProtectedRoute>{children}</ProtectedRoute>;\n}\n"],"names":[],"mappings":";;;;;AAAA;;;AAGO,MAAM,WAAqB;IAChC,OAAO;IACP,aACE;AACJ;AAEe,SAAS,sBAAsB,EAC5C,QAAQ,EAGR;IACA,qBAAO,8OAAC,4JAAA,CAAA,iBAAc;kBAAE;;;;;;AAC1B","debugId":null}}]
+}

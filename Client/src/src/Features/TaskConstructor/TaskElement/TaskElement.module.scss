@@ -1,0 +1,41 @@
+.container {
+  border: 1px solid var(--primary);
+  padding: 10px;
+  border-radius: 16px;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.delete {
+  border-radius: 16px;
+  cursor: pointer;
+  padding: 10px;
+  transition: all 0.2s ease-in-out;
+  border: 1px solid var(--error);
+  color: var(--error);
+
+  &:hover {
+    background-color: var(--error);
+    color: var(--bg);
+  }
+}
+
+.arrows {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+
+  i {
+    transition: all 0.2s ease-in-out;
+    &:hover {
+      cursor: pointer;
+      color: var(--primary);
+    }
+  }
+}

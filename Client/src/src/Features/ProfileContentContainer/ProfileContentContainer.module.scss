@@ -1,6 +1,7 @@
 .outside__content {
   width: 100%;
-  min-height: 250px;
+  min-height: min-content;
+  // height: 250px;
   padding: 20px;
   box-shadow: var(--box-shadow);
   border-radius: 32px;

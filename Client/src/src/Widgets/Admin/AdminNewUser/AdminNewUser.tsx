@@ -92,7 +92,7 @@ export const AdminNewUser = () => {
             value={user}
             onChange={(e) => setUser(e.target.value)}
             type="text"
-            label="Имя пользователя"
+            label="Логин"
             error_text={
               loginError ? "Логин должен состоять только из букв" : ""
             }

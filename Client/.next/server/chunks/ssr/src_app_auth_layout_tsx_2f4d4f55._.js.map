@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 5, "column": 0}, "map": {"version":3,"sources":["file:///Users/macbookpro/Documents/inforun-new/infoRUN/Client/src/app/auth/layout.tsx"],"sourcesContent":["import type { Metadata } from \"next\";\n\nexport const metadata: Metadata = {\n  title: \"Вход в личный кабинет\",\n  description:\n    \"Онлайн-платформа для подготовки к ЕГЭ — твой личный репетитор 24/7!\",\n};\n\nexport default function AuthLayout({\n  children,\n}: Readonly<{\n  children: React.ReactNode;\n}>) {\n  return <>{children}</>;\n}\n"],"names":[],"mappings":";;;;;;AAEO,MAAM,WAAqB;IAChC,OAAO;IACP,aACE;AACJ;AAEe,SAAS,WAAW,EACjC,QAAQ,EAGR;IACA,qBAAO;kBAAG;;AACZ","debugId":null}}]
+}

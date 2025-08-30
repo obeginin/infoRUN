@@ -1,0 +1,24 @@
+module.exports = {
+
+"[project]/src/src/Features/Admin/AdminChangeUser/TableUsers/TableUsers.tsx [app-ssr] (ecmascript, async loader)": ((__turbopack_context__) => {
+
+__turbopack_context__.v((parentImport) => {
+    return Promise.all([
+  "server/chunks/ssr/src_src_Features_Admin_AdminChangeUser_2b4522fc._.js"
+].map((chunk) => __turbopack_context__.l(chunk))).then(() => {
+        return parentImport("[project]/src/src/Features/Admin/AdminChangeUser/TableUsers/TableUsers.tsx [app-ssr] (ecmascript)");
+    });
+});
+}),
+"[turbopack]/browser/dev/hmr-client/hmr-client.ts [app-ssr] (ecmascript, async loader)": ((__turbopack_context__) => {
+
+__turbopack_context__.v((parentImport) => {
+    return Promise.all([
+  "server/chunks/ssr/[turbopack]_browser_dev_hmr-client_hmr-client_ts_59fa4ecd._.js"
+].map((chunk) => __turbopack_context__.l(chunk))).then(() => {
+        return parentImport("[turbopack]/browser/dev/hmr-client/hmr-client.ts [app-ssr] (ecmascript)");
+    });
+});
+}),
+
+};

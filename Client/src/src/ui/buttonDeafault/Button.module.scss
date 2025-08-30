@@ -2,14 +2,15 @@
   // padding: 15px 25px;
   border: 1px solid var(--primary);
   border-radius: 32px;
-  font-size: var(--base);
+  // font-size: var(--base);
   font-weight: var(--fw_light);
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   
   &.disabled {
     pointer-events: none;
-    color: var(--text);
+    color: var(--bg);
+    opacity: 0.5;
   }
 
   &.active {

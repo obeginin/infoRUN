@@ -1,6 +1,67 @@
 {
-  "app": {},
-  "appUsingSizeAdjust": false,
+  "app": {
+    "[project]/src/app/admin/page": [
+      "static/media/ae2d06cae279b09e-s.p.caf07e81.woff2",
+      "static/media/6dc4cf9665066235-s.p.7edbc1b2.woff2",
+      "static/media/983204f58773457b-s.p.dc6452d5.woff2"
+    ],
+    "[project]/src/app/auth/page": [
+      "static/media/ae2d06cae279b09e-s.p.caf07e81.woff2",
+      "static/media/6dc4cf9665066235-s.p.7edbc1b2.woff2",
+      "static/media/983204f58773457b-s.p.dc6452d5.woff2"
+    ],
+    "[project]/src/app/forgot-password/page": [
+      "static/media/ae2d06cae279b09e-s.p.caf07e81.woff2",
+      "static/media/6dc4cf9665066235-s.p.7edbc1b2.woff2",
+      "static/media/983204f58773457b-s.p.dc6452d5.woff2"
+    ],
+    "[project]/src/app/forgot-password/success/page": [
+      "static/media/ae2d06cae279b09e-s.p.caf07e81.woff2",
+      "static/media/6dc4cf9665066235-s.p.7edbc1b2.woff2",
+      "static/media/983204f58773457b-s.p.dc6452d5.woff2"
+    ],
+    "[project]/src/app/page": [
+      "static/media/ae2d06cae279b09e-s.p.caf07e81.woff2",
+      "static/media/6dc4cf9665066235-s.p.7edbc1b2.woff2",
+      "static/media/983204f58773457b-s.p.dc6452d5.woff2"
+    ],
+    "[project]/src/app/profile/all-tasks/page": [
+      "static/media/ae2d06cae279b09e-s.p.caf07e81.woff2",
+      "static/media/6dc4cf9665066235-s.p.7edbc1b2.woff2",
+      "static/media/983204f58773457b-s.p.dc6452d5.woff2"
+    ],
+    "[project]/src/app/profile/create-task/constructor/page": [
+      "static/media/ae2d06cae279b09e-s.p.caf07e81.woff2",
+      "static/media/6dc4cf9665066235-s.p.7edbc1b2.woff2",
+      "static/media/983204f58773457b-s.p.dc6452d5.woff2"
+    ],
+    "[project]/src/app/profile/create-task/page": [
+      "static/media/ae2d06cae279b09e-s.p.caf07e81.woff2",
+      "static/media/6dc4cf9665066235-s.p.7edbc1b2.woff2",
+      "static/media/983204f58773457b-s.p.dc6452d5.woff2"
+    ],
+    "[project]/src/app/profile/page": [
+      "static/media/ae2d06cae279b09e-s.p.caf07e81.woff2",
+      "static/media/6dc4cf9665066235-s.p.7edbc1b2.woff2",
+      "static/media/983204f58773457b-s.p.dc6452d5.woff2"
+    ],
+    "[project]/src/app/registration/confirm-email/page": [
+      "static/media/ae2d06cae279b09e-s.p.caf07e81.woff2",
+      "static/media/6dc4cf9665066235-s.p.7edbc1b2.woff2",
+      "static/media/983204f58773457b-s.p.dc6452d5.woff2"
+    ],
+    "[project]/src/app/registration/confirm-email/success/page": [
+      "static/media/ae2d06cae279b09e-s.p.caf07e81.woff2",
+      "static/media/6dc4cf9665066235-s.p.7edbc1b2.woff2",
+      "static/media/983204f58773457b-s.p.dc6452d5.woff2"
+    ],
+    "[project]/src/app/registration/page": [
+      "static/media/ae2d06cae279b09e-s.p.caf07e81.woff2",
+      "static/media/6dc4cf9665066235-s.p.7edbc1b2.woff2",
+      "static/media/983204f58773457b-s.p.dc6452d5.woff2"
+    ]
+  },
+  "appUsingSizeAdjust": true,
   "pages": {},
   "pagesUsingSizeAdjust": false
 }

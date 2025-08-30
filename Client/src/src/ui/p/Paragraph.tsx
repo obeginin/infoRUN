@@ -16,7 +16,7 @@ export const Paragraph = ({
       style={{
         fontSize: `var(--${size})`,
         fontWeight: `var(--fw_${f_weight})`,
-        color: `var(--${color})`
+        color: `var(--${color})`,
       }}
     >
       {children}

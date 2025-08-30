@@ -25,7 +25,7 @@
 .group__black {
   position: absolute;
   z-index: -2;
-  right: -20%;
+  right: 10%;
 }
 
 .male {
@@ -33,16 +33,18 @@
   z-index: -1;
 }
 
-.wave {
-  position: absolute;
-  bottom: 0;
-  z-index: -3;
-}
-
 @media screen and (max-width: 1200px) {
   .container {
     flex-direction: column;
     margin: 0;
+  }
+
+  .right {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 
@@ -51,14 +53,11 @@
     padding: 100px 0;
   }
 
-  .right {
-    display: none;
+  .male {
+    transform: scale(0.5);
+    bottom: -70%;
   }
-
-  .group {
-    top: 0%;
-    left: -20%;
-  }
+  
   .form {
     width: 100%;
   }
