@@ -46,7 +46,7 @@ def run_celery_worker():
     log_separator("CELERY WORKER")
     return subprocess.Popen([
         sys.executable, "-m", "celery",
-        "-A", "Celery_worker.email_worker",
+        "-A", "Celery_worker.worker",
         "worker",
         "--loglevel=info",
         "--pool=solo"
@@ -57,7 +57,7 @@ def run_flower():
     return subprocess.Popen([
         sys.executable,
         "-m", "celery",
-        "-A", "Celery_worker.email_worker",
+        "-A", "Celery_worker.worker",
         "flower",
         f"--broker={REDIS_BROKER_URL}"
     ], stdout=STARTUP_LOG, stderr=subprocess.STDOUT)

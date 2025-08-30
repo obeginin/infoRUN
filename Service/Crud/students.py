@@ -1,7 +1,7 @@
 from Service.Models import Student
 from Service.Schemas.students import StudentTaskRead
 from Service.Schemas import auth
-from Service.Crud import errors,general
+from utils import errors,general
 
 from sqlalchemy.orm import Session
 from sqlalchemy import text

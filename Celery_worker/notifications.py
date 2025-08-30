@@ -1,5 +1,5 @@
-# from Celery_worker.email_worker import celery_app, SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, FROM_EMAIL
-from .email_worker import celery_app, SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, FROM_EMAIL, SessionLocal
+from Celery_worker.worker import celery_app, SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, FROM_EMAIL, SessionLocal
+from utils import errors,general
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import smtplib
@@ -19,31 +19,37 @@ MAX_RETRIES = 3
 @celery_app.task(bind=True, name="email.send", max_retries=3)
 def send_email_task(self, email_id: int):
     db = SessionLocal()
+    logging.info(f"[CELERY WORKER]: запуск функции send_email_task")
     try:
-        email_log = db.execute(
-            text("SELECT * FROM EmailLogs WHERE id = :email_id"),
-            {"email_id": email_id}
-        ).mappings().first()
-
+        email_log = db.execute(text("SELECT * FROM EmailLogs WHERE id = :email_id"),{"email_id": email_id}).mappings().first()
         if not email_log:
+            logging.info(f"[CELERY WORKER]: Email с id={email_id} не найден")
             return
 
-        if email_log.status == "sent" or email_log["retry_count"] >= MAX_RETRIES:
+        logging.info(f"[CELERY WORKER]: Email status={email_log['status']}, retry_count={email_log['retry_count']}")
+        if email_log.status == "sent" :
+            logging.info(f"[CELERY WORKER]: Email уже отправлен, id={email_id}")
+            return
+
+        if  email_log["retry_count"] >= MAX_RETRIES:
+            logging.info(f"[CELERY WORKER]: Превышено количество попыток для email_id={email_id}")
             return
 
         try:
             # --- SMTP отправка ---
+            logging.info(f"[CELERY WORKER]: Подготовка сообщения для {email_log['to_email']}")
             msg = MIMEMultipart("alternative")
             msg["Subject"] = email_log["subject"]
             msg["From"] = FROM_EMAIL
             msg["To"] = email_log["to_email"]
             msg.attach(MIMEText(email_log["body"], "plain", "utf-8"))
 
+            logging.info(f"[CELERY WORKER]: Отправка email через SMTP")
             with smtplib.SMTP(SMTP_HOST, SMTP_PORT) as server:
                 server.starttls()
                 server.login(SMTP_USER, SMTP_PASS)
                 server.sendmail(FROM_EMAIL, [email_log["to_email"]], msg.as_string())
-
+            logging.info(f"[CELERY WORKER]: Email успешно отправлен id={email_id}")
             # успешная отправка
             db.execute(
                 text("UPDATE EmailLogs SET status='sent', sent_at=:sent_at WHERE id=:id"),
@@ -52,6 +58,7 @@ def send_email_task(self, email_id: int):
             db.commit()
 
         except Exception as e:
+            logging.error(f"[CELERY WORKER]: Ошибка при отправке email id={email_id}: {e}", exc_info=True)
             # увеличиваем retry_count
             db.execute(text(
                 "UPDATE EmailLogs SET status='failed', retry_count=retry_count+1 WHERE id=:id"),
@@ -59,11 +66,13 @@ def send_email_task(self, email_id: int):
             )
             db.commit()
             if email_log["retry_count"] + 1 < MAX_RETRIES:
+                logging.info(f"[CELERY WORKER]: Повторная попытка отправки через 60 секунд, email_id={email_id}")
                 raise self.retry(exc=e, countdown=60)
 
         db.commit()
     finally:
         db.close()
+        logging.info(f"[CELERY WORKER]: Завершение задачи send_email_task для email_id={email_id}")
 
 '''def render_template(template_name: str, data: dict) -> str:
     logging.info(f"[EMAIL TEMPLATE] Запрос шаблона: '{template_name}'")

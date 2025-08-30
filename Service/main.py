@@ -1,6 +1,6 @@
 from Service.config_app import TEMPLATES_DIR, LOG_LEVEL, LOG_FILE
 from fastapi import FastAPI, Depends, Request, HTTPException
-from Service.Routers import tasks,students,auth,files  # Импортируем роутер задач
+from Service.Routers import tasks, subtasks,students,auth,subjects, variants  # Импортируем роутер задач
 from fastapi.openapi.docs import get_swagger_ui_html, get_redoc_html
 from fastapi.staticfiles import StaticFiles
 from Service.Crud.auth import get_swagger_user
@@ -27,8 +27,9 @@ from starlette.status import HTTP_400_BAD_REQUEST
 '''главный файл проекта'''
 
 # Настроим логирование при успешном запуске основного приложения FastAPI
+
 setup_logging(log_file=LOG_FILE)
-logging.info(f"Запускаем логирование с файлом: {LOG_FILE}")
+
 
 app = FastAPI(debug=LOG_LEVEL, docs_url=None, redoc_url=None)
 
@@ -37,6 +38,7 @@ origins = [
     "http://127.0.0.1:5173",       # иногда нужен этот
     "http://localhost:3000",       # локальный фронт (Vite)
     "http://127.0.0.1:3000",
+    "http://10.8.0.9:3000",
     "https://info-run.ru",         # если фронт будет на проде
 ]
 # для запросов с фронта
@@ -52,17 +54,31 @@ app.add_middleware(LoggingMiddleware) # Middleware для логов всех з
 #frontend_path = os.path.join(os.path.dirname(__file__), "..", "Client", "dist")
 #dist_static_dir = os.path.join(os.path.dirname(__file__), "..", "Client", "dist", "_next")
 
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    errors = exc.errors()
+
+    # Удаляем поле ctx, чтобы убрать дублирование
+    for error in errors:
+        if "ctx" in error:
+            del error["ctx"]
+
+    logging.warning(f"[400 VALIDATION ERROR] {request.method} {request.url} - ошибки: {errors}")
+
+    return JSONResponse(
+        status_code=HTTP_400_BAD_REQUEST,
+        content={"detail": errors},
+    )
 
 producer = get_kafka_producer()
 # Регистрируем роутер
 app.include_router(auth.auth_router) # Регистрируем роутер Аутентификации
 app.include_router(auth.admin_router)
 app.include_router(auth.home_router)
-app.include_router(tasks.subject_router)  # маршрут для предметов
+app.include_router(subjects.subject_router)  # маршрут для предметов
 app.include_router(tasks.task_router) # подключает маршруты из routers/tasks.py.
-app.include_router(tasks.subtask_router)  # Регистрируем роутер для подзадач
-app.include_router(tasks.task_js_router) # Регистрируем роутер для html файлов с js
-app.include_router(tasks.varinant_router) # Регистрируем роутер для html файлов с jinja2
+app.include_router(subtasks.subtask_router)  # Регистрируем роутер для подзадач
+app.include_router(variants.varinant_router) # Регистрируем роутер для html файлов с jinja2
 
 app.include_router(students.students_router)  # Регистрируем роутер для студентов
 app.include_router(students.students_subtasks_router) # Регистрируем роутер для задач студентов
@@ -106,35 +122,26 @@ def shutdown_event():
         producer.close()
 
 
-@app.exception_handler(RequestValidationError)
-async def validation_exception_handler(request: Request, exc: RequestValidationError):
-    errors = exc.errors()
 
-    # Удаляем поле ctx, чтобы убрать дублирование
-    for error in errors:
-        if "ctx" in error:
-            del error["ctx"]
-
-    logging.warning(f"[400 VALIDATION ERROR] {request.method} {request.url} - ошибки: {errors}")
-
-    return JSONResponse(
-        status_code=HTTP_400_BAD_REQUEST,
-        content={"detail": errors},
-    )
 
 """Swagger"""
 
-@app.get("/docs", dependencies=[Depends(get_swagger_user)])
+@app.get("/api/docs", dependencies=[Depends(get_swagger_user)])
 async def get_documentation():
-    return get_swagger_ui_html(openapi_url=app.openapi_url, title="Документация API")
+    return get_swagger_ui_html(
+        openapi_url="/api/openapi.json",  # <- важно
+        title="Документация API"
+    )
 
-
-@app.get("/redoc", dependencies=[Depends(get_swagger_user)])
+@app.get("/api/redoc", dependencies=[Depends(get_swagger_user)])
 async def get_redoc_documentation():
-    return get_redoc_html(openapi_url=app.openapi_url, title="Документация API")
+    return get_redoc_html(
+        openapi_url="/api/openapi.json",
+        title="Документация API"
+    )
 
 # openapi.json без защиты
-@app.get("/openapi.json")
+@app.get("/api/openapi.json")
 async def openapi():
     return app.openapi()
 

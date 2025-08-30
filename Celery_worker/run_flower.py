@@ -5,7 +5,7 @@ import sys
 def run_celery():
     cmd = [
         sys.executable, "-m", "celery",
-        "-A", "Celery_worker.email_worker",
+        "-A", "Celery_worker.worker",
         "flower",
         "--port=5555"
     ]

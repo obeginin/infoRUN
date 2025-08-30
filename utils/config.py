@@ -21,12 +21,22 @@ else:
 os.makedirs(LOG_DIR, exist_ok=True) # создает каталог, если его нет.
 os.makedirs(ARCHIVE_LOG_DIR, exist_ok=True)
 
-
+UPLOAD_IMAGE_DIR = Path(os.getenv("UPLOAD_IMAGE_DIR"))
+UPLOAD_SOLUTION_DIR = Path(os.getenv("UPLOAD_SOLUTION_DIR"))
+UPLOAD_FILES_DIR = Path(os.getenv("UPLOAD_FILES_DIR"))
+UPLOAD_STUDENTS_IMAGE_DIR = Path(os.getenv("UPLOAD_STUDENTS_IMAGE_DIR"))
+TEMPLATES_DIR = Path(os.getenv("TEMPLATES_DIR"))
+UPLOAD_IMAGE_DIR.mkdir(parents=True, exist_ok=True)
+UPLOAD_SOLUTION_DIR.mkdir(parents=True, exist_ok=True)
+UPLOAD_FILES_DIR.mkdir(parents=True, exist_ok=True)
+UPLOAD_STUDENTS_IMAGE_DIR.mkdir(parents=True, exist_ok=True)
+TEMPLATES_DIR.mkdir(parents=True, exist_ok=True)
 #время по москве
 def TIME_NOW():
     now_moscow = datetime.now(timezone("Europe/Moscow")) # Убрать таймзону, но сохранить локальное время
-    local_time = now_moscow.replace(tzinfo=None)  # без +03:00
-    return local_time.strftime("%Y-%m-%d %H:%M:%S") # АКТУАЛЬНОЕ время
+    return now_moscow.replace(tzinfo=None)  # без +03:00
+
+    #return local_time.strftime("%Y-%m-%d %H:%M:%S") # АКТУАЛЬНОЕ время
 
 '''Уровень логирования'''
 LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")

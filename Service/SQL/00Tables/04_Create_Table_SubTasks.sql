@@ -34,3 +34,44 @@ drop table SubTasks
 */
 
 
+
+CREATE TABLE SubTasksImages (
+	ID INT IDENTITY(1,1) PRIMARY KEY,
+	SubTaskID INT REFERENCES SubTasks(SubTaskID) ON DELETE CASCADE,
+	FileName NVARCHAR(255) NOT NULL,
+	FilePath NVARCHAR(500) NOT NULL,
+	UploadDate DATETIME DEFAULT GETDATE()
+	);
+
+CREATE TABLE SubTaskFiles (
+	ID INT PRIMARY KEY IDENTITY,
+	SubTaskID INT FOREIGN KEY REFERENCES SubTasks(SubTaskID),
+	FileName NVARCHAR(255),
+	FilePath NVARCHAR(500),
+	UploadDate DATETIME DEFAULT GETDATE()
+	);
+
+CREATE TABLE SubTaskSolutions (
+	ID INT IDENTITY(1,1) PRIMARY KEY,
+	SubTaskID INT REFERENCES SubTasks(SubTaskID) ON DELETE CASCADE,
+	FileName NVARCHAR(255) NOT NULL,
+	FilePath NVARCHAR(500) NOT NULL,
+	UploadDate DATETIME DEFAULT GETDATE()
+	);
+
+-- таблица для хранения временных файлов
+CREATE TABLE SubTaskTemp (
+    ID INT IDENTITY(1,1) PRIMARY KEY,
+    SubTaskID INT NOT NULL,
+    StudentID INT NOT NULL,
+    SolutionTempPath NVARCHAR(MAX) NULL,				-- путь к файлам с решением
+    FilesTempPaths NVARCHAR(MAX) NULL,					-- дополнительные файлы
+    CreatedAt DATETIME2 DEFAULT GETDATE(),				
+    CONSTRAINT FK_SubTaskSolutionsTemp_SubTasks FOREIGN KEY (SubTaskID)
+        REFERENCES SubTasks(SubTaskID)
+);
+
+SELECT * FROM SubTaskTemp order by SubTaskID desc
+SELECT * FROM SubTasksImages  order by SubTaskID desc
+SELECT * FROM SubTaskSolutions order by SubTaskID desc
+SELECT * FROM SubTaskFiles order by SubTaskID desc

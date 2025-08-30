@@ -6,7 +6,7 @@ def run_celery_beat():
 
     cmd = [
         sys.executable, "-m", "celery",
-        "-A", "Celery_worker.email_worker",
+        "-A", "Celery_worker.worker",
         "beat",
         "--loglevel=info"
     ]
