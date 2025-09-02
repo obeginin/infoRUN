@@ -6,6 +6,7 @@ from fastapi.templating import Jinja2Templates
 load_dotenv() # загружаем переменные из файла .env
 
 
+
 '''подключаем токен из конфига .env'''
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("ALGORITHM", "HS256")  # второе значение дефолт
