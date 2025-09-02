@@ -88,45 +88,26 @@ def _error(status_code: int, error: str, message: str, field: Optional[str] = No
     return HTTPException(status_code=status_code, detail=detail)
 
 # 400 — Неверный запрос
-def bad_request(
-    error: str = "BadRequest",
-    message: str = "Некорректный запрос",
-    field: Optional[str] = None
-):
+def bad_request(error: str = "BadRequest", message: str = "Некорректный запрос",field: Optional[str] = None):
     return _error(400, error, message, field)
 
 # 401 — Неавторизован
-def unauthorized(
-    error: str = "Unauthorized",
-    message: str = "Пользователь не авторизован"
-):
+def unauthorized(error: str = "Unauthorized", message: str = "Пользователь не авторизован"):
     return _error(401, error, message, headers={"WWW-Authenticate": "Bearer"})
 
 # 403 — Нет доступа
-def access_denied(
-    error: str = "AccessDenied",
-    message: str = "Доступ запрещён"
-):
+def access_denied(error: str = "AccessDenied", message: str = "Доступ запрещён"):
     return _error(403, error, message)
 
 # 404 — Не найдено
-def not_found(
-    error: str = "NotFound",
-    message: str = "Ресурс не найден"
-):
+def not_found(error: str = "NotFound", message: str = "Ресурс не найден"):
     return _error(404, error, message)
 
 # 409 — Конфликт
-def conflict(
-    error: str = "ConflictData",
-    message: str = "Конфликт данных"
-):
+def conflict(error: str = "ConflictData", message: str = "Конфликт данных"):
     return _error(409, error, message)
 
 # 500 — Внутренняя ошибка сервера
-def internal_server(
-    error: str = "ServerError",
-    message: str = "Внутренняя ошибка сервера"
-):
+def internal_server(error: str = "ServerError", message: str = "Внутренняя ошибка сервера"):
     return _error(500, error, message)
 

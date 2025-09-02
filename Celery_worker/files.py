@@ -1,5 +1,5 @@
 from utils import errors,general
-from utils.config import UPLOAD_SOLUTION_DIR, UPLOAD_FILES_DIR
+from utils.config import settings
 from Celery_worker.worker import celery_app, SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, FROM_EMAIL, SessionLocal
 import os
 import shutil

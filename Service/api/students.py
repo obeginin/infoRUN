@@ -8,7 +8,7 @@ from Service.Crud.students import edit_student_id, del_student_id, activate_stud
 from Service.Crud import students
 from utils import errors,general
 
-from Service.Routers.subtasks import get_files_for_subtask
+from Service.api.subtasks import get_files_for_subtask
 from Service.dependencies import get_db  # Зависимость для подключения к базе данных
 
 from Service.producer import send_log
@@ -28,7 +28,7 @@ from fastapi.encoders import jsonable_encoder
 import logging
 logger = logging.getLogger(__name__) # создание логгера для текущего модуля
 
-# Routers\Students.py
+# api\Students.py
 ''' Маршруты и Эндпоинты'''
 
 

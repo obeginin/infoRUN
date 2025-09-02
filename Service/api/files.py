@@ -8,7 +8,7 @@ from pathlib import Path
 from Service.Crud.tasks import get_subtasks_id
 import logging
 logger = logging.getLogger(__name__)
-# /Routers/files.py
+# /api/files.py
 '''Загрузка файла'''
 
 '''Не используется!!!!!!!'''

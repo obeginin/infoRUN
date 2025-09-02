@@ -22,7 +22,7 @@ from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 import logging
 
-# Routers\subjects.py
+# api\subjects.py
 
 
 load_dotenv()

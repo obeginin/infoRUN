@@ -21,7 +21,7 @@ from dotenv import load_dotenv
 
 import logging
 
-# Routers\tasks.py
+# api\tasks.py
 ''' Маршруты и Эндпоинты'''
 
 load_dotenv() # загружаем переменные из файла .env

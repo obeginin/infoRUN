@@ -23,7 +23,7 @@ from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 import logging
 
-# Routers\variants.py
+# api\variants.py
 ''' Маршруты и Эндпоинты'''
 
 load_dotenv()
@@ -31,12 +31,12 @@ logger = logging.getLogger(__name__)
 
 
 
-varinant_router = APIRouter(prefix="/api/variants", tags=["variants"])
+variant_router = APIRouter(prefix="/api/variants", tags=["variants"])
 
 
 # /api/tasks/variants  (GET) @
 ''' Получить список вариантов'''
-@varinant_router.get("")
+@variant_router.get("")
 def read_tasks_id(db: Session = Depends(get_db)):
     result = db.execute(text(f"select VariantID, VariantName from Variants order by VariantName")).fetchall()
     variants = [dict(row._mapping) for row in result]
@@ -45,7 +45,7 @@ def read_tasks_id(db: Session = Depends(get_db)):
 
 # /api/tasks/exec/{VariantID}
 '''вызов хранимки с вариантом'''
-@varinant_router.get("/exec/{VariantID}/{StudentID}", summary="роут с вызовом хранимой процедуры")
+@variant_router.get("/exec/{VariantID}/{StudentID}", summary="роут с вызовом хранимой процедуры")
 def read_tasks_of_variant (VariantID: int, StudentID: int, db: Session = Depends(get_db)):
     query = text("EXEC dbo.GetStudentsTasks @VariantID =:VariantID, @StudentID =:StudentID")
     result = db.execute(query, {"VariantID": VariantID, "StudentID": StudentID}).fetchall()
@@ -56,7 +56,7 @@ def read_tasks_of_variant (VariantID: int, StudentID: int, db: Session = Depends
     return jsonable_encoder(subtasks)
 
 # /api/variants/check_answers
-@varinant_router.post("/check_answers", summary="роут который проверяет ответы пользователя для целого вараинта",
+@variant_router.post("/check_answers", summary="роут который проверяет ответы пользователя для целого вараинта",
                       description="передаем словарь с ответами на все задангия пользователя в виде строк")
 def check_answers(user_answers: Dict[int, Optional[str]], db: Session = Depends(get_db)):
     results = []

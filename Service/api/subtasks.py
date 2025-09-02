@@ -33,7 +33,7 @@ from fastapi.encoders import jsonable_encoder
 import shutil, os, json
 import logging
 from pydantic import parse_obj_as
-# Routers\tasks.py
+# api\tasks.py
 ''' Маршруты и Эндпоинты'''
 
 load_dotenv() # загружаем переменные из файла .env

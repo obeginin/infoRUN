@@ -32,7 +32,7 @@ from fastapi.responses import HTMLResponse
 import logging
 logger = logging.getLogger(__name__)
 
-# Routers\auth.py
+# api\auth.py
 home_router = APIRouter() # страница для пользователей
 auth_router = APIRouter(prefix="/api/auth", tags=["auth"]) # страница для пользователей
 admin_router = APIRouter(prefix="/api/admin", tags=["admin"]) # страница для админа
