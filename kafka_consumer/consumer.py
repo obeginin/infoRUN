@@ -14,11 +14,11 @@ import logging
 from pathlib import Path
 import time
 import sys
-
+from utils.log import setup_logging
 # для того чтобы было видно родительский каталог и можно было импортировать utils.log
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(BASE_DIR)
-from utils.log import setup_logging
+
 load_dotenv()
 KAFKA_BOOTSTRAP_SERVERS = os.getenv("KAFKA_BOOTSTRAP_SERVERS")
 # переменные для подключения к БД с логами

@@ -9,7 +9,7 @@ from sqlalchemy import text
 from datetime import datetime
 
 from sqlalchemy.orm import Session
-from utils.config import  TIME_NOW
+from utils.time import  TIME_NOW
 
 
 logger = logging.getLogger(__name__)

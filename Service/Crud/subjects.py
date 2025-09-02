@@ -1,4 +1,4 @@
-from Service.config_app import UPLOAD_IMAGE_DIR, UPLOAD_SOLUTION_DIR, UPLOAD_FILES_DIR
+from utils.config import settings
 
 from Service.Models import SubTaskFiles
 from utils import errors,general

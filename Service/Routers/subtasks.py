@@ -1,5 +1,6 @@
 from Service.Schemas.subtasks import SubTaskCreate, Block #, SubTaskResponse
-from Service.config_app import UPLOAD_IMAGE_DIR, UPLOAD_SOLUTION_DIR, UPLOAD_FILES_DIR, TEMPLATES_DIR
+from utils.config import settings
+
 from Service.Crud import subtasks as subtasks_crud
 from Service.Crud import auth
 from Service.Crud import tasks as task_crud
@@ -26,7 +27,7 @@ from typing import Dict, Optional
 import shutil
 from fastapi.responses import RedirectResponse
 from dotenv import load_dotenv
-from Service.config_app import UPLOAD_IMAGE_DIR
+
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 import shutil, os, json
@@ -192,9 +193,9 @@ async def create_subtask(
 
         # сохраняем временные файлы
         logging.info(f"[SUBTASKS] Сохраняем временные файлы с решением")
-        temp_solution_paths = await subtasks_crud.save_temp_files(files_solution, TEMPLATES_DIR)
+        temp_solution_paths = await subtasks_crud.save_temp_files(files_solution, settings.TEMPLATES_DIR)
         logging.info(f"[SUBTASKS] Сохраняем временные дополнительные файлы")
-        temp_extra_paths = await subtasks_crud.save_temp_files(files, TEMPLATES_DIR)
+        temp_extra_paths = await subtasks_crud.save_temp_files(files, settings.TEMPLATES_DIR)
 
 
         # сохраняем пути во временную таблицу
@@ -299,7 +300,7 @@ async def create_subtask(
             kwargs={
                 "subtask_id": subtask_id,
                 "files_data": solution_files_data,
-                "folder": str(UPLOAD_SOLUTION_DIR),
+                "folder": str(settings.UPLOAD_SOLUTION_DIR),
                 "table": "SubTaskSolutions",
                 "prefix": "sol_subtask"
             }
@@ -311,7 +312,7 @@ async def create_subtask(
             kwargs={
                 "subtask_id": subtask_id,
                 "files_data": extra_files_data,
-                "folder": str(UPLOAD_FILES_DIR),
+                "folder": str(settings.UPLOAD_FILES_DIR),
                 "table": "SubTaskFiles",
                 "prefix": "f_subtask"
             }
@@ -464,7 +465,7 @@ def post_edit_subtask_form(
             filename = f"solution_task_{TaskID}_sub_{SubTaskNumber}.{ext}"
             solution_path = f"Uploads/solutions/{filename}"
 
-        filepath = UPLOAD_SOLUTION_DIR / filename
+        filepath = settings.UPLOAD_SOLUTION_DIR / filename
 
         # Сохраняем файл
         with filepath.open("wb") as buffer:

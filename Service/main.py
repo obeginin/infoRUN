@@ -1,4 +1,4 @@
-from Service.config_app import TEMPLATES_DIR, LOG_LEVEL, LOG_FILE
+from utils.config import settings
 from fastapi import FastAPI, Depends, Request, HTTPException
 from Service.Routers import tasks, subtasks,students,auth,subjects, variants  # Импортируем роутер задач
 from fastapi.openapi.docs import get_swagger_ui_html, get_redoc_html
@@ -28,10 +28,10 @@ from starlette.status import HTTP_400_BAD_REQUEST
 
 # Настроим логирование при успешном запуске основного приложения FastAPI
 
-setup_logging(log_file=LOG_FILE)
+setup_logging(log_file=settings.LOG_FILE)
 
 
-app = FastAPI(debug=LOG_LEVEL, docs_url=None, redoc_url=None)
+app = FastAPI(debug=settings.LOG_LEVEL, docs_url=None, redoc_url=None)
 
 origins = [
     "http://localhost:5173",       # локальный фронт (Vite)
@@ -89,8 +89,10 @@ app.include_router(students.students_subtasks_router) # Регистрируем
 
 #app.include_router(web_auth.router) # подключаем home
 #app.mount("/static", StaticFiles(directory="Templates/Static"), name="static") # для CSS файлов
-app.mount("/Uploads", StaticFiles(directory="Uploads"), name="uploads") # для файлов
-templates = Jinja2Templates(directory=TEMPLATES_DIR)
+
+app.mount("/Uploads", StaticFiles(directory=settings.UPLOADS_DIR), name="uploads") # для файлов
+
+templates = Jinja2Templates(directory=settings.TEMPLATES_DIR)
 
 
 

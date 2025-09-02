@@ -39,18 +39,7 @@ def send_email_event_celery(request: EmailRequest, event_type: str, db: Session 
 
 
 
-def send_files(event_type, email, subject, template, data):
-    logging.info(f"[EMAIL_SENDER]: запуск функции send_files")
-    celery_app.send_task(
-        name="save_subtask_files",
-        kwargs={
-            "event_type": event_type,
-            "to_email": email,
-            "subject": subject,
-            "template_name": template,
-            "data": data
-        }
-    )
+
 
 # функция для вызова Celery задачи
 def send_email(event_type, email, subject, template, data):

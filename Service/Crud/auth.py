@@ -1,8 +1,10 @@
-from Service.config_app import *
+
+from utils.config import settings
+
 from Service.dependencies import get_db
 from Service.Models import Student
 from Service.Schemas.auth import StudentOut, StudentAuth, StudentBase, StudentCreate
-from Service.Security.token import SECRET_KEY, ALGORITHM
+
 from utils import errors,general
 
 #from Service.Crud.students import get_student_by_login
@@ -114,7 +116,7 @@ def get_current_student(request: Request, db: Session = Depends(get_db)) -> Stud
 
     try:
         #Расшифровка JWT токена и получение логина и проверка срока его действия
-        payload = jwt.decode(param, SECRET_KEY, algorithms=[ALGORITHM], options={"verify_exp": True})
+        payload = jwt.decode(param, settings.SECRET_KEY, algorithms=[settings.ALGORITHM], options={"verify_exp": True})
         login: str = payload.get("sub")
         if login is None:
             logger.warning(f"[AUTH] Токен не содержит логин. IP: {ip}, UA: {user_agent}")

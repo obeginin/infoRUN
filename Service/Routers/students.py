@@ -1,4 +1,4 @@
-from Service.config_app import UPLOAD_IMAGE_DIR, UPLOAD_SOLUTION_DIR, UPLOAD_FILES_DIR, UPLOAD_STUDENTS_IMAGE_DIR, TEMPLATES_DIR
+from utils.config import settings
 from Service.Schemas.students import StudentTaskRead, StudentTasksQueryParams, AnswerInput
 from Service.Schemas.auth import StudentAuth, StudentOut, StudentCreate, SearchStudentQuery, StudentField, StudentEdit
 
@@ -35,7 +35,7 @@ logger = logging.getLogger(__name__) # создание логгера для т
 
 students_router = APIRouter(prefix="/api/students", tags=["students"])
 students_subtasks_router = APIRouter(prefix="/api/students_subtasks", tags=["students_subtasks"])
-templates = Jinja2Templates(directory=TEMPLATES_DIR)
+templates = Jinja2Templates(directory=settings.TEMPLATES_DIR)
 
 
 """API"""
@@ -507,7 +507,7 @@ async def submit_solution(
         ext = StudentSolutionFile.filename.split('.')[-1]
         # Сохраняем файл решения на диск (папку можно настроить)
         filename = f"taskID_{SubTaskID}_task_{task_id}_sub_{subtask_number}_student_{StudentID}.{ext}"
-        filepath = UPLOAD_STUDENTS_IMAGE_DIR / filename
+        filepath = settings.UPLOAD_STUDENTS_IMAGE_DIR / filename
         with filepath.open("wb") as buffer:
             shutil.copyfileobj(StudentSolutionFile.file, buffer)
         student_solution_path = f"Uploads/StudentSolutions/{filename}"

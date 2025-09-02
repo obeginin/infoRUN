@@ -1,4 +1,4 @@
-from Service.config_app import UPLOAD_IMAGE_DIR, UPLOAD_SOLUTION_DIR, UPLOAD_FILES_DIR, LOG_FILE
+from utils.config import settings
 from Service.Models import SubTaskFiles
 from utils import errors,general
 from utils.log import setup_logging
@@ -14,7 +14,7 @@ import logging
 from typing import List
 from uuid import uuid4
 import base64
-from Service.config_app import UPLOAD_IMAGE_DIR
+
 
 # Crud\subtasks.py
 
@@ -83,7 +83,7 @@ async def save_subtask(db, subtask_obj, files_blocks: list):
         logging.info(f"[SUBTASKS_CRUD] Подзадача вставлена с ID {subtask_id}")
 
         # Сохраняем файлы и создаем записи в таблицах
-        file_url_map = save_files(db, files_blocks, subtask_id, UPLOAD_IMAGE_DIR, "subtask", "SubTasksImages")
+        file_url_map = save_files(db, files_blocks, subtask_id, settings.UPLOAD_IMAGE_DIR, "subtask", "SubTasksImages")
         #file_url_map_2 = save_files(files_solution, UPLOAD_SOLUTION_DIR, "sol_subtask", "SubTaskSolutions")
         #ile_url_map_3 = save_files(files, UPLOAD_FILES_DIR, "f_subtask", "SubTaskFiles")
 

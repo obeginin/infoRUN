@@ -1,5 +1,5 @@
 
-from Service.config_app import UPLOAD_IMAGE_DIR, UPLOAD_SOLUTION_DIR, UPLOAD_FILES_DIR, TEMPLATES_DIR
+from utils.config import settings
 
 from utils import errors,general
 from Service.dependencies import get_db

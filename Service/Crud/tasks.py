@@ -1,4 +1,5 @@
-from Service.config_app import UPLOAD_IMAGE_DIR, UPLOAD_SOLUTION_DIR, UPLOAD_FILES_DIR
+from utils.config import settings
+
 from Service.Models import SubTaskFiles
 from utils import errors,general
 
@@ -192,7 +193,7 @@ def create_subtask_from_form(
         if ImageFile and ImageFile.filename:
             ext = ImageFile.filename.split('.')[-1]
             filename = f"task_{TaskID}_sub_{subtask_number}.{ext}"
-            filepath = UPLOAD_IMAGE_DIR / filename
+            filepath = settings.UPLOAD_IMAGE_DIR / filename
             with filepath.open("wb") as buffer:
                 shutil.copyfileobj(ImageFile.file, buffer)
             image_path = f"Uploads/images/{filename}"
@@ -203,7 +204,7 @@ def create_subtask_from_form(
         if SolutionFile and SolutionFile.filename:
             ext = SolutionFile.filename.split('.')[-1]
             filename = f"solution_task_{TaskID}_sub_{subtask_number}.{ext}"
-            sol_filepath = UPLOAD_SOLUTION_DIR / filename
+            sol_filepath = settings.PLOAD_SOLUTION_DIR / filename
             with sol_filepath.open("wb") as buffer:
                 shutil.copyfileobj(SolutionFile.file, buffer)
             solution_path = f"Uploads/solutions/{filename}"
@@ -278,8 +279,8 @@ def upload_file(
             file.file.seek(pos)  # вернуться обратно
             ext = Path(file.filename).suffix  # с точкой или пустая строка
             filename = f"task_{task_id}_sub_{subtask_number}_file{start_index + idx}{ext}"
-            filepath = UPLOAD_FILES_DIR / filename
-            file_path = f"{UPLOAD_FILES_DIR.as_posix()}/{filename}"
+            filepath = settings.UPLOAD_FILES_DIR / filename
+            file_path = f"{settings.UPLOAD_FILES_DIR.as_posix()}/{filename}"
             filename_db = f"№{task_id}_{start_index + idx}{ext}"
             with filepath.open("wb") as buffer:
                 shutil.copyfileobj(file.file, buffer)

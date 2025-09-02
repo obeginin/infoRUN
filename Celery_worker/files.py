@@ -32,7 +32,6 @@ def save_files_celery(subtask_id: int, files_data: list, folder: str, table: str
     """
     logging.info(f"[CELERY WORKER]: запуск функции save_files_celery")
     logging.info(f"[CELERY WORKER]: subtask_id:{subtask_id}, folder:{folder}, table:{table}, prefix:{prefix}")
-    Path(folder).mkdir(parents=True, exist_ok=True)
     file_map = {}
 
     for idx, f in enumerate(files_data, start=1):

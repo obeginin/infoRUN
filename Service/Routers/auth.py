@@ -1,4 +1,5 @@
-from Service.config_app import TEMPLATES_DIR, ACCESS_TOKEN_EXPIRE_MINUTES, TIME_NOW
+from utils.config import settings
+from utils.time import TIME_NOW
 from Service.Models import Student
 from Service.Schemas import auth
 
@@ -35,7 +36,7 @@ logger = logging.getLogger(__name__)
 home_router = APIRouter() # страница для пользователей
 auth_router = APIRouter(prefix="/api/auth", tags=["auth"]) # страница для пользователей
 admin_router = APIRouter(prefix="/api/admin", tags=["admin"]) # страница для админа
-templates = Jinja2Templates(directory=TEMPLATES_DIR)
+templates = Jinja2Templates(directory=settings.TEMPLATES_DIR)
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
 
@@ -260,7 +261,7 @@ def register_user(user_data: auth.UserCreate, db: Session = Depends(get_db)):
     # Генерация токена подтверждения
     token = create_access_token(
         data={"sub": user_data.email}, # закладываем в токен email
-        expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        expires_delta=timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     )
 
     # Подготовка параметров для вставки
@@ -304,7 +305,7 @@ def register_user(user_data: auth.UserCreate, db: Session = Depends(get_db)):
     # Генерация токена подтверждения
     token = create_access_token(
         data={"sub": user_data.email}, # закладываем в токен email
-        expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        expires_delta=timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     )
 
     # Подготовка параметров для вставки

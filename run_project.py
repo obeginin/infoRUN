@@ -2,7 +2,7 @@ import subprocess
 import sys
 import os
 import time
-from utils.config import TIME_NOW
+from utils.time import TIME_NOW
 from pathlib import Path
 
 # Корень проекта (где находится сам файл run_all.py)

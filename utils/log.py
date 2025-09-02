@@ -3,16 +3,16 @@ import logging
 from logging.handlers import TimedRotatingFileHandler
 import os
 import datetime
-from .config import LOG_DIR, ARCHIVE_LOG_DIR, LOG_LEVEL
+from utils.config import settings
 import time
 import shutil
 import re
 from pathlib import Path
 
 def setup_logging(log_file: str = "app.log", archive_dir: Path = None):
-    log_dir = LOG_DIR
+    log_dir = settings.LOG_DIR
     log_path = log_dir / log_file
-    archive_dir = archive_dir or ARCHIVE_LOG_DIR
+    archive_dir = archive_dir or settings.ARCHIVE_LOG_DIR
     archive_dir.mkdir(parents=True, exist_ok=True)
 
     class ArchiveHandler(TimedRotatingFileHandler):
@@ -57,7 +57,7 @@ def setup_logging(log_file: str = "app.log", archive_dir: Path = None):
     )
 
     logging.basicConfig(
-        level=getattr(logging, LOG_LEVEL, logging.INFO),
+        level=getattr(logging, settings.LOG_LEVEL, logging.INFO),
         format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
         handlers=[handler, logging.StreamHandler()]
     )
