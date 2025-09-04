@@ -1,4 +1,4 @@
-
+п»ї
 IF EXISTS(SELECT 1 FROM sys.procedures WHERE OBJECT_SCHEMA_NAME([object_id]) = 'dbo' and name = 'GetStudentTasksStats')
 	DROP PROCEDURE dbo.GetStudentTasksStats
 GO
@@ -11,9 +11,9 @@ AS
 BEGIN
     SELECT 
         COUNT(*) AS TotalSubTasks,
-        COUNT(CASE WHEN CompletionStatus = 'Выполнено' THEN 1 END) AS CompletedSubTasks,
-        COUNT(CASE WHEN CompletionStatus = 'В процессе' THEN 1 END) AS InProgressSubTasks,
-        COUNT(CASE WHEN CompletionStatus IS NULL OR CompletionStatus = 'Не приступал' THEN 1 END) AS NotStartedSubTasks,
+        COUNT(CASE WHEN CompletionStatus = 'Р’С‹РїРѕР»РЅРµРЅРѕ' THEN 1 END) AS CompletedSubTasks,
+        COUNT(CASE WHEN CompletionStatus = 'Р’ РїСЂРѕС†РµСЃСЃРµ' THEN 1 END) AS InProgressSubTasks,
+        COUNT(CASE WHEN CompletionStatus IS NULL OR CompletionStatus = 'РќРµ РїСЂРёСЃС‚СѓРїР°Р»' THEN 1 END) AS NotStartedSubTasks,
         AVG(CAST(Score AS FLOAT)) AS AverageScore,
         MIN(StartDate) AS FirstStartDate,
 		MAX(CompletionDate) AS LastCompletedDate

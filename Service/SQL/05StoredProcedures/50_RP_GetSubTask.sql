@@ -1,5 +1,5 @@
-/*
-Основная хранимка
+п»ї/*
+РћСЃРЅРѕРІРЅР°СЏ С…СЂР°РЅРёРјРєР°
 */
 
 
@@ -9,42 +9,42 @@ GO
 
 CREATE PROCEDURE GetSubtask
 
-    @SubTaskID INT					= NULL,			-- по id задачи
-    @TaskID INT						= NULL,			-- по id категории
-	@SubjectID INT					= NULL,			-- по id предмета
-	@VariantID INT					= NULL,			-- по id варианта
-	@Search NVARCHAR(100)			= NULL,			-- Поиск по ключевому слову (логин, описание и т.п.)
+    @SubTaskID INT					= NULL,			-- РїРѕ id Р·Р°РґР°С‡Рё
+    @TaskID INT						= NULL,			-- РїРѕ id РєР°С‚РµРіРѕСЂРёРё
+	@SubjectID INT					= NULL,			-- РїРѕ id РїСЂРµРґРјРµС‚Р°
+	@VariantID INT					= NULL,			-- РїРѕ id РІР°СЂРёР°РЅС‚Р°
+	@Search NVARCHAR(100)			= NULL,			-- РџРѕРёСЃРє РїРѕ РєР»СЋС‡РµРІРѕРјСѓ СЃР»РѕРІСѓ (Р»РѕРіРёРЅ, РѕРїРёСЃР°РЅРёРµ Рё С‚.Рї.)
 	@UploadDate Date				= NULL,
 	@Creator NVARCHAR(50)			= NULL,
-	@SortColumn1 NVARCHAR(50)		= NULL,			-- Выбор колонки для сортировки 1 уровень
-	@SortColumn2 NVARCHAR(50)		= NULL,			-- Выбор колонки для сортировки 2 уровень
-    @SortDirection1 NVARCHAR(4)		= 'ASC',		-- Сортировка (по возрастанию ASC ) DESC -по убыванию
+	@SortColumn1 NVARCHAR(50)		= NULL,			-- Р’С‹Р±РѕСЂ РєРѕР»РѕРЅРєРё РґР»СЏ СЃРѕСЂС‚РёСЂРѕРІРєРё 1 СѓСЂРѕРІРµРЅСЊ
+	@SortColumn2 NVARCHAR(50)		= NULL,			-- Р’С‹Р±РѕСЂ РєРѕР»РѕРЅРєРё РґР»СЏ СЃРѕСЂС‚РёСЂРѕРІРєРё 2 СѓСЂРѕРІРµРЅСЊ
+    @SortDirection1 NVARCHAR(4)		= 'ASC',		-- РЎРѕСЂС‚РёСЂРѕРІРєР° (РїРѕ РІРѕР·СЂР°СЃС‚Р°РЅРёСЋ ASC ) DESC -РїРѕ СѓР±С‹РІР°РЅРёСЋ
 	@SortDirection2	NVARCHAR(4)		= 'ASC',
-	@Offset INT						= NULL,			-- с какой строки начинать выводить
-	@Limit INT						= NULL			-- количество выведенных строк
+	@Offset INT						= NULL,			-- СЃ РєР°РєРѕР№ СЃС‚СЂРѕРєРё РЅР°С‡РёРЅР°С‚СЊ РІС‹РІРѕРґРёС‚СЊ
+	@Limit INT						= NULL			-- РєРѕР»РёС‡РµСЃС‚РІРѕ РІС‹РІРµРґРµРЅРЅС‹С… СЃС‚СЂРѕРє
 	--@Description  NVARCHAR(MAX)		= NULL
 	
 AS
 BEGIN
 	
 	SELECT 
-        s.SubTaskID,						-- id задачи
-		s.SubTaskNumber,					-- типы задач в данной категории (1.1, 1.2, ...)
-		sb.ID as SubjectID,					-- id предмета
-		sb.Name as SubjectName,				-- предмет (информатика, математика)
-		sb.Description,						-- описание предмета
-		t.TaskID,							-- id категории 
-		t.TaskTitle,						-- категория (ЕГЭ_1, ЕГЭ_2)
-		v.VariantID,						-- id варианта
-		v.VariantName,						-- Вариант
-		v.Type as TypeVariant,				-- Тип варианта ("Вариант", "Контрольная", "Олимпиада", "Практика")
-		v.Year as YearVariant,				-- Год варианта
-		v.Number as NumberVarinat,			-- Специальный номер варианта (если применимо 1, 2, 3 и т.д.)
-		v.DifficultyLevel,					-- Уровень сложности варианта
-		s.Blocks,							-- Json багет задачи
-		v.Comment,							-- Комментарий варианта
-		s.UploadDate,						-- Дата создания задания
-		s.Creator							-- Пользователь создавший задачу
+        s.SubTaskID,						-- id Р·Р°РґР°С‡Рё
+		s.SubTaskNumber,					-- С‚РёРїС‹ Р·Р°РґР°С‡ РІ РґР°РЅРЅРѕР№ РєР°С‚РµРіРѕСЂРёРё (1.1, 1.2, ...)
+		sb.ID as SubjectID,					-- id РїСЂРµРґРјРµС‚Р°
+		sb.Name as SubjectName,				-- РїСЂРµРґРјРµС‚ (РёРЅС„РѕСЂРјР°С‚РёРєР°, РјР°С‚РµРјР°С‚РёРєР°)
+		sb.Description,						-- РѕРїРёСЃР°РЅРёРµ РїСЂРµРґРјРµС‚Р°
+		t.TaskID,							-- id РєР°С‚РµРіРѕСЂРёРё 
+		t.TaskTitle,						-- РєР°С‚РµРіРѕСЂРёСЏ (Р•Р“Р­_1, Р•Р“Р­_2)
+		v.VariantID,						-- id РІР°СЂРёР°РЅС‚Р°
+		v.VariantName,						-- Р’Р°СЂРёР°РЅС‚
+		v.Type as TypeVariant,				-- РўРёРї РІР°СЂРёР°РЅС‚Р° ("Р’Р°СЂРёР°РЅС‚", "РљРѕРЅС‚СЂРѕР»СЊРЅР°СЏ", "РћР»РёРјРїРёР°РґР°", "РџСЂР°РєС‚РёРєР°")
+		v.Year as YearVariant,				-- Р“РѕРґ РІР°СЂРёР°РЅС‚Р°
+		v.Number as NumberVarinat,			-- РЎРїРµС†РёР°Р»СЊРЅС‹Р№ РЅРѕРјРµСЂ РІР°СЂРёР°РЅС‚Р° (РµСЃР»Рё РїСЂРёРјРµРЅРёРјРѕ 1, 2, 3 Рё С‚.Рґ.)
+		v.DifficultyLevel,					-- РЈСЂРѕРІРµРЅСЊ СЃР»РѕР¶РЅРѕСЃС‚Рё РІР°СЂРёР°РЅС‚Р°
+		s.Blocks,							-- Json Р±Р°РіРµС‚ Р·Р°РґР°С‡Рё
+		v.Comment,							-- РљРѕРјРјРµРЅС‚Р°СЂРёР№ РІР°СЂРёР°РЅС‚Р°
+		s.UploadDate,						-- Р”Р°С‚Р° СЃРѕР·РґР°РЅРёСЏ Р·Р°РґР°РЅРёСЏ
+		s.Creator							-- РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ СЃРѕР·РґР°РІС€РёР№ Р·Р°РґР°С‡Сѓ
 
 		
     FROM SubTasks s 
@@ -65,7 +65,7 @@ BEGIN
 		)
 
 	ORDER BY
-	-- Первая сортировка
+	-- РџРµСЂРІР°СЏ СЃРѕСЂС‚РёСЂРѕРІРєР°
     CASE 
         WHEN @SortDirection1 = 'ASC' THEN 
             CASE 
@@ -89,7 +89,7 @@ BEGIN
             END    
 	END DESC,
 
-	-- Вторая сортировка (только если указана!)
+	-- Р’С‚РѕСЂР°СЏ СЃРѕСЂС‚РёСЂРѕРІРєР° (С‚РѕР»СЊРєРѕ РµСЃР»Рё СѓРєР°Р·Р°РЅР°!)
 	CASE 
         WHEN @SortColumn2 IS NOT NULL AND @SortDirection2 = 'ASC' THEN 
             CASE 

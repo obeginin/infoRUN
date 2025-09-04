@@ -1,20 +1,20 @@
-/*
-Создаем Хранимку, которая будет создаст задачи для каждого пользователя (автоматичкски).--
-Для тех, что уже есть в базе (для одного пользователя по его id)
+п»ї/*
+РЎРѕР·РґР°РµРј РҐСЂР°РЅРёРјРєСѓ, РєРѕС‚РѕСЂР°СЏ Р±СѓРґРµС‚ СЃРѕР·РґР°СЃС‚ Р·Р°РґР°С‡Рё РґР»СЏ РєР°Р¶РґРѕРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ (Р°РІС‚РѕРјР°С‚РёС‡РєСЃРєРё).--
+Р”Р»СЏ С‚РµС…, С‡С‚Рѕ СѓР¶Рµ РµСЃС‚СЊ РІ Р±Р°Р·Рµ (РґР»СЏ РѕРґРЅРѕРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РїРѕ РµРіРѕ id)
 
-exec dbo.AssignSubTasksToStudent @StudentID = 1 --запуск хранимки с параметром
+exec dbo.AssignSubTasksToStudent @StudentID = 1 --Р·Р°РїСѓСЃРє С…СЂР°РЅРёРјРєРё СЃ РїР°СЂР°РјРµС‚СЂРѕРј
 */
 IF EXISTS(SELECT 1 FROM sys.procedures WHERE OBJECT_SCHEMA_NAME([object_id]) = 'dbo' and name = 'AssignSubTasksToStudent')
     DROP PROCEDURE dbo.AssignSubTasksToStudent
 GO
 
 CREATE PROCEDURE dbo.AssignSubTasksToStudent
-    @StudentID BIGINT = NULL  -- Параметр: ID пользователя (если NULL — обрабатываем всех)
+    @StudentID BIGINT = NULL  -- РџР°СЂР°РјРµС‚СЂ: ID РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ (РµСЃР»Рё NULL вЂ” РѕР±СЂР°Р±Р°С‚С‹РІР°РµРј РІСЃРµС…)
 AS
 BEGIN
     DECLARE @SubTaskID INT
 
-    -- Цикл по всем подзадачам, которые нужно назначить
+    -- Р¦РёРєР» РїРѕ РІСЃРµРј РїРѕРґР·Р°РґР°С‡Р°Рј, РєРѕС‚РѕСЂС‹Рµ РЅСѓР¶РЅРѕ РЅР°Р·РЅР°С‡РёС‚СЊ
     DECLARE SubTaskCursor CURSOR FOR
     SELECT SubTaskID
     FROM SubTasks
@@ -22,11 +22,11 @@ BEGIN
     OPEN SubTaskCursor
     FETCH NEXT FROM SubTaskCursor INTO @SubTaskID
 
-    -- Присваиваем каждую подзадачу пользователю
+    -- РџСЂРёСЃРІР°РёРІР°РµРј РєР°Р¶РґСѓСЋ РїРѕРґР·Р°РґР°С‡Сѓ РїРѕР»СЊР·РѕРІР°С‚РµР»СЋ
     WHILE @@FETCH_STATUS = 0
     BEGIN
         INSERT INTO StudentTasks (StudentID, SubTaskID, CompletionStatus)
-        VALUES (@StudentID, @SubTaskID, 'Not Started')  -- Назначаем подзадачу пользователю с начальным статусом "Not Started"
+        VALUES (@StudentID, @SubTaskID, 'Not Started')  -- РќР°Р·РЅР°С‡Р°РµРј РїРѕРґР·Р°РґР°С‡Сѓ РїРѕР»СЊР·РѕРІР°С‚РµР»СЋ СЃ РЅР°С‡Р°Р»СЊРЅС‹Рј СЃС‚Р°С‚СѓСЃРѕРј "Not Started"
         
         FETCH NEXT FROM SubTaskCursor INTO @SubTaskID
     END
