@@ -735,7 +735,7 @@ def admin_change_password(
                   `offset`: Смещение от начала выборки""")
 def get_logs(limit: int = Query(50, ge=1, le=10000),
              offset: int = Query(0, ge=0),
-             db_log: Session = Depends(get_log_db),
+             db_log: Session = Depends(get_db),
              current_student=Depends(permission_required("admin_panel"))):
 
     # выбираем логи для пользователя по id
@@ -759,7 +759,7 @@ def get_logs(limit: int = Query(50, ge=1, le=10000),
 @admin_router.get("/students/{studentID}/logs", summary = "Вывод истории действий пользователя по его ID",
                   description="""данный роут работает для администратора (может смотреть логи любого студента по его id)  
                   и для текущего авторизованного пользователя (если совпадает его id с studentID из адреса)""")
-def get_logs(studentID: int, db_log: Session = Depends(get_log_db), current_student=Depends(get_current_student)):
+def get_logs(studentID: int, db_log: Session = Depends(get_db), current_student=Depends(get_current_student)):
 
     # Если текущий пользователь не админ и пытается получить логи другого пользователя — ошибка
     if "admin_panel" not in current_student.permissions and current_student.ID != studentID:

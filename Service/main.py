@@ -20,7 +20,7 @@ from fastapi.openapi.utils import get_openapi
 from Service.api import tasks, subtasks,students,auth,subjects, variants  # Импортируем роутер задач
 from Service.api.swagger import swagger_router
 from Service.Crud.auth import get_swagger_user
-from Service.Database import engine, log_engine
+from Service.Database import engine
 from Service.producer import get_kafka_producer
 from Service.middlewares import LoggingMiddleware
 
@@ -93,23 +93,23 @@ app.mount("/Uploads", StaticFiles(directory=settings.UPLOADS_DIR), name="uploads
 
 
 
-def check_db_connection(engine, name: str, retries: int = 5, delay: int = 3):
+async def check_db_connection(engine, name: str, retries: int = 5, delay: int = 3):
     for attempt in range(1, retries + 1):
         try:
-            with engine.connect() as conn:
-                conn.execute(text("SELECT 1"))
+            async with engine.connect() as conn:
+                await conn.execute(text("SELECT 1"))
             logger.info(f"✅ Подключение к базе данных '{name}' установлено.")
             return
         except Exception as e:
             logger.error(f"❌ Ошибка подключения к базе '{name}' (Попытка {attempt}/{retries}): {e}")
             if attempt < retries:
-                time.sleep(delay)
+                await time.sleep(delay)
             else:
                 logger.critical(f"Не удалось подключиться к базе '{name}' после {retries} попыток.")
                 raise
 
 @app.on_event("startup")
-def startup_event():
+async def startup_event():
     logging.info("🚀 Проверка подключений к базам данных...")
     check_db_connection(engine, "infoDB")
     #check_db_connection(log_engine, "LogDB") # для использования второй базы логов
@@ -182,4 +182,9 @@ app.openapi = custom_openapi
 
 """запуск сервера"""
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="localhost", port=9000)
+    uvicorn.run(
+        "Service.main:app",  # путь к объекту app
+        host="0.0.0.0",
+        port=9000,
+        reload=True  # только для dev
+    )

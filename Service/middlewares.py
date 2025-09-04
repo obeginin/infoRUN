@@ -2,12 +2,13 @@
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 import logging
+import asyncio
 import time
 logger = logging.getLogger("requests")
 
 class LoggingMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
-        start = time.time()
+        start = asyncio.get_event_loop().time()
         client_ip = request.client.host if request.client else "unknown"
         logger.info(f"[НАЧАЛО] {request.method} {request.url.path} от {client_ip}")
 
