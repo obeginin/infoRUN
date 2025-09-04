@@ -69,6 +69,16 @@ def run_kafka():
         "kafka_consumer/consumer.py"
     ], stdout=STARTUP_LOG, stderr=subprocess.STDOUT)
 
+def run_frontend():
+    log_separator("FRONTEND")
+    return subprocess.Popen(
+        ["npm", "start"],
+        cwd=BASE_DIR / "client",  # указываем директорию client
+        shell=True,
+        stdout=STARTUP_LOG,
+        stderr=subprocess.STDOUT
+    )
+
 if __name__ == "__main__":
     print("[START] Запускаем все компоненты...")
 
@@ -83,6 +93,9 @@ if __name__ == "__main__":
 
     kafka_proc = run_kafka()
     save_pid(kafka_proc, "kafka_consumer")
+
+    frontend_proc = run_frontend()
+    save_pid(frontend_proc, "frontend")
 
     print("[INFO] Все сервисы запущены. PID сохранены.")
 

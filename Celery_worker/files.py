@@ -49,14 +49,20 @@ def save_files_celery(subtask_id: int, files_data: list, folder: str, table: str
             logging.exception(f"[CELERY] Ошибка при сохранении файла {f['filename']}")
             continue
 
-        file_map[idx] = f"/{full_path}"
+        # формируем URL для фронта
+        # folder = C:\infoRUN\Uploads\files -> относительный путь /uploads/files/...
+        # формируем относительный путь для базы и URL
+        relative_path = os.path.relpath(full_path, settings.UPLOADS_DIR).replace("\\",
+                                                                                "/")  # "solutions/sol_subtask_1418_1.jfif"
+        db_path = f"Uploads/{relative_path}"  # сохраняем в базу
+        file_map[idx] = f"/{db_path}"  # фронт будет обращаться
 
         # сохраняем запись в базу
         insert_query = f"""INSERT INTO {table} (SubTaskID, FileName, FilePath) VALUES (:SubTaskID, :FileName, :FilePath)"""
         general.run_query_insert(
             db,
             insert_query,
-            {"SubTaskID": subtask_id, "FileName": filename, "FilePath": full_path}
+            {"SubTaskID": subtask_id, "FileName": filename, "FilePath": db_path}
         )
 
     return file_map

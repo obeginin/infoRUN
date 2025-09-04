@@ -21,8 +21,8 @@ import base64
 logger = logging.getLogger(__name__)
 
 async def view_subtask(db: Session, subtask_id):
-    query = """[SUBTASKS_CRUD] EXEC GetSubtask @SubTaskID = :subtask_id"""
-    params = { "[SUBTASKS_CRUD] subtask_id": subtask_id}
+    query = """EXEC GetSubtask @SubTaskID = :subtask_id"""
+    params = { "subtask_id": subtask_id}
     logging.info("[SUBTASKS_CRUD] === Запуск view_subtask ===")
     logging.info(f"[SUBTASKS_CRUD] Получение задачи с id: {subtask_id}")
     return general.run_query_select(
@@ -48,6 +48,20 @@ async def view_files(db: Session, subtask_id):
         error_message=f"Не удалось получить файлы для задачи с id:{subtask_id}"
     )
 
+async def view_solutions_files(db: Session, subtask_id):
+    query = """SELECT ID, FileName, FilePath, UploadDate FROM SubTaskSolutions
+        WHERE SubTaskID = :subtask_id"""
+    params = {"subtask_id": subtask_id}
+    logging.info("=== Запуск view_solutions_files ===")
+    logging.info(f"Полученные файлов с решением задачи с id: {subtask_id}")
+    return general.run_query_select(
+        db=db,
+        query=query,
+        params=params,
+        mode="mappings_all",  # Возвращаем список словарей
+        required=False,
+        error_message=f"Не удалось получить файлы для задачи с id:{subtask_id}"
+    )
 
 async def save_subtask(db, subtask_obj, files_blocks: list):
         #blocks_json = json.dumps([b.dict() for b in subtask_obj.Blocks])
@@ -141,9 +155,14 @@ def save_files(db, files: list, subtask_id: int, folder: str, prefix: str, table
             logging.exception(f"[SUBTASKS_CRUD] Ошибка при сохранении файла {file.filename}")
             continue
 
+        # Относительный путь для базы и URL
+        relative_path = os.path.relpath(full_path, settings.UPLOAD_DIR).replace("\\", "/")
+        db_path = f"Uploads/{relative_path}"  # сохраняем в базу
+        file_map[idx] = f"/{db_path}"  # для фронта
+
         file_map[idx] = f"/{full_path}"
         insert_query = f"INSERT INTO {table} (SubTaskID, FileName, FilePath) VALUES (:SubTaskID, :FileName, :FilePath)"
-        general.run_query_insert(db, insert_query, {"SubTaskID": subtask_id, "FileName": filename, "FilePath": full_path})
+        general.run_query_insert(db, insert_query, {"SubTaskID": subtask_id, "FileName": filename, "FilePath": db_path})
 
     return file_map
 
@@ -172,8 +191,8 @@ async def prepare_files_data(files: List[UploadFile], file_type: str = "file") -
         logging.info(f"[SUBTASKS_CRUD] {file_type.capitalize()} файл {idx}: {f.filename}, content_type={f.content_type}, size={len(content)} bytes")
     return files_data
 
-# TODO: пока не нужна, но может пригодтся (перенес логику записи в Celery)
-'''Логирование и проверка списка файлов'''
+
+'''Логирование и проверка списка файлов (для проверки передачи файлов с фронта)'''
 def log_and_validate_files(files: Optional[List], label: str):
     count = len(files) if files else 0
     logging.info(f"[SUBTASKS_CRUD] Получено файлов ({label}): {count}")

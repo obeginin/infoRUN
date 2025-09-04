@@ -15,9 +15,10 @@ from starlette.status import HTTP_400_BAD_REQUEST
 from utils.config import settings
 from utils.log import setup_logging
 from utils.exceptions import app_exception_handler, validation_exception_handler, general_exception_handler
-
+from fastapi.openapi.docs import get_swagger_ui_html, get_redoc_html
+from fastapi.openapi.utils import get_openapi
 from Service.api import tasks, subtasks,students,auth,subjects, variants  # Импортируем роутер задач
-from Service.api.swagger import setup_docs
+from Service.api.swagger import swagger_router
 from Service.Crud.auth import get_swagger_user
 from Service.Database import engine, log_engine
 from Service.producer import get_kafka_producer
@@ -81,6 +82,7 @@ app.include_router(subtasks.subtask_router)  # Регистрируем роут
 app.include_router(variants.variant_router)
 app.include_router(students.students_router)  # Регистрируем роутер для студентов
 app.include_router(students.students_subtasks_router) # Регистрируем роутер для задач студентов
+app.include_router(swagger_router)
 
 
 # Подключаем статику
@@ -125,8 +127,58 @@ async def health_check():
         "environment": settings.ENVIRONMENT
     }
 
-# Настройка документации (Swagger)
-setup_docs(app, get_swagger_user)
+"""Swagger"""
+
+@app.get("/api/docs", dependencies=[Depends(get_swagger_user)])
+async def get_documentation():
+    return get_swagger_ui_html(
+        openapi_url="/api/openapi.json",  # <- важно
+        title="Документация API"
+    )
+
+@app.get("/api/redoc", dependencies=[Depends(get_swagger_user)])
+async def get_redoc_documentation():
+    return get_redoc_html(
+        openapi_url="/api/openapi.json",
+        title="Документация API"
+    )
+
+# openapi.json без защиты
+@app.get("/api/openapi.json")
+async def openapi():
+    return app.openapi()
+
+
+
+'''Функция для добавления токена авторизации в SWAGGER'''
+def custom_openapi():
+    if app.openapi_schema:
+        return app.openapi_schema
+
+    openapi_schema = get_openapi(
+        title="Документация API",
+        version="1.0.0",
+        description="Описание API с авторизацией",
+        routes=app.routes,
+    )
+
+    openapi_schema["components"]["securitySchemes"] = {
+        "BearerAuth": {
+            "type": "http",
+            "scheme": "bearer",
+            "bearerFormat": "JWT"
+        }
+    }
+
+    # Добавим схему по умолчанию ко всем методам (можно кастомизировать при необходимости)
+    for path in openapi_schema["paths"].values():
+        for method in path.values():
+            method.setdefault("security", [{"BearerAuth": []}])
+
+    app.openapi_schema = openapi_schema
+    return app.openapi_schema
+
+app.openapi = custom_openapi
 
 """запуск сервера"""
 if __name__ == "__main__":

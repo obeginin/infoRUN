@@ -41,6 +41,118 @@ logger = logging.getLogger(__name__) # создание логгера для т
 
 subtask_router  = APIRouter(prefix="/api/subtasks", tags=["subtasks"])
 
+# TODO: убрать v2
+@subtask_router.post("/create/", summary="Создание задачи с файлами и блоками",
+                     description="""Создает задачу с текстовыми, графическими и другими блоками.  
+Поддерживает прикрепление файлов через multipart/form-data.  
+возвращает `files_blocks` - количество вставленных файлов с изображением задачи  
+`files_solution` - количество вставленных файлов с решением задачи  
+`files` - количество вставленных дополнительных файлов к задачи""")
+async def create_subtask(
+        task_id: int = Form(..., description="ID категории"),
+        subtask_number: int = Form(None, description="Номер задачи в категории"),
+        variant_id: int = Form(None, description="ID варианта (если есть)"),
+        blocks: str = Form(...,description='JSON список блоков: [{"type":"text","content":"Текст"},{"type":"image","content":"image.png"}]'),
+        files_blocks: List[UploadFile] = File([], description="Список файлов для блоков"),
+        answer: str = Form("", description="Ответ на задачу"),
+        files_solution: List[UploadFile] = File([], description="Список файлов для решения"),
+        files_extra: List[UploadFile] = File([], description="Список дополнительных файлов к задаче"),
+        db: Session = Depends(get_db),
+        current_student=Depends(auth.permission_required("create_tasks"))
+):
+    logging.info(f"[SUBTASKS] === Поступил запрос на создание задачи ===")
+    logging.info(
+        f"[SUBTASKS] TaskID={task_id}, SubTaskNumber={subtask_number}, VariantID={variant_id}, Answer={answer}")
+    logging.info(f"[SUBTASKS] Blocks (raw)={blocks}")
+
+    # парсим строку JSON
+    try:
+        blocks_json = json.loads(blocks)  # преобразует строку JSON в Python-объект:
+        if not isinstance(blocks_json, list):
+            raise ValueError("blocks должен быть списком")
+        blocks_list = [Block(**b) for b in blocks_json]
+        if not blocks_list:
+            raise ValueError("Список блоков не может быть пустым")
+    except (json.JSONDecodeError, ValueError) as e:
+        logging.error(f"Ошибка с блоками: {e}")
+        return {"status": "error", "message": str(e)}
+
+    # дополнительная проверка файлов
+
+    logger.info(f"FILES BLOCKS: {[file.filename for file in files_blocks]}")
+    subtasks_crud.log_and_validate_files(files_blocks, 'с изображением')
+    logger.info(f"FILES SOLUTION: {[file.filename for file in files_solution]}")
+    subtasks_crud.log_and_validate_files(files_extra, 'с решением')
+    logger.info(f"FILES EXTRA: {[file.filename for file in files_extra]}")
+    subtasks_crud.log_and_validate_files(files_extra, 'дополнительные')
+
+
+    subtask_data = {
+        "TaskID": task_id,
+        "SubTaskNumber": subtask_number,
+        "VariantID": variant_id,
+        "Blocks": blocks_list,
+        "Answer": answer,
+        "Creator": current_student.Login
+    }
+
+    try:
+        subtask_obj = SubTaskCreate(**subtask_data)  # **kwargs распаковка словаря
+    except Exception as e:
+        logging.error(f"[SUBTASKS] Ошибка при создании SubTaskCreate: {e}")
+        return {"status": "error", "message": f"Ошибка создания задачи: {e}"}
+
+    # 4 Создаем новую задачу
+    try:
+        result = await subtasks_crud.save_subtask(db, subtask_obj, files_blocks)
+        subtask_id = result["SubTaskID"]
+        logging.info(f"[SUBTASKS] Пользователь {current_student.Login} успешно создал задачу id={subtask_id}")
+
+        # логируем в Kafka
+        await run_in_threadpool(
+            send_log,
+            StudentID=current_student.ID,
+            StudentLogin=current_student.Login,
+            action="CREATE_SUBTASK",
+            details={
+                "SubTaskID": subtask_id,
+                "DescriptionEvent": f"Пользователь {current_student.Login} успешно создал задачу id={subtask_id})"
+            }
+        )
+        # 3. Читаем файлы в байты и формируем список для Celery
+        solution_files_data = await subtasks_crud.prepare_files_data(files_solution, "решение")
+        extra_files_data = await subtasks_crud.prepare_files_data(files_extra, "дополнительный")
+
+        logging.info(f"[SUBTASKS] Отправляем задачу сохранения файлов в Celery")
+        # 4. Отправляем в Celery
+        # Файлы с решением
+        celery_app.send_task(
+            "save_subtask_files",
+            kwargs={
+                "subtask_id": subtask_id,
+                "files_data": solution_files_data,
+                "folder": str(settings.UPLOAD_SOLUTION_DIR),
+                "table": "SubTaskSolutions",
+                "prefix": "sol_subtask"
+            }
+        )
+
+        # Дополнительные файлы
+        celery_app.send_task(
+            "save_subtask_files",
+            kwargs={
+                "subtask_id": subtask_id,
+                "files_data": extra_files_data,
+                "folder": str(settings.UPLOAD_FILES_DIR),
+                "table": "SubTaskFiles",
+                "prefix": "f_subtask"
+            }
+        )
+
+        return {"status": "success", "data": result}
+    except Exception as e:
+        logging.exception("Не удалось создать задачу")
+        return {"status": "error", "message": str(e)}
 
 @subtask_router.get(
     "/{subtask_id}",
@@ -119,210 +231,56 @@ async def get_subtask(
         return {"status": "error", "message": str(e)}
 
 
-@subtask_router.post("/create", summary="Создание задачи с файлами и блоками",
-                     description="""Создает задачу с текстовыми, графическими и другими блоками.  
-Поддерживает прикрепление файлов через multipart/form-data.  
-возвращает `files_blocks` - количество вставленных файлов с изображением задачи  
-`files_solution` - количество вставленных файлов с решением задачи  
-`files` - количество вставленных дополнительных файлов к задачи""")
-async def create_subtask(
-        task_id: int = Form(..., description="ID категории"),
-        subtask_number: int = Form(None, description="Номер задачи в категории"),
-        variant_id: int = Form(None, description="ID варианта (если есть)"),
-        blocks: str = Form(..., description='JSON список блоков: [{"type":"text","content":"Текст"},{"type":"image","content":"image.png"}]'),
-        files_blocks: List[UploadFile] = File([], description="Список файлов для блоков"),
-        answer: str = Form("", description="Ответ на задачу"),
-        files_solution: List[UploadFile] = File([], description="Список файлов для решения"),
-        files: List[UploadFile] = File([], description="Список дополнительных файлов к задаче"),
-        db: Session = Depends(get_db),
-    current_student=Depends(auth.permission_required("create_tasks"))
+
+@subtask_router.get("/{subtask_id}/solution", summary="Получение файлов с решением")
+async def get_solution_files(
+    subtask_id: int,
+    db: Session = Depends(get_db),
+    current_student=Depends(auth.permission_required("view_solutions"))
 ):
-    logging.info(f"[SUBTASKS] === Поступил запрос на создание задачи ===")
-    logging.info(f"[SUBTASKS] TaskID={task_id}, SubTaskNumber={subtask_number}, VariantID={variant_id}, Answer={answer}")
-    logging.info(f"[SUBTASKS] Blocks (raw)={blocks}")
 
-    # парсим строку JSON
-    try:
-        blocks_json = json.loads(blocks) # преобразует строку JSON в Python-объект:
-        if not isinstance(blocks_json, list):
-            raise ValueError("blocks должен быть списком")
-        blocks_list = [Block(**b) for b in blocks_json]
-        if not blocks_list:
-            raise ValueError("Список блоков не может быть пустым")
-    except (json.JSONDecodeError, ValueError) as e:
-        logging.error(f"Ошибка с блоками: {e}")
-        return {"status": "error", "message": str(e)}
+    files = await subtasks_crud.view_solutions_files(db, subtask_id)
 
-    # проверяем файлы
-    subtasks_crud.log_and_validate_files(files_blocks, "блоки")
-    subtasks_crud.log_and_validate_files(files_solution, "решения")
-    subtasks_crud.log_and_validate_files(files, "дополнительные")
-
-    subtask_data = {
-        "TaskID": task_id,
-        "SubTaskNumber": subtask_number,
-        "VariantID": variant_id,
-        "Blocks": blocks_list,
-        "Answer": answer,
-        "Creator": current_student.Login
+    file_list = [
+        {"FileID": f["ID"], "FileName": f["FileName"], "FilePath": f["FilePath"]}
+        for f in files
+    ]
+    return {
+        "status": "success",
+        "files": [
+            {
+                "id": f.ID,
+                "filename": f.FileName,
+                "url": f"{f.FilePath}",
+                "date": f.UploadDate
+            } for f in files
+        ]
     }
 
-    try:
-        subtask_obj = SubTaskCreate(**subtask_data)  # **kwargs распаковка словаря
-    except Exception as e:
-        logging.error(f"[SUBTASKS] Ошибка при создании SubTaskCreate: {e}")
-        return {"status": "error", "message": f"Ошибка создания задачи: {e}"}
-
-    # 4 Создаем новую задачу
-    try:
-        result = await subtasks_crud.save_subtask(db, subtask_obj, files_blocks)
-        subtask_id = result["SubTaskID"]
-        logging.info(f"[SUBTASKS] Пользователь {current_student.Login} успешно создал задачу id={subtask_id}")
-
-        # логируем в Kafka
-        await run_in_threadpool(
-            send_log,
-            StudentID=current_student.ID,
-            StudentLogin=current_student.Login,
-            action="CREATE_SUBTASK",
-            details={
-                "SubTaskID": subtask_id,
-                "DescriptionEvent": f"Пользователь {current_student.Login} успешно создал задачу id={subtask_id})"
-            }
-        )
-
-        # сохраняем временные файлы
-        logging.info(f"[SUBTASKS] Сохраняем временные файлы с решением")
-        temp_solution_paths = await subtasks_crud.save_temp_files(files_solution, settings.TEMPLATES_DIR)
-        logging.info(f"[SUBTASKS] Сохраняем временные дополнительные файлы")
-        temp_extra_paths = await subtasks_crud.save_temp_files(files, settings.TEMPLATES_DIR)
-
-
-        # сохраняем пути во временную таблицу
-        temp_record_id = subtasks_crud.save_subtask_temp_record(
-            db=db,
-            subtask_id=result["SubTaskID"],
-            student_id=current_student.ID,  # используем правильный атрибут ID
-            temp_solution_paths=temp_solution_paths,
-            temp_files_paths=temp_extra_paths
-        )
-
-        logging.info(f"[SUBTASKS] temp_record_id: {temp_record_id} из таблицы SubTaskTemp")
-        # --- Ставим задачу в Celery ---
-        celery_app.send_task(
-            name="save_subtask_files",  # имя задачи из Celery_worker.files.py
-            kwargs={"temp_record_id": temp_record_id}  # аргументы задачи
-        )
-        return {"status": "success", "data": result}
-    except Exception as e:
-        logging.exception("Не удалось создать задачу")
-        return {"status": "error", "message": str(e)}
-
-
-@subtask_router.post("/create/v2", summary="Создание задачи с файлами и блоками",
-                     description="""Создает задачу с текстовыми, графическими и другими блоками.  
-Поддерживает прикрепление файлов через multipart/form-data.  
-возвращает `files_blocks` - количество вставленных файлов с изображением задачи  
-`files_solution` - количество вставленных файлов с решением задачи  
-`files` - количество вставленных дополнительных файлов к задачи""")
-async def create_subtask(
-        task_id: int = Form(..., description="ID категории"),
-        subtask_number: int = Form(None, description="Номер задачи в категории"),
-        variant_id: int = Form(None, description="ID варианта (если есть)"),
-        blocks: str = Form(...,
-                           description='JSON список блоков: [{"type":"text","content":"Текст"},{"type":"image","content":"image.png"}]'),
-        files_blocks: List[UploadFile] = File([], description="Список файлов для блоков"),
-        answer: str = Form("", description="Ответ на задачу"),
-        files_solution: List[UploadFile] = File([], description="Список файлов для решения"),
-        files_extra: List[UploadFile] = File([], description="Список дополнительных файлов к задаче"),
-        db: Session = Depends(get_db),
-        current_student=Depends(auth.permission_required("create_tasks"))
+@subtask_router.get("/{subtask_id}/extra_files", summary="Получение дополнительных файлов для задачи")
+async def get_solution_files(
+    subtask_id: int,
+    db: Session = Depends(get_db),
+    current_student=Depends(auth.permission_required("view_tasks"))
 ):
-    logging.info(f"[SUBTASKS] === Поступил запрос на создание задачи ===")
-    logging.info(
-        f"[SUBTASKS] TaskID={task_id}, SubTaskNumber={subtask_number}, VariantID={variant_id}, Answer={answer}")
-    logging.info(f"[SUBTASKS] Blocks (raw)={blocks}")
 
-    # парсим строку JSON
-    try:
-        blocks_json = json.loads(blocks)  # преобразует строку JSON в Python-объект:
-        if not isinstance(blocks_json, list):
-            raise ValueError("blocks должен быть списком")
-        blocks_list = [Block(**b) for b in blocks_json]
-        if not blocks_list:
-            raise ValueError("Список блоков не может быть пустым")
-    except (json.JSONDecodeError, ValueError) as e:
-        logging.error(f"Ошибка с блоками: {e}")
-        return {"status": "error", "message": str(e)}
+    files = await subtasks_crud.view_files(db, subtask_id)
 
-
-    subtask_data = {
-        "TaskID": task_id,
-        "SubTaskNumber": subtask_number,
-        "VariantID": variant_id,
-        "Blocks": blocks_list,
-        "Answer": answer,
-        "Creator": current_student.Login
+    file_list = [
+        {"FileID": f["ID"], "FileName": f["FileName"], "FilePath": f["FilePath"]}
+        for f in files
+    ]
+    return {
+        "status": "success",
+        "files": [
+            {
+                "id": f.ID,
+                "filename": f.FileName,
+                "url": f"{f.FilePath}",
+                "date": f.UploadDate
+            } for f in files
+        ]
     }
-
-    try:
-        subtask_obj = SubTaskCreate(**subtask_data)  # **kwargs распаковка словаря
-    except Exception as e:
-        logging.error(f"[SUBTASKS] Ошибка при создании SubTaskCreate: {e}")
-        return {"status": "error", "message": f"Ошибка создания задачи: {e}"}
-
-    # 4 Создаем новую задачу
-    try:
-        result = await subtasks_crud.save_subtask(db, subtask_obj, files_blocks)
-        subtask_id = result["SubTaskID"]
-        logging.info(f"[SUBTASKS] Пользователь {current_student.Login} успешно создал задачу id={subtask_id}")
-
-        # логируем в Kafka
-        await run_in_threadpool(
-            send_log,
-            StudentID=current_student.ID,
-            StudentLogin=current_student.Login,
-            action="CREATE_SUBTASK",
-            details={
-                "SubTaskID": subtask_id,
-                "DescriptionEvent": f"Пользователь {current_student.Login} успешно создал задачу id={subtask_id})"
-            }
-        )
-        # 3. Читаем файлы в байты и формируем список для Celery
-        solution_files_data = await subtasks_crud.prepare_files_data(files_solution, "решение")
-        extra_files_data = await subtasks_crud.prepare_files_data(files_extra, "дополнительный")
-
-        logging.info(f"[SUBTASKS] Отправляем задачу сохранения файлов в Celery")
-        # 4. Отправляем в Celery
-        # Файлы с решением
-        celery_app.send_task(
-            "save_subtask_files",
-            kwargs={
-                "subtask_id": subtask_id,
-                "files_data": solution_files_data,
-                "folder": str(settings.UPLOAD_SOLUTION_DIR),
-                "table": "SubTaskSolutions",
-                "prefix": "sol_subtask"
-            }
-        )
-
-        # Дополнительные файлы
-        celery_app.send_task(
-            "save_subtask_files",
-            kwargs={
-                "subtask_id": subtask_id,
-                "files_data": extra_files_data,
-                "folder": str(settings.UPLOAD_FILES_DIR),
-                "table": "SubTaskFiles",
-                "prefix": "f_subtask"
-            }
-        )
-
-        return {"status": "success", "data": result}
-    except Exception as e:
-        logging.exception("Не удалось создать задачу")
-        return {"status": "error", "message": str(e)}
-
 
 # /api/subtasks/files/{file_id}/download   (GET)
 '''Скачивание файла прикрепленного к задаче'''
