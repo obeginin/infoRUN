@@ -6,7 +6,7 @@ from Service.Crud import auth
 from Service.Crud import tasks as task_crud
 from utils import errors,general
 from Service.dependencies import get_db
-from Service.Models import Student, SubTaskFiles
+from Service.Models import Student
 from Service.Schemas import subtasks as subtasks_schema
 from Service.producer import send_log
 from Service.celery_tasks.celery_app import celery_app
@@ -41,7 +41,7 @@ logger = logging.getLogger(__name__) # создание логгера для т
 
 subtask_router  = APIRouter(prefix="/api/subtasks", tags=["subtasks"])
 
-# TODO: убрать v2
+
 @subtask_router.post("/create/", summary="Создание задачи с файлами и блоками",
                      description="""Создает задачу с текстовыми, графическими и другими блоками.  
 Поддерживает прикрепление файлов через multipart/form-data.  
@@ -156,7 +156,7 @@ async def create_subtask(
 
 @subtask_router.get(
     "/{subtask_id}",
-    summary="Получение задачи с блоками и файлами",
+    summary="Получение задачи с блоками и с дополнительными файлами",
     description="Возвращает задачу с текстовыми, графическими и другими блоками, а также прикрепленные файлы."
 )
 async def get_subtask(
@@ -282,179 +282,4 @@ async def get_solution_files(
         ]
     }
 
-# /api/subtasks/files/{file_id}/download   (GET)
-'''Скачивание файла прикрепленного к задаче'''
-@subtask_router.get("/files/{file_id}/download",  summary="скачивание файла с задачей")
-def download_file(file_id: int, db: Session = Depends(get_db)):
-    db_file = db.query(SubTaskFiles).filter(SubTaskFiles.ID == file_id).first()
-    if not db_file:
-        raise HTTPException(status_code=404, detail="Файл не найден")
 
-    return FileResponse(path=db_file.FilePath, filename=db_file.FileName)
-
-'''получение всех файлов задачи'''
-@subtask_router.get("/files/{subtask_id}", response_model=List[subtasks_schema.FileSchema], summary="роут с получением всех файлов задачи")
-def get_files_for_subtask(subtask_id: int, db: Session = Depends(get_db)):
-    files = db.execute(text("""
-        SELECT ID, FileName, FilePath, UploadDate
-        FROM SubTaskFiles
-        WHERE SubTaskID = :subtask_id
-    """), {"subtask_id": subtask_id}).mappings().all()
-    return list(files)
-
-
-
-# OLD
-# /api/subtasks/create_form/    (POST)
-'''Получаем с html страницы данные из формы и запускаем с этими параметрами функцию create_subtask_from_form
-в ней добавляем новую задачу в базу и возвращаем номер новой задачи и редиректим на неё
-'''
-#@subtask_router.post("/create_form", summary="роут с созданием задачи через форму")
-def post_subtask_form(
-    TaskID: int = Form(...),
-    VariantName: str = Form(""),
-    Description: str = Form(""),
-    Answer: str = Form(""),
-    ImageFile: UploadFile = File(None),
-    SolutionFile: UploadFile = File(None),
-    db: Session = Depends(get_db)
-):
-
-    logger.debug("Отправляем форму на добавление задачи")
-    result = task_crud.create_subtask_from_form(
-        TaskID=TaskID,
-        VariantName=VariantName,
-        Description=Description,
-        Answer=Answer,
-        ImageFile=ImageFile,
-        SolutionFile=SolutionFile,
-        db=db
-    )
-
-    if result is None:
-        # Если не создалось, выбрасываем ошибку 400 с сообщением
-        logger.error("Не удалось создать подзадачу")
-        raise HTTPException(status_code=400, detail="Не удалось создать подзадачу")
-
-    return RedirectResponse(f"/tasks/{TaskID}/subtasks{result}", status_code=303)
-
-
-
-# /api/subtasks/edit_form/    (POST)
-'''Отправка данных с добавленной задачей из формы с html страницы'''
-#@subtask_router.post("/edit_form", summary="роут с редактированием задачи через форму")
-def post_edit_subtask_form(
-    SubTaskID: int = Form(...),
-    TaskID: int = Form(...),
-    VariantName: str = Form(...),
-    SubTaskNumber: int = Form(...),
-    Description: str = Form(""),
-    Answer: str = Form(""),
-    ImageFile: UploadFile = File(None),
-    Files: List[UploadFile] = File(...),
-    SolutionFile: UploadFile = File(None),
-    db: Session = Depends(get_db)
-):
-    logger.info(f"[SUBTASKS] Редактируем подзадачу ID={SubTaskID}")
-
-    current_variant_id = db.execute(text("SELECT VariantID FROM SubTasks WHERE SubTaskID = :id"),
-                                    {"id": SubTaskID}).scalar()
-    # Получаем имя текущего варианта
-    current_variant_name = db.execute(text("SELECT VariantName FROM Variants WHERE VariantID = :id"),
-                                      {"id": current_variant_id}).scalar()
-    if VariantName != current_variant_name:
-        variant_id = task_crud.get_or_create_variant(db, VariantName)
-    else:
-        variant_id = current_variant_id
-
-    # Получаем текущую подзадачу из базы
-    subtask = task_crud.get_subtasks_id(db,SubTaskID)
-    if not subtask:
-        logger.warning("Подзадача не найдена")
-        return RedirectResponse("/error", status_code=303)
-
-    # Обработка изображения
-    image_path = subtask.get('ImagePath')  # по умолчанию оставляем старое изображение
-    if ImageFile and ImageFile.filename: # Если был загружен новый файл изображения
-        # Сохраняем изображение
-        ext = ImageFile.filename.split('.')[-1]
-        if image_path:
-            # Было изображение — сохраняем под тем же именем
-            filename = Path(image_path).name
-        else:
-            # Не было изображения — создаем имя по логике новой подзадачи
-            result = db.execute(
-                text("SELECT MAX(SubTaskNumber) FROM SubTasks WHERE TaskID = :task_id"),
-                {"task_id": TaskID}
-            ).scalar()
-            SubTaskNumber = (int(result) if result else 0) + 1
-            filename = f"task_{TaskID}_sub_{SubTaskNumber}.{ext}"
-            image_path = f"Uploads/images/{filename}"
-
-        filepath = UPLOAD_IMAGE_DIR / filename
-
-        # Сохраняем файл
-        with filepath.open("wb") as buffer:
-            shutil.copyfileobj(ImageFile.file, buffer)
-
-        logger.info(f"[SUBTASKS] Изображение сохранено как {filepath}")
-    else:
-        # Файл не загружен
-        if not image_path:
-            # И раньше не было изображения — путь остаётся пустым
-            image_path = None
-
-    # Обработка файла решения
-    solution_path = subtask.get('SolutionPath')  # по умолчанию оставляем старое решение
-
-    if SolutionFile and SolutionFile.filename:  # Если был загружен новый файл решения
-        # Сохраняем решение
-        ext = SolutionFile.filename.split('.')[-1]
-        if solution_path:
-            # Был файл — сохраняем под тем же именем
-            filename = Path(solution_path).name
-        else:
-            # Не было файла — создаем имя по логике новой подзадачи
-            result = db.execute(
-                text("SELECT MAX(SubTaskNumber) FROM SubTasks WHERE TaskID = :task_id"),
-                {"task_id": TaskID}
-            ).scalar()
-            SubTaskNumber = (int(result) if result else 0) + 1
-            filename = f"solution_task_{TaskID}_sub_{SubTaskNumber}.{ext}"
-            solution_path = f"Uploads/solutions/{filename}"
-
-        filepath = settings.UPLOAD_SOLUTION_DIR / filename
-
-        # Сохраняем файл
-        with filepath.open("wb") as buffer:
-            shutil.copyfileobj(SolutionFile.file, buffer)
-
-        logger.info(f"[SUBTASKS] Решение сохранено как {filepath}")
-    else:
-        # Файл не загружен
-        if not solution_path:
-            # И раньше не было файла — путь остаётся пустым
-            solution_path = None
-
-    print(f"SubTaskID:{type(SubTaskID)} TaskID:{type(TaskID)} SubTaskNumber:{type(SubTaskNumber)}")
-    print(f"Files: {Files}, type: {type(Files)}")
-    for f in Files:
-        print(f"File: filename={f.filename}, content_type={f.content_type}, type={type(f)}")
-    uploaded_files = task_crud.upload_file(SubTaskID, TaskID, SubTaskNumber, Files, db)
-    print(uploaded_files)
-    subtask_data = subtasks_schema.SubTaskUpdate(
-        TaskID=TaskID,
-        VariantID=variant_id,
-        SubTaskNumber=SubTaskNumber,
-        Description=Description,
-        Answer=Answer,
-        ImagePath=image_path,
-        SolutionPath=solution_path  # если есть
-    )
-
-    updated_subtask = task_crud.update_subtask(SubTaskID, subtask_data, db)
-    if updated_subtask is None:
-        logger.info("Ошибка при обновлении подзадачи")
-        return RedirectResponse("/error", status_code=303)
-
-    return RedirectResponse(f"/tasks/{TaskID}/subtasks{SubTaskID}", status_code=303)

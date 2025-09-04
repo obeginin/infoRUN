@@ -3,12 +3,12 @@ from Service.Schemas.students import StudentTaskRead, StudentTasksQueryParams, A
 from Service.Schemas.auth import StudentAuth, StudentOut, StudentCreate, SearchStudentQuery, StudentField, StudentEdit
 
 from Service.Crud.auth import verify_password, get_student_by_field
-from Service.Crud.auth import get_current_student, permission_required, get_role_id, hash_password
+from Service.Crud.auth import get_current_student, permission_required, get_role_id, hash_password, can_edit_admin
 from Service.Crud.students import edit_student_id, del_student_id, activate_student_id
 from Service.Crud import students
 from utils import errors,general
 
-from Service.api.subtasks import get_files_for_subtask
+
 from Service.dependencies import get_db  # Зависимость для подключения к базе данных
 
 from Service.producer import send_log
@@ -143,7 +143,14 @@ def new_student(student_data: StudentCreate,
 
 # /api/students/edit_student (тест ✅)
 @students_router.patch("/edit_student", summary="Изменение данных студента по id")
-def edit_student(id: int, data: StudentEdit, db: Session = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
+def edit_student(id: int,
+                 data: StudentEdit,
+                 db: Session = Depends(get_db),
+                 current_student=Depends(permission_required("admin_panel"))):
+    # проверка изменения роли (на суперадмина и админов)
+    if data.RoleID:
+        can_edit_admin(data.RoleID, db=db, current_student=current_student)
+
     logger.info(f"[STUDENTS] Данные изменения студента: {data}")
     student_by_id = get_student_by_field(db, field_name="ID", value=id)
     logger.info(f"[STUDENTS] Студент {student_by_id}")
