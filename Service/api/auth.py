@@ -10,7 +10,7 @@ from Service.Crud.auth import change_password, get_all_roles, get_all_permission
 from Service.Crud.auth import get_student_by_email, add_new_register_student, confirm_student_email
 from Service.Crud.students import  get_student_id, get_all_students, del_student_id
 from Service.Security.token import create_access_token, verify_token
-from Service.dependencies import get_db,get_log_db, get_producer_dep
+from Service.Database import get_db #,get_log_db, get_producer_dep
 from Service.producer import send_log, send_email_event
 from utils import errors,general
 from Service.celery_tasks.email_sender import send_email_event_celery

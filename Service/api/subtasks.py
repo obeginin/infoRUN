@@ -5,7 +5,7 @@ from Service.Crud import subtasks as subtasks_crud
 from Service.Crud import auth
 from Service.Crud import tasks as task_crud
 from utils import errors,general
-from Service.dependencies import get_db
+from Service.Database import get_db
 from Service.Models import Student
 from Service.Schemas import subtasks as subtasks_schema
 from Service.producer import send_log

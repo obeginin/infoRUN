@@ -2,6 +2,8 @@
 import os
 import logging
 import uvicorn
+import asyncio
+
 import time
 from sqlalchemy import text
 from fastapi import FastAPI, Depends, Request, HTTPException
@@ -103,7 +105,7 @@ async def check_db_connection(engine, name: str, retries: int = 5, delay: int = 
         except Exception as e:
             logger.error(f"❌ Ошибка подключения к базе '{name}' (Попытка {attempt}/{retries}): {e}")
             if attempt < retries:
-                await time.sleep(delay)
+                await asyncio.sleep(delay)
             else:
                 logger.critical(f"Не удалось подключиться к базе '{name}' после {retries} попыток.")
                 raise
@@ -111,7 +113,7 @@ async def check_db_connection(engine, name: str, retries: int = 5, delay: int = 
 @app.on_event("startup")
 async def startup_event():
     logging.info("🚀 Проверка подключений к базам данных...")
-    check_db_connection(engine, "infoDB")
+    await check_db_connection(engine, "infoDB")
     #check_db_connection(log_engine, "LogDB") # для использования второй базы логов
 
 

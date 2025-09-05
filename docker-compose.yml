@@ -7,9 +7,9 @@ services:
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_PASSWORD: ${DB_PASS}
     ports:
-      - "5553:5432"
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
@@ -19,20 +19,29 @@ services:
       timeout: 5s
       retries: 5
 
-  app:
+  # FastAPI
+  fastapi:
     build: .
-    container_name: fastapi_app
+    container_name: fastapi
     env_file:
       - .env
-    command: sh -c "uvicorn app.main:app --host 0.0.0.0 --port 8888 ${DEBUG:+--reload}"
+    command: sh -c "uvicorn Service.main:app --host 0.0.0.0 --port 9000 ${DEBUG:+--reload}"
     ports:
-      - "8888:8888"
+      - "9000:9000"
     depends_on:
       db:
         condition: service_healthy
     volumes:
-      - .:/app
+      - .:/infoRUN_Postgres
+    restart: unless-stopped
 
+  nextjs:
+    build:
+      context: ./Client
+      dockerfile: Dockerfile
+    container_name: nextjs
+    ports:
+      - "3000:3000"
     restart: unless-stopped
 
 volumes:

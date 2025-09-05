@@ -1,6 +1,6 @@
 from Service.celery_tasks.celery_app import celery_app
 from Service.Schemas.auth import EmailRequest
-from Service.dependencies import get_db
+from Service.Database import get_db
 from Service.Models import EmailLog
 
 from sqlalchemy.orm import Session

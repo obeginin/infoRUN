@@ -1,7 +1,7 @@
 
 from utils.config import settings
 
-from Service.dependencies import get_db
+from Service.Database import get_db
 from Service.Models import Student
 from Service.Schemas.auth import StudentOut, StudentAuth, StudentBase, StudentCreate
 
@@ -64,10 +64,12 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 # Создание пароля вручную:
 '''
 raw_password = "standart_password"
-raw_password = "standart_password"
+
+raw_password = "1111"
 hashed_password = hash_password(raw_password)
 print("Хешированный пароль:", hashed_password)
-#$pbkdf2-sha256$29000$HWPMube2tnYuZYwRwngPQQ$eSDzbZ3puIYCkdzcU94.2a5.ZvXUWXlIGjuSuM4ij/Y
+#$pbkdf2-sha256$29000$HWPMube2tnYuZYwRwngPQQ$eSDzbZ3puIYCkdzcU94.2a5.ZvXUWXlIGjuSuM4ij/Y (standart_password)
+$pbkdf2-sha256$29000$dm7NmZNSqpWyVmqNEYJQyg$Z6gDFsYkqd5xLDxIytx2n5C9moMIc4voTVKqwVUwj68  (1111)
 '''
 
 

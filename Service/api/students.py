@@ -9,7 +9,7 @@ from Service.Crud import students
 from utils import errors,general
 
 
-from Service.dependencies import get_db  # Зависимость для подключения к базе данных
+from Service.Database import get_db  # Зависимость для подключения к базе данных
 
 from Service.producer import send_log
 
