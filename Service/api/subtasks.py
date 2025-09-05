@@ -2,12 +2,13 @@ from Service.Schemas.subtasks import SubTaskCreate, Block #, SubTaskResponse
 from utils.config import settings
 
 from Service.Crud import subtasks as subtasks_crud
+from Service.Schemas import subtasks as subtasks_schema
 from Service.Crud import auth
 from Service.Crud import tasks as task_crud
 from utils import errors,general
 from Service.dependencies import get_db
 from Service.Models import Student
-from Service.Schemas import subtasks as subtasks_schema
+
 from Service.producer import send_log
 from Service.celery_tasks.celery_app import celery_app
 
@@ -155,6 +156,82 @@ async def create_subtask(
         return {"status": "error", "message": str(e)}
 
 @subtask_router.get(
+    "",
+    summary="Получение всех задач с блоками и дополнительными файлами",
+    description="Возвращает список всех задач с текстовыми, графическими и другими блоками, а также прикрепленные файлы."
+)
+async def get_all_subtasks(
+    filters: subtasks_schema.SubTaskFilter = Depends(subtasks_schema.get_subtask_filters),
+    db: Session = Depends(get_db),
+    current_student=Depends(auth.permission_required("view_tasks"))
+):
+    logging.info("[SUBTASKS] === Поступил запрос на получение всех задач ===")
+    try:
+        # 1. Получаем задачу из базы
+        subtasks = subtasks_crud.view_all_subtasks(db, filters)
+
+        if not subtasks:
+            logging.warning("Задачи не найдены")
+            return {"status": "success", "data": []}
+
+        all_data = []
+        for subtask in subtasks:
+            # 2. Парсим блоки
+            try:
+                blocks_list = json.loads(subtask["Blocks"]) if subtask.get("Blocks") else []
+            except json.JSONDecodeError as e:
+                logging.error(f"Ошибка парсинга блоков у задачи ID={subtask.SubTaskID}: {e}")
+                blocks_list = []
+
+            # 3. Получаем прикрепленные файлы
+            files = await subtasks_crud.view_files(db, subtask.SubTaskID)
+            file_list = [
+                {"FileID": f["ID"], "FileName": f["FileName"], "FilePath": f["FilePath"]}
+                for f in files
+            ]
+
+
+        # 4. Формируем ответ
+            all_data.append({
+                "SubTaskID": subtask["SubTaskID"],
+                "SubjectID": subtask["SubjectID"],
+                "SubjectName": subtask["SubjectName"],
+                "Description": subtask["Description"],
+                "TaskID": subtask["TaskID"],
+                "TaskTitle": subtask["TaskTitle"],
+                "SubTaskNumber": subtask["SubTaskNumber"],
+                "VariantID": subtask["VariantID"],
+                "VariantName": subtask["VariantName"],
+                "TypeVariant": subtask["TypeVariant"],
+                "YearVariant": subtask["YearVariant"],
+                "NumberVarinat": subtask["NumberVarinat"],
+                "DifficultyLevel": subtask["DifficultyLevel"],
+                "Comment": subtask["Comment"],
+                "Creator": subtask["Creator"],
+                "UploadDate": subtask["UploadDate"],
+                "Blocks": blocks_list,
+                "Files": file_list,
+            })
+
+        logging.info(f"[SUBTASKS] Получено {len(all_data)} задач")
+        logging.info("[SUBTASKS] === Поступил запрос на получение всех задач ===")
+        await run_in_threadpool(
+            send_log,
+            StudentID=current_student.ID,
+            StudentLogin=current_student.Login,
+            action="VIEW_ALL_SUBTASKS",
+            details={
+                "DescriptionEvent": f"Пользователь {current_student.Login} просмотрел все задачи"
+            }
+        )
+        return {"status": "success", "data": all_data}
+
+
+    except Exception as e:
+        logging.exception("Ошибка при получении всех задач")
+        return {"status": "error", "message": str(e)}
+
+@subtask_router.get(
     "/{subtask_id}",
     summary="Получение задачи с блоками и с дополнительными файлами",
     description="Возвращает задачу с текстовыми, графическими и другими блоками, а также прикрепленные файлы."
@@ -229,6 +306,7 @@ async def get_subtask(
     except Exception as e:
         logging.exception("Ошибка при получении задачи")
         return {"status": "error", "message": str(e)}
+
 
 
 

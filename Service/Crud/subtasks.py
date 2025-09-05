@@ -1,6 +1,7 @@
 from utils.config import settings
 from utils import errors,general
 from utils.log import setup_logging
+from Service.Schemas import subtasks as subtasks_schema
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 from fastapi import HTTPException, UploadFile, File
@@ -31,6 +32,52 @@ async def view_subtask(db: Session, subtask_id):
         mode="mappings_first",  # Возвращаем список словарей
         required=False,
         error_message=f"[EXEC] Не удалось получить задачу с id:{subtask_id}"
+    )
+
+
+def view_all_subtasks(db: Session, filters: subtasks_schema.SubTaskFilter):
+    logging.info("[SUBTASKS_CRUD] === Запуск view_all_subtasks с фильтрами ===")
+
+    query = """
+    EXEC GetSubtask
+        @SubTaskID = :SubTaskID,
+        @TaskID = :TaskID,
+        @SubjectID = :SubjectID,
+        @VariantID = :VariantID,
+        @Search = :Search,
+        @UploadDate = :UploadDate,
+        @Creator = :Creator,
+        @SortColumn1 = :SortColumn1,
+        @SortColumn2 = :SortColumn2,
+        @SortDirection1 = :SortDirection1,
+        @SortDirection2 = :SortDirection2,
+        @Offset = :Offset,
+        @Limit = :Limit
+    """
+
+    params = {
+        "SubTaskID": filters.SubTaskID,
+        "TaskID": filters.TaskID,
+        "SubjectID": filters.SubjectID,
+        "VariantID": filters.VariantID,
+        "Search": filters.Search,
+        "UploadDate": filters.UploadDate,
+        "Creator": filters.Creator,
+        "SortColumn1": filters.SortColumn1,
+        "SortColumn2": filters.SortColumn2,
+        "SortDirection1": filters.SortDirection1,
+        "SortDirection2": filters.SortDirection2,
+        "Offset": filters.Offset,
+        "Limit": filters.Limit,
+    }
+
+    return general.run_query_select(
+        db=db,
+        query=query,
+        params=params,
+        mode="mappings_all",  # возвращает список словарей
+        required=False,
+        error_message="[EXEC] Не удалось получить список всех задач"
     )
 
 async def view_files(db: Session, subtask_id):
