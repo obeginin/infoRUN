@@ -43,6 +43,96 @@ logger = logging.getLogger(__name__) # создание логгера для т
 subtask_router  = APIRouter(prefix="/api/subtasks", tags=["subtasks"])
 
 
+@subtask_router.put(
+    "/update/{subtask_id}",
+    summary="Полное обновление задачи с блоками и файлами",
+    description="Обновляет все поля подзадачи и заменяет блоки и файлы полностью (старые файлы и изображения удаляются)."
+)
+async def full_update_subtask(
+    subtask_id: int,
+    task_id: int = Form(...),
+    subtask_number: int = Form(...),
+    variant_id: int = Form(...),
+    blocks: str = Form(...,description='JSON список блоков: [{"type":"image","content":"image.png"},{"type":"text","content":"Текст"}]'),
+    files_blocks: Optional[List[UploadFile]] = File(None, description="Файлы для блоков"),
+    answer: str = Form(...),
+    files_solution: Optional[List[UploadFile]] = File(None, description="Файлы решения"),
+    files_extra: Optional[List[UploadFile]] = File(None, description="Дополнительные файлы"),
+    db: Session = Depends(get_db),
+    current_student=Depends(auth.permission_required("edit_tasks"))
+):
+
+    logging.info(f"[SUBTASKS] === Запрос на полное обновление задачи ID={subtask_id} ===")
+
+    try:
+        # Парсим блоки
+        try:
+            blocks_json = json.loads(blocks)
+            blocks_list = [Block(**b) for b in blocks_json]
+        except Exception as e:
+            logging.error(f"Ошибка с блоками: {e}")
+            return {"status": "error", "message": str(e)}
+
+        # Создаем объект для передачи в crud
+        subtask_data = SubTaskCreate(
+            TaskID=task_id,
+            SubTaskNumber=subtask_number,
+            VariantID=variant_id,
+            Answer=answer,
+            Blocks=blocks_list,
+            Creator=current_student.Login
+        )
+
+        # Обновляем подзадачу и файлы
+        result = await subtasks_crud.update_subtask(db, subtask_data, files_blocks, files_solution, files_extra, subtask_id)
+
+        # Загружаем новые файлы решения через Celery
+        if files_solution:
+            solution_files_data = await subtasks_crud.prepare_files_data(files_solution, "решение")
+            celery_app.send_task(
+                "save_subtask_files",
+                kwargs={
+                    "subtask_id": subtask_id,
+                    "files_data": solution_files_data,
+                    "folder": str(settings.UPLOAD_SOLUTION_DIR),
+                    "table": "SubTaskSolutions",
+                    "prefix": "sol_subtask"
+                }
+            )
+
+        # Загружаем новые дополнительные файлы через Celery
+        if files_extra:
+            extra_files_data = await subtasks_crud.prepare_files_data(files_extra, "дополнительный")
+            celery_app.send_task(
+                "save_subtask_files",
+                kwargs={
+                    "subtask_id": subtask_id,
+                    "files_data": extra_files_data,
+                    "folder": str(settings.UPLOAD_FILES_DIR),
+                    "table": "SubTaskFiles",
+                    "prefix": "f_subtask"
+                }
+            )
+
+        # Логирование в Kafka
+        await run_in_threadpool(
+            send_log,
+            StudentID=current_student.ID,
+            StudentLogin=current_student.Login,
+            action="UPDATE_SUBTASK",
+            details={
+                "SubTaskID": subtask_id,
+                "DescriptionEvent": f"Пользователь {current_student.Login} полностью обновил задачу ID={subtask_id}"
+            }
+        )
+
+        return {"status": "success", "data": result}
+
+    except Exception as e:
+        logging.exception(f"Ошибка при обновлении задачи ID={subtask_id}")
+        return {"status": "error", "message": str(e)}
+
+
 @subtask_router.post("/create/", summary="Создание задачи с файлами и блоками",
                      description="""Создает задачу с текстовыми, графическими и другими блоками.  
 Поддерживает прикрепление файлов через multipart/form-data.  
@@ -105,7 +195,7 @@ async def create_subtask(
 
     # 4 Создаем новую задачу
     try:
-        result = await subtasks_crud.save_subtask(db, subtask_obj, files_blocks)
+        result = await subtasks_crud.create_subtask(db, subtask_obj, files_blocks)
         subtask_id = result["SubTaskID"]
         logging.info(f"[SUBTASKS] Пользователь {current_student.Login} успешно создал задачу id={subtask_id}")
 

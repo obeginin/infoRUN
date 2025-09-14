@@ -22,10 +22,24 @@ async def app_exception_handler(request: Request, exc: HTTPException):
 
 """Handle request validation errors."""
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    # Логируем
     logger.warning(f"Validation error: {exc.errors()} (Request: {request.url})")
+
+    # Преобразуем ошибки в безопасный формат
+    safe_details = []
+    for err in exc.errors():
+        safe_err = {}
+        for k, v in err.items():
+            # Если значение — исключение, преобразуем в строку
+            if isinstance(v, Exception):
+                safe_err[k] = str(v)
+            else:
+                safe_err[k] = v
+        safe_details.append(safe_err)
+
     return JSONResponse(
         status_code=422,
-        content={"success": False, "message": "Validation error", "details": exc.errors()}
+        content={"success": False, "message": "Validation error", "details": safe_details}
     )
 
 """Handle general exceptions."""

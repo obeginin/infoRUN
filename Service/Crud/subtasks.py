@@ -13,6 +13,7 @@ from pathlib import Path
 import logging
 from typing import List
 from uuid import uuid4
+from starlette.concurrency import run_in_threadpool
 import base64
 
 
@@ -109,9 +110,9 @@ async def view_solutions_files(db: Session, subtask_id):
         error_message=f"Не удалось получить файлы для задачи с id:{subtask_id}"
     )
 
-async def save_subtask(db, subtask_obj, files_blocks: list):
+async def create_subtask(db, subtask_obj, files_blocks: list):
         #blocks_json = json.dumps([b.dict() for b in subtask_obj.Blocks])
-    logging.info("[SUBTASKS_CRUD] === Запуск save_subtask ===")
+    logging.info("[SUBTASKS_CRUD] === Запуск create_subtask ===")
     logging.info(f"[SUBTASKS_CRUD] Полученные данные подзадачи: {subtask_obj}")
     logging.info(f"[SUBTASKS_CRUD] Количество загруженных файлов с изображением задачи: {len(files_blocks)}")
     #logging.info(f"Количество загруженных файлов с решением задачи: {len(files_solution)}")
@@ -185,6 +186,74 @@ async def save_subtask(db, subtask_obj, files_blocks: list):
         logging.exception("Ошибка при создании подзадачи")
         return {"error": str(e)}
 
+async def update_subtask(db, subtask_obj, files_blocks: list, files_solution: list, files_extra: list, subtask_id: int):
+    """
+    Полное обновление подзадачи.
+    subtask_obj — объект с новыми данными (TaskID, SubTaskNumber, VariantID, Answer, Blocks)
+    files_blocks — список новых файлов для блоков (заменяем старые)
+    subtask_id — ID подзадачи для обновления
+    """
+    logging.info(f"[SUBTASKS_CRUD] === Запуск полного обновления подзадачи ID={subtask_id} ===")
+    try:
+        # 1. Удаляем старые файлы и записи
+        await run_in_threadpool(delete_subtask_files, db, subtask_id)
+
+        # 2. Сохраняем новые файлы для блоков
+        file_url_map = []
+        if files_blocks:
+            file_url_map = save_files(db, files_blocks, subtask_id, settings.UPLOAD_IMAGE_DIR, "subtask","SubTasksImages")
+
+        # 3. Обновляем блоки с новыми путями
+        updated_blocks = []
+        image_idx = 0
+        for block in subtask_obj.Blocks:
+            block_dict = block.dict() if hasattr(block, "dict") else dict(block)
+            if block_dict.get("type") == "image" and files_blocks:
+                if image_idx < len(file_url_map):
+                    block_dict["content"] = file_url_map[image_idx]
+                    image_idx += 1
+                else:
+                    logging.warning(f"[SUBTASKS_CRUD] Нет соответствующего файла для блока: {block_dict}")
+                    block_dict["content"] = ""
+            updated_blocks.append(block_dict)
+
+        # 4. Проверяем, что все блоки сериализуемы
+        serializable_blocks = []
+        for b in updated_blocks:
+            if isinstance(b, dict):
+                serializable_blocks.append(b)
+            else:
+                logging.warning(f"[SUBTASKS_CRUD] Блок не сериализуем, заменяем на пустой dict: {b}")
+                serializable_blocks.append({})
+
+        # 4. Обновляем всю подзадачу целиком
+        query = """
+            UPDATE SubTasks
+            SET TaskID = :TaskID,
+                SubTaskNumber = :SubTaskNumber,
+                VariantID = :VariantID,
+                Answer = :Answer,
+                Blocks = :Blocks
+            WHERE SubTaskID = :SubTaskID
+        """
+        params = {
+            "TaskID": subtask_obj.TaskID,
+            "SubTaskNumber": subtask_obj.SubTaskNumber,
+            "VariantID": subtask_obj.VariantID,
+            "Answer": subtask_obj.Answer,
+            "Blocks": json.dumps(serializable_blocks, ensure_ascii=False),
+            "SubTaskID": subtask_id
+        }
+        general.run_query_update(db, query, params)
+
+        return {
+            "SubTaskID": subtask_id,
+            "Blocks": updated_blocks,
+        }
+
+    except Exception as e:
+        logging.exception(f"[SUBTASKS_CRUD] Ошибка при обновлении подзадачи ID={subtask_id}")
+        return {"error": str(e)}
 
 '''функция сохранения файлов'''
 def save_files(db, files: list, subtask_id: int, folder: str, prefix: str, table: str):
@@ -238,6 +307,66 @@ async def prepare_files_data(files: List[UploadFile], file_type: str = "file") -
         logging.info(f"[SUBTASKS_CRUD] {file_type.capitalize()} файл {idx}: {f.filename}, content_type={f.content_type}, size={len(content)} bytes")
     return files_data
 
+
+def delete_subtask_files(db, subtask_id: int):
+    """
+    Удаляет все файлы подзадачи из всех таблиц и с диска.
+    Пути в базе хранятся относительно корня проекта.
+    """
+    logging.info(f"[SUBTASKS_CRUD] === Удаление старых файлов подзадачи ID={subtask_id} ===")
+
+    # таблицы и соответствующие папки
+    tables_folders = [
+        ("SubTasksImages", settings.UPLOAD_IMAGE_DIR),
+        ("SubTaskSolutions", settings.UPLOAD_SOLUTION_DIR),
+        ("SubTaskFiles", settings.UPLOAD_FILES_DIR)
+    ]
+    logging.info(f"{settings.UPLOAD_IMAGE_DIR}, {settings.UPLOAD_SOLUTION_DIR}, {settings.UPLOAD_FILES_DIR}")
+    for table, folder_path in tables_folders:
+        files_in_db = general.run_query_select(
+            db,
+            f"SELECT FilePath FROM {table} WHERE SubTaskID = :SubTaskID",
+            {"SubTaskID": subtask_id},
+            mode="mappings_all"
+        ) or []
+        logging.info(f"{files_in_db}")
+
+        if not files_in_db:
+            logging.info(f"[SUBTASKS_CRUD] В таблице {table} для SubTaskID={subtask_id} файлов нет")
+            continue
+
+        for f in files_in_db:
+            logging.info(f"[SUBTASKS_CRUD] Проверка записи из БД: {f} (тип {type(f)})")
+            try:
+                # Если f это dict, берём ключ 'FilePath', иначе предполагаем строку
+                relative_path = f['FilePath']
+                logging.info(f"[SUBTASKS_CRUD] Относительный путь: {relative_path}")
+                filename = os.path.basename(relative_path)
+
+                # Определяем правильную папку
+                if table == "SubTasksImages":
+                    folder_path = settings.UPLOAD_IMAGE_DIR
+                elif table == "SubTaskSolutions":
+                    folder_path = settings.UPLOAD_SOLUTION_DIR
+                else:
+                    folder_path = settings.UPLOAD_FILES_DIR
+
+                full_path = os.path.join(folder_path, filename)
+                if os.path.exists(full_path):
+                    os.remove(full_path)
+                    logging.info(f"[SUBTASKS_CRUD] Удален файл с диска: {full_path}")
+                else:
+                    logging.warning(f"[SUBTASKS_CRUD] Файл не найден на диске: {full_path}")
+            except Exception as e:
+                logging.warning(f"[SUBTASKS_CRUD] Не удалось удалить файл {f}: {e}")
+
+            # удаляем записи из базы
+        general.run_query_update(
+            db,
+            f"DELETE FROM {table} WHERE SubTaskID = :SubTaskID",
+            {"SubTaskID": subtask_id}
+        )
+        logging.info(f"[SUBTASKS_CRUD] Удалены записи из таблицы {table} для SubTaskID={subtask_id}")
 
 '''Логирование и проверка списка файлов (для проверки передачи файлов с фронта)'''
 def log_and_validate_files(files: Optional[List], label: str):
