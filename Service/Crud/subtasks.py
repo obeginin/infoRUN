@@ -202,11 +202,12 @@ def save_files(db, files: list, subtask_id: int, folder: str, prefix: str, table
             continue
 
         # Относительный путь для базы и URL
-        relative_path = os.path.relpath(full_path, settings.UPLOAD_DIR).replace("\\", "/")
+        relative_path = os.path.relpath(full_path, settings.UPLOADS_DIR).replace("\\", "/")
+
         db_path = f"Uploads/{relative_path}"  # сохраняем в базу
         file_map[idx] = f"/{db_path}"  # для фронта
 
-        file_map[idx] = f"/{full_path}"
+
         insert_query = f"INSERT INTO {table} (SubTaskID, FileName, FilePath) VALUES (:SubTaskID, :FileName, :FilePath)"
         general.run_query_insert(db, insert_query, {"SubTaskID": subtask_id, "FileName": filename, "FilePath": db_path})
 

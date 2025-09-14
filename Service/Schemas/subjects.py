@@ -8,6 +8,7 @@ class SubjectRead(BaseModel):
     ID: int
     Name: str
     Description: str
+    EnglishName: str
 
     class Config:
         from_attributes = True

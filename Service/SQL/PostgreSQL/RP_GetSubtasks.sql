@@ -14,12 +14,10 @@ CREATE OR REPLACE FUNCTION GetSubtasks(
     p_search VARCHAR DEFAULT NULL,
     p_upload_date DATE DEFAULT NULL,
     p_creator VARCHAR DEFAULT NULL,
-    p_sort_column1 VARCHAR DEFAULT NULL,
-    p_sort_column2 VARCHAR DEFAULT NULL,
+    p_sort_column1 VARCHAR DEFAULT 's.subtaskid',
     p_sort_direction1 VARCHAR DEFAULT 'ASC',
-    p_sort_direction2 VARCHAR DEFAULT 'ASC',
     p_offset INT DEFAULT 0,
-    p_limit INT DEFAULT 500000
+    p_limit INT DEFAULT 500
 )
 RETURNS TABLE (
     subtaskid INT,
@@ -81,17 +79,15 @@ BEGIN
                 OR v.comment ILIKE '%%' || $5 || '%%'
             )
         ORDER BY %I %s
-        LIMIT $12 OFFSET $11
+        LIMIT $7 OFFSET $6
         $f$,
-        COALESCE(p_sort_column1, 's.subtaskid'),  -- основная колонка сортировки
+        COALESCE(p_sort_column1, 's.subtaskid'),
         COALESCE(p_sort_direction1, 'ASC')
     )
     USING p_subtask_id, p_task_id, p_subject_id, p_variant_id, p_search,
-          p_upload_date, p_creator, p_sort_column1, p_sort_column2,
-          p_sort_direction1, p_sort_direction2, p_limit, p_offset;
+          p_offset, p_limit;
 END;
 $$;
 
--- Пример вызова:
-SELECT * FROM get_subtask();
-SELECT * FROM get_subtask(p_subtask_id := 2);
+--SELECT * FROM GetSubtasks();
+--SELECT * FROM GetSubtasks(p_subtask_id := 123);

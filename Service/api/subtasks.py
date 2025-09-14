@@ -158,7 +158,10 @@ async def create_subtask(
 @subtask_router.get(
     "",
     summary="Получение всех задач с блоками и дополнительными файлами",
-    description="Возвращает список всех задач с текстовыми, графическими и другими блоками, а также прикрепленные файлы."
+    description="""Возвращает список всех подзадач с их блоками и прикрепленными файлами.  
+        Подзадачи могут фильтроваться по параметрам: SubTaskID, TaskID, SubjectID, VariantID,   
+        Search, UploadDate, Creator, сортироваться по любым колонкам и ограничиваться диапазоном   
+        через Offset и Limit."""
 )
 async def get_all_subtasks(
     filters: subtasks_schema.SubTaskFilter = Depends(subtasks_schema.get_subtask_filters),
