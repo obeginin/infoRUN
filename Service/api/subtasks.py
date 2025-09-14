@@ -14,7 +14,7 @@ from Service.celery_tasks.celery_app import celery_app
 
 from uuid import uuid4
 import base64
-
+from asyncio import run
 from fastapi.concurrency import run_in_threadpool
 from fastapi import APIRouter, Depends, Request, Form, UploadFile, File, Query, HTTPException
 from sqlalchemy import text
@@ -63,7 +63,11 @@ async def full_update_subtask(
 ):
 
     logging.info(f"[SUBTASKS] === Запрос на полное обновление задачи ID={subtask_id} ===")
-
+    subtask = await subtasks_crud.view_subtask(db, subtask_id)
+    logging.info(f"[SUBTASKS] subtask:{subtask} ===")
+    if not subtask:
+        logging.warning(f"[SUBTASKS_CRUD] Подзадача ID={subtask_id} не найдена в базе")
+        return {"success": False, "message": "Подзадача не найдена"}
     try:
         # Парсим блоки
         try:
@@ -82,10 +86,10 @@ async def full_update_subtask(
             Blocks=blocks_list,
             Creator=current_student.Login
         )
-
+        logging.info(f"[SUBTASKS] === 0")
         # Обновляем подзадачу и файлы
         result = await subtasks_crud.update_subtask(db, subtask_data, files_blocks, files_solution, files_extra, subtask_id)
-
+        logging.info(f"[SUBTASKS] === 1")
         # Загружаем новые файлы решения через Celery
         if files_solution:
             solution_files_data = await subtasks_crud.prepare_files_data(files_solution, "решение")
@@ -99,7 +103,7 @@ async def full_update_subtask(
                     "prefix": "sol_subtask"
                 }
             )
-
+        logging.info(f"[SUBTASKS] === 2")
         # Загружаем новые дополнительные файлы через Celery
         if files_extra:
             extra_files_data = await subtasks_crud.prepare_files_data(files_extra, "дополнительный")
@@ -113,7 +117,7 @@ async def full_update_subtask(
                     "prefix": "f_subtask"
                 }
             )
-
+        logging.info(f"[SUBTASKS] === 3")
         # Логирование в Kafka
         await run_in_threadpool(
             send_log,
@@ -131,6 +135,38 @@ async def full_update_subtask(
     except Exception as e:
         logging.exception(f"Ошибка при обновлении задачи ID={subtask_id}")
         return {"status": "error", "message": str(e)}
+
+@subtask_router.delete(
+    "/delete/{subtask_id}",
+    summary="Удаление подзадачи",
+    description="Удаляет подзадачу, все её файлы и записи из таблиц"
+)
+async def delete_subtask(
+    subtask_id: int,
+    db: Session = Depends(get_db),
+    current_student = Depends(auth.permission_required("edit_tasks"))
+):
+    logging.info(f"[SUBTASKS] === Запрос на удаление подзадачи ID={subtask_id} ===")
+
+    try:
+
+        subtask = await subtasks_crud.view_subtask(db, subtask_id)
+        if not subtask:
+            logging.warning(f"[SUBTASKS_CRUD] Подзадача ID={subtask_id} не найдена в базе")
+            return {"success": False, "message": "Подзадача не найдена"}
+
+        # 1. Удаляем все файлы и записи из вспомогательных таблиц
+        await run_in_threadpool(subtasks_crud.delete_subtask_files, db,subtask_id)
+
+        # 2. Удаляем саму подзадачу
+        subtasks_crud.delete_subtask_record(db, subtask_id)
+
+        logging.info(f"[SUBTASKS] Подзадача ID={subtask_id} успешно удалена")
+        return {"success": True, "message": f"Подзадача {subtask_id} удалена"}
+
+    except Exception as e:
+        logging.exception(f"[SUBTASKS] Ошибка при удалении подзадачи ID={subtask_id}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @subtask_router.post("/create/", summary="Создание задачи с файлами и блоками",
