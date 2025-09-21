@@ -15,7 +15,7 @@ from fastapi.exceptions import RequestValidationError
 from starlette.status import HTTP_400_BAD_REQUEST
 
 from utils.config import settings
-from utils.log import setup_logging
+from utils.log import setup_logging, LoggingMiddleware
 from utils.exceptions import app_exception_handler, validation_exception_handler, general_exception_handler
 from fastapi.openapi.docs import get_swagger_ui_html, get_redoc_html
 from fastapi.openapi.utils import get_openapi
@@ -24,10 +24,10 @@ from Service.api.swagger import swagger_router
 from Service.Crud.auth import get_swagger_user
 from Service.Database import engine
 from Service.producer import get_kafka_producer
-from Service.middlewares import LoggingMiddleware
 
 # main.py
 '''главный файл проекта'''
+# TODO переведен на асинхронный postgres
 
 # Настроим логирование при успешном запуске основного приложения FastAPI
 setup_logging(log_file=settings.LOG_FILE)
@@ -38,7 +38,8 @@ app = FastAPI(debug=settings.LOG_LEVEL, docs_url=None, redoc_url=None)
 
 # CORS (для запросов с фронта)
 origins = [
-    "http://localhost:5173",       # локальный фронт (Vite)
+    "http://localhost:3000",       # локальный фронт (Vite)
+    "http://10.0.2.5:3000",
     "http://127.0.0.1:5173",       # иногда нужен этот
     "http://localhost:3000",       # локальный фронт (Vite)
     "http://127.0.0.1:3000",
@@ -103,7 +104,7 @@ async def check_db_connection(engine, name: str, retries: int = 5, delay: int = 
             logger.info(f"✅ Подключение к базе данных '{name}' установлено.")
             return
         except Exception as e:
-            logger.error(f"❌ Ошибка подключения к базе '{name}' (Попытка {attempt}/{retries}): {e}")
+            logger.exception(f"❌ Ошибка подключения к базе '{name}' (Попытка {attempt}/{retries}): {e}")
             if attempt < retries:
                 await asyncio.sleep(delay)
             else:
@@ -112,8 +113,8 @@ async def check_db_connection(engine, name: str, retries: int = 5, delay: int = 
 
 @app.on_event("startup")
 async def startup_event():
-    logging.info("🚀 Проверка подключений к базам данных...")
-    await check_db_connection(engine, "infoDB")
+    logger.info("🚀 Проверка подключений к базам данных...")
+    await check_db_connection(engine=engine, name=settings.DB_NAME)
     #check_db_connection(log_engine, "LogDB") # для использования второй базы логов
 
 
@@ -184,9 +185,4 @@ app.openapi = custom_openapi
 
 """запуск сервера"""
 if __name__ == "__main__":
-    uvicorn.run(
-        "Service.main:app",  # путь к объекту app
-        host="0.0.0.0",
-        port=9000,
-        reload=True  # только для dev
-    )
+    uvicorn.run("Service.main:app", host="0.0.0.0", port=8000, reload=True)

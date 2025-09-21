@@ -4,7 +4,7 @@ from fastapi.openapi.utils import get_openapi
 from Service.Crud.auth import get_swagger_user
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
-
+from sqlalchemy.ext.asyncio import AsyncSession
 """Swagger"""
 swagger_router = APIRouter()
 security = HTTPBasic()

@@ -1,7 +1,7 @@
 from utils.config import settings
 from utils import errors,general
 
-from sqlalchemy.orm import Session
+
 from sqlalchemy import text
 from fastapi import HTTPException, UploadFile, File
 from typing import Optional
@@ -20,7 +20,7 @@ CRUD - основная логика работы запроса
 logger = logging.getLogger(__name__) # создание логгера для текущего модуля
 
 
-
+from sqlalchemy.orm import Session
 
 ''' функция-SQL запрос к БД для вывода всех категорий'''
 def get_all_tasks(db: Session, subjectID: int | None = None):

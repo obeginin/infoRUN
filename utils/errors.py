@@ -78,36 +78,36 @@ InvalidInput — Некорректный ввод
 MissingField  (Отсутствует обязательное поле)
 '''
 
-
+# TODO НЕ НАДО переводить на асинхронные функции!! усложнит вызов
 
 # шаблон
 def _error(status_code: int, error: str, message: str, field: Optional[str] = None, headers: dict = None):
     detail = {"error": error, "message": message}
     if field:
         detail["field"] = field
-    return HTTPException(status_code=status_code, detail=detail)
+    return HTTPException(status_code=status_code, detail=detail, headers=headers)
 
 # 400 — Неверный запрос
 def bad_request(error: str = "BadRequest", message: str = "Некорректный запрос",field: Optional[str] = None):
     return _error(400, error, message, field)
 
 # 401 — Неавторизован
-def unauthorized(error: str = "Unauthorized", message: str = "Пользователь не авторизован"):
-    return _error(401, error, message, headers={"WWW-Authenticate": "Bearer"})
+def unauthorized(error: str = "Unauthorized", message: str = "Пользователь не авторизован",field: Optional[str] = None):
+    return _error(401, error, message, field, headers={"WWW-Authenticate": "Bearer"})
 
 # 403 — Нет доступа
-def access_denied(error: str = "AccessDenied", message: str = "Доступ запрещён"):
-    return _error(403, error, message)
+def access_denied(error: str = "AccessDenied", message: str = "Доступ запрещён",field: Optional[str] = None):
+    return _error(403, error, message, field)
 
 # 404 — Не найдено
-def not_found(error: str = "NotFound", message: str = "Ресурс не найден"):
-    return _error(404, error, message)
+def not_found(error: str = "NotFound", message: str = "Ресурс не найден",field: Optional[str] = None):
+    return _error(404, error, message, field)
 
 # 409 — Конфликт
-def conflict(error: str = "ConflictData", message: str = "Конфликт данных"):
-    return _error(409, error, message)
+def conflict(error: str = "ConflictData", message: str = "Конфликт данных",field: Optional[str] = None):
+    return _error(409, error, message, field)
 
 # 500 — Внутренняя ошибка сервера
-def internal_server(error: str = "ServerError", message: str = "Внутренняя ошибка сервера"):
-    return _error(500, error, message)
+def internal_server(error: str = "ServerError", message: str = "Внутренняя ошибка сервера",field: Optional[str] = None):
+    return _error(500, error, message, field)
 

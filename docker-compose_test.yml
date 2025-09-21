@@ -3,15 +3,15 @@ version: "3.9"
 services:
   db:
     image: postgres:15
-    container_name: postgres
+    container_name: postgres_test
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASS}
     ports:
-      - "5432:5432"
+      - "5000:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data_test:/var/lib/postgresql/data
     restart: unless-stopped
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}" ]
@@ -19,21 +19,6 @@ services:
       timeout: 5s
       retries: 5
 
-  # FastAPI
-  fastapi:
-    build: .
-    container_name: fastapi
-    env_file:
-      - .env
-    command: sh -c "uvicorn Service.main:app --host 0.0.0.0 --port 9000 ${DEBUG:+--reload}"
-    ports:
-      - "9000:9000"
-    depends_on:
-      db:
-        condition: service_healthy
-    volumes:
-     - ./Service:/infoRUN_Postgres/Service
-    restart: unless-stopped
 
   nextjs:
     build:
@@ -45,5 +30,4 @@ services:
     restart: unless-stopped
 
 volumes:
-  postgres_data:
-    name: postgres_data
+  postgres_data_test:

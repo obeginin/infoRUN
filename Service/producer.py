@@ -43,7 +43,7 @@ def get_kafka_producer() -> KafkaProducer:
                 retries=3,       # попытки повторной отправки
                 linger_ms=5      # ждёт 5 мс перед отправкой (может собрать несколько сообщений в одну партию)
             )
-            logging.info(f"[Kafka] Producer initialized")
+            logger.info(f"[Kafka] Producer initialized")
         except Exception as e:
             print(f"[Kafka] Failed to initialize producer: {e}")
             _producer = None
@@ -54,7 +54,7 @@ def get_kafka_producer() -> KafkaProducer:
 def send_log(StudentID: int, StudentLogin: str, action: str, details: dict = None):
     producer = get_kafka_producer()
     if not producer:
-        logging.warning("[Kafka] Producer not available. Log not sent.")
+        logger.warning("[Kafka] Producer not available. Log not sent.")
         return
     message  = {
         "action_type": "student_action",   # Лучше использовать четкий тип для логов
@@ -76,9 +76,9 @@ def send_log(StudentID: int, StudentLogin: str, action: str, details: dict = Non
         future.get(timeout=1.0)  # ждём максимум 1 секунду ответа от брокера
         #producer.flush()  # Можно опустить, если работает в режиме batch
         print(f"[Kafka] Log sent: {message}")
-        logging.info(f"[Kafka] Log sent: {message}")
+        logger.info(f"[Kafka] Log sent: {message}")
     except KafkaError as e:
-        logging.warning(f"[Kafka] Failed to send log (KafkaError): {e}")
+        logger.warning(f"[Kafka] Failed to send log (KafkaError): {e}")
     except Exception as e:
         print(f"[Kafka] Failed to send log: {e}")
 
@@ -88,7 +88,7 @@ def send_log(StudentID: int, StudentLogin: str, action: str, details: dict = Non
 def send_email_event(event_type: str, email: str, subject: str, template: str, data: dict):
     producer = get_kafka_producer()
     if not producer:
-        logging.warning("[Kafka] Producer not available. Email not sent.")
+        logger.warning("[Kafka] Producer not available. Email not sent.")
         return
 
     iso_string = datetime.strptime(TIME_NOW(), "%Y-%m-%d %H:%M:%S").isoformat()
@@ -104,9 +104,9 @@ def send_email_event(event_type: str, email: str, subject: str, template: str, d
     try:
         future = producer.send("email.notifications", value=message)
         future.get(timeout=1.0)
-        logging.info(f"[Kafka] Email event sent: {message}")
+        logger.info(f"[Kafka] Email event sent: {message}")
     except KafkaError as e:
-        logging.warning(f"[Kafka] Failed to send email event: {e}")
+        logger.warning(f"[Kafka] Failed to send email event: {e}")
 
 
 # пример вызова send_email_event

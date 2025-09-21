@@ -9,7 +9,7 @@ from Service.producer import send_log
 
 from fastapi import APIRouter, Depends, Request, Form, UploadFile, File, Query, HTTPException
 from sqlalchemy import text
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from starlette.responses import FileResponse
@@ -29,7 +29,7 @@ import logging
 load_dotenv()
 logger = logging.getLogger(__name__)
 
-
+from sqlalchemy.orm import Session
 
 variant_router = APIRouter(prefix="/api/variants", tags=["variants"])
 

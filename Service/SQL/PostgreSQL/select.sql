@@ -1,8 +1,8 @@
-select * from Roles r
-select * from Permissions p 
-select * from RolePermissions rp
-select * from Students s 
-select * from PasswordResetTokens pr
+select * from Roles r;
+select * from Permissions p ;
+select * from RolePermissions rp;
+select * from Students s ;
+select * from PasswordResetTokens pr;
 
 select * from Subjects sub 
 select * from Variants v

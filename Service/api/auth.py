@@ -5,7 +5,7 @@ from Service.Schemas import auth
 
 from Service.Crud.auth import get_current_student, permission_required, verify_password, hash_password, \
     get_student_by_login, get_logs_student, get_logs_all, get_student_by_field, save_password_reset_token, \
-    get_token_record, mark_token_used
+    get_token_record, mark_token_used, get_hash_password
 from Service.Crud.auth import change_password, get_all_roles, get_all_permission, get_role_id, assign_role, get_permission_role, update_role_permissions
 from Service.Crud.auth import get_student_by_email, add_new_register_student, confirm_student_email
 from Service.Crud.students import  get_student_id, get_all_students, del_student_id
@@ -20,9 +20,9 @@ from datetime import timedelta
 from typing import List
 from fastapi import APIRouter, Depends,Form, Request, HTTPException, status, Response, Query
 from fastapi.concurrency import run_in_threadpool
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi.responses import JSONResponse
-from sqlalchemy import text
+
 from fastapi.encoders import jsonable_encoder
 from fastapi.templating import Jinja2Templates
 from passlib.context import CryptContext
@@ -39,23 +39,23 @@ admin_router = APIRouter(prefix="/api/admin", tags=["admin"]) # страница
 templates = Jinja2Templates(directory=settings.TEMPLATES_DIR)
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
-
+# TODO переведен на асинхронный postgres
 
 """Роут с аутентификацией (логирование в kafka)"""
 # /api/auth/login
 @auth_router.post("/login", response_model=auth.TokenWithStudent,
                   summary="Аутентификация (запрос токена для пользователя)",
                   description="Возвращает токен, тип заколовка и небольшую информацию о пользователе, если логин и пароль корректны и пользователь активен.")
-def login(
+async def login(
     request: Request,
     student_login: auth.StudentLogin,
-    db: Session = Depends(get_db),
+    db: AsyncSession = Depends(get_db),
 ):
     ip = request.headers.get("X-Forwarded-For") or request.client.host
     user_agent = request.headers.get("User-Agent")
 
     # Ищем студента в базе по логину
-    student = get_student_by_login(db, student_login.Login)
+    student = await get_student_by_login(db=db, login=student_login.Login)
     if not student:
         logger.warning(f"Попытка входа с несуществующим логином: {student_login.Login}")
         send_log(
@@ -137,10 +137,10 @@ def login(
 @auth_router.post("/login/v2", response_model=auth.TokenWithStudent,
                   summary="Аутентификация (запрос токена для пользователя (логин / email / телефон))",
                   description="Возвращает токен, тип заголовка и небольшую информацию о пользователе, если (логин / email / телефон) и пароль корректны и пользователь активен.")
-def login(
+async def login(
     auth_request: auth.AuthRequest,
     request: Request,
-    db: Session = Depends(get_db),
+    db: AsyncSession = Depends(get_db),
 ):
     ip = request.headers.get("X-Forwarded-For") or request.client.host
     user_agent = request.headers.get("User-Agent")
@@ -156,7 +156,8 @@ def login(
         field = "Login"
 
     # Ищем студента в базе по логину
-    student = get_student_by_field(db, field_name=field, value=identifier)
+    student = await get_student_by_field(db, field_name=field, value=identifier)
+    logger.info(f"student={student} ")
     if not student:
         logger.warning(f"Попытка входа с несуществующим {field}: {identifier}")
         send_log(
@@ -239,20 +240,21 @@ def login(
 """
 # /api/auth/check-token
 @auth_router.get("/check-token", response_model=auth.StudentOut, summary="Образец получения данных пользователя по токену (с разрешениями)")
-def check_token(request: Request, current_student = Depends(get_current_student)):
+async def check_token(request: Request, current_student = Depends(get_current_student)):
     return current_student
 
 
 # /api/auth/register
-'''Регистрация'''
-@auth_router.post("/register", summary="Регистрация пользователя",
-                 description="после ввода данных на указанный email отправляется письмо с подтверждением почты")
-def register_user(user_data: auth.UserCreate, db: Session = Depends(get_db)):
+'''Перешли на регистрацию v2'''
+#@auth_router.post("/register", summary="Регистрация пользователя",
+#                 description="после ввода данных на указанный email отправляется письмо с подтверждением почты")
+async def register_user(user_data: auth.UserCreate, db: AsyncSession = Depends(get_db)):
+    '''Регистрация'''
     student = get_student_by_email(db, user_data.email)
     if student:
         logger.warning(f"Пользователь с Email: {user_data.email} уже зарегистрирован!")
         raise errors.bad_request(message="Пользователь с таким Email уже зарегистрирован")
-    student = get_student_by_login(db, user_data.login)
+    student = get_student_by_login(db=db, login=user_data.login)
     if student:
         logger.warning(f"Пользователь с Login: {user_data.login} уже зарегистрирован!")
         raise errors.bad_request(message="Пользователь с таким Login уже зарегистрирован")
@@ -291,12 +293,13 @@ def register_user(user_data: auth.UserCreate, db: Session = Depends(get_db)):
 '''Регистрация'''
 @auth_router.post("/register/v2", summary="Регистрация пользователя",
                  description="после ввода данных на указанный email отправляется письмо с подтверждением почты")
-def register_user(user_data: auth.UserCreate, db: Session = Depends(get_db)):
-    student = get_student_by_email(db, user_data.email)
+async def register_user(user_data: auth.UserCreate, db: AsyncSession = Depends(get_db)):
+    logger.info(f"Запрос на регистрацию пользователя: {user_data}")
+    student = await get_student_by_email(db, user_data.email)
     if student:
         logger.warning(f"Пользователь с Email: {user_data.email} уже зарегистрирован!")
         raise errors.bad_request(message="Пользователь с таким Email уже зарегистрирован")
-    student = get_student_by_login(db, user_data.login)
+    student = await get_student_by_login(db=db, login=user_data.login)
     if student:
         logger.warning(f"Пользователь с Login: {user_data.login} уже зарегистрирован!")
         raise errors.bad_request(message="Пользователь с таким Login уже зарегистрирован")
@@ -315,9 +318,9 @@ def register_user(user_data: auth.UserCreate, db: Session = Depends(get_db)):
         "Password": hashed_password,
         "IsConfirmed": False,
     }
-    add_new_register_student(db, params)
+    await add_new_register_student(db, params)
 
-    logger.info(f"аааааааНовый пользователь зарегистрирован: {user_data.email}")
+    logger.info(f"Новый пользователь зарегистрирован: {user_data.email} | {user_data}")
 
     send_email_event_celery(
         request=auth.EmailRequest(
@@ -335,14 +338,15 @@ def register_user(user_data: auth.UserCreate, db: Session = Depends(get_db)):
 
 
 # /api/auth/password_reset
-'''Сброс пароля через email'''
 @auth_router.post("/password_reset", summary="Запрос на сброс пароля",
                   description="""Высылается письмо с ссылкой для сброса пароля с использованием временного токена, который вшит в ссылку 
                               `https://info-run.ru/auth/reset-password?token={token}`  
                               далее используется роут `/api/auth/password_reset_with_token` непосредственно для изменения пароля""")
-def password_reset_request(request: auth.PasswordReset, db: Session = Depends(get_db)):
+async def password_reset_request(request: auth.PasswordReset, db: AsyncSession = Depends(get_db)):
+    '''Сброс пароля через email'''
+    logger.info(f"Запрос на cброс пароля через email: {request.Email} | request={request}")
     # 1. Найти пользователя по email
-    student = get_student_by_field(db, "Email", request.Email)
+    student = await get_student_by_field(db, "Email", request.Email)
     if not student:
         logger.warning(f"[AUTH] Студент с email: {request.Email} не найден в базе!")
         # Лучше не выдавать явно, что email не найден, чтобы не дать подсказок
@@ -355,7 +359,7 @@ def password_reset_request(request: auth.PasswordReset, db: Session = Depends(ge
     expires_at = TIME_NOW() + timedelta(hours=1)
     #expires_at = datetime.strptime(TIME_NOW(), "%Y-%m-%d %H:%M:%S") + timedelta(hours=1)
 
-    save_password_reset_token(db, student.ID, token, expires_at)
+    await save_password_reset_token(db, student.ID, token, expires_at)
 
     logger.info(f"Письмо с инструкцией для сброса пароля отправлено на Email: {request.Email}")
 
@@ -372,11 +376,14 @@ def password_reset_request(request: auth.PasswordReset, db: Session = Depends(ge
 
     return {"message": f"Письмо с инструкцией для сброса пароля отправлено на Email: {request.Email}."}
 
+
 @auth_router.post("/password_reset_with_token", summary="Сброс пароля по токену",
                   description="на один токен идет только один сброс пароля, для повторного сброса надо запрашивать новый токен")
-def reset_password(data: auth.PasswordResetConfirm, db: Session = Depends(get_db)):
+async def reset_password(data: auth.PasswordResetConfirm, db: AsyncSession = Depends(get_db)):
+    ''''''
+    logger.info(f"Запрос непосредственно на сам cброс пароля через email: {data.Email} | data={data}")
     # 1. Получаем запись токена из базы
-    token_record = get_token_record(db, data.token)
+    token_record = await get_token_record(db, data.token)
     #time = datetime.strptime(TIME_NOW(), "%Y-%m-%d %H:%M:%S").isoformat()
     logger.info(f"ExpiresAt: {token_record['ExpiresAt']}, now time: {TIME_NOW()}")
 
@@ -391,17 +398,19 @@ def reset_password(data: auth.PasswordResetConfirm, db: Session = Depends(get_db
 
     # 3. Хешируем и обновляем пароль пользователя
     hashed_password = hash_password(data.new_password)
-    change_password(db, token_record["StudentID"], hashed_password)
+    await change_password(db, token_record["StudentID"], hashed_password)
     logger.info(f"[AUTH] Пользователя: {token_record.StudentID} успешно сбросил пароль через Email!")
     # 4. Помечаем токен как использованный
-    mark_token_used(db, data.token)
+    await mark_token_used(db, data.token)
 
     return {"message": "Пароль успешно сброшен"}
 
-'''Подтверждение email'''
+
 @auth_router.get("/confirm-email", summary="Подтверждение email",
                  description="""данный роут вызывается после открытия ссылки из письма с подтверждением email""")
-def confirm_email(token: str, db: Session = Depends(get_db)):
+async def confirm_email(token: str, db: AsyncSession = Depends(get_db)):
+    '''Подтверждение email'''
+    logger.info(f"Запрос на подтверждение email для токена: {token}")
     # Декодируем и верифицируем токен
     payload = verify_token(token)
     if not payload:
@@ -417,7 +426,7 @@ def confirm_email(token: str, db: Session = Depends(get_db)):
 
 
     # обновляем данные
-    result = confirm_student_email(db, {"email": email, "now": TIME_NOW()})
+    result = await confirm_student_email(db, {"email": email, "now": TIME_NOW()})
     if result != 1:
         logger.warning(f"Пользователь не найден или уже подтверждён")
         raise errors.bad_request(message="Пользователь не найден или уже подтверждён")
@@ -428,22 +437,21 @@ def confirm_email(token: str, db: Session = Depends(get_db)):
 
 
 # /api/auth/logout
-'''Реализация выхода (удаления cookie с токеном)'''
+
 @auth_router.post("/logout", summary="Выход, удаление токена при использовании 'HttpOnly cookie'",
                  description="Необходимо в заголовке отправлять токен (требуется для логироания выхода пользователя")
 async def logout(
         request: Request,
         response: Response,
         current_student=Depends(get_current_student)):
+    '''Реализация выхода (удаления cookie с токеном)'''
+    logger.info(f"Запрос выход (удаления cookie с токеном): request={request} | response={response}")
     ip = request.headers.get("X-Forwarded-For") or request.client.host
     user_agent = request.headers.get("User-Agent")
-    await run_in_threadpool(
-        logger.info,f"Пользователь вышел из системы: {current_student.Login} (ID: {current_student.ID})"
-    )
+    logger.info,f"Пользователь вышел из системы: {current_student.Login} (ID: {current_student.ID})"
 
     # Лог в Kafka
-    await run_in_threadpool(
-        send_log,
+    send_log(
         StudentID=current_student.ID,
         StudentLogin=current_student.Login,
         action="LOGOUT",
@@ -451,20 +459,21 @@ async def logout(
             "DescriptionEvent": "Пользователь вышел из системы",
             "IPAddress": ip,
             "UserAgent": user_agent,
-        }
+            }
     )
     # Удаление куки (если используется cookie-based auth)
     response.delete_cookie("access_token")
-    print("detail LOGOUT")
-    logger.info (f"detail LOGOUT")
+
+    logger.info(f"detail LOGOUT")
     return {"detail": "LOGOUT"}
 
 # /api/auth/change-password
 @auth_router.post("/change-password", summary = "Сменить пароль текущего пользователя (меняет сам пользователь)",
                   description="пользователя получаем по токену, который передается из заголовка с frontend. Требуется проверка студента.")
-def student_change_password(data: auth.ChangePasswordRequest, db: Session = Depends(get_db), current_student =  Depends(get_current_student)):
+async def student_change_password(data: auth.ChangePasswordRequest, db: AsyncSession = Depends(get_db), current_student =  Depends(get_current_student)):
+    logger.info(f"Запрос а изменение пароля текущего пользователя data={data}")
     # Получаем текущий хеш пароля из базы
-    stored_password = db.execute(text("select Password from students where ID = :id"), {"id": current_student.ID}).scalar()
+    stored_password = await get_hash_password(db, current_student.ID)
 
     # Проверка старого пароля
     if not verify_password(data.old_password, stored_password):
@@ -495,7 +504,7 @@ def student_change_password(data: auth.ChangePasswordRequest, db: Session = Depe
 
     # хешуруем новый пароль
     new_hashed_password = hash_password(data.new_password)
-    update_password = change_password(db, current_student.ID, new_hashed_password)
+    update_password = await change_password(db, current_student.ID, new_hashed_password)
 
     if update_password != 1:
         logger.warning(f"Не удалось обновить пароль для студента {current_student.Login}")
@@ -533,7 +542,7 @@ def student_change_password(data: auth.ChangePasswordRequest, db: Session = Depe
 
 # /api/admin/roles (GET)
 @admin_router.get("/roles", response_model=List[auth.Roles], summary="Получить список всех ролей", description="требуется токен авторизации")
-def read_roles(db: Session = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
+async def read_roles(db: AsyncSession = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
     logger.info(f"[ADMIN] Пользователь '{current_student.Login}' запросил список ролей")
     send_log(
         StudentID=current_student.ID,
@@ -543,20 +552,21 @@ def read_roles(db: Session = Depends(get_db), current_student=Depends(permission
             "DescriptionEvent": "Запрос списка всех ролей"
         }
     )
-    return get_all_roles(db)
+    return await get_all_roles(db)
 
 
 # /api/admin/roles/{role_id}
 @admin_router.get("/roles/{role_id}" , summary="Получить список разрешения для роли по её id")
-def read_permissions_role(role_id: int, db: Session = Depends(get_db),
+async def read_permissions_role(role_id: int, db: AsyncSession = Depends(get_db),
                             current_student=Depends(permission_required("admin_panel"))):
+    logger.info(f"Запрос на получения списка разрешений для роли по её id={role_id}")
     # ищем роль по id
-    role = get_role_id(db, role_id)
+    role = await get_role_id(db, role_id)
     if not role:
         logger.warning(f"[ADMIN] Пользователь '{current_student.Login}' попытался запросить несуществующую роль ID={role_id}")
         return errors.not_found(message=f"Не удалось найти роль с id {role_id}")
     # ищем разрешения для данной роли
-    role_permissions = get_permission_role(db, role_id)
+    role_permissions = await get_permission_role(db, role_id)
     if not role_permissions:
         logger.warning(f"[ADMIN] Пользователь '{current_student.Login}' запросил роль '{role.Name}' (ID={role_id}), но у неё нет разрешений")
         return errors.not_found(message=f"Разрешений у роли {role.Name} не найдено")
@@ -588,15 +598,16 @@ def read_permissions_role(role_id: int, db: Session = Depends(get_db),
 @admin_router.post("/roles/{role_id}/assign-permission", summary="Назначить разрешения для роли",
                    description="""для выбранной роли по её id необходимо передать массив из id разрашений, данный массив и будет назначен для данной роли
                    список разрешений можно посмотреть по роуту: /api/admin/permission""")
-def assign_permission_for_role (role_id: int,
+async def assign_permission_for_role (role_id: int,
                                 data: auth.AssignPermissionsRequest,
-                                db: Session = Depends(get_db),
+                                db: AsyncSession = Depends(get_db),
                                 current_student=Depends(permission_required("admin_panel"))):
+    logger.info(f"Запрос на на назначение разрешений для роли по её id={role_id} | data= {data}")
     # ищем роль по id
-    role = get_role_id(db, role_id)
+    role = await get_role_id(db, role_id)
 
     # находим текущие разрешения для данной роли
-    permissions = get_permission_role(db,role_id)
+    permissions = await get_permission_role(db,role_id)
     # из списка словарей достаем только сами разрешения
     current_permissions  =  set([row["PermissionID"] for row in permissions])
     # новые разрешения для роли
@@ -606,7 +617,7 @@ def assign_permission_for_role (role_id: int,
     # роли для удаления
     to_delete = current_permissions  - new_permissions
     # обновляем
-    update_role_permissions(db, role_id, to_delete, to_add)
+    await update_role_permissions(db, role_id, to_delete, to_add)
 
     logger.info(f"[ADMIN] Обновлены разрешения роли {role_id}: добавлены {to_add}, удалены {to_delete}")
     send_log(
@@ -630,8 +641,7 @@ def assign_permission_for_role (role_id: int,
 
 # /api/admin/permission
 @admin_router.get("/permission", response_model=List[auth.Permission], summary="Получить список всех разрешений", description="требуется токен авторизации")
-def read_permission(db: Session = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
-
+async def read_permission(db: AsyncSession = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
     logger.info(f"[ADMIN] Пользователь '{current_student.Login}' запросил список разрешений")
     send_log(
         StudentID=current_student.ID,
@@ -641,15 +651,17 @@ def read_permission(db: Session = Depends(get_db), current_student=Depends(permi
             "DescriptionEvent": "Запрос списка всех разрешений"
         }
     )
-    return get_all_permission(db)
+    return await get_all_permission(db)
 
+
+# TODO перенести в students (наверно)
 # /api/admin/students
 @admin_router.get(
     "/students",
     response_model=list[auth.StudentOut],
     summary="Получить список студентов в формате JSON (для админа)",
 )
-def read_all_students(db: Session = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
+async def read_all_students(db: AsyncSession = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
     logger.info(f"[ADMIN] Пользователь '{current_student.Login}' запросил список всех студентов")
     send_log(
         StudentID=current_student.ID,
@@ -659,23 +671,24 @@ def read_all_students(db: Session = Depends(get_db), current_student=Depends(per
             "DescriptionEvent": "Запрос списка всех студентов"
         }
     )
-    return get_all_students(db)
+    return await get_all_students(db)
 
 # /api/admin/students/{studentID}/assign-role (POST)
 @admin_router.post("/students/{studentID}/assign-role", summary="Назначить роль студенту по его id с указанием id роли",
                    description="""требуется токен авторизации  
                    studentID передается как path **/students/4**  
                    RoleID передается как query параметр **/assign-role?RoleID=2**""")
-def assign_role_to_student(studentID: int,
+async def assign_role_to_student(studentID: int,
                            params: auth.AssignRoleQuery = Depends(),
-                           db: Session = Depends(get_db),
+                           db: AsyncSession = Depends(get_db),
                            current_student=Depends(permission_required("admin_panel"))):
+    logger.info(f"[ADMIN] Запрос на назначение студенту studentID'{studentID}' роли params={params}")
     # ищем роль по id
-    role = get_role_id(db, params.RoleID)
+    role = await get_role_id(db, params.RoleID)
     # ищем студента по id
-    student= get_student_id(db, studentID)
+    student= await get_student_id(db, studentID)
     # обновляем роль
-    update_role = assign_role(db, student.ID, role.RoleID)
+    update_role = await assign_role(db, student.ID, role.RoleID)
 
     if update_role != 1:
         logger.warning(f"[ADMIN] Не удалось обновить роль для студента {current_student.Login}")
@@ -693,25 +706,26 @@ def assign_role_to_student(studentID: int,
             }
         )
         raise errors.internal_server(error="UpdateRoleFailed", message="Ошибка при назначении роли студенту")
-
+    logger.info(f"[ADMIN] Пользователем {current_student.Login} успешно назначена роль {role.Name} студенту {student.Login}")
     return  {"message": f" Студенту {student.Login} успешно назначена роль {role.Name}"}
 
 
 # /admin/students/{student_id}/change-password
 @admin_router.post("/students/{student_id}/change-password", summary = "Сменить пароль выбранного студента по его id",
                    description="пароль смены студента администратором")
-def admin_change_password(
+async def admin_change_password(
         student_id: int,
         data: auth.AdminChangePasswordRequest, # новый пароль
-        db: Session = Depends(get_db),
+        db: AsyncSession = Depends(get_db),
         current_user=Depends(permission_required("admin_panel")) # Проверка на разрешение
 ):
+    logger.info(f"[ADMIN] Запрос пользователем {current_user.Login} на смену пароля студента с  student_id={student_id}")
     # ищем студента по id
-    student = get_student_id(db, student_id)
+    student = await get_student_id(db, student_id)
     # хешуруем новый пароль
     new_hashed_password = hash_password(data.new_password)
     # обновляем пароль
-    change_password(db, student.ID , new_hashed_password)
+    await change_password(db, student.ID , new_hashed_password)
 
     logger.info(f"[ADMIN] Пользователь '{current_user.Login}' изменил пароль студента '{student.Login}' (ID: {student.ID})")
     send_log(
@@ -727,19 +741,20 @@ def admin_change_password(
     return  {"message": f"Пароль студента {student.Login} успешно изменён"}
 
 
-"""роут с историей всех пользователя"""
+
 # /api/admin/students/logs
 @admin_router.get("/students/logs", summary = "Вывод истории действий всех пользователей",
                   description="""Роут доступен только пользователям с разрешением `admin_panel`.  
                   `limit`: Сколько логов вернуть (по умолчанию 50, максимум 10000)  
                   `offset`: Смещение от начала выборки""")
-def get_logs(limit: int = Query(50, ge=1, le=10000),
+async def get_logs(limit: int = Query(50, ge=1, le=10000),
              offset: int = Query(0, ge=0),
-             db_log: Session = Depends(get_db),
+             db_log: AsyncSession = Depends(get_db),
              current_student=Depends(permission_required("admin_panel"))):
-
+    """роут с историей всех пользователя"""
+    logger.info(f"[ADMIN] Зпрос пользователем '{current_student.Login}' истории всех студентов limit={limit} | offset={offset}")
     # выбираем логи для пользователя по id
-    logs = get_logs_all(db_log, limit=limit, offset=offset)
+    logs = await get_logs_all(db_log, limit=limit, offset=offset)
 
     logger.info(f"[ADMIN] Пользователь '{current_student.Login}' запросил историю действий всех пользователей")
     send_log(
@@ -754,13 +769,14 @@ def get_logs(limit: int = Query(50, ge=1, le=10000),
     )
     return logs
 
-"""роут с историей пользователя"""
+
 # /api/admin/students/{studentID}/logs
 @admin_router.get("/students/{studentID}/logs", summary = "Вывод истории действий пользователя по его ID",
                   description="""данный роут работает для администратора (может смотреть логи любого студента по его id)  
                   и для текущего авторизованного пользователя (если совпадает его id с studentID из адреса)""")
-def get_logs(studentID: int, db_log: Session = Depends(get_db), current_student=Depends(get_current_student)):
-
+async def get_logs(studentID: int, db_log: AsyncSession = Depends(get_db), current_student=Depends(get_current_student)):
+    """роут с историей пользователя"""
+    logger.info( f"[ADMIN] Зпрос пользователем '{current_student.Login}' истории студента с  studentID={studentID}")
     # Если текущий пользователь не админ и пытается получить логи другого пользователя — ошибка
     if "admin_panel" not in current_student.permissions and current_student.ID != studentID:
         logger.warning(
@@ -768,7 +784,7 @@ def get_logs(studentID: int, db_log: Session = Depends(get_db), current_student=
         raise errors.access_denied(message="Доступ к логам другого пользователя запрещён")
 
     # выбираем логи для пользователя по id
-    logs = get_logs_student(db_log, studentID)
+    logs = await get_logs_student(db_log, studentID)
 
     logger.info(f"[LOGS] Пользователь '{current_student.Login}' запросил историю действий студента с ID {studentID}")
     send_log(
@@ -895,14 +911,14 @@ summary="Получить список студентов в формате JSON
                               так же необходимо передавать в заголовке **токен** пользователя
                       """
 '''
-# /api/admin/api/students/{StudentID}/subtasks
-'''Возвращем список задач выбранного студента в формате JSON'''
+'''# /api/admin/api/students/{StudentID}/subtasks
+Возвращем список задач выбранного студента в формате JSON
 @admin_router.get("/students/{StudentID}/subtasks", summary="Получить список задач выбранного студента в формате JSON")
-def api_get_student_subtasks(StudentID: int, db: Session = Depends(get_db)):
+async def api_get_student_subtasks(StudentID: int, db: AsyncSession = Depends(get_db)):
     result = db.execute(text("SELECT * FROM StudentTasks WHERE StudentID = :StudentID"), {"StudentID": StudentID}).fetchall()
     subtasks = [dict(row._mapping) for row in result]
     #print(subtasks)
-    return JSONResponse(content=jsonable_encoder(subtasks))
+    return JSONResponse(content=jsonable_encoder(subtasks))'''
 
 # /admin/ListStudents @
 '''Возвращем html страницу со списком всех студентов

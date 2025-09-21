@@ -17,7 +17,7 @@ import base64
 from fastapi.concurrency import run_in_threadpool
 from fastapi import APIRouter, Depends, Request, Form, UploadFile, File, Query, HTTPException
 from sqlalchemy import text
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from starlette.responses import FileResponse
@@ -42,6 +42,8 @@ logger = logging.getLogger(__name__) # создание логгера для т
 subtask_router  = APIRouter(prefix="/api/subtasks", tags=["subtasks"])
 
 
+from sqlalchemy.orm import Session
+
 @subtask_router.post("/create/", summary="Создание задачи с файлами и блоками",
                      description="""Создает задачу с текстовыми, графическими и другими блоками.  
 Поддерживает прикрепление файлов через multipart/form-data.  
@@ -57,7 +59,7 @@ async def create_subtask(
         answer: str = Form("", description="Ответ на задачу"),
         files_solution: List[UploadFile] = File([], description="Список файлов для решения"),
         files_extra: List[UploadFile] = File([], description="Список дополнительных файлов к задаче"),
-        db: Session = Depends(get_db),
+        db: AsyncSession = Depends(get_db),
         current_student=Depends(auth.permission_required("create_tasks"))
 ):
     logging.info(f"[SUBTASKS] === Поступил запрос на создание задачи ===")

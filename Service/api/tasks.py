@@ -9,6 +9,7 @@ from Service.producer import send_log
 
 from fastapi import APIRouter, Depends, Request, Form, UploadFile, File, Query, HTTPException
 from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Session
 from fastapi.responses import HTMLResponse
 from starlette.responses import FileResponse
@@ -32,6 +33,7 @@ logger = logging.getLogger(__name__) # создание логгера для т
 task_router  = APIRouter(prefix="/api/tasks", tags=["tasks"])
 
 
+from sqlalchemy.orm import Session
 
 # /api/tasks/   (GET) @
 ''' Эндпоинт: Получить список КАТЕГОРИЙ'''

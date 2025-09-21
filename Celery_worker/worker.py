@@ -44,7 +44,7 @@ REDIS_RESULT_BACKEND = os.getenv("REDIS_RESULT_BACKEND")
 # Настроим логирование Celery
 CELERY_LOG_FILE=os.getenv("CELERY_LOG_FILE")
 setup_logging(log_file=CELERY_LOG_FILE)
-logging.info(f"[CELERY] Запускаем логирование с файлом: {CELERY_LOG_FILE}")
+logger.info(f"[CELERY] Запускаем логирование с файлом: {CELERY_LOG_FILE}")
 
 # Создаём celery app
 celery_app = Celery(
@@ -77,7 +77,7 @@ try:
     redis_client = redis.Redis.from_url(REDIS_BROKER_URL)
     redis_client.ping()
     #print("✅ Подключение к Redis успешно установлено.")
-    logging.info("[CELERY]✅ Подключение к Redis успешно установлено.")
+    logger.info("[CELERY]✅ Подключение к Redis успешно установлено.")
 except redis.exceptions.ConnectionError as e:
     print(f"[CELERY]❌ Ошибка подключения к Redis: {e}")
     raise SystemExit("Не удалось подключиться к Redis — проверь docker-compose, порты и настройки.")

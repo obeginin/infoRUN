@@ -15,7 +15,7 @@ celery_router = APIRouter(prefix="/api/auth", tags=["auth"]) # страница 
 '''создаем запись в таблице и id данной записи отправляем в очередь Celery'''
 @celery_router.post("/send-email") # только если использую через http запрос
 def send_email_event_celery(request: EmailRequest, event_type: str, db: Session = Depends(get_db)):
-    logging.info(f"[EMAIL_SENDER]: запуск функции send_email_event_celery")
+    logger.info(f"[EMAIL_SENDER]: запуск функции send_email_event_celery")
     # Создаём объект
     new_email=EmailLog(
         event_type=event_type,  # <- сохраняем тип события
@@ -43,7 +43,7 @@ def send_email_event_celery(request: EmailRequest, event_type: str, db: Session 
 
 # функция для вызова Celery задачи
 def send_email(event_type, email, subject, template, data):
-    logging.info(f"[EMAIL_SENDER]: запуск функции send_email")
+    logger.info(f"[EMAIL_SENDER]: запуск функции send_email")
     celery_app.send_task(
         name="email.send",  # Имя должно совпадать с тем, что указано в @task(name=...)
         kwargs={

@@ -8,7 +8,7 @@ from Service.Schemas import subjects as subjects_schema
 
 from fastapi import APIRouter, Depends, Request, Form, UploadFile, File, Query, HTTPException
 from sqlalchemy import text
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from starlette.responses import FileResponse
@@ -30,6 +30,8 @@ logger = logging.getLogger(__name__)
 
 subject_router  = APIRouter(prefix="/api/subjects", tags=["subjects"])
 
+
+from sqlalchemy.orm import Session
 
 # /api/subjects   (GET) @
 @subject_router.get(

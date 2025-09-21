@@ -15,7 +15,7 @@ from Service.producer import send_log
 
 
 from fastapi import APIRouter, Depends, Request, Query, Form,  UploadFile, File, Body
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from typing import Literal
@@ -31,11 +31,14 @@ logger = logging.getLogger(__name__) # создание логгера для т
 # api\Students.py
 ''' Маршруты и Эндпоинты'''
 
-
+from sqlalchemy.orm import Session
 
 students_router = APIRouter(prefix="/api/students", tags=["students"])
 students_subtasks_router = APIRouter(prefix="/api/students_subtasks", tags=["students_subtasks"])
 templates = Jinja2Templates(directory=settings.TEMPLATES_DIR)
+
+
+from sqlalchemy.orm import Session
 
 
 """API"""

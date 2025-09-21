@@ -5,6 +5,8 @@ from typing import Optional
 
 """Функции для генерации JWT-токена"""
 
+# TODO НЕ НАДО переводить на асинхронные функции!! нет I/O
+
 # Функция для создания JWT токена
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     if expires_delta is None:

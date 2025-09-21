@@ -1,5 +1,5 @@
 -- Создание баз данных
-CREATE DATABASE inforun;
+--CREATE DATABASE infoRUN_Postgres;
 --CREATE DATABASE logdb;
 
 
@@ -9,24 +9,43 @@ CREATE TABLE Roles (
     Name VARCHAR(50) NOT NULL UNIQUE
 );
 
-INSERT INTO Roles (Name) VALUES ('SuperAdmin'),('Администратор'), ('Учитель'), ('Ученик'), ('Родитель');
+INSERT INTO Roles (Name) VALUES ('SuperAdmin'),('Админ'), ('Учитель'), ('Ученик'), ('Родитель');
 
 
 -- Таблица с разрешениями
 CREATE TABLE Permissions (
     PermissionID SERIAL PRIMARY KEY, -- автоинкремент
     Name VARCHAR(50) NOT NULL UNIQUE,
-    Description VARCHAR(255)
+    Description VARCHAR(255),
+    Category VARCHAR(255)
 );
 
+
 -- Пример вставки разрешений
-INSERT INTO Permissions (Name, Description) VALUES 
-    ('view_tasks', 'Просмотр задач'),
-    ('create_tasks', 'Создание задач'),
-    ('edit_tasks', 'Редактирование задач'),
-    ('view_solutions', 'Просмотр решений'),
-    ('edit_students', 'Управление студентами'),
-    ('admin_panel', 'Административная панель');
+INSERT INTO Permissions (Name, Description, Category) VALUES 
+    ('create_students', 'Создание студентов', 'Студенты'),
+    ('edit_students', 'Изменение студентов', 'Студенты'),
+    ('delete_students', 'Удаление студентов', 'Студенты'),
+    ('create_roles', 'Создание ролей', 'Роли'),
+    ('edit_roles', 'Редактирование ролей', 'Роли'),
+    ('delete_roles', 'Удаление ролей', 'Роли'),
+    ('assign_roles', 'Назначение ролей', 'Роли'),
+    ('create_permissions', 'Создание разрешений', 'Разрешения'),
+    ('edit_permissions', 'Редактирование разрешений', 'Разрешения'),
+    ('delete_permissions', 'Удаление разрешений', 'Разрешения'),
+    ('create_subjects', 'Создание предметов', 'Предметы'),
+    ('edit_subjects', 'Редактирование предметов', 'Предметы'),
+    ('delete_subjects', 'Удаление предметов', 'Предметы'),
+    ('create_tasks', 'Создание категорий/задач', 'Категории'),
+    ('edit_tasks', 'Редактирование категорий/задач', 'Категории'),
+    ('delete_tasks', 'Удаление категорий/задач', 'Категории'),
+    ('create_variants', 'Создание вариантов', 'Варианты'),
+    ('edit_variants', 'Редактирование вариантов', 'Варианты'),
+    ('delete_variants', 'Удаление вариантов', 'Варианты'),
+    ('create_tags', 'Создание тегов', 'Теги'),
+    ('edit_tags', 'Редактирование тегов', 'Теги'),
+    ('delete_tags', 'Удаление тегов', 'Теги'),
+    ('view_history', 'Просмотр истории', 'История');
 
 -- таблица связи ролей и разрешений
 CREATE TABLE RolePermissions (
@@ -36,6 +55,10 @@ CREATE TABLE RolePermissions (
     CONSTRAINT fk_role FOREIGN KEY (RoleID) REFERENCES Roles(RoleID) ON DELETE CASCADE,
     CONSTRAINT fk_permission FOREIGN KEY (PermissionID) REFERENCES Permissions(PermissionID) ON DELETE CASCADE
 );
+
+-- Пример присвоения разрешений супер-админу (RoleID = 1)
+INSERT INTO RolePermissions (RoleID, PermissionID)
+SELECT 1, PermissionID FROM Permissions;
 
 -- Таблица со студентами (пользователями)
 CREATE TABLE Students (
@@ -60,12 +83,13 @@ CREATE TABLE Students (
 -- вставить значения
 INSERT INTO Students 
     (Login, Last_Name, First_Name, Middle_Name, Email, Sex, BirthDate, Comment, Password, RoleID, IsActive, IsDeleted, IsConfirmed)
-VALUES ('obeginin', 'Бегинин', 'Олег', 'Вячеславович','lezhik.from@gmail.com', 'М',NULL,'Комментарий', '$pbkdf2-sha256$29000$3zunFMK4955zjpEyxngPYQ$nECQLRTK9OFP8I6QErp5iVHRy6D4j4/mC7IgkxDGTEY', 1,TRUE,NULL,TRUE),
-('test1', 'Тестовый1', 'Тест1', 'Тестович1','test1@gmail.com', 'М',NULL,'тестовый админ', '$pbkdf2-sha256$29000$3zunFMK4955zjpEyxngPYQ$nECQLRTK9OFP8I6QErp5iVHRy6D4j4/mC7IgkxDGTEY', 1,TRUE,NULL,TRUE),
-('test2', 'Тестовый2', 'Тест2', 'Тестович2','test2@gmail.com', 'М',NULL,'тестовый учитель', '$pbkdf2-sha256$29000$3zunFMK4955zjpEyxngPYQ$nECQLRTK9OFP8I6QErp5iVHRy6D4j4/mC7IgkxDGTEY', 2,TRUE,NULL,TRUE),
-('test3', 'Тестовый3', 'Тест3', 'Тестович3','test3@gmail.com', 'М',NULL,'тестовый ученик', '$pbkdf2-sha256$29000$3zunFMK4955zjpEyxngPYQ$nECQLRTK9OFP8I6QErp5iVHRy6D4j4/mC7IgkxDGTEY', 3,TRUE,NULL,TRUE),
-('test4', 'Тестовый4', 'Тест4', 'Тестович4','test4@gmail.com', 'М',NULL,'тестовый родитель', '$pbkdf2-sha256$29000$3zunFMK4955zjpEyxngPYQ$nECQLRTK9OFP8I6QErp5iVHRy6D4j4/mC7IgkxDGTEY', 4,TRUE,NULL,TRUE);
-;
+VALUES ('obeginin', 'Бегинин', 'Олег', 'Вячеславович','lezhik.from@gmail.com', 'М',NULL,'Комментарий', '$pbkdf2-sha256$29000$dm7NmZNSqpWyVmqNEYJQyg$Z6gDFsYkqd5xLDxIytx2n5C9moMIc4voTVKqwVUwj68', 1,TRUE,NULL,TRUE),
+('test1', 'Тестовый1', 'Тест1', 'Тестович1','test1@gmail.com', 'М',NULL,'тестовый админ', '$pbkdf2-sha256$29000$dm7NmZNSqpWyVmqNEYJQyg$Z6gDFsYkqd5xLDxIytx2n5C9moMIc4voTVKqwVUwj68', 1,TRUE,NULL,TRUE),
+('test2', 'Тестовый2', 'Тест2', 'Тестович2','test2@gmail.com', 'М',NULL,'тестовый учитель', '$pbkdf2-sha256$29000$dm7NmZNSqpWyVmqNEYJQyg$Z6gDFsYkqd5xLDxIytx2n5C9moMIc4voTVKqwVUwj68', 2,TRUE,NULL,TRUE),
+('test3', 'Тестовый3', 'Тест3', 'Тестович3','test3@gmail.com', 'М',NULL,'тестовый ученик', '$pbkdf2-sha256$29000$dm7NmZNSqpWyVmqNEYJQyg$Z6gDFsYkqd5xLDxIytx2n5C9moMIc4voTVKqwVUwj68', 3,TRUE,NULL,TRUE),
+('test4', 'Тестовый4', 'Тест4', 'Тестович4','test4@gmail.com', 'М',NULL,'тестовый родитель', '$pbkdf2-sha256$29000$dm7NmZNSqpWyVmqNEYJQyg$Z6gDFsYkqd5xLDxIytx2n5C9moMIc4voTVKqwVUwj68', 4,TRUE,NULL,TRUE),
+('kvantose', '', 'Иван', '','kvantoose@gmail.com', 'М',NULL,'разработчик', '$pbkdf2-sha256$29000$dm7NmZNSqpWyVmqNEYJQyg$Z6gDFsYkqd5xLDxIytx2n5C9moMIc4voTVKqwVUwj68', 1,TRUE,NULL,TRUE);
+
 
 -- В данной таблице хранятся токены для сброса пароля пользователя
 CREATE TABLE PasswordResetTokens (
@@ -85,20 +109,22 @@ CREATE TABLE PasswordResetTokens (
 CREATE TABLE Subjects (
     ID SERIAL PRIMARY KEY,             -- автоинкрементный id
     Name VARCHAR(100) NOT NULL UNIQUE, -- название предмета
+    EnglishName VARCHAR(100),		   -- название предмета на английском языке
     Description TEXT NULL              -- описание предмета
 );
 
-INSERT INTO Subjects (Name, Description) VALUES
-  ('Математика', 'Подготовка к ЕГЭ по математике'),
-  ('Русский язык', 'Подготовка к ЕГЭ по русскому языку'),
-  ('Физика', 'Подготовка к ЕГЭ по физике'),
-  ('Химия', 'Подготовка к ЕГЭ по химии'),
-  ('Биология', 'Подготовка к ЕГЭ по биологии'),
-  ('История', 'Подготовка к ЕГЭ по истории'),
-  ('Обществознание', 'Подготовка к ЕГЭ по обществознанию'),
-  ('Литература', 'Подготовка к ЕГЭ по литературе'),
-  ('Английский язык', 'Подготовка к ЕГЭ по английскому языку'),
-  ('Информатика', 'Подготовка к ЕГЭ по информатике');
+INSERT INTO Subjects (Name, Description, EnglishName) VALUES
+  ('Математика', 'Подготовка к ЕГЭ по математике','Matematika'),
+  ('Русский язык', 'Подготовка к ЕГЭ по русскому языку','RusskiyYazyk'),
+  ('Физика', 'Подготовка к ЕГЭ по физике','Fizika'),
+  ('Химия', 'Подготовка к ЕГЭ по химии','Khimiya'),
+  ('Биология', 'Подготовка к ЕГЭ по биологии','Biologiya'),
+  ('История', 'Подготовка к ЕГЭ по истории','Istoriya'),
+  ('Обществознание', 'Подготовка к ЕГЭ по обществознанию','Obshchestvoznaniye'),
+  ('Литература', 'Подготовка к ЕГЭ по литературе','Literatura'),
+  ('Английский язык', 'Подготовка к ЕГЭ по английскому языку','AngliyskiyYazyk'),
+  ('Информатика', 'Подготовка к ЕГЭ по информатике','Informatika');
+
 
 -- Таблица с категориями
 CREATE TABLE Tasks (
@@ -109,7 +135,7 @@ CREATE TABLE Tasks (
     CONSTRAINT fk_subject FOREIGN KEY (SubjectID) REFERENCES Subjects(ID) ON DELETE CASCADE
 );
 
-INSERT INTO Tasks (SubjectID, TaskTitle)
+INSERT INTO Tasks (TaskTitle, SubjectID)
 VALUES 
     ('ЕГЭ №1',10),('ЕГЭ №2',10),('ЕГЭ №3',10),('ЕГЭ №4',10),('ЕГЭ №5',10),('ЕГЭ №6',10),('ЕГЭ №7',10),('ЕГЭ №8',10),('ЕГЭ №9',10),('ЕГЭ №10',10),('ЕГЭ №11',10),('ЕГЭ №12',10),
     ('ЕГЭ №13',10),('ЕГЭ №14',10),('ЕГЭ №15',10),('ЕГЭ №16',10),('ЕГЭ №17',10),('ЕГЭ №18',10),('ЕГЭ №19',10),('ЕГЭ №20',10),('ЕГЭ №21',10),('ЕГЭ №22',10),('ЕГЭ №23',10),('ЕГЭ №24',10),
@@ -122,7 +148,7 @@ VALUES
 CREATE TABLE Tags (
     TagID SERIAL PRIMARY KEY,
     TagName VARCHAR(100) UNIQUE NOT NULL, -- например: ЕГЭ, ОГЭ, Самостоялка
-    ShortName VARCHAR(7) UNIQUE NOT NULL,   -- краткое название (до 7 символов, для компактного отображения ЕГЭ, ОГЭ, СР, КР)
+    ShortName VARCHAR(8) UNIQUE NOT NULL,   -- краткое название (до 8 символов, для компактного отображения ЕГЭ, ОГЭ, СР, КР)
     TagType VARCHAR(50) NULL              -- необязательно: можно хранить тип (для заданий, для вариантов, универсальный)
 );
 
@@ -144,22 +170,23 @@ CREATE TABLE Variants (
     Year VARCHAR(100),                      -- год варианта
     Number INT NULL,                        -- номер варианта, если применимо
     DifficultyLevel INT,                    -- уровень сложности
-    Comment VARCHAR(100)                    -- комментарий
+    Comment VARCHAR(100),                    -- комментарий
     CONSTRAINT fk_variants_subject FOREIGN KEY (SubjectID) REFERENCES Subjects(ID) ON DELETE CASCADE,
     CONSTRAINT fk_variants_tag FOREIGN KEY (TagID) REFERENCES Tags(TagID) ON DELETE SET NULL
 );
 
+
 INSERT INTO Variants (VariantName,SubjectID, TagID)
 VALUES 
     ('Крылов Вариант №1',10,1),('Крылов Вариант №2',10,1),('Крылов Вариант №3',10,1),('Крылов Вариант №4',10,1),('Крылов Вариант №5',10,1),('Крылов Вариант №6',10,1),('Крылов Вариант №7',10,1),('Крылов Вариант №8',10,1),
-    ('Крылов Вариант №9',10,1),('Крылов Вариант №10,1',10,1),('Крылов Вариант №11',10,1),('Крылов Вариант №12',10,1),('Крылов Вариант №13',10,1),('Крылов Вариант №14',10,1),('Крылов Вариант №5',10,1),('Крылов Вариант №16',10,1),
+    ('Крылов Вариант №9',10,1),('Крылов Вариант №10',10,1),('Крылов Вариант №11',10,1),('Крылов Вариант №12',10,1),('Крылов Вариант №13',10,1),('Крылов Вариант №14',10,1),('Крылов Вариант №15',10,1),('Крылов Вариант №16',10,1),
 	('Крылов Вариант №17',10,1),('Крылов Вариант №18',10,1),('Крылов Вариант №19',10,1),('Крылов Вариант №20',10,1),
-	('PRO100EGE Вариант №1',10,1),('PRO100EGE Вариант №2',10,1),('PRO100EGE Вариант №3',10,1),('PRO100EGE Вариант №4',10,1),('PRO100EGE Вариант №5',10,1),('PRO100EGE Вариант №6',10,1),('PRO100EGE Вариант №7',10,1),('PRO100EGE Вариант №8',10),
+	('PRO100EGE Вариант №1',10,1),('PRO100EGE Вариант №2',10,1),('PRO100EGE Вариант №3',10,1),('PRO100EGE Вариант №4',10,1),('PRO100EGE Вариант №5',10,1),('PRO100EGE Вариант №6',10,1),('PRO100EGE Вариант №7',10,1),('PRO100EGE Вариант №8',10,1),
 	('Апробация 14.05.2025',10,1),('Основной 2024 1 волна',10,1),('Основной 2024 2 волна',10,1),('Основной 2024 3 волна',10,1),('Основной 2024 4 волна',10,1),
 	('Основной 2025 1 волна',10,1),('Основной 2025 2 волна',10,1),('Основной 2025 3 волна',10,1),('Основной 2025 4 волна',10,1),
 	('Демоверсия 2025',10,1),('Демоверсия 2024',10,1),('Демоверсия 2023',10,1),
-	('Кабанов',10,1,1),('Поляков',10,1),('РешуЕГЭ',10,1),('Статград 2025.05.12 №6 (База) Вар1',10,1), ('Статград 2025.05.12 №6 (База) Вар1',10,1),
-	('Демоверсия 2025',10,2),('Демоверсия 2024',10,2),('Демоверсия 2023',10,2),;
+	('Кабанов',10,1),('Поляков',10,1),('РешуЕГЭ',10,1),('Статград 2025.05.12 №6 (База) Вар1',10,1), ('Статград 2025.05.12 №6 (База) Вар1',10,1),
+	('Демоверсия 2025',10,2),('Демоверсия 2024',10,2),('Демоверсия 2023',10,2);
 
 -- Таблица подзадач
 CREATE TABLE SubTasks (
@@ -192,6 +219,23 @@ CREATE TABLE SubTaskAnswers (
     AnswerOrder INT DEFAULT 0,               -- порядок (для тестов с несколькими вариантами)
     AnswerType VARCHAR(20) DEFAULT 'text',   -- тип ответа: text, number, choice
     Score DECIMAL(5,2) DEFAULT 1.0,         -- баллы за этот ответ
+    CONSTRAINT fk_subtask FOREIGN KEY (SubTaskID)
+        REFERENCES SubTasks(SubTaskID)
+        ON DELETE CASCADE
+);
+
+CREATE TABLE StudentSubTaskAnswers (
+    StudentAnswerID SERIAL PRIMARY KEY,         -- уникальный ID записи
+    StudentID BIGINT NOT NULL,                  -- ссылка на ученика
+    SubTaskID INT NOT NULL,                     -- ссылка на подзадачу
+    AnswerText TEXT,                            -- ответ студента
+    AnswerChoiceID INT,                         -- если есть выбор вариантов (FK на SubTaskAnswers.AnswerID)
+    Score DECIMAL(5,2) DEFAULT 0.0,            -- начисленные баллы
+    SubmittedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- время сдачи
+
+    CONSTRAINT fk_student FOREIGN KEY (StudentID)
+        REFERENCES Students(ID)
+        ON DELETE CASCADE,
     CONSTRAINT fk_subtask FOREIGN KEY (SubTaskID)
         REFERENCES SubTasks(SubTaskID)
         ON DELETE CASCADE
@@ -239,7 +283,7 @@ CREATE TABLE StudentTasks (
     StudentTaskID SERIAL PRIMARY KEY,                  -- автоинкрементный id
     StudentID BIGINT NOT NULL,                         -- id студента
     SubTaskID INT NOT NULL,                            -- id подзадачи
-    StudentAnswer VARCHAR(32),                         -- ответ студента
+    StudentAnswer VARCHAR(32),                         -- ответ студента (TODO: убрать в дальнейшем, есть таблица)
     CompletionStatus VARCHAR(20) CHECK (CompletionStatus IN ('Не приступал', 'В процессе', 'Выполнено')), -- статус выполнения
     Score DECIMAL(5,2) NULL,                           -- баллы за подзадачу
     SolutionStudentPath VARCHAR(255),                  -- путь к решению студента

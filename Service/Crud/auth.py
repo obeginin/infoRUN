@@ -20,34 +20,35 @@ from starlette.status import HTTP_401_UNAUTHORIZED
 from typing import Optional
 from sqlalchemy.exc import SQLAlchemyError
 from jose import JWTError, jwt
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from sqlalchemy import select
 
 import logging
-
+logger = logging.getLogger(__name__) # создание логгера для текущего модуля
 # Crud\auth.py
 
 
-logger = logging.getLogger(__name__) # создание логгера для текущего модуля
 
 
+# TODO переведен на асинхронный postgres (hash_password не трогаем так как это CPU-bound операции.
 
 security = HTTPBasic()
-"""функция для проверки пароля в swagger"""
-def get_swagger_user(
+
+async def get_swagger_user(
     credentials: HTTPBasicCredentials = Depends(security),
-    db: Session = Depends(get_db),
+    db = Depends(get_db),
 ):
-    logging.info(f"Swagger auth attempt: username={credentials.username}")
-    user = db.query(Student).filter(Student.Login == credentials.username).first()
-    if not user or not verify_password(credentials.password, user.Password):
-        logging.warning(f"User {credentials.username} not found in DB or Invalid password")
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Неверные учетные данные",
-            headers={"WWW-Authenticate": "Basic"},
-        )
-    logging.info(f"User {credentials.username} authenticated successfully")
-    return user
+    """функция для проверки пароля в swagger"""
+    logger.info(f"Вход в Swagger : username={credentials.username}")
+    student = await get_student_by_login(db=db, login=credentials.username)
+    logger.info(f"student={student}")
+    if not student or not verify_password(credentials.password, student["password"]):
+        logger.warning(f"User {credentials.username} not found or invalid password")
+        raise errors.unauthorized(message="Неверные учётные данные")
+
+    logger.info(f"User {credentials.username} authenticated successfully")
+    return student
 
 
 
@@ -55,10 +56,12 @@ def get_swagger_user(
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 # Функция для хеширования пароля (принимает обычный и возвращает хэшированный)
 def hash_password(password: str) -> str:
+    logger.info(f"Хэшируем пароль")
     return pwd_context.hash(password)
 
 # Функция для проверки пароля (сравнивает введённый пользователем пароль и хеш из базы,)
 def verify_password(plain_password: str, hashed_password: str) -> bool:
+    logger.info(f"Проверяем хэш пароля")
     return pwd_context.verify(plain_password, hashed_password)
 
 # Создание пароля вручную:
@@ -73,11 +76,25 @@ $pbkdf2-sha256$29000$dm7NmZNSqpWyVmqNEYJQyg$Z6gDFsYkqd5xLDxIytx2n5C9moMIc4voTVKq
 '''
 
 
+async def get_hash_password(db: AsyncSession, student_id: int):
+    """Получение хэш пароля из базы"""
+    logger.info(f"Проверяем хэш пароля")
+
+    return await general.run_query_select(
+        db,
+        query="""
+                select Password from students where ID = :student_id
+            """,
+        params={"student_id": student_id},
+        mode="scalar",
+        error_message=f"Ошибка при получении хэш пароля студента с id={student_id}"
+    )
 
 
 
-'''функция получения студента по токену (токен приходит с фронта в заголовке)'''
-def get_current_student(request: Request, db: Session = Depends(get_db)) -> StudentOut:
+
+async def get_current_student(request: Request, db = Depends(get_db)) -> StudentOut:
+    '''функция получения студента по токену (токен приходит с фронта в заголовке)'''
     # Получение токена из куки:
     token = request.headers.get("Authorization") or request.cookies.get("access_token")
     #print("ACCESS TOKEN >>>", token)
@@ -168,12 +185,12 @@ def get_current_student(request: Request, db: Session = Depends(get_db)) -> Stud
         )
         raise errors.unauthorized(error="TokenInvalid", message="Недействительный токен")
     # ищем студента в базе по логину
-    student = get_student_by_login(db, login)
+    student = await get_student_by_login(db=db, login=login)
     #print(student)
     if student is None:
         logger.warning(f"Извлеченный из токена логин не найден в бд: {login}")
         send_log(
-            StudentID=None,  # Или 0
+            StudentID= None,  # Или 0
             StudentLogin=login,
             action="LoginFailed",
             details={
@@ -190,39 +207,48 @@ def get_current_student(request: Request, db: Session = Depends(get_db)) -> Stud
     student = dict(student)
     student["permissions"] = [row["PermissionName"] for row in permissions]
     # student["BirthDate"] = student["BirthDate"].isoformat()
-
+    logger.info(f"Получение текущего студента: {student}") # TODO может бть ошибка!
     '''if isinstance(student["BirthDate"], datetime):
         student["BirthDate"] = student["BirthDate"].date()'''
     return StudentOut(**dict(student))
 
 """НЕ ИСПОЛЬЗУЕТСЯ, сделано через разрешения permission_required"""
-def admin_required(student: StudentOut = Depends(get_current_student)):
+async def admin_required(student: StudentOut = Depends(get_current_student)):
     if student.RoleName != "Админ":
+        logger.warning(f"Доступ закрыт. Только для администраторов!")
         raise errors.access_denied(message="Только для администраторов")
     return student
 
-'''проверка на суперадмина'''
-def superadmin_required(current_user=Depends(get_current_student)):
+
+async def superadmin_required(current_user=Depends(get_current_student)):
+    '''проверка на суперадмина'''
     if "SuperAdmin" not in current_user.Roles:  # предполагаем, что current_user.Roles — список ролей
+        logger.warning(f"Доступ закрыт. Только для Супер Админа!")
         raise errors.access_denied(message="Только для Супер Админа")
+    logger.debug(f"проверка студента {current_user.Login} на суперадмина")
     return current_user
 
-def can_edit_admin(target_role_id: int, db: Session = Depends(get_db), current_student=Depends(get_current_student)):
-    target_role = get_role_id(db, target_role_id)  # возвращает объект роли с Name
+async def can_edit_admin(target_role_id: int, db = Depends(get_db), current_student=Depends(get_current_student)):
+    logger.debug(f"проверка изменения роли на role_id:{target_role_id} суперадмина и админов) ")
+    target_role = await get_role_id(db, target_role_id)  # возвращает объект роли с Name
 
     # Проверяем, если цель — Админ, а текущий не СуперАдмин
     if target_role.Name == "Админ" and current_student.RoleName != "SuperAdmin":
+        logger.warning(f"Доступ закрыт. Только для Супер Админа!")
         raise errors.access_denied(message="Вы не можете изменять админов")
 
     # Проверяем, если цель — SuperAdmin, а текущий не СуперАдмин
     if target_role.Name == "SuperAdmin" and current_student.RoleName != "SuperAdmin":
+        logger.warning(f"Вы не можете изменять супер-админов!")
         raise errors.access_denied(message="Вы не можете изменять супер-админов")
 
     return True
 
-'''Функция для проверки разрешения у авторизованного студента'''
+
+# TODO поменяли функция после перехода на асинхронку
 def permission_required(permission_name: str):
-    def decorator(student=Depends(get_current_student)):
+    """Функция для проверки разрешения у авторизованного студента"""
+    async def decorator(student=Depends(get_current_student)):
         if permission_name not in student.permissions:
             logger.warning(f"[PERMISSION] '{student.Login}' без разрешения '{permission_name}'")
 
@@ -236,6 +262,7 @@ def permission_required(permission_name: str):
                 }
             )
             raise errors.access_denied(message="Недостаточно прав")
+
         logger.info(f"[PERMISSION] '{student.Login}' успешно прошёл проверку на '{permission_name}'")
 
         send_log(
@@ -249,10 +276,9 @@ def permission_required(permission_name: str):
         )
         return student
     return decorator
+async def __permission_required(permission_name: str, student=Depends(get_current_student)):
+    '''Функция для проверки разрешения у авторизованного студента'''
 
-# Зависимость (пока не используется)
-'''Проверяет наличия разрешения у переданного ей пользователя'''
-def check_permission(student, permission_name: str):
     if permission_name not in student.permissions:
         logger.warning(f"[PERMISSION] '{student.Login}' без разрешения '{permission_name}'")
 
@@ -277,20 +303,53 @@ def check_permission(student, permission_name: str):
             "Permission": permission_name
         }
     )
-"""Универсальная функция получения студента"""
-def get_student_by_field(db: Session, field_name: str, value: str):
+    return student
+
+
+# Зависимость (пока не используется)
+async def check_permission(student, permission_name: str):
+    '''Проверяет наличия разрешения у переданного ей пользователя'''
+    if permission_name not in student.permissions:
+        logger.warning(f"[PERMISSION] '{student.Login}' без разрешения '{permission_name}'")
+
+        send_log(
+            StudentID=student.ID,
+            StudentLogin=student.Login,
+            action="PermissionDenied",
+            details={
+                "DescriptionEvent": "Попытка доступа без разрешения",
+                "Reason": f"MissingPermission:{permission_name}"
+            }
+        )
+        raise errors.access_denied(message="Недостаточно прав")
+    logger.info(f"[PERMISSION] '{student.Login}' успешно прошёл проверку на '{permission_name}'")
+
+    send_log(
+        StudentID=student.ID,
+        StudentLogin=student.Login,
+        action="PermissionGranted",
+        details={
+            "DescriptionEvent": "Успешная проверка разрешения",
+            "Permission": permission_name
+        }
+    )
+
+
+async def get_student_by_field(db: AsyncSession, field_name: str, value: str):
+    """Универсальная функция получения студента"""
     allowed_fields = {"ID", "Login", "Email", "Phone"} # белый список (он же помогает от sql инъекций)
     if field_name not in allowed_fields:
+        logger.warning(f"Недопустимое поле для поиска студента: {field_name}")
         raise errors.bad_request(message=f"Недопустимое поле для поиска студента: {field_name}")
-
 
     if field_name == "ID":
         try:
             value = int(value)
         except ValueError:
+            logger.warning(f"Некорректный ID: {value}")
             raise errors.bad_request(message=f"Некорректный ID: {value}")
-
-    return general.run_query_select(
+    logger.debug(f"Поиск студента: field={field_name}, value={value}")
+    return await general.run_query_select(
         db,
         query=f"""SELECT s.*, r.Name as RoleName FROM Students s
         LEFT JOIN Roles r ON s.RoleID = r.RoleID
@@ -300,9 +359,11 @@ def get_student_by_field(db: Session, field_name: str, value: str):
         error_message=f"Ошибка при получении студента по {field_name}: {value}"
     )
 
-"""Выбор студента из базы по его логину (Аутентификация)"""
-def get_student_by_login(db: Session, login: str):
-    return general.run_query_select(
+
+async def get_student_by_login(db: AsyncSession, login: str):
+    """Выбор студента из базы по его логину (Аутентификация)"""
+    logger.debug(f"Поиск студента по логину: {login}")
+    return await general.run_query_select(
         db,
         query="""
                 SELECT s.*, r.Name as RoleName
@@ -316,9 +377,11 @@ def get_student_by_login(db: Session, login: str):
     )
 
 
-"""Выбор студента из базы по его логину (Аутентификация)"""
-def get_student_by_email(db: Session, email: str):
-    return general.run_query_select(
+
+async def get_student_by_email(db: AsyncSession, email: str):
+    """Выбор студента из базы по его логину (Аутентификация)"""
+    logger.debug(f"Поиск студента по email: {email}")
+    return await general.run_query_select(
         db,
         query="""
                 SELECT * FROM Students 
@@ -329,8 +392,9 @@ def get_student_by_email(db: Session, email: str):
         error_message=f"Ошибка при получении студента по email: {email}"
     )
 
-def add_new_register_student(db: Session, params: dict):
-    return general.run_query_insert(
+async def add_new_register_student(db: AsyncSession, params: dict):
+    logger.debug(f"Добавляем нового студента params: {params}")
+    return await general.run_query_insert(
         db,
         query="""
         Insert Students (Login, Email, Password,IsConfirmed)
@@ -340,19 +404,23 @@ def add_new_register_student(db: Session, params: dict):
         error_message="Ошибка добавления нового студента (через регистрацию)"
     )
 
-'''функция подтвержения email'''
-def confirm_student_email(db: Session, params: dict):
-    return general.run_query_update(
+
+async def confirm_student_email(db: AsyncSession, params: dict):
+    '''функция подтвержения email'''
+    logger.debug(f"Обновляем информацию о подтвержденном emai, params={params}")
+    return await general.run_query_update(
         db,
         query="""UPDATE Students SET IsConfirmed = 1, RegisterDate = :now WHERE Email = :email AND IsConfirmed = 0""",
         params=params,
         error_message="Ошибка добавления нового студента (через регистрацию)"
     )
 
-'''Создаем временный токен для сброса пароля и деактивируем все предыдущие'''
-def save_password_reset_token(db: Session, student_id: int, token: str, expires_at: datetime):
+
+async def save_password_reset_token(db: AsyncSession, student_id: int, token: str, expires_at: datetime):
+    '''Создаем временный токен для сброса пароля и деактивируем все предыдущие'''
+    logger.debug(f"Создание временного токена для сброса пароля и деактивация всех предыдущих для студента с id={student_id}")
     # 1. Деактивируем старые токены
-    general.run_query_update(
+    await general.run_query_update(
         db,
         query="""
             UPDATE PasswordResetTokens
@@ -364,7 +432,7 @@ def save_password_reset_token(db: Session, student_id: int, token: str, expires_
     )
 
     # 2. Вставляем новый токен
-    general.run_query_insert(
+    await general.run_query_insert(
         db,
         query="""
                 INSERT INTO PasswordResetTokens (StudentID, Token, ExpiresAt)
@@ -378,14 +446,16 @@ def save_password_reset_token(db: Session, student_id: int, token: str, expires_
         error_message="Ошибка при сохранении токена сброса пароля"
     )
 
-'''Функция получения токена для сброса пароля'''
-def get_token_record(db: Session, token: str):
+
+async def get_token_record(db: AsyncSession, token: str):
+    '''Функция получения токена для сброса пароля'''
+    logger.debug(f"функция get_token_record")
     query = """
         SELECT ID, StudentID, Token, ExpiresAt, Used
         FROM PasswordResetTokens
         WHERE Token = :token
     """
-    record = general.run_query_select(
+    record = await general.run_query_select(
         db,
         query=query,
         params={"token": token},
@@ -394,14 +464,16 @@ def get_token_record(db: Session, token: str):
     )
     return record
 
-'''Функция отмечает токен сброса пароля как использованный'''
-def mark_token_used(db: Session, token: str):
+
+async def mark_token_used(db: AsyncSession, token: str):
+    '''Функция отмечает токен сброса пароля как использованный'''
+    logger.debug(f"Помечаем токен сброса пароля как использованный")
     query = """
         UPDATE PasswordResetTokens
         SET Used = 1
         WHERE Token = :token
     """
-    updated_rows = general.run_query_update(
+    updated_rows = await general.run_query_update(
         db,
         query=query,
         params={"token": token},
@@ -409,9 +481,11 @@ def mark_token_used(db: Session, token: str):
     )
     return updated_rows
 
-"""Выбор из базы разрешений для роли по её ID """
-def get_permission_role(db: Session, RoleID: int):
-    return general.run_query_select(
+
+async def get_permission_role(db: AsyncSession, RoleID: int):
+    """Выбор из базы разрешений для роли по её ID """
+    logger.debug(f"Получаем из базы разрешений для роли по её ID={RoleID}")
+    return await general.run_query_select(
         db,
         query="""
                 SELECT p.Name
@@ -425,9 +499,11 @@ def get_permission_role(db: Session, RoleID: int):
     )
 
 
-"""Смена пароля пользователя"""
-def change_password(db: Session, student_ID: int, new_password: str):
-    return general.run_query_update(
+
+async def change_password(db: AsyncSession, student_ID: int, new_password: str):
+    """Смена пароля пользователя"""
+    logger.debug(f"Меняем пароль пользователя с id:{student_ID}")
+    return await general.run_query_update(
         db,
         query="""
                 update Students 
@@ -438,8 +514,9 @@ def change_password(db: Session, student_ID: int, new_password: str):
         error_message=f"Ошибка обновления пароля для студента с id:{student_ID}"
     )
 
-def get_all_roles(db: Session):
-    return general.run_query_select(
+async def get_all_roles(db: AsyncSession):
+    logger.debug(f"Получаем все роли")
+    return await general.run_query_select(
         db,
         query= """SELECT * FROM Roles""",
         mode="mappings_all",
@@ -447,8 +524,9 @@ def get_all_roles(db: Session):
         error_message=f"Ошибка при получения ролей"
     )
 
-def get_all_permission(db: Session):
-    return general.run_query_select(
+async def get_all_permission(db: AsyncSession):
+    logger.debug(f"Получаем все разрешения")
+    return await general.run_query_select(
         db,
         query= """SELECT * FROM Permissions""",
         mode="mappings_all",
@@ -456,8 +534,9 @@ def get_all_permission(db: Session):
         error_message=f"Ошибка при получения разрешений"
     )
 
-def get_role_id(db: Session, RoleID: int):
-    return general.run_query_select(
+async def get_role_id(db: AsyncSession, RoleID: int):
+    logger.debug(f"Получаем роль по её id:{RoleID}")
+    return await general.run_query_select(
         db,
         query= """SELECT * FROM Roles where RoleID = :role_id""",
         mode="mappings_first",
@@ -466,8 +545,9 @@ def get_role_id(db: Session, RoleID: int):
         error_message=f"Ошибка при получения роли с id={RoleID} "
     )
 
-def get_permission_role(db: Session, RoleID: int):
-    return general.run_query_select(
+async def get_permission_role(db: AsyncSession, RoleID: int):
+    logger.debug(f"Получаем разрешения для роли по её id:{RoleID}")
+    return await general.run_query_select(
         db,
         query= """SELECT r.RoleID, r.Name as RoleName, p.PermissionID, p.Name as PermissionName
                                             FROM RolePermissions rp
@@ -480,20 +560,22 @@ def get_permission_role(db: Session, RoleID: int):
         #required=True,
         error_message=f"Ошибка при получения разрешений роли с id={RoleID} "
     )
-''' Назначение роли студенту'''
-def assign_role(db: Session, student_id: int, role_id: int):
-    return general.run_query_update(
+
+async def assign_role(db: AsyncSession, student_id: int, role_id: int):
+    ''' Назначение роли пользователю'''
+    logger.debug(f"Назначаем роль role_id={role_id} студенту student_id={student_id}")
+    return await general.run_query_update(
         db,
         query= """update students set RoleID = :role_id where ID = :student_id""",
         params= {"role_id":role_id, "student_id": student_id},
         error_message=f"Ошибка при назначении роли с id={role_id} для студента с id={student_id}"
     )
 
-def update_role_permissions (db: Session, role_id: int, to_delete: set, to_add: set):
+async def update_role_permissions (db: AsyncSession, role_id: int, to_delete: set, to_add: set):
     try:
         # удаляем разрешения, которые больше не нужны
         for permission in to_delete:
-            general.run_query_delete(
+            await general.run_query_delete(
                 db,
                 query="DELETE FROM RolePermissions WHERE RoleID = :role_id AND PermissionID = :permission",
                 params={"role_id": role_id, "permission": permission},
@@ -503,7 +585,7 @@ def update_role_permissions (db: Session, role_id: int, to_delete: set, to_add: 
 
         # добавляем новые разрешения
         for permission in to_add:
-            general.run_query_insert(
+            await general.run_query_insert(
                 db,
                 query="INSERT INTO RolePermissions (RoleID, PermissionID) VALUES (:role_id, :permission)",
                 params={"role_id": role_id, "permission": permission},
@@ -511,10 +593,10 @@ def update_role_permissions (db: Session, role_id: int, to_delete: set, to_add: 
                 commit=False
             )
         db.commit()
-
+        logger.debug(f"Обновили разрешения для роли с role_id={role_id} удалили: {to_delete}, добавили {to_add}")
     except SQLAlchemyError:
         db.rollback()
-        logger.exception(f"[DB ERROR] Ошибка при обновлении разрешений роли")
+        logger.exception(f"[DB ERROR] Ошибка при обновлении разрешений роли с role_id={role_id} к удалению: {to_delete}, к добавлению {to_add}")
         send_log(
             StudentID=0,
             StudentLogin="System",
@@ -529,8 +611,9 @@ def update_role_permissions (db: Session, role_id: int, to_delete: set, to_add: 
         )
         raise errors.internal_server(message="Ошибка при обновлении разрешений роли")
 
-def get_logs_all(db: Session, limit: int = 50, offset: int = 0):
-    return general.run_query_select(
+async def get_logs_all(db: AsyncSession, limit: int = 50, offset: int = 0):
+    logger.debug(f"Получение всех логов |  limit={limit} | offset={offset}")
+    return await general.run_query_select(
         db,
         query= """SELECT * FROM StudentActionLogs
             ORDER BY EventTime DESC
@@ -541,8 +624,9 @@ def get_logs_all(db: Session, limit: int = 50, offset: int = 0):
         error_message=f"Ошибка при получении истории действий пользователей"
     )
 
-def get_logs_student(db: Session, studentID: int):
-    return general.run_query_select(
+async def get_logs_student(db: AsyncSession, studentID: int):
+    logger.debug(f"Получение логов студента id={studentID}")
+    return await general.run_query_select(
         db,
         query= """SELECT TOP 50 * FROM StudentActionLogs 
         WHERE StudentID = :student_id

@@ -3,7 +3,7 @@ from Service.Schemas.students import StudentTaskRead
 from Service.Schemas import auth
 from utils import errors,general
 
-from sqlalchemy.orm import Session
+
 from sqlalchemy import text
 from fastapi import HTTPException
 from sqlalchemy.exc import SQLAlchemyError
@@ -15,7 +15,7 @@ CRUD - основная логика работы запроса
 Основные функции для студентов
 '''
 
-
+from sqlalchemy.orm import Session
 
 logger = logging.getLogger(__name__) # создание логгера для текущего модуля
 
@@ -150,7 +150,7 @@ def get_students_all_tasks(
     limit=None,
     offset=None
 ):
-    logging.debug(
+    logger.debug(
         f"""[DB CALL] Вызов хранимки GetStudentsTasks с параметрами:
         student_task_id: {student_task_id}, student_id: {student_id}, sub_task_id: {sub_task_id}, task_id: {task_id}, subject_id: {subject_id}, variant_id: {variant_id},
         completion_status: {completion_status}, search: {search}, sort_column1: {sort_column1}, sort_direction1: {sort_direction1}, sort_column2: {sort_column2},
@@ -249,8 +249,8 @@ def get_all_students_tasks(db: Session):
 				 JOIN Tasks on Tasks.TaskID = StudentTasks.SubTaskID
                  WHERE StudentTasks.StudentID = :student_id""")
     result = db.execute(query, {"student_id": student_id}).fetchall()
-    logging.warning(f"Получаем задачи для студента с ID = {student_id}")
-    logging.warning(f"Результатов найдено: {len(result)}")
+    logger.warning(f"Получаем задачи для студента с ID = {student_id}")
+    logger.warning(f"Результатов найдено: {len(result)}")
     student_tasks = [
         {"StudentTaskID": row.StudentTaskID,
         "StudentID": row.StudentID,

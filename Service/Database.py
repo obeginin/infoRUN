@@ -4,9 +4,9 @@ import os
 from dotenv import load_dotenv
 from Service.producer import get_kafka_producer
 # Database.py
-'''файл снастройкой подключения к базе'''
+'''файл с настройкой подключения к базе'''
 
-
+# TODO переведен на фсинхронный postgres
 load_dotenv()  # загрузить .env в окружение
 
 DB_NAME = os.getenv("DB_NAME")
@@ -19,19 +19,12 @@ DATABASE_URL = f"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{D
 
 engine = create_async_engine(
     DATABASE_URL,
-    echo=True,  # для логов SQL-запросов, можно выключить
-    future=True,
+    echo=True,                  # для логов SQL-запросов, можно выключить
+    pool_pre_ping=True,         # проверяет соединение перед использованием
 )
 
 # Фабрика для создания асинхронных сессий
-
-AsyncSessionLocal = sessionmaker(
-    bind=engine,
-    class_=AsyncSession,
-    expire_on_commit=False,
-    autoflush=False
-)
-
+AsyncSessionLocal = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False, autoflush=False)
 
 Base = declarative_base() # базовый класс, от которого будут наследоваться все модели таблиц в SQLAlchemy.
 
@@ -64,5 +57,6 @@ def get_log_db():
     finally:
         db.close()'''
 
+# TODO под вопросом, надо ли здесь если есть в main
 def get_producer_dep():
     return get_kafka_producer()

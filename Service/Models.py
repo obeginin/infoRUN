@@ -13,7 +13,7 @@ Base = declarative_base()
 
 
 class Student(Base):
-    __tablename__ = 'Students'
+    __tablename__ = 'students'
 
     ID = Column(BigInteger, primary_key=True, autoincrement=True)  # ID пользователя. autoincrement=True (автоназначение)
     Login = Column(String(50), unique=True, index=True)  # Логин пользователя
@@ -35,7 +35,7 @@ class Student(Base):
 
 
 class EmailLog(Base):
-    __tablename__ = "EmailLogs"
+    __tablename__ = "emaillogs"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     event_type = Column(String(255), nullable=True)

@@ -1,7 +1,7 @@
 from utils.config import settings
 from utils import errors,general
 
-from sqlalchemy.orm import Session
+
 from sqlalchemy import text
 from fastapi import HTTPException, UploadFile, File
 from typing import Optional
@@ -14,6 +14,7 @@ from typing import List
 logger = logging.getLogger(__name__) # создание логгера для текущего модуля
 
 
+from sqlalchemy.orm import Session
 
 ''' функция-SQL запрос к БД для вывода всех предметов'''
 def get_all_subjects(db: Session):
