@@ -5,6 +5,8 @@ from utils import errors,general
 from Service.Database import get_db
 from Service.Models import Student
 from Service.Crud.auth import get_current_student, permission_required
+from Service.Crud import variants as variants_crud
+from Service.Schemas import variants as variants_schema
 from Service.producer import send_log
 
 from fastapi import APIRouter, Depends, Request, Form, UploadFile, File, Query, HTTPException
@@ -29,24 +31,50 @@ import logging
 load_dotenv()
 logger = logging.getLogger(__name__)
 
-from sqlalchemy.orm import Session
+# TODO переведен на асинхронный postgres
 
 variant_router = APIRouter(prefix="/api/variants", tags=["variants"])
 
 
 # /api/tasks/variants  (GET) @
 ''' Получить список вариантов'''
-@variant_router.get("")
-def read_tasks_id(db: Session = Depends(get_db)):
-    result = db.execute(text(f"select VariantID, VariantName from Variants order by VariantName")).fetchall()
-    variants = [dict(row._mapping) for row in result]
-    return variants
+@variant_router.get("",
+                    summary="Получить список вариантов",
+                    description="""Если передан параметр **subject_id**, то возвращаются варианты только для указанного предмета.  
+                            Если параметр не передан, возвращаются варианты по всем предметам.  
+                            **subjectID** передается как Query-параметр   
+                                    "`/api/variants` — все варианты"  
+                                    "`/api/variants?subjectID=10` — варианты для предмета с subject ID 10"  
+                                    так же необходимо передавать в заголовке **токен** пользователя
+                            """
+                    )
+async def read_variants(
+        subject_id: int | None = Query(None, description="ID предмета для фильтрации"),
+        db: AsyncSession = Depends(get_db),
+        current_student=Depends(permission_required("view_variants"))):
+    logger.info(f"Пользователь {current_student.Login} запросил список всех вариантов")
+    variants = await variants_crud.get_variants(db, subject_id=subject_id)
+    return {"count": len(variants), "variants": variants}
+
+@variant_router.get("/{variant_id}", summary="Получить вариант по его variant_id")
+async def read_variant_by_id(
+    variant_id: int,
+    db: AsyncSession = Depends(get_db),
+    current_student=Depends(permission_required("view_variants"))
+):
+    logger.info(f"Пользователь {current_student.Login} запросил вариант с variant_id={variant_id}")
+    variant = await variants_crud.get_variants(db, variant_id=variant_id)
+    if not variant:
+        logger.warning(f"Вариант с variant_id={variant_id} не найден")
+        raise errors.not_found(message=f"Вариант с variant_id={variant_id} не найден")
+    return variant[0]
 
 
+# TODO передалать но новое
 # /api/tasks/exec/{VariantID}
 '''вызов хранимки с вариантом'''
 @variant_router.get("/exec/{VariantID}/{StudentID}", summary="роут с вызовом хранимой процедуры")
-def read_tasks_of_variant (VariantID: int, StudentID: int, db: Session = Depends(get_db)):
+async def read_tasks_of_variant (VariantID: int, StudentID: int, db: AsyncSession = Depends(get_db)):
     query = text("EXEC dbo.GetStudentsTasks @VariantID =:VariantID, @StudentID =:StudentID")
     result = db.execute(query, {"VariantID": VariantID, "StudentID": StudentID}).fetchall()
     print(result)
@@ -55,10 +83,11 @@ def read_tasks_of_variant (VariantID: int, StudentID: int, db: Session = Depends
     subtasks = [dict(row._mapping) for row in result]
     return jsonable_encoder(subtasks)
 
+# TODO передалать но новое
 # /api/variants/check_answers
-@variant_router.post("/check_answers", summary="роут который проверяет ответы пользователя для целого вараинта",
-                      description="передаем словарь с ответами на все задангия пользователя в виде строк")
-def check_answers(user_answers: Dict[int, Optional[str]], db: Session = Depends(get_db)):
+#@variant_router.post("/check_answers", summary="роут который проверяет ответы пользователя для целого вараинта",
+#                      description="передаем словарь с ответами на все задангия пользователя в виде строк")
+async def check_answers(user_answers: Dict[int, Optional[str]], db: AsyncSession = Depends(get_db)):
     results = []
     print(user_answers)
     for i, (subtask_id, user_answer) in enumerate(user_answers.items()):

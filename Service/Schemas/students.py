@@ -12,8 +12,6 @@ from pydantic import ConfigDict
 
 
 
-
-
 # 🔍 Расширение для отображения задачи с деталями (наследуем от StudentTaskBase)
 class StudentTaskRead(BaseModel):
     StudentTaskID: int
@@ -71,6 +69,7 @@ class SortDirection(str, Enum):
 
 class StudentTasksQueryParams(BaseModel):
     student_task_id: Optional[int] = None
+    student_id: Optional[int] = None
     sub_task_id: Optional[int] = None
     task_id: Optional[int] = None
     subject_id: Optional[int] = None
@@ -81,8 +80,8 @@ class StudentTasksQueryParams(BaseModel):
     sort_column2: Optional[SortableFields] = None
     sort_direction1: Optional[SortDirection] = Field(default="ASC")
     sort_direction2: Optional[SortDirection] = None
-    limit: Optional[int] = None
-    offset: Optional[int] = None
+    p_limit: Optional[int] = None
+    p_offset: Optional[int] = None
 
 
 

@@ -6,8 +6,8 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from sqlalchemy.ext.asyncio import AsyncSession
 """Swagger"""
-swagger_router = APIRouter()
-security = HTTPBasic()
+# swagger_router = APIRouter()
+# security = HTTPBasic()
 
 
 

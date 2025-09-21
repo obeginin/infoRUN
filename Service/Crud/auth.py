@@ -43,7 +43,7 @@ async def get_swagger_user(
     logger.info(f"Вход в Swagger : username={credentials.username}")
     student = await get_student_by_login(db=db, login=credentials.username)
     logger.info(f"student={student}")
-    if not student or not verify_password(credentials.password, student["password"]):
+    if not student or not verify_password(credentials.password, student["Password"]):
         logger.warning(f"User {credentials.username} not found or invalid password")
         raise errors.unauthorized(message="Неверные учётные данные")
 
@@ -83,7 +83,7 @@ async def get_hash_password(db: AsyncSession, student_id: int):
     return await general.run_query_select(
         db,
         query="""
-                select Password from students where ID = :student_id
+                select "Password" from "Students" where "ID" = :student_id;
             """,
         params={"student_id": student_id},
         mode="scalar",
@@ -203,7 +203,7 @@ async def get_current_student(request: Request, db = Depends(get_db)) -> Student
         raise errors.unauthorized(error="StudentNotFound", message="Пользователь с таким логином не найден")
 
     #смотрим разрешения для данного студента по его роли
-    permissions = get_permission_role(db, student["RoleID"])
+    permissions = await get_permission_role(db, student["RoleID"])
     student = dict(student)
     student["permissions"] = [row["PermissionName"] for row in permissions]
     # student["BirthDate"] = student["BirthDate"].isoformat()
@@ -276,34 +276,6 @@ def permission_required(permission_name: str):
         )
         return student
     return decorator
-async def __permission_required(permission_name: str, student=Depends(get_current_student)):
-    '''Функция для проверки разрешения у авторизованного студента'''
-
-    if permission_name not in student.permissions:
-        logger.warning(f"[PERMISSION] '{student.Login}' без разрешения '{permission_name}'")
-
-        send_log(
-            StudentID=student.ID,
-            StudentLogin=student.Login,
-            action="PermissionDenied",
-            details={
-                "DescriptionEvent": "Попытка доступа без разрешения",
-                "Reason": f"MissingPermission:{permission_name}"
-            }
-        )
-        raise errors.access_denied(message="Недостаточно прав")
-    logger.info(f"[PERMISSION] '{student.Login}' успешно прошёл проверку на '{permission_name}'")
-
-    send_log(
-        StudentID=student.ID,
-        StudentLogin=student.Login,
-        action="PermissionGranted",
-        details={
-            "DescriptionEvent": "Успешная проверка разрешения",
-            "Permission": permission_name
-        }
-    )
-    return student
 
 
 # Зависимость (пока не используется)
@@ -348,12 +320,12 @@ async def get_student_by_field(db: AsyncSession, field_name: str, value: str):
         except ValueError:
             logger.warning(f"Некорректный ID: {value}")
             raise errors.bad_request(message=f"Некорректный ID: {value}")
-    logger.debug(f"Поиск студента: field={field_name}, value={value}")
+    logger.info(f"Поиск студента: field={field_name}, value={value}")
     return await general.run_query_select(
         db,
-        query=f"""SELECT s.*, r.Name as RoleName FROM Students s
-        LEFT JOIN Roles r ON s.RoleID = r.RoleID
-        WHERE s.{field_name} = :value""",
+        query=f"""SELECT s.*, r."Name" as "RoleName" FROM "Students" s
+        LEFT JOIN "Roles" r ON s."RoleID" = r."RoleID"
+        WHERE s."{field_name}" = :value;""",
         params={"value": value},
         mode="mappings_first",
         error_message=f"Ошибка при получении студента по {field_name}: {value}"
@@ -366,10 +338,10 @@ async def get_student_by_login(db: AsyncSession, login: str):
     return await general.run_query_select(
         db,
         query="""
-                SELECT s.*, r.Name as RoleName
-                FROM Students s
-                LEFT JOIN Roles r ON s.RoleID = r.RoleID
-                WHERE s.Login = :login
+                SELECT s.*, r."Name" as "RoleName"
+                FROM "Students" s
+                LEFT JOIN "Roles" r ON s."RoleID" = r."RoleID"
+                WHERE s."Login" = :login;
             """,
         params={"login": login},
         mode="mappings_first",
@@ -384,8 +356,8 @@ async def get_student_by_email(db: AsyncSession, email: str):
     return await general.run_query_select(
         db,
         query="""
-                SELECT * FROM Students 
-                WHERE Email = :email
+                SELECT * FROM "Students" 
+                WHERE "Email" = :email;
             """,
         params={"email": email},
         mode="mappings_first",
@@ -397,8 +369,8 @@ async def add_new_register_student(db: AsyncSession, params: dict):
     return await general.run_query_insert(
         db,
         query="""
-        Insert Students (Login, Email, Password,IsConfirmed)
-        VALUES (:Login, :Email, :Password, :IsConfirmed)
+        Insert INTO "Students" ("Login", "Email", "Password","IsConfirmed")
+        VALUES (:Login, :Email, :Password, :IsConfirmed);
         """,
         params=params,
         error_message="Ошибка добавления нового студента (через регистрацию)"
@@ -410,7 +382,8 @@ async def confirm_student_email(db: AsyncSession, params: dict):
     logger.debug(f"Обновляем информацию о подтвержденном emai, params={params}")
     return await general.run_query_update(
         db,
-        query="""UPDATE Students SET IsConfirmed = 1, RegisterDate = :now WHERE Email = :email AND IsConfirmed = 0""",
+        query="""UPDATE "Students" SET "IsConfirmed" = True, "RegisterDate" = :now 
+        WHERE "Email" = :email AND "IsConfirmed" = False;""",
         params=params,
         error_message="Ошибка добавления нового студента (через регистрацию)"
     )
@@ -423,9 +396,9 @@ async def save_password_reset_token(db: AsyncSession, student_id: int, token: st
     await general.run_query_update(
         db,
         query="""
-            UPDATE PasswordResetTokens
-            SET Used = 1
-            WHERE StudentID = :student_id AND Used = 0
+            UPDATE "PasswordResetTokens"
+            SET "Used" = TRUE
+            WHERE "StudentID" = :student_id AND "Used" = FALSE;
         """,
         params={"student_id": student_id},
         error_message="Ошибка при пометке старых токенов как использованных"
@@ -435,8 +408,8 @@ async def save_password_reset_token(db: AsyncSession, student_id: int, token: st
     await general.run_query_insert(
         db,
         query="""
-                INSERT INTO PasswordResetTokens (StudentID, Token, ExpiresAt)
-                VALUES (:student_id, :token, :expires_at)
+                INSERT INTO "PasswordResetTokens" ("StudentID", "Token", "ExpiresAt")
+                VALUES (:student_id, :token, :expires_at);
             """,
         params={
             "student_id": student_id,
@@ -451,9 +424,9 @@ async def get_token_record(db: AsyncSession, token: str):
     '''Функция получения токена для сброса пароля'''
     logger.debug(f"функция get_token_record")
     query = """
-        SELECT ID, StudentID, Token, ExpiresAt, Used
-        FROM PasswordResetTokens
-        WHERE Token = :token
+        SELECT "ID", "StudentID", "Token", "ExpiresAt", "Used"
+        FROM "PasswordResetTokens"
+        WHERE "Token" = :token;
     """
     record = await general.run_query_select(
         db,
@@ -469,9 +442,9 @@ async def mark_token_used(db: AsyncSession, token: str):
     '''Функция отмечает токен сброса пароля как использованный'''
     logger.debug(f"Помечаем токен сброса пароля как использованный")
     query = """
-        UPDATE PasswordResetTokens
-        SET Used = 1
-        WHERE Token = :token
+        UPDATE "PasswordResetTokens"
+        SET "Used" = 1
+        WHERE "Token" = :token;
     """
     updated_rows = await general.run_query_update(
         db,
@@ -488,10 +461,10 @@ async def get_permission_role(db: AsyncSession, RoleID: int):
     return await general.run_query_select(
         db,
         query="""
-                SELECT p.Name
-                FROM RolePermissions rp
-                JOIN Permissions p ON rp.PermissionID = p.PermissionID
-                WHERE rp.RoleID = :role_id
+                SELECT p."Name"
+                FROM "RolePermissions" rp
+                JOIN "Permissions" p ON rp."PermissionID" = p."PermissionID"
+                WHERE rp."RoleID" = :role_id;
                 """,
         params={"role_id": RoleID},
         mode="scalars_all",
@@ -506,9 +479,9 @@ async def change_password(db: AsyncSession, student_ID: int, new_password: str):
     return await general.run_query_update(
         db,
         query="""
-                update Students 
-                set Password = :new_password 
-                where ID = :id
+                update "Students" 
+                set "Password" = :new_password 
+                where "ID" = :id;
                 """,
         params={"id": student_ID, "new_password": new_password},
         error_message=f"Ошибка обновления пароля для студента с id:{student_ID}"
@@ -518,7 +491,7 @@ async def get_all_roles(db: AsyncSession):
     logger.debug(f"Получаем все роли")
     return await general.run_query_select(
         db,
-        query= """SELECT * FROM Roles""",
+        query= '''SELECT * FROM "Roles"''',
         mode="mappings_all",
         params= None,
         error_message=f"Ошибка при получения ролей"
@@ -528,7 +501,7 @@ async def get_all_permission(db: AsyncSession):
     logger.debug(f"Получаем все разрешения")
     return await general.run_query_select(
         db,
-        query= """SELECT * FROM Permissions""",
+        query= '''SELECT * FROM "Permissions"''',
         mode="mappings_all",
         params= None,
         error_message=f"Ошибка при получения разрешений"
@@ -538,7 +511,7 @@ async def get_role_id(db: AsyncSession, RoleID: int):
     logger.debug(f"Получаем роль по её id:{RoleID}")
     return await general.run_query_select(
         db,
-        query= """SELECT * FROM Roles where RoleID = :role_id""",
+        query= '''SELECT * FROM "Roles" where "RoleID" = :role_id;''',
         mode="mappings_first",
         params= {"role_id": RoleID},
         required=True,
@@ -549,12 +522,13 @@ async def get_permission_role(db: AsyncSession, RoleID: int):
     logger.debug(f"Получаем разрешения для роли по её id:{RoleID}")
     return await general.run_query_select(
         db,
-        query= """SELECT r.RoleID, r.Name as RoleName, p.PermissionID, p.Name as PermissionName
-                                            FROM RolePermissions rp
-                                            JOIN Roles r ON rp.RoleID = r.RoleID
-                                            JOIN Permissions p ON rp.PermissionID = p.PermissionID
-                                            WHERE r.RoleID = :role_id
-                                            ORDER BY r.RoleID""",
+        query= """SELECT r."RoleID", r."Name" as "RoleName", p."PermissionID", p."Name" as "PermissionName"
+                                            FROM "RolePermissions" rp
+                                            JOIN "Roles" r ON rp."RoleID" = r."RoleID"
+                                            JOIN "Permissions" p ON rp."PermissionID" = p."PermissionID"
+                                            WHERE r."RoleID" = :role_id
+                                            ORDER BY r."RoleID";
+                                            """,
         mode="mappings_all",
         params= {"role_id": RoleID},
         #required=True,
@@ -566,7 +540,7 @@ async def assign_role(db: AsyncSession, student_id: int, role_id: int):
     logger.debug(f"Назначаем роль role_id={role_id} студенту student_id={student_id}")
     return await general.run_query_update(
         db,
-        query= """update students set RoleID = :role_id where ID = :student_id""",
+        query= """update "Students" set "RoleID" = :role_id where "ID" = :student_id;""",
         params= {"role_id":role_id, "student_id": student_id},
         error_message=f"Ошибка при назначении роли с id={role_id} для студента с id={student_id}"
     )
@@ -577,7 +551,7 @@ async def update_role_permissions (db: AsyncSession, role_id: int, to_delete: se
         for permission in to_delete:
             await general.run_query_delete(
                 db,
-                query="DELETE FROM RolePermissions WHERE RoleID = :role_id AND PermissionID = :permission",
+                query='''DELETE FROM "RolePermissions" WHERE "RoleID" = :role_id AND "PermissionID" = :permission;''',
                 params={"role_id": role_id, "permission": permission},
                 error_message=f"Ошибка при удалении разрешения {permission} у роли {role_id}",
                 commit=False  # добавим этот флаг
@@ -587,7 +561,7 @@ async def update_role_permissions (db: AsyncSession, role_id: int, to_delete: se
         for permission in to_add:
             await general.run_query_insert(
                 db,
-                query="INSERT INTO RolePermissions (RoleID, PermissionID) VALUES (:role_id, :permission)",
+                query='''INSERT INTO "RolePermissions" ("RoleID", "PermissionID") VALUES (:role_id, :permission);''',
                 params={"role_id": role_id, "permission": permission},
                 error_message=f"Ошибка при добавлении разрешения {permission} роли {role_id}",
                 commit=False
@@ -595,7 +569,7 @@ async def update_role_permissions (db: AsyncSession, role_id: int, to_delete: se
         db.commit()
         logger.debug(f"Обновили разрешения для роли с role_id={role_id} удалили: {to_delete}, добавили {to_add}")
     except SQLAlchemyError:
-        db.rollback()
+        await db.rollback()
         logger.exception(f"[DB ERROR] Ошибка при обновлении разрешений роли с role_id={role_id} к удалению: {to_delete}, к добавлению {to_add}")
         send_log(
             StudentID=0,
@@ -615,10 +589,10 @@ async def get_logs_all(db: AsyncSession, limit: int = 50, offset: int = 0):
     logger.debug(f"Получение всех логов |  limit={limit} | offset={offset}")
     return await general.run_query_select(
         db,
-        query= """SELECT * FROM StudentActionLogs
-            ORDER BY EventTime DESC
-            OFFSET :offset ROWS
-            FETCH NEXT :limit ROWS ONLY""",
+        query= """SELECT * FROM "StudentActionLogs"
+                    ORDER BY "EventTime" DESC
+                    OFFSET :offset
+                    LIMIT :limit;""",
         mode="mappings_all",
         params= {"limit": limit, "offset": offset},
         error_message=f"Ошибка при получении истории действий пользователей"
@@ -628,9 +602,9 @@ async def get_logs_student(db: AsyncSession, studentID: int):
     logger.debug(f"Получение логов студента id={studentID}")
     return await general.run_query_select(
         db,
-        query= """SELECT TOP 50 * FROM StudentActionLogs 
-        WHERE StudentID = :student_id
-        ORDER BY EventTime DESC
+        query= """SELECT * FROM "StudentActionLogs"
+                WHERE "StudentID" = :student_id ORDER BY "EventTime" DESC
+                LIMIT 50;
         """,
         mode="mappings_all",
         params= {'student_id': studentID},

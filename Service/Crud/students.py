@@ -2,41 +2,42 @@ from Service.Models import Student
 from Service.Schemas.students import StudentTaskRead
 from Service.Schemas import auth
 from utils import errors,general
-
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from sqlalchemy import text
 from fastapi import HTTPException
 from sqlalchemy.exc import SQLAlchemyError
 import logging
-
+logger = logging.getLogger(__name__) # создание логгера для текущего модуля
 # Crud\Students.py
 ''' 
 CRUD - основная логика работы запроса
 Основные функции для студентов
 '''
 
-from sqlalchemy.orm import Session
+# TODO переведен на асинхронный postgres
 
-logger = logging.getLogger(__name__) # создание логгера для текущего модуля
+
 
 ''' Получение всех студентов'''
 ''' функция-SQL запрос к БД для вывода всех студентов'''
-def get_all_students(db: Session):
-    return general.run_query_select(
+async def get_all_students(db: AsyncSession):
+
+    return await general.run_query_select(
         db,
-        query= """SELECT s.*, r.Name as RoleName FROM Students s LEFT JOIN Roles r ON s.RoleID = r.RoleID""",
+        query= '''SELECT s.*, r."Name" as "RoleName" FROM "Students" s LEFT JOIN "Roles" r ON s."RoleID" = r."RoleID"''',
         mode="mappings_all",
         params= None,
         error_message=f"Ошибка при получения студентов из БД"
     )
 
 ''' функция-SQL запрос к БД для вывода определенного студента'''
-def get_student_id(db: Session, Student_id: int):
-    return general.run_query_select(
+async def get_student_id(db: AsyncSession, Student_id: int):
+    return await general.run_query_select(
         db,
-        query= """SELECT s.*, r.Name as RoleName FROM Students s
-                LEFT JOIN Roles r ON s.RoleID = r.RoleID
-                WHERE s.ID = :Student_id""",
+        query= """SELECT s.*, r."Name" as "RoleName" FROM "Students" s
+                LEFT JOIN "Roles" r ON s."RoleID" = r."RoleID"
+                WHERE s."ID" = :Student_id;""",
         mode="mappings_first",
         params= {"Student_id": Student_id},
         required=True,
@@ -45,7 +46,8 @@ def get_student_id(db: Session, Student_id: int):
 
 
 ''' функция добавления нового студента'''
-def add_student(db: Session, student: auth.StudentCreate, hashed_password:str):
+async def add_student(db: AsyncSession, student: auth.StudentCreate, hashed_password:str):
+    logger.debug(f"Функция добавления нового студента add_student")
     data = student.dict()
     # подставляем значение по умолчанию, если не пришло
 
@@ -54,18 +56,21 @@ def add_student(db: Session, student: auth.StudentCreate, hashed_password:str):
 
     data["Password"] = hashed_password  # Добавляем хэш пароля
 
-    return general.run_query_insert(
+    return await general.run_query_insert(
         db,
-        query= """INSERT INTO STUDENTS (Login, Last_Name, First_Name, Middle_Name, Email, Sex, BirthDate, Comment, Password, RoleID, IsActive, Phone) 
-        VALUES (:Login, :Last_Name, :First_Name, :Middle_Name, :Email, :Sex, :BirthDate, :Comment, :Password, :RoleID, :IsActive, :Phone)""",
+        query= """INSERT INTO "Students" ("Login", "Last_Name", "First_Name", "Middle_Name", "Email", "Sex", "BirthDate", "Comment", "Password", "RoleID", "IsActive", "Phone") 
+        VALUES (:Login, :Last_Name, :First_Name, :Middle_Name, :Email, :Sex, :BirthDate, :Comment, :Password, :RoleID, :IsActive, :Phone)
+        RETURNING "ID";""",
         params= data,
+        return_id = True,
         error_message=f"Ошибка при добавлении нового студента"
     )
 
 
 
 
-def edit_student_id(db: Session, student_ID: int, data: auth.StudentCreate):
+async def edit_student_id(db: AsyncSession, student_ID: int, data: auth.StudentCreate):
+    logger.debug(f"Функция изменение студента с student_ID={student_ID}")
     # превращаем в словарь, убирая пустые значения
     update_data = {k: v for k, v in data.dict().items() if v is not None}
 
@@ -74,66 +79,92 @@ def edit_student_id(db: Session, student_ID: int, data: auth.StudentCreate):
         raise errors.bad_request(message="Нет данных для обновления")
 
     # формируем данные для вставки в SQL запрос
-    set_clause = ", ".join([f"{key} = :{key}" for key in update_data])
-    update_data["id"] = student_ID  # добавляем ID для условия WHERE
 
-    return general.run_query_update(
+    set_clause = ", ".join([f'"{key}" = :{key}' for key in update_data])
+    update_data["ID"] = student_ID  # добавляем ID для условия WHERE
+    logger.warning(f"set_clause={set_clause}")
+    return await general.run_query_update(
         db,
         query=f"""
-                update Students 
+                update "Students" 
                 set {set_clause}
-                where ID = :id
+                where "ID" = :ID;
                 """,
         params=update_data,
         error_message=f"Ошибка обновления данных студента с id:{student_ID}"
     )
 
-def activate_student_id(db: Session, student_ID: int, flag: bool):
-    return general.run_query_update(
+async def activate_student_id(db: AsyncSession, student_ID: int, flag: bool):
+    logger.debug(f"Функция активации/деактивации студента с student_ID={student_ID} | flag={flag}")
+    return await general.run_query_update(
         db,
         query="""
-                update Students 
-                set isActive = :flag
-                where ID = :id
+                update "Students" 
+                set "IsActive" = :flag
+                where "ID" = :id;
                 """,
         params={"flag": flag, "id": student_ID},
         error_message=f"Ошибка при обновлении активности студента с ID:{student_ID}"
     )
 
 '''функция удаление студента по id'''
-def del_student_id(db: Session, id: int):
+async def del_student_id(db: AsyncSession, id: int):
     try:
         logger.info(f"Удаляем задачи студента с id: {id}")
-        general.run_query_delete(
+        await general.run_query_delete(
             db,
             query="""
-                DELETE FROM StudentTasks 
-                WHERE StudentID = :id
+                DELETE FROM "StudentTasks" 
+                WHERE "StudentID" = :id;
                 """,
             params={"id": id},
             commit=False
         )
 
         logger.info(f"Удаляем студента с id:{id}")
-        general.run_query_delete(
+        await general.run_query_delete(
             db,
             query="""
-                DELETE FROM Students 
-                WHERE ID = :id
+                DELETE FROM "Students" 
+                WHERE "ID" = :id;
                 """,
             params={"id": id},
             commit=False
         )
 
-        db.commit()
+        await db.commit()
     except SQLAlchemyError as e:
-        db.rollback()
+        await db.rollback()
         logger.exception(f"Ошибка при удалении студента с id:{id} и связанных данных")
         raise errors.internal_server(message=f"Ошибка удаления студента с id:{id} и связанных данных")
 
 
-'''функция которая работает по хранимке'''
-def get_students_all_tasks(
+
+
+async def get_students_all_tasks(db, **params):
+    '''функция которая работает по хранимке'''
+    # params = {'student_id': 2, 'task_id': 5, ...}
+    args_sql = []
+
+    for k, v in params.items():
+        if v is not None:
+            args_sql.append(f'"{k}" := :{k}')
+
+    query = f"""
+            SELECT * FROM get_students_tasks(
+                {', '.join(args_sql)}
+            )
+        """
+    return await general.run_query_select(
+        db=db,
+        query=query,
+        params=params,
+        mode="mappings_all",  # Возвращаем список словарей
+        required=False,
+        error_message="[F_GET] Не удалось получить список задач студента"
+    )
+
+async def __get_students_all_tasks(
     db,
     student_task_id=None,
     student_id=None,
@@ -151,7 +182,7 @@ def get_students_all_tasks(
     offset=None
 ):
     logger.debug(
-        f"""[DB CALL] Вызов хранимки GetStudentsTasks с параметрами:
+        f"""[EXEC] Вызов хранимки get_students_tasks с параметрами:
         student_task_id: {student_task_id}, student_id: {student_id}, sub_task_id: {sub_task_id}, task_id: {task_id}, subject_id: {subject_id}, variant_id: {variant_id},
         completion_status: {completion_status}, search: {search}, sort_column1: {sort_column1}, sort_direction1: {sort_direction1}, sort_column2: {sort_column2},
         sort_direction2: {sort_direction2}, offset: {offset}, limit: {limit}
@@ -159,21 +190,22 @@ def get_students_all_tasks(
     )
 
     query = """
-    EXEC GetStudentsTasks 
-        @StudentTaskID = :student_task_id,
-        @StudentID = :student_id,
-        @SubTaskID = :sub_task_id,
-        @TaskID = :task_id,
-        @SubjectID = :subject_id,
-        @VariantID = :variant_id,
-        @CompletionStatus = :completion_status,
-        @Search = :search,
-        @SortColumn1 = :sort_column1,
-        @SortColumn2 = :sort_column2,
-        @SortDirection1 = :sort_direction1,
-        @SortDirection2 = :sort_direction2,
-        @Limit = :limit,
-        @Offset = :offset
+        SELECT * FROM get_students_tasks(
+        p_StudentTaskID := :student_task_id::int,
+        p_StudentID := :student_id::int,
+        p_SubTaskID := :sub_task_id::int,
+        p_TaskID := :task_id::int,
+        p_SubjectID := :subject_id::int,
+        p_VariantID := :variant_id::int,
+        p_CompletionStatus := :completion_status::varchar,
+        p_Search := :search::varchar,
+        p_SortColumn1 := :sort_column1::varchar,
+        p_SortColumn2 := :sort_column2::varchar,
+        p_SortDirection1 := :sort_direction1::varchar,
+        p_SortDirection2 := :sort_direction2::varchar,
+        p_Offset := :offset::int,
+        p_Limit := :limit::int
+    )
     """
 
     params = {
@@ -185,25 +217,25 @@ def get_students_all_tasks(
         "variant_id": variant_id,
         "completion_status": completion_status,
         "search": search,
-        "sort_column1": sort_column1,
-        "sort_column2": sort_column2,
-        "sort_direction1": sort_direction1,
-        "sort_direction2": sort_direction2,
-        "limit": limit,
+        "sort_column1": sort_column1.value if sort_column1 else None,
+        "sort_column2": sort_column2.value if sort_column2 else None,
+        "sort_direction1": sort_direction1.value if sort_direction1 else None,
+        "sort_direction2": sort_direction2.value if sort_direction2 else None,
         "offset": offset,
+        "limit": limit,
     }
-    return general.run_query_select(
+    return await general.run_query_select(
         db=db,
         query=query,
         params=params,
         mode="mappings_all",  # Возвращаем список словарей
         required=False,
-        error_message="[EXEC] Не удалось получить список задач студента"
+        error_message="[F_GET] Не удалось получить список задач студента"
     )
 
 
 ''' Получения студента по заданному полю(id, логин)'''
-'''def get_student_by_field(db: Session, value: str, by: str = "id"):
+'''async def get_student_by_field(db: Session, value: str, by: str = "id"):
     if by == "id":
         try:
             student_id = int(value)
@@ -220,102 +252,16 @@ def get_students_all_tasks(
 
     return student'''
 
-''' Получения всех задач всех студентов '''
-def get_all_students_tasks(db: Session):
-    query = text("SELECT * FROM StudentTasks JOIN Tasks on Tasks.TaskID = StudentTasks.SubTaskID")
-    result = db.execute(query).fetchall()
-    student_tasks = [
-        {"StudentTaskID": row.StudentTaskID,
-        "StudentID": row.StudentID,
-         "SubTaskID": row.SubTaskID,
-         "CompletionStatus": row.CompletionStatus,
-         "Score": row.Score,
-         #"CompletionDate": row.CompletionDate,
-         "StudentAnswer": row.StudentAnswer,
-         "TaskNumber": row.TaskNumber,
-         "TaskTitle": row.TaskTitle
-         }
-        for row in result]
-    return student_tasks
-
-''' Получения всех задач студента по ID'''
-
-# МЕНЯЮ НА ХРАНИМКУ!!!!
-# С нее работает список задач студентов в админке
-'''def get_student_all_tasks(db: Session, student_id: int):
-    query = text(f"""SELECT StudentTaskID,StudentID, Login, SubTaskID,CompletionStatus,Score,CompletionDate,StudentAnswer, TaskNumber, TaskTitle  
-                 FROM StudentTasks 
-                 JOIN Students ON Students.ID = StudentTasks.StudentID 
-				 JOIN Tasks on Tasks.TaskID = StudentTasks.SubTaskID
-                 WHERE StudentTasks.StudentID = :student_id""")
-    result = db.execute(query, {"student_id": student_id}).fetchall()
-    logger.warning(f"Получаем задачи для студента с ID = {student_id}")
-    logger.warning(f"Результатов найдено: {len(result)}")
-    student_tasks = [
-        {"StudentTaskID": row.StudentTaskID,
-        "StudentID": row.StudentID,
-         "Login": row.Login,
-         "SubTaskID": row.SubTaskID,
-         "CompletionStatus": row.CompletionStatus,
-         "Score": row.Score,
-         #"CompletionDate": row.CompletionDate,
-         "StudentAnswer": row.StudentAnswer,
-         "TaskNumber": row.TaskNumber,
-         "TaskTitle": row.TaskTitle}
-        for row in result]
-    if not result:
-        raise HTTPException (status_code=404, detail=f"Студент с ID {student_id} не найден")
-    return student_tasks
-'''
 
 
-
-
-
-''' Получения задачи студента по SubTaskID'''
-def get_task_student(db: Session, student_id: int, SubTaskID: int) -> list[StudentTaskRead]:
-# Проверка существования студента (запрос с параметром лучше чем f-строка
-    query = text("SELECT 1 FROM Students WHERE ID = :student_id")
-    params = {"student_id": student_id}
-    student_check = db.execute(query, params).fetchone()
-    #student_check = db.execute(text("SELECT 1 FROM Students WHERE ID = :student_id"),{"student_id": student_id}).fetchone()
-    if not student_check:
-        raise HTTPException(status_code=404, detail=f"Студент с ID {student_id} не найден")
-
-# Проверка существования подзадачи
-    subtask_check = db.execute(text("SELECT 1 FROM SubTasks WHERE SubTaskID = :subtask_id"),{"subtask_id": SubTaskID}).fetchone()
-    if not subtask_check:
-        raise HTTPException(status_code=404, detail=f"Подзадача с ID {SubTaskID} не найдена")
-
-# Основной запрос
-    query = text(f"select * from StudentTasks join Students on ID=StudentID where StudentID={student_id} and SubTaskID={SubTaskID}")
-    result = db.execute(query).fetchall()
-    if not result:
-            raise HTTPException(status_code=404, detail=f"У студента с ID {student_id} нет подзадачи с ID {SubTaskID}")
-
-    task_student = [
-        {"StudentTaskID": row.StudentTaskID,
-        "StudentID": row.StudentID,
-         "Login": row.Login,
-         "SubTaskID": row.SubTaskID,
-         "CompletionStatus": row.CompletionStatus,
-         "Score": row.Score,
-         #"CompletionDate": row.CompletionDate,
-         "StudentAnswer": row.StudentAnswer}
-        for row in result]
-    return task_student
-
-# Функция для получения студента по логину
-'''def get_student_by_login(db: Session, login: str):
-    return db.query(Student).filter(Student.Login == login).first()'''
-
+# TODO возможно надо убрать вместе с роутом
 
 '''все данные задачи выбранного студента по StudentTaskID'''
-def Get_Student_TaskDetails_By_ID(db: Session, StudentTaskID: int):
-    query = text("EXEC dbo.GetStudentsTasks @StudentTaskID = :student_task_id")
-    result =  db.execute(query, {"student_task_id": StudentTaskID})
+async def Get_Student_TaskDetails_By_ID(db: AsyncSession, StudentTaskID: int):
+    query = "EXEC dbo.GetStudentsTasks @StudentTaskID = :student_task_id"
+    param = {"student_task_id": StudentTaskID}
+    result = await general.run_query_select(db, query=query,params=param)
     if not result:
-            raise HTTPException(status_code=404, detail=f"нет подзадачи с StudentTaskID {StudentTaskID}")
-
+        raise errors.not_found(message= f"нет подзадачи с StudentTaskID {StudentTaskID}")
     row = result.fetchone()
     return dict(row._mapping)

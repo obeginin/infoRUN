@@ -161,7 +161,7 @@ class PasswordResetConfirm(BaseModel):
 
 # для самостоятельной смены
 class ChangePasswordRequest(BaseModel):
-    old_password: constr(min_length=6)
+    old_password: str
     new_password: constr(min_length=6)
     # для прода
     '''

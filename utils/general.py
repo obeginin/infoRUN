@@ -27,17 +27,17 @@ async def run_query_select(
         # Выбор метода извлечения
         match mode:
             case "scalar":
-                data = await result.scalar()              # Первое поле первой строки
+                data = result.scalar()              # Первое поле первой строки
             case "scalars_all":
-                data = await result.scalars().all()       # Список значений одной колонки
+                data = result.scalars().all()       # Список значений одной колонки
             case "mappings_first":
                 data = result.mappings().first()    # Один словарь (строка)
             case "mappings_all":
                 data = result.mappings().all()      # Список словарей
             case "one_or_none":
-                data = await result.one_or_none()         # Один объект или None, выбрасывает ошибку если >1
+                data = result.one_or_none()         # Один объект или None, выбрасывает ошибку если >1
             case "first":
-                data = await result.first()               # Первый результат (обычно ORM объект)
+                data = result.first()               # Первый результат (обычно ORM объект)
             case _:
                 raise ValueError(f"Неизвестный режим выборки: {mode}")
 

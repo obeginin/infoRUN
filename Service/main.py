@@ -20,7 +20,7 @@ from utils.exceptions import app_exception_handler, validation_exception_handler
 from fastapi.openapi.docs import get_swagger_ui_html, get_redoc_html
 from fastapi.openapi.utils import get_openapi
 from Service.api import tasks, subtasks,students,auth,subjects, variants  # Импортируем роутер задач
-from Service.api.swagger import swagger_router
+#from Service.api.swagger import swagger_router
 from Service.Crud.auth import get_swagger_user
 from Service.Database import engine
 from Service.producer import get_kafka_producer
@@ -85,7 +85,7 @@ app.include_router(subtasks.subtask_router)  # Регистрируем роут
 app.include_router(variants.variant_router)
 app.include_router(students.students_router)  # Регистрируем роутер для студентов
 app.include_router(students.students_subtasks_router) # Регистрируем роутер для задач студентов
-app.include_router(swagger_router)
+#app.include_router(swagger_router)
 
 
 # Подключаем статику

@@ -31,45 +31,42 @@ logger = logging.getLogger(__name__) # создание логгера для т
 # api\Students.py
 ''' Маршруты и Эндпоинты'''
 
-from sqlalchemy.orm import Session
+# TODO переведен на асинхронный postgres
 
 students_router = APIRouter(prefix="/api/students", tags=["students"])
 students_subtasks_router = APIRouter(prefix="/api/students_subtasks", tags=["students_subtasks"])
-templates = Jinja2Templates(directory=settings.TEMPLATES_DIR)
 
 
-from sqlalchemy.orm import Session
 
 
 """API"""
 # /api/students
 ''' Эндпоинт: Получить список студентов'''
-@students_router.get(
-    "",
-    response_model=list[StudentOut],
-    summary="Получить список студентов в формате JSON",
-)
-def read_all_students(db: Session = Depends(get_db)):
-    return students.get_all_students(db)
+@students_router.get("",response_model=list[StudentOut],summary="Получить список студентов в формате JSON")
+async def read_all_students(db: AsyncSession = Depends(get_db), current_student=Depends(permission_required("view_students"))):
+    logger.info(f"Пользователь {current_student.Login} запросил список всех студентов")
+    return await students.get_all_students(db)
 
 # /api/students/{student_id}
 ''' Эндпоинт: Получить студента по id (/students/{student_id})'''
 @students_router.get("/api/{student_id}", response_model=StudentAuth, summary="Получить студента по его ID)")
-def read_student_id(student_id: int, db: Session = Depends(get_db)):
-    return students.get_student_id(db, student_id)
+async def read_student_id(student_id: int, db: AsyncSession = Depends(get_db), current_student=Depends(permission_required("view_students"))):
+    logger.info(f"Пользователь {current_student.Login} запросил студента с id={student_id}")
+    return await students.get_student_id(db, student_id)
 
 
 # /api/students/search (тест ✅)
 ''' Поиск студента по выбранному полю(ID, Login, Email, Phone '''
 @students_router.get("/search", summary="Поиск студента по выбранному полю(ID, Login, Email, Phone")
-def confirm_email(field_name: StudentField = Query(...),
+async def confirm_email(field_name: StudentField = Query(...),
                   value: str = Query(...),
-                  db: Session = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
+                  db: AsyncSession = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
+    logger.info(f"Пользователь {current_student.Login} запросил информацию студента с field_name={field_name} | value={value}")
     field_name = field_name.value
     value = value
 
     # ищем студента по выбранному полю
-    student = get_student_by_field(db, field_name, value)
+    student = await get_student_by_field(db, field_name, value)
     if student is None:
         logger.warning(f"Студент с {field_name} = {value} не найден")
         raise errors.not_found(message=f"Студент с {field_name} = {value} не найден")
@@ -98,40 +95,40 @@ def confirm_email(field_name: StudentField = Query(...),
     `Phone` строка, но должна состоять из цифр
     """
 )
-def new_student(student_data: StudentCreate,
-                db: Session = Depends(get_db),
-                current_student=Depends(permission_required("admin_panel"))):
-    logger.debug(student_data)
+async def new_student(student_data: StudentCreate,
+                db: AsyncSession = Depends(get_db),
+                current_student=Depends(permission_required("create_students"))):
+    logger.info(f"Пользователь {current_student.Login} отправил запрос на создание нового студента student_data={student_data}")
 
     # TODO: оптимизировать одним запросом
-    studentWithLogin = get_student_by_field(db, field_name="Login", value=student_data.Login)
+    studentWithLogin = await get_student_by_field(db, field_name="Login", value=student_data.Login)
     logger.debug(studentWithLogin)
     if studentWithLogin:
         logger.warning(f"Пользователь с логином: {student_data.Login} уже есть в базе!")
         raise errors.bad_request(message=f"Пользователь с логином '{student_data.Login}' уже есть в базе")
-    studentWithEmail = get_student_by_field(db, field_name="Email", value=student_data.Email)
+    studentWithEmail = await get_student_by_field(db, field_name="Email", value=student_data.Email)
     if studentWithEmail:
         logger.warning(f"Пользователь с Email: {student_data.Email} уже есть в базе!")
         raise errors.bad_request(message=f"Пользователь с Email '{student_data.Email}' уже есть в базе!")
-    studentWithPhone = get_student_by_field(db, field_name="Phone", value=student_data.Phone)
+    studentWithPhone = await get_student_by_field(db, field_name="Phone", value=student_data.Phone)
     if studentWithPhone:
         logger.warning(f"Пользователь с телефоном: {student_data.Phone} уже есть в базе!")
         raise errors.bad_request(message=f"Пользователь с телефоном '{student_data.Phone}' уже есть в базе!")
 
     # ищем роль по id
-    role = get_role_id(db, student_data.RoleID)
+    role = await get_role_id(db, student_data.RoleID)
     if not role:
-        logger.warning(
-            f"[STUDENTS] Не удалось найти роль с id {student_data.RoleID}")
+        logger.warning(f"[STUDENTS] Не удалось найти роль с id {student_data.RoleID}")
         return errors.not_found(message=f"Не удалось найти роль с id {student_data.RoleID}")
     hashed_password = hash_password(student_data.Password)
 
-    if students.add_student(db, student_data, hashed_password) != 1:
+    new_student_id = await students.add_student(db, student_data, hashed_password)
+    '''if await students.add_student(db, student_data, hashed_password) != 1:
         logger.warning(f"[STUDENTS] Не удалось добавить студента — возможно, данные невалидны или уже существуют")
         raise errors.bad_request(message="Не удалось добавить студента — возможно, данные невалидны или уже существуют")
+'''
 
-
-    logger.info(f"[STUDENTS] Пользователь '{current_student.Login}' добавил нового студента")
+    logger.info(f"[STUDENTS] Пользователь '{current_student.Login}' добавил нового студента c id={new_student_id}")
     send_log(
         StudentID=current_student.ID,
         StudentLogin=current_student.Login,
@@ -142,20 +139,22 @@ def new_student(student_data: StudentCreate,
             "NewStudentEmail": student_data.Email
         }
     )
-    return  {"message": "Студент успешно добавлен"}
+    return  {"message": "Студент успешно добавлен", "student_id" : f"{new_student_id}"}
 
 # /api/students/edit_student (тест ✅)
 @students_router.patch("/edit_student", summary="Изменение данных студента по id")
-def edit_student(id: int,
+async def edit_student(id: int,
                  data: StudentEdit,
-                 db: Session = Depends(get_db),
-                 current_student=Depends(permission_required("admin_panel"))):
+                 db: AsyncSession = Depends(get_db),
+                 current_student=Depends(permission_required("edit_students"))):
+    logger.info( f"Пользователь {current_student.Login} отправил запрос на изменение студента id={id}")
+    logger.debug(f"data={data}")
     # проверка изменения роли (на суперадмина и админов)
     if data.RoleID:
-        can_edit_admin(data.RoleID, db=db, current_student=current_student)
+        await can_edit_admin(data.RoleID, db=db, current_student=current_student)
 
     logger.info(f"[STUDENTS] Данные изменения студента: {data}")
-    student_by_id = get_student_by_field(db, field_name="ID", value=id)
+    student_by_id = await get_student_by_field(db, field_name="ID", value=id)
     logger.info(f"[STUDENTS] Студент {student_by_id}")
     if student_by_id == None:
         logger.warning(f"[STUDENTS] Студент с id: {id} не найден")
@@ -163,25 +162,25 @@ def edit_student(id: int,
     logger.info(f"Проверяем уникальность логина: {data.Login}")
     # TODO: оптимизировать одним запросом
     if data.Login:
-        studentWithLogin = get_student_by_field(db, field_name="Login", value=data.Login)
+        studentWithLogin = await get_student_by_field(db, field_name="Login", value=data.Login)
         if studentWithLogin and studentWithLogin["ID"] != id:
             logger.warning(f"[STUDENTS] Логин '{data.Login}' уже занят")
             raise errors.bad_request(message=f"Логин '{data.Login}' уже занят")
     logger.info(f"Проверяем уникальность email: {data.Email}")
     if data.Email:
-        studentWithEmail = get_student_by_field(db, field_name="Email", value=data.Email)
+        studentWithEmail = await get_student_by_field(db, field_name="Email", value=data.Email)
         if studentWithEmail and studentWithEmail["ID"] != id:
             logger.warning(f"[STUDENTS] Email '{data.Email}' уже занят")
             raise errors.bad_request(message=f"Email '{data.Email}' уже занят")
     if data.Phone:
-        studentWithPhone = get_student_by_field(db, field_name="Phone", value=data.Phone)
+        studentWithPhone = await get_student_by_field(db, field_name="Phone", value=data.Phone)
         if studentWithPhone and studentWithPhone["ID"] != id:
             logger.warning(f"[STUDENTS] Телефон '{data.Phone}' уже заня")
             raise errors.bad_request(message=f"Телефон '{data.Phone}' уже занят")
     data.Password = hash_password(data.Password)
 
     logger.info(f"запуск обновления данных студента с id={id}")
-    updated = edit_student_id(db, student_ID=id, data=data)
+    updated = await edit_student_id(db, student_ID=id, data=data)
 
     if updated != 1:
         logger.warning(f"[STUDENTS] Ошибка при обновлении данных студента с логином: {student_by_id.Login}")
@@ -200,15 +199,16 @@ def edit_student(id: int,
 
 # /api/students/active (тест ✅)
 @students_router.post("/active", summary="Активация/деакцтивация студента")
-def activate_student(id: int, flag: bool, db: Session = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
+async def activate_student(id: int, flag: bool, db: AsyncSession = Depends(get_db), current_student=Depends(permission_required("edit_students"))):
+    logger.info(f"Пользователь {current_student.Login} отправил запрос на активацию/деактивацию студента студента id={id} | flag={flag}")
 
-    student = get_student_by_field(db, field_name="ID", value=id)
+    student = await get_student_by_field(db, field_name="ID", value=id)
     logger.info(f"[STUDENTS] Студент {student}")
     if student == None:
         logger.warning(f"[STUDENTS] Студент с id: {id} не найден")
         raise errors.bad_request(message=f"Студент с id: {id} не найден")
 
-    updated = activate_student_id(db, id, flag)
+    updated = await activate_student_id(db, id, flag)
 
     if updated != 1:
         logger.warning(f"[STUDENTS] Не удалось обновить статус активности студента: {student}")
@@ -227,44 +227,24 @@ def activate_student(id: int, flag: bool, db: Session = Depends(get_db), current
     return {"message": f"Студент {student['Login']} {'активирован' if flag else 'деактивирован'} успешно"}
 
 
-# /api/students/delete_student (тест ✅)
-@students_router.post("/delete_student", summary="Удаление студента по id и сопутствующих задач")
-def confirm_email(id: int, db: Session = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
-    # try:
-    student = get_student_by_field(db, field_name="ID", value=id)
-    logger.info(f"[STUDENTS] Студент {student}")
-    if student == None:
-        logger.warning(f"[STUDENTS] Студент с id: {id} не найден")
-        raise errors.bad_request(message=f"Студент с id: {id} не найден")
-    del_student_id(db, id)
-
-    logger.info(f"[STUDENTS] Администратор:{current_student.Login} удалил студента с логином: {student.Login} и id: {id}")
-    send_log(
-        StudentID=student["ID"],
-        StudentLogin=student["Login"],
-        action="StudentDeleted",
-        details={
-            "DescriptionEvent": f"Администратор:{current_student.Login} удалил студента с логином: {student.Login}",
-        }
-    )
-    return {"message": f"Студент с логином: {student.Login} успешно удалён"}
-
 
 
 # /api/students/delete_student/v2
 @students_router.post("/delete_student/v2", summary="Удаление студента выбранному полю ")
-def confirm_email(request: SearchStudentQuery = Depends(), db: Session = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
+async def delete_student_v2(request: SearchStudentQuery = Depends(), db: AsyncSession = Depends(get_db), current_student=Depends(permission_required("delete_students"))):
+    logger.info(f"Пользователь {current_student.Login} отправил запрос на удаление студента студента request={request}")
+
     field_name = request.field_name.value
     value = request.value
 
     # ищем студента по выбранному полю
-    student = get_student_by_field(db, field_name, value)
+    student = await get_student_by_field(db, field_name, value)
     if student is None:
         logger.warning(f"Студент с {field_name} = {value} не найден")
         raise errors.not_found(message=f"Студент с {field_name} = {value} не найден")
 
     # Удаляем студента
-    del_student_id(db, student.ID)
+    await del_student_id(db, student.ID)
 
     logger.info(f"[STUDENTS] Пользователь {current_student.Login} удалил студента {student.Login} (ID: {student.ID})")
     send_log(
@@ -277,56 +257,35 @@ def confirm_email(request: SearchStudentQuery = Depends(), db: Session = Depends
     )
     return {"message": f"Студент с {field_name} = {value} успешно удалён"}
 
-'''Студенты
+# /api/students/delete_student (тест ✅)
+#@students_router.post("/delete_student", summary="Удаление студента по id и сопутствующих задач")
+async def delete_student_v1(id: int, db: AsyncSession = Depends(get_db), current_student=Depends(permission_required("delete_students"))):
+    logger.info(f"Пользователь {current_student.Login} отправил запрос на удаление студента студента id={id}")
 
-@admin_router.post("/new_student", summary="Добавление нового студента")
-def confirm_email(email: EmailStr,
-                  db: Session = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
-    # try:
-    student = get_student_by_email(db, email)
-    logger.info(f"Студент cccccc {student}")
+    student = await get_student_by_field(db, field_name="ID", value=id)
+    logger.info(f"[STUDENTS] Студент {student}")
     if student == None:
-        logger.warning(f"Студент с email {email} не найден")
-        raise errors.bad_request(message=f"Студент с email {email} не найден")
-    del_student_id(db, email)
+        logger.warning(f"[STUDENTS] Студент с id: {id} не найден")
+        raise errors.bad_request(message=f"Студент с id: {id} не найден")
+    await del_student_id(db, id)
 
-    logger.info(f"[ADMIN] Администратор:{current_student.Login} удалил студента с email: {email}")
+    logger.info(f"[STUDENTS] Администратор:{current_student.Login} удалил студента с логином: {student.Login} и id: {id}")
     send_log(
         StudentID=student["ID"],
         StudentLogin=student["Login"],
         action="StudentDeleted",
         details={
-            "DescriptionEvent": f"Администратор:{current_student.Login} удалил студента с email: {email}",
+            "DescriptionEvent": f"Администратор:{current_student.Login} удалил студента с логином: {student.Login}",
         }
     )
-    return {"message": f"Студент с email {email} успешно удалён"}
-
-'''
-
-# /api/students_subtasks
-'''Эндпоинт для получения всех подзадач всех студентов'''
-@students_subtasks_router.get("", response_model=list[StudentTaskRead],
-                              summary="ГЛАВНЫЙ РОУТ с получением списка задач всех студентов (без фильтров)",
-                              description="Возвращает список всех задач студентов без применения фильтров.")
-def read_all_students_subtasks(db: Session = Depends(get_db), current_student=Depends(permission_required("view_tasks"))):
-    logger.info(f"[TASKS] Пользователь '{current_student.Login}' запросил задачи всех студентов. ")
-
-    send_log(
-        StudentID=current_student.ID,
-        StudentLogin=current_student.Login,
-        action="ViewStudentsTasks",
-        details={"DescriptionEvent": "Запрос задач всех студентов"}
-    )
-    return students.get_students_all_tasks(db)
-
-
+    return {"message": f"Студент с логином: {student.Login} успешно удалён"}
 
 # /api/students_subtasks/{StudentID}
-@students_subtasks_router.get("/{StudentID}", response_model=list[StudentTaskRead],
+@students_subtasks_router.get("/v2", response_model=list[StudentTaskRead],
                               summary="ГЛАВНЫЙ РОУТ с получением списка задач студента по фильтрам",
                               description="""В качестве фильтров передаются параметры    
                                             `StudentTaskID` - по Номеру задачи Студента  
-                                            `StudentID` - по id студента (по PATH)  
+                                            `StudentID` - по id студента
                                             `SubTaskID` - по id задачи  
                                             `TaskID` - по id категории  
                                             `SubjectID` - по id предмета  
@@ -340,14 +299,12 @@ def read_all_students_subtasks(db: Session = Depends(get_db), current_student=De
                                             `Offset` - с какой строки начинать выводить  
                                             `Limit` - количество выведенных строк (По умолчанию: 500)
                                           """)
-def read_tasks_student(StudentID: int,
+async def read_tasks_student(
                        filters: StudentTasksQueryParams = Depends(),
-                       db: Session = Depends(get_db),
+                       db: AsyncSession = Depends(get_db),
                        current_student=Depends(permission_required("view_tasks"))):
-    logger.info(
-        f"[TASKS] Пользователь '{current_student.Login}' запросил задачи студента с ID {StudentID}. "
-        f"Фильтры: {filters.dict()}"
-    )
+    logger.info(f"Пользователь '{current_student.Login}' запросил задачи студента")
+    logger.info(f"Фильтры: {filters}")
 
     send_log(
         StudentID=current_student.ID,
@@ -355,14 +312,13 @@ def read_tasks_student(StudentID: int,
         action="ViewStudentTasks",
         details={
             "DescriptionEvent": "Запрос задач студента",
-            "TargetStudentID": StudentID,
             "Filters": filters.dict()
         }
     )
-    return students.get_students_all_tasks(
+    return await students.get_students_all_tasks(
         db,
         student_task_id=filters.student_task_id,
-        student_id=StudentID,
+        student_id=filters.student_id,
         sub_task_id=filters.sub_task_id,
         task_id=filters.task_id,
         subject_id=filters.subject_id,
@@ -373,16 +329,38 @@ def read_tasks_student(StudentID: int,
         sort_column2=filters.sort_column2,
         sort_direction1=filters.sort_direction1,
         sort_direction2=filters.sort_direction2,
-        limit=filters.limit,
-        offset=filters.offset
+        p_limit=filters.p_limit,
+        p_offset=filters.p_offset
     )
 
+
+# TODO надо убирать
+# /api/students_subtasks
+'''Эндпоинт для получения всех подзадач всех студентов'''
+@students_subtasks_router.get("", response_model=list[StudentTaskRead],
+                              summary="ГЛАВНЫЙ РОУТ с получением списка задач всех студентов (без фильтров)",
+                              description="Возвращает список всех задач студентов без применения фильтров.")
+async def read_all_students_subtasks(db: AsyncSession = Depends(get_db), current_student=Depends(permission_required("view_tasks"))):
+    logger.info(f"Пользователь '{current_student.Login}' запросил задачи всех студентов. ")
+
+    send_log(
+        StudentID=current_student.ID,
+        StudentLogin=current_student.Login,
+        action="ViewStudentsTasks",
+        details={"DescriptionEvent": "Запрос задач всех студентов"}
+    )
+    return await students.get_students_all_tasks(db)
+
+
+
+
+# TODO надо убирать
 
 # /api/students_subtasks/{StudentID}/StudentTask/{StudentTaskID}
 '''Эндпоинт для получения задачи студента по его student_id и номеру SubTasksID'''
 @students_subtasks_router.get("/{student_id}/StudentTask/{student_task_id}", response_model=list[StudentTaskRead], summary="роут с получением данных о задаче студента по StudentTaskID")
-def read_task_student(student_task_id: int, db: Session = Depends(get_db), current_student=Depends(permission_required("view_tasks"))):
-    logger.info(f"[TASKS] Пользователь '{current_student.Login}' запросил данные задачи с ID={student_task_id}. ")
+async def read_task_student(student_task_id: int, db: AsyncSession = Depends(get_db), current_student=Depends(permission_required("view_tasks"))):
+    logger.info(f"Пользователь '{current_student.Login}' запросил данные задачи с ID={student_task_id}. ")
 
     send_log(
         StudentID=current_student.ID,
@@ -393,12 +371,22 @@ def read_task_student(student_task_id: int, db: Session = Depends(get_db), curre
             "TargetStudentTaskID": student_task_id
         }
     )
-    return students.get_students_all_tasks(db, student_task_id=student_task_id)
+    return await students.get_students_all_tasks(db, student_task_id=student_task_id)
+
+
+
+
+
+
+
+
+
+# TODO надо заменять на новый
 
 '''Проверка ответа пользователя'''
 # /api/students_subtasks/check-answer/
 @students_subtasks_router.post("/check-answer/")
-def check_answer (request: AnswerInput, db: Session = Depends(get_db)):
+async def check_answer (request: AnswerInput, db: AsyncSession = Depends(get_db)):
     logger.info("Запуск проверки ответа")
 
     # Получаем правильный ответ
@@ -470,7 +458,7 @@ def check_answer (request: AnswerInput, db: Session = Depends(get_db)):
     return {"status": new_status}
 
 
-
+# TODO надо менять на новое
 '''Отправка Решения  пользователя'''
 # /api/students_subtasks/submit-solution/
 @students_subtasks_router.post("/submit-solution/")
@@ -480,7 +468,7 @@ async def submit_solution(
     StudentTaskID: int = Form(...),
     StudentSolutionFile: UploadFile | None = File(None),
 
-    db: Session = Depends(get_db),
+    db: AsyncSession = Depends(get_db),
 ):
     print(
         f"submit_solution received: ID={StudentID}, SubTaskID={SubTaskID}, StudentTaskID={StudentTaskID}, StudentSolutionFile={StudentSolutionFile}")
@@ -557,143 +545,5 @@ async def submit_solution(
 
 
 
-"""Старое"""
-# /students/{value}
-# !!! Полезный роут, но пока не используем!
-''' Эндпоинт: Получить пользователей по параметру 
-@students_router.get("/{value}", response_model=list[StudentAuth], summary="Получить студента по выбранному полю")
-def read_student_by_field(
-        value: str,
-        #by: str = 'id', # значение по умолчанию
-        by: Literal["id", "login"] = Query("id", description="Поле для поиска: 'id' или 'login'"),
-        db: Session = Depends(get_db)):
-    return students.get_student_by_field(db, value, by)
-
-'''
-
-
-# /students_subtasks/StudentTask/{StudentID}
-'''Возвращем страницу со всеми задачами пользователя
-@students_subtasks_router.get("/StudentTask/{StudentID}",  response_class=HTMLResponse)
-def read_student_all_subtasks(
-        request: Request,
-        StudentID: int,
-        current_student=Depends(get_current_student_or_redirect),
-        db: Session = Depends(get_db)):
-    logger.info(f"Вызван роут read_student_all_subtasks с StudentID={StudentID}")
-    student_tasks = students.get_student_all_tasks(db, StudentID)
-    print(student_tasks)
-    return templates.TemplateResponse("Students/StudentTasks.html", {"request": request, "StudentID": StudentID, "tasks": student_tasks, "student": current_student})
-'''
-
-# /students_subtasks/StudentTasksByLogin
-'''возвращаем страницу со всеми задачами пользователя в личном кабинете по логину из авторизации
-@students_subtasks_router.get("/StudentTasksByLogin/", response_class=HTMLResponse)
-def read_student_all_subtasks_by_login(
-    request: Request,
-    current_student=Depends(get_current_student_or_redirect),
-    db: Session = Depends(get_db),
-    StudentID: Optional[str] = Query(default=None),
-    status: str = Query(default=None),
-    TaskID: str | None = Query(None),
-    variant: int | None = Query(None),
-    SortColumn: str = Query(default="StudentTaskID"),
-    SortDirection: str = Query(default="ASC")
-):
-    logger.info(f"Вызван роут с получением задач всех студентов /students_subtasks/StudentTasksByLogin")
-# Проверям что пользователь авторизован и отправляем на страницу с логином
-
-    if isinstance(current_student, RedirectResponse):
-        return current_student
-
-    # Если пришла пустая строка или None — оставляем None
-    try:
-        student_id_int = int(StudentID) if StudentID not in (None, "") else None
-    except ValueError:
-        student_id_int = None
-
-    try:
-        task_id_int = int(TaskID) if TaskID not in (None, "") else None
-    except ValueError:
-        task_id_int = None
-
-    # Если админ выбрал студента — используем его, иначе id текущего
-    StudentID = student_id_int if student_id_int is not None else current_student.ID
-# Проверяет что студент есть в базей
-    if not current_student:
-        return templates.TemplateResponse("Students/StudentTasks.html", {
-            "request": request,
-            "error": "Студент не найден"
-        })
-
-    # ищем список категорий
-    list_of_tasks = db.execute(text("SELECT TaskID, TaskTitle FROM Tasks")).fetchall()
-    # ищем всех студентов
-    students_id = db.execute(text("select ID, Login from Students")).fetchall()
-    # ищем все варианты
-    variants = db.execute(text("select distinct VariantID, VariantName from Variants")).fetchall()
-
-# по его id ищем все его задачи
-
-
-    print(f" Вызов Хранимки с параметрами StudentID:{StudentID}, CompletionStatus:{(status)} TaskID:{(task_id_int)} SortColumn:{(SortColumn)} SortDirection: {(SortDirection)} VariantID: {(variant)}")
-    print(f" Вызов Хранимки с параметрами StudentID:{StudentID}, CompletionStatus:{type(status)} TaskID:{type(task_id_int)} SortColumn:{type(SortColumn)} SortDirection: {type(SortDirection)} VariantID: {type(variant)}")
-    tasks1 = students.get_students_all_tasks(
-        db=db,
-        StudentID=StudentID,
-        CompletionStatus=status or None,
-        TaskID=task_id_int,
-        VariantID=variant,
-        SortColumn=SortColumn if SortColumn else None,
-        SortDirection=SortDirection if SortDirection else None
-    )
-    #print(f"TASK TYPE: {type(tasks1[0])}")
-    #print(f"TASK VALUE: {tasks1[0]}")
-    #print(tasks1)
-
-
-
-
-    # Иначе преобразуем в JSON-словарики
-    """Для устранения проблемы преобразования даты в формат JSON"""
-    tasks = [students.tudentTaskRead(**task).model_dump(mode="json") for task in tasks1]
-    tasks = tasks or []
-    logging.warning(f"ПАРАМЕТРЫ: StudentID={StudentID}") # логирование
-
-    return templates.TemplateResponse("Students/StudentTasks.html", {
-        "request": request,
-        "StudentID": StudentID,
-        "students_id": students_id,
-        "tasks": tasks,
-        "variants": variants,
-        "TasksID": list_of_tasks,
-        "student": current_student,
-    })
-
-'''
-# /students_subtasks/StudentTasks/{StudentID}/{SubTasksID}
-'''Возращаем страницу с задачей пользователя по его id и номеру задачи
-@students_subtasks_router.get("/T/{StudentTaskID}/",  response_class=HTMLResponse)
-def read_student_all_subtasks(
-        request: Request,
-        StudentTaskID: int,
-
-        current_student=Depends(get_current_student_or_redirect),
-        db: Session = Depends(get_db)):
-    logging.warning(f"Вызываем роут read_student_all_subtasks с параметрами: StudentTaskID={StudentTaskID}")  # логирование
-    Task = students.Get_Student_TaskDetails_By_ID(db, StudentTaskID)
-    print(Task)
-    files = get_files_for_subtask(int(Task['SubTaskID']), db)
-    Task['files'] = files
-
-    user_answer = None
-    if Task:
-        user_answer = Task['StudentAnswer']  # или как у тебя поле называется
-    print(Task)
-    print("Task:", Task)
-
-
-    return templates.TemplateResponse("Students/Task.html", {"request": request, "StudentTaskID": StudentTaskID, "subtask": Task, "student": current_student, "user_answer": user_answer})
-'''
 
 

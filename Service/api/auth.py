@@ -43,9 +43,9 @@ pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
 """Роут с аутентификацией (логирование в kafka)"""
 # /api/auth/login
-@auth_router.post("/login", response_model=auth.TokenWithStudent,
-                  summary="Аутентификация (запрос токена для пользователя)",
-                  description="Возвращает токен, тип заколовка и небольшую информацию о пользователе, если логин и пароль корректны и пользователь активен.")
+#@auth_router.post("/login", response_model=auth.TokenWithStudent,
+#                  summary="Аутентификация (запрос токена для пользователя)",
+#                  description="Возвращает токен, тип заколовка и небольшую информацию о пользователе, если логин и пароль корректны и пользователь активен.")
 async def login(
     request: Request,
     student_login: auth.StudentLogin,
@@ -142,6 +142,9 @@ async def login(
     request: Request,
     db: AsyncSession = Depends(get_db),
 ):
+    '''Фукнция аутентификации, поиск пользователя в базе по логину | email | телефону
+    и выдача токена'''
+    logger.info(f"Запрос на аутентификацию: auth={auth_request} request={request} ")
     ip = request.headers.get("X-Forwarded-For") or request.client.host
     user_agent = request.headers.get("User-Agent")
 
@@ -241,6 +244,7 @@ async def login(
 # /api/auth/check-token
 @auth_router.get("/check-token", response_model=auth.StudentOut, summary="Образец получения данных пользователя по токену (с разрешениями)")
 async def check_token(request: Request, current_student = Depends(get_current_student)):
+    logger.info(f"Запрос check-token")
     return current_student
 
 
@@ -250,6 +254,7 @@ async def check_token(request: Request, current_student = Depends(get_current_st
 #                 description="после ввода данных на указанный email отправляется письмо с подтверждением почты")
 async def register_user(user_data: auth.UserCreate, db: AsyncSession = Depends(get_db)):
     '''Регистрация'''
+    logger.info(f"Запрос на регистрацию пользователя: user_data={user_data}")
     student = get_student_by_email(db, user_data.email)
     if student:
         logger.warning(f"Пользователь с Email: {user_data.email} уже зарегистрирован!")
@@ -376,7 +381,7 @@ async def password_reset_request(request: auth.PasswordReset, db: AsyncSession =
 
     return {"message": f"Письмо с инструкцией для сброса пароля отправлено на Email: {request.Email}."}
 
-
+# TODO остановился здесь
 @auth_router.post("/password_reset_with_token", summary="Сброс пароля по токену",
                   description="на один токен идет только один сброс пароля, для повторного сброса надо запрашивать новый токен")
 async def reset_password(data: auth.PasswordResetConfirm, db: AsyncSession = Depends(get_db)):
@@ -542,7 +547,7 @@ async def student_change_password(data: auth.ChangePasswordRequest, db: AsyncSes
 
 # /api/admin/roles (GET)
 @admin_router.get("/roles", response_model=List[auth.Roles], summary="Получить список всех ролей", description="требуется токен авторизации")
-async def read_roles(db: AsyncSession = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
+async def read_roles(db: AsyncSession = Depends(get_db), current_student=Depends(permission_required("view_roles"))):
     logger.info(f"[ADMIN] Пользователь '{current_student.Login}' запросил список ролей")
     send_log(
         StudentID=current_student.ID,
@@ -558,7 +563,7 @@ async def read_roles(db: AsyncSession = Depends(get_db), current_student=Depends
 # /api/admin/roles/{role_id}
 @admin_router.get("/roles/{role_id}" , summary="Получить список разрешения для роли по её id")
 async def read_permissions_role(role_id: int, db: AsyncSession = Depends(get_db),
-                            current_student=Depends(permission_required("admin_panel"))):
+                            current_student=Depends(permission_required("view_roles"))):
     logger.info(f"Запрос на получения списка разрешений для роли по её id={role_id}")
     # ищем роль по id
     role = await get_role_id(db, role_id)
@@ -601,7 +606,7 @@ async def read_permissions_role(role_id: int, db: AsyncSession = Depends(get_db)
 async def assign_permission_for_role (role_id: int,
                                 data: auth.AssignPermissionsRequest,
                                 db: AsyncSession = Depends(get_db),
-                                current_student=Depends(permission_required("admin_panel"))):
+                                current_student=Depends(permission_required("assign_permissions"))):
     logger.info(f"Запрос на на назначение разрешений для роли по её id={role_id} | data= {data}")
     # ищем роль по id
     role = await get_role_id(db, role_id)
@@ -641,7 +646,7 @@ async def assign_permission_for_role (role_id: int,
 
 # /api/admin/permission
 @admin_router.get("/permission", response_model=List[auth.Permission], summary="Получить список всех разрешений", description="требуется токен авторизации")
-async def read_permission(db: AsyncSession = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
+async def read_permission(db: AsyncSession = Depends(get_db), current_student=Depends(permission_required("views_permissions"))):
     logger.info(f"[ADMIN] Пользователь '{current_student.Login}' запросил список разрешений")
     send_log(
         StudentID=current_student.ID,
@@ -661,7 +666,7 @@ async def read_permission(db: AsyncSession = Depends(get_db), current_student=De
     response_model=list[auth.StudentOut],
     summary="Получить список студентов в формате JSON (для админа)",
 )
-async def read_all_students(db: AsyncSession = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
+async def read_all_students(db: AsyncSession = Depends(get_db), current_student=Depends(permission_required("view_students"))):
     logger.info(f"[ADMIN] Пользователь '{current_student.Login}' запросил список всех студентов")
     send_log(
         StudentID=current_student.ID,
@@ -681,7 +686,7 @@ async def read_all_students(db: AsyncSession = Depends(get_db), current_student=
 async def assign_role_to_student(studentID: int,
                            params: auth.AssignRoleQuery = Depends(),
                            db: AsyncSession = Depends(get_db),
-                           current_student=Depends(permission_required("admin_panel"))):
+                           current_student=Depends(permission_required("assign_roles"))):
     logger.info(f"[ADMIN] Запрос на назначение студенту studentID'{studentID}' роли params={params}")
     # ищем роль по id
     role = await get_role_id(db, params.RoleID)
@@ -744,13 +749,13 @@ async def admin_change_password(
 
 # /api/admin/students/logs
 @admin_router.get("/students/logs", summary = "Вывод истории действий всех пользователей",
-                  description="""Роут доступен только пользователям с разрешением `admin_panel`.  
+                  description="""Роут доступен только пользователям с разрешением `view_history`.  
                   `limit`: Сколько логов вернуть (по умолчанию 50, максимум 10000)  
                   `offset`: Смещение от начала выборки""")
 async def get_logs(limit: int = Query(50, ge=1, le=10000),
              offset: int = Query(0, ge=0),
              db_log: AsyncSession = Depends(get_db),
-             current_student=Depends(permission_required("admin_panel"))):
+             current_student=Depends(permission_required("view_history"))):
     """роут с историей всех пользователя"""
     logger.info(f"[ADMIN] Зпрос пользователем '{current_student.Login}' истории всех студентов limit={limit} | offset={offset}")
     # выбираем логи для пользователя по id
