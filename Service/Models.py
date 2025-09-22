@@ -1,4 +1,4 @@
-from sqlalchemy import Column, BigInteger, Integer, String, DateTime, ForeignKey, DECIMAL, Boolean
+from sqlalchemy import Column, BigInteger, Integer, String, DateTime, ForeignKey, DECIMAL, Boolean, func, Text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
@@ -44,7 +44,7 @@ class SubTask(Base):
 
     SubTaskID = Column(Integer, primary_key=True, autoincrement=True)  # ID подзадачи
     TaskID = Column(Integer, ForeignKey('Tasks.TaskID'), nullable=False)  # Связь с задачей
-    SubTaskNumber = Column(Integer, nullable=False)  # Номер подзадачи
+    SubTaskNumber = Column(Integer, nullable=True)  # Номер подзадачи
     ImagePath = Column(String(255))  # Путь к изображению
     Description = Column(String)  # Описание подзадачи
     Answer = Column(String(32))  # Ответ
@@ -80,4 +80,17 @@ class SubTaskFiles(Base):
 
     subtask = relationship("SubTask", back_populates="files")
 
+class EmailLog(Base):
+    __tablename__ = "EmailLogs"
 
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    event_type = Column(String(255), nullable=True)
+    to_email = Column(String(255), nullable=False)
+    subject = Column(String(255), nullable=False)
+    template_name = Column(String(255), nullable=True)
+    body = Column(Text, nullable=True)
+    status = Column(String(50), default="pending")  # pending / sent / failed
+    error_message = Column(String, nullable=True)
+    retry_count = Column(Integer, default=0)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())

@@ -1,5 +1,4 @@
-from Service.config_app import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES # импорт из конфига токена
-
+from utils.config import settings
 from datetime import datetime, timedelta
 from jose import JWTError, jwt
 from typing import Optional
@@ -9,18 +8,18 @@ from typing import Optional
 # Функция для создания JWT токена
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     if expires_delta is None:
-        expires_delta = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        expires_delta = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     expire = datetime.utcnow() + expires_delta
     to_encode = data.copy()
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
     return encoded_jwt
 
 # Функция для расшифровки и проверки токена
 def verify_token(token: str):
     try:
         # проверяет подпись токена и его срок жизни
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
         # Если всё ок, возвращает payload — словарь с теми полями, которые залили при генерации
         return payload
     # Если токен просрочен

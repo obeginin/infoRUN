@@ -1,4 +1,4 @@
-from Service.config_app import UPLOAD_IMAGE_DIR, UPLOAD_SOLUTION_DIR, UPLOAD_FILES_DIR, UPLOAD_STUDENTS_IMAGE_DIR, TEMPLATES_DIR
+from utils.config import settings
 from Service.Schemas.students import StudentTaskRead, StudentTasksQueryParams, AnswerInput
 from Service.Schemas.auth import StudentAuth, StudentOut, StudentCreate, SearchStudentQuery, StudentField, StudentEdit
 
@@ -6,9 +6,9 @@ from Service.Crud.auth import verify_password, get_student_by_field
 from Service.Crud.auth import get_current_student, permission_required, get_role_id, hash_password
 from Service.Crud.students import edit_student_id, del_student_id, activate_student_id
 from Service.Crud import students
-from Service.Crud import errors
+from utils import errors,general
 
-from Service.Routers.tasks import get_files_for_subtask
+from Service.Routers.subtasks import get_files_for_subtask
 from Service.dependencies import get_db  # Зависимость для подключения к базе данных
 
 from Service.producer import send_log
@@ -35,7 +35,7 @@ logger = logging.getLogger(__name__) # создание логгера для т
 
 students_router = APIRouter(prefix="/api/students", tags=["students"])
 students_subtasks_router = APIRouter(prefix="/api/students_subtasks", tags=["students_subtasks"])
-templates = Jinja2Templates(directory=TEMPLATES_DIR)
+templates = Jinja2Templates(directory=settings.TEMPLATES_DIR)
 
 
 """API"""
@@ -101,15 +101,19 @@ def new_student(student_data: StudentCreate,
     logger.debug(student_data)
 
     # TODO: оптимизировать одним запросом
-    student = get_student_by_field(db, field_name="Login", value=student_data.Login)
-    logger.debug(student)
-    if student:
+    studentWithLogin = get_student_by_field(db, field_name="Login", value=student_data.Login)
+    logger.debug(studentWithLogin)
+    if studentWithLogin:
         logger.warning(f"Пользователь с логином: {student_data.Login} уже есть в базе!")
         raise errors.bad_request(message=f"Пользователь с логином '{student_data.Login}' уже есть в базе")
-    student = get_student_by_field(db, field_name="Email", value=student_data.Email)
-    if student:
+    studentWithEmail = get_student_by_field(db, field_name="Email", value=student_data.Email)
+    if studentWithEmail:
         logger.warning(f"Пользователь с Email: {student_data.Email} уже есть в базе!")
         raise errors.bad_request(message=f"Пользователь с Email '{student_data.Email}' уже есть в базе!")
+    studentWithPhone = get_student_by_field(db, field_name="Phone", value=student_data.Phone)
+    if studentWithPhone:
+        logger.warning(f"Пользователь с телефоном: {student_data.Phone} уже есть в базе!")
+        raise errors.bad_request(message=f"Пользователь с телефоном '{student_data.Phone}' уже есть в базе!")
 
     # ищем роль по id
     role = get_role_id(db, student_data.RoleID)
@@ -151,13 +155,22 @@ def edit_student(id: int, data: StudentEdit, db: Session = Depends(get_db), curr
     if data.Login:
         studentWithLogin = get_student_by_field(db, field_name="Login", value=data.Login)
         if studentWithLogin and studentWithLogin["ID"] != id:
+            logger.warning(f"[STUDENTS] Логин '{data.Login}' уже занят")
             raise errors.bad_request(message=f"Логин '{data.Login}' уже занят")
     logger.info(f"Проверяем уникальность email: {data.Email}")
     if data.Email:
         studentWithEmail = get_student_by_field(db, field_name="Email", value=data.Email)
         if studentWithEmail and studentWithEmail["ID"] != id:
+            logger.warning(f"[STUDENTS] Email '{data.Email}' уже занят")
             raise errors.bad_request(message=f"Email '{data.Email}' уже занят")
-    logger.info(f"запуск обнволения")
+    if data.Phone:
+        studentWithPhone = get_student_by_field(db, field_name="Phone", value=data.Phone)
+        if studentWithPhone and studentWithPhone["ID"] != id:
+            logger.warning(f"[STUDENTS] Телефон '{data.Phone}' уже заня")
+            raise errors.bad_request(message=f"Телефон '{data.Phone}' уже занят")
+    data.Password = hash_password(data.Password)
+
+    logger.info(f"запуск обновления данных студента с id={id}")
     updated = edit_student_id(db, student_ID=id, data=data)
 
     if updated != 1:
@@ -494,7 +507,7 @@ async def submit_solution(
         ext = StudentSolutionFile.filename.split('.')[-1]
         # Сохраняем файл решения на диск (папку можно настроить)
         filename = f"taskID_{SubTaskID}_task_{task_id}_sub_{subtask_number}_student_{StudentID}.{ext}"
-        filepath = UPLOAD_STUDENTS_IMAGE_DIR / filename
+        filepath = settings.UPLOAD_STUDENTS_IMAGE_DIR / filename
         with filepath.open("wb") as buffer:
             shutil.copyfileobj(StudentSolutionFile.file, buffer)
         student_solution_path = f"Uploads/StudentSolutions/{filename}"

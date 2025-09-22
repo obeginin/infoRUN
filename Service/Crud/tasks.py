@@ -1,7 +1,7 @@
-from Service.config_app import UPLOAD_IMAGE_DIR, UPLOAD_SOLUTION_DIR, UPLOAD_FILES_DIR
-from Service.Schemas.tasks import SubTaskCreate, SubTaskUpdate
+from utils.config import settings
+
 from Service.Models import SubTaskFiles
-from Service.Crud import errors,general
+from utils import errors,general
 
 from sqlalchemy.orm import Session
 from sqlalchemy import text
@@ -50,25 +50,8 @@ def get_all_tasks(db: Session, subjectID: int | None = None):
     )
 
 
-''' функция-SQL запрос к БД для вывода всех предметов'''
-def get_all_subjects(db: Session):
-    return general.run_query_select(
-        db,
-        query= """SELECT * FROM Subjects""",
-        mode="mappings_all",
-        params= None,
-        error_message=f"Ошибка при получения предметов из БД"
-    )
 
-''' функция-SQL запрос к БД для вывода определенного предмета'''
-def get_subject_by_id(db: Session, subjectID: int):
-    return general.run_query_select(
-        db,
-        query= """SELECT * FROM Subjects WHERE ID = :subjectID""",
-        mode="mappings_first",
-        params= {"subjectID": subjectID},
-        error_message=f"Ошибка при получения предмета из БД"
-    )
+
 
 
 # возможно не нужно! перенес логику в роут
@@ -159,31 +142,7 @@ def get_subtasks_TaskID(db: Session, task_id: int):
     return subtasks
 
 
-''' Добавление новой подзадачи (по API)'''
-def create_subtask(db: Session, subtask_data: SubTaskCreate):
-# Запрос на проверку наличия категории
-    check_query = text("SELECT 1 FROM Tasks WHERE TaskID = :task_id")
-    result = db.execute(check_query, {"task_id": subtask_data.TaskID}).fetchone()
-    if not result:
-        raise HTTPException(status_code=404, detail=f"Категория с ID {subtask_data.TaskID} не найдена")
 
-#Запрос на добавление задач
-    query = text("""
-        INSERT INTO SubTasks (TaskID, SubTaskNumber, ImagePath, Description, Answer, SolutionPath)
-        OUTPUT INSERTED.SubTaskID
-        VALUES (:TaskID, :SubTaskNumber, :ImagePath, :Description, :Answer, :SolutionPath)
-    """)
-    result = db.execute(query, {
-        "TaskID": subtask_data.TaskID,
-        "SubTaskNumber": subtask_data.SubTaskNumber,
-        "ImagePath": subtask_data.ImagePath,
-        "Description": subtask_data.Description,
-        "Answer": subtask_data.Answer,
-        "SolutionPath": subtask_data.SolutionPath,
-    })
-
-    new_id = result.scalar() # возвращаем id добавленной задачи
-    return {"SubTaskID": new_id}
 
 
 ''' Проверка на наличие или добавление варианта'''
@@ -234,7 +193,7 @@ def create_subtask_from_form(
         if ImageFile and ImageFile.filename:
             ext = ImageFile.filename.split('.')[-1]
             filename = f"task_{TaskID}_sub_{subtask_number}.{ext}"
-            filepath = UPLOAD_IMAGE_DIR / filename
+            filepath = settings.UPLOAD_IMAGE_DIR / filename
             with filepath.open("wb") as buffer:
                 shutil.copyfileobj(ImageFile.file, buffer)
             image_path = f"Uploads/images/{filename}"
@@ -245,7 +204,7 @@ def create_subtask_from_form(
         if SolutionFile and SolutionFile.filename:
             ext = SolutionFile.filename.split('.')[-1]
             filename = f"solution_task_{TaskID}_sub_{subtask_number}.{ext}"
-            sol_filepath = UPLOAD_SOLUTION_DIR / filename
+            sol_filepath = settings.PLOAD_SOLUTION_DIR / filename
             with sol_filepath.open("wb") as buffer:
                 shutil.copyfileobj(SolutionFile.file, buffer)
             solution_path = f"Uploads/solutions/{filename}"
@@ -279,44 +238,6 @@ def create_subtask_from_form(
         return None
 
 
-
-''' Редактирование подзадачи (через форму)'''
-def update_subtask(
-        SubTaskID: int,
-        subtask_data: SubTaskUpdate,
-        db: Session
-):
-    subtask = get_subtasks_id(db, SubTaskID)
-    if subtask is None:
-        logger.info("Нет такой задачи")
-        return None  # Или выбросить исключение
-
-    update_query = text("""
-            UPDATE SubTasks SET
-                TaskID = :task_id,
-                VariantID = :VariantID,
-                SubTaskNumber = :subtask_number,
-                ImagePath = :image_path,
-                Description = :description,
-                Answer = :answer,
-                SolutionPath = :solution_path
-            WHERE SubTaskID = :subtask_id
-        """)
-    db.execute(update_query, {
-        "task_id": subtask_data.TaskID,
-        "VariantID": subtask_data.VariantID,
-        "subtask_number": subtask_data.SubTaskNumber,
-        "image_path": subtask_data.ImagePath,
-        "description": subtask_data.Description,
-        "answer": subtask_data.Answer,
-        "solution_path": subtask_data.SolutionPath,
-        "subtask_id": SubTaskID
-    })
-    db.commit()
-
-    return get_subtasks_id(db, SubTaskID)
-'''def get_all_tasks(db: Session):
-    return db.query(Task).order_by(Task.TaskNumber).all()'''
 
 
 '''Прикрепление дополнительных файлов к задаче'''
@@ -358,8 +279,8 @@ def upload_file(
             file.file.seek(pos)  # вернуться обратно
             ext = Path(file.filename).suffix  # с точкой или пустая строка
             filename = f"task_{task_id}_sub_{subtask_number}_file{start_index + idx}{ext}"
-            filepath = UPLOAD_FILES_DIR / filename
-            file_path = f"{UPLOAD_FILES_DIR.as_posix()}/{filename}"
+            filepath = settings.UPLOAD_FILES_DIR / filename
+            file_path = f"{settings.UPLOAD_FILES_DIR.as_posix()}/{filename}"
             filename_db = f"№{task_id}_{start_index + idx}{ext}"
             with filepath.open("wb") as buffer:
                 shutil.copyfileobj(file.file, buffer)

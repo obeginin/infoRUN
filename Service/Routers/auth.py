@@ -1,4 +1,5 @@
-from Service.config_app import TEMPLATES_DIR, ACCESS_TOKEN_EXPIRE_MINUTES, TIME_NOW
+from utils.config import settings
+from utils.time import TIME_NOW
 from Service.Models import Student
 from Service.Schemas import auth
 
@@ -11,7 +12,7 @@ from Service.Crud.students import  get_student_id, get_all_students, del_student
 from Service.Security.token import create_access_token, verify_token
 from Service.dependencies import get_db,get_log_db, get_producer_dep
 from Service.producer import send_log, send_email_event
-from Service.Crud import errors
+from utils import errors,general
 from Service.celery_tasks.email_sender import send_email_event_celery
 
 from datetime import datetime
@@ -35,7 +36,7 @@ logger = logging.getLogger(__name__)
 home_router = APIRouter() # страница для пользователей
 auth_router = APIRouter(prefix="/api/auth", tags=["auth"]) # страница для пользователей
 admin_router = APIRouter(prefix="/api/admin", tags=["admin"]) # страница для админа
-templates = Jinja2Templates(directory=TEMPLATES_DIR)
+templates = Jinja2Templates(directory=settings.TEMPLATES_DIR)
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
 
@@ -260,7 +261,7 @@ def register_user(user_data: auth.UserCreate, db: Session = Depends(get_db)):
     # Генерация токена подтверждения
     token = create_access_token(
         data={"sub": user_data.email}, # закладываем в токен email
-        expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        expires_delta=timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     )
 
     # Подготовка параметров для вставки
@@ -304,7 +305,7 @@ def register_user(user_data: auth.UserCreate, db: Session = Depends(get_db)):
     # Генерация токена подтверждения
     token = create_access_token(
         data={"sub": user_data.email}, # закладываем в токен email
-        expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        expires_delta=timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     )
 
     # Подготовка параметров для вставки
@@ -319,11 +320,14 @@ def register_user(user_data: auth.UserCreate, db: Session = Depends(get_db)):
     logger.info(f"аааааааНовый пользователь зарегистрирован: {user_data.email}")
 
     send_email_event_celery(
-        event_type="email_registration",
-        email=user_data.email,
+        request=auth.EmailRequest(
+        to_email=user_data.email,
         subject="Подтверждение регистрации",
-        template="registration_confirmation",
-        data={"confirmation_link": f"https://info-run.ru/auth/confirm-email?token={token}"}
+        body=f"Для подтверждения регистрации перейдите по ссылке: "
+             f"https://info-run.ru/registration/confirm-email/success?token={token}"
+        ),
+        event_type="email_registration",
+        db=db
     )
 
     return {"message": f"Письмо с подтверждением отправлено на почту {params["Email"]}"}
@@ -335,7 +339,7 @@ def register_user(user_data: auth.UserCreate, db: Session = Depends(get_db)):
 @auth_router.post("/password_reset", summary="Запрос на сброс пароля",
                   description="""Высылается письмо с ссылкой для сброса пароля с использованием временного токена, который вшит в ссылку 
                               `https://info-run.ru/auth/reset-password?token={token}`  
-                              далее используется роут `/api/auth/reset_password` непосредственно для изменения пароля""")
+                              далее используется роут `/api/auth/password_reset_with_token` непосредственно для изменения пароля""")
 def password_reset_request(request: auth.PasswordReset, db: Session = Depends(get_db)):
     # 1. Найти пользователя по email
     student = get_student_by_field(db, "Email", request.Email)
@@ -348,25 +352,34 @@ def password_reset_request(request: auth.PasswordReset, db: Session = Depends(ge
     token = secrets.token_urlsafe(32)
 
     # 3. Сохранить токен и время истечения в базе (создать таблицу password_reset_tokens, например)
-    expires_at = datetime.strptime(TIME_NOW(), "%Y-%m-%d %H:%M:%S") + timedelta(hours=1)
+    expires_at = TIME_NOW() + timedelta(hours=1)
+    #expires_at = datetime.strptime(TIME_NOW(), "%Y-%m-%d %H:%M:%S") + timedelta(hours=1)
 
     save_password_reset_token(db, student.ID, token, expires_at)
 
     logger.info(f"Письмо с инструкцией для сброса пароля отправлено на Email: {request.Email}")
+
     send_email_event_celery(
+        request=auth.EmailRequest(
+            to_email=student.Email,
+            subject="Сброс пароля через email",
+            body=f"Для сброса пароля перейдите по ссылке: "
+                 f"https://info-run.ru/forgot-password/success?token={token}"
+        ),
         event_type="password_reset",
-        email=student.Email,
-        subject="Сброс пароля через email",
-        template="password_reset",
-        data={"reset_link": f"https://info-run.ru/auth/reset-password?token={token}"}
+        db=db
     )
+
     return {"message": f"Письмо с инструкцией для сброса пароля отправлено на Email: {request.Email}."}
 
-@auth_router.post("/reset_password", summary="Сброс пароля по токену",
+@auth_router.post("/password_reset_with_token", summary="Сброс пароля по токену",
                   description="на один токен идет только один сброс пароля, для повторного сброса надо запрашивать новый токен")
 def reset_password(data: auth.PasswordResetConfirm, db: Session = Depends(get_db)):
     # 1. Получаем запись токена из базы
     token_record = get_token_record(db, data.token)
+    #time = datetime.strptime(TIME_NOW(), "%Y-%m-%d %H:%M:%S").isoformat()
+    logger.info(f"ExpiresAt: {token_record['ExpiresAt']}, now time: {TIME_NOW()}")
+
     if not token_record or token_record["Used"] or token_record["ExpiresAt"] < TIME_NOW():
         logger.warning(f"[AUTH] Неверный или просроченный токен")
         raise errors.bad_request(message="Неверный или просроченный токен")
@@ -416,7 +429,7 @@ def confirm_email(token: str, db: Session = Depends(get_db)):
 
 # /api/auth/logout
 '''Реализация выхода (удаления cookie с токеном)'''
-@auth_router.get("/logout", summary="Выход, удаление токена при использовании 'HttpOnly cookie'",
+@auth_router.post("/logout", summary="Выход, удаление токена при использовании 'HttpOnly cookie'",
                  description="Необходимо в заголовке отправлять токен (требуется для логироания выхода пользователя")
 async def logout(
         request: Request,

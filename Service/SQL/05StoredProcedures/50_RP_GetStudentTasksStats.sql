@@ -31,7 +31,7 @@ BEGIN
 END
 GO
 /*
-exec GetStudentTaskStats @StudentID=2
-exec GetStudentTaskStats @SubjectID=10
-exec GetStudentTaskStats @VariantID=8
+exec GetStudentTasksStats @StudentID=2
+exec GetStudentTasksStats @SubjectID=10
+exec GetStudentTasksStats @VariantID=8
 */

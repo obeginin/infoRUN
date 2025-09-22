@@ -14,11 +14,11 @@ import logging
 from pathlib import Path
 import time
 import sys
-
+from utils.log import setup_logging
 # для того чтобы было видно родительский каталог и можно было импортировать utils.log
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(BASE_DIR)
-from utils.log import setup_logging
+
 load_dotenv()
 KAFKA_BOOTSTRAP_SERVERS = os.getenv("KAFKA_BOOTSTRAP_SERVERS")
 # переменные для подключения к БД с логами
@@ -40,7 +40,7 @@ engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 # проверка связи с БД
-def test_db_connection():
+def db_connection():
     try:
         with engine.connect() as connection:
             result = connection.execute(text("SELECT 1"))
@@ -88,7 +88,7 @@ def consume_messages():
 
 
 if __name__ == "__main__":
-    test_db_connection()
+    db_connection()
     # Запуск cron-потока
     #threading.Thread(target=run_deadline_checker, daemon=True).start()
 

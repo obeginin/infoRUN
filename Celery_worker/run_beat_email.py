@@ -1,17 +1,16 @@
 import subprocess
 import sys
 
+# worker
+def run_celery_beat():
 
-def run_celery():
     cmd = [
         sys.executable, "-m", "celery",
         "-A", "Celery_worker.worker",
-        "flower",
-        "--port=5555"
+        "beat",
+        "--loglevel=info"
     ]
     subprocess.run(cmd)
 
-
 if __name__ == "__main__":
-    run_celery()
-
+    run_celery_beat()

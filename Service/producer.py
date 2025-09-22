@@ -1,6 +1,6 @@
 from kafka import KafkaProducer
 from dotenv import load_dotenv
-from Service.config_app import TIME_NOW
+from utils.time import TIME_NOW
 from kafka.errors import KafkaError
 import json
 from datetime import datetime
