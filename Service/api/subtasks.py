@@ -43,132 +43,6 @@ logger = logging.getLogger(__name__) # создание логгера для т
 subtask_router  = APIRouter(prefix="/api/subtasks", tags=["subtasks"])
 
 
-@subtask_router.put(
-    "/update/{subtask_id}",
-    summary="Полное обновление задачи с блоками и файлами",
-    description="Обновляет все поля подзадачи и заменяет блоки и файлы полностью (старые файлы и изображения удаляются)."
-)
-async def full_update_subtask(
-    subtask_id: int,
-    task_id: int = Form(...),
-    subtask_number: int = Form(...),
-    variant_id: int = Form(...),
-    blocks: str = Form(...,description='JSON список блоков: [{"type":"image","content":"image.png"},{"type":"text","content":"Текст"}]'),
-    files_blocks: Optional[List[UploadFile]] = File(None, description="Файлы для блоков"),
-    answer: str = Form(...),
-    files_solution: Optional[List[UploadFile]] = File(None, description="Файлы решения"),
-    files_extra: Optional[List[UploadFile]] = File(None, description="Дополнительные файлы"),
-    db: Session = Depends(get_db),
-    current_student=Depends(auth.permission_required("edit_tasks"))
-):
-
-    logging.info(f"[SUBTASKS] === Запрос на полное обновление задачи ID={subtask_id} ===")
-    subtask = await subtasks_crud.view_subtask(db, subtask_id)
-    logging.info(f"[SUBTASKS] subtask:{subtask} ===")
-    if not subtask:
-        logging.warning(f"[SUBTASKS_CRUD] Подзадача ID={subtask_id} не найдена в базе")
-        return {"success": False, "message": "Подзадача не найдена"}
-    try:
-        # Парсим блоки
-        try:
-            blocks_json = json.loads(blocks)
-            blocks_list = [Block(**b) for b in blocks_json]
-        except Exception as e:
-            logging.error(f"Ошибка с блоками: {e}")
-            return {"status": "error", "message": str(e)}
-
-        # Создаем объект для передачи в crud
-        subtask_data = SubTaskCreate(
-            TaskID=task_id,
-            SubTaskNumber=subtask_number,
-            VariantID=variant_id,
-            Answer=answer,
-            Blocks=blocks_list,
-            Creator=current_student.Login
-        )
-        logging.info(f"[SUBTASKS] === 0")
-        # Обновляем подзадачу и файлы
-        result = await subtasks_crud.update_subtask(db, subtask_data, files_blocks, files_solution, files_extra, subtask_id)
-        logging.info(f"[SUBTASKS] === 1")
-        # Загружаем новые файлы решения через Celery
-        if files_solution:
-            solution_files_data = await subtasks_crud.prepare_files_data(files_solution, "решение")
-            celery_app.send_task(
-                "save_subtask_files",
-                kwargs={
-                    "subtask_id": subtask_id,
-                    "files_data": solution_files_data,
-                    "folder": str(settings.UPLOAD_SOLUTION_DIR),
-                    "table": "SubTaskSolutions",
-                    "prefix": "sol_subtask"
-                }
-            )
-        logging.info(f"[SUBTASKS] === 2")
-        # Загружаем новые дополнительные файлы через Celery
-        if files_extra:
-            extra_files_data = await subtasks_crud.prepare_files_data(files_extra, "дополнительный")
-            celery_app.send_task(
-                "save_subtask_files",
-                kwargs={
-                    "subtask_id": subtask_id,
-                    "files_data": extra_files_data,
-                    "folder": str(settings.UPLOAD_FILES_DIR),
-                    "table": "SubTaskFiles",
-                    "prefix": "f_subtask"
-                }
-            )
-        logging.info(f"[SUBTASKS] === 3")
-        # Логирование в Kafka
-        await run_in_threadpool(
-            send_log,
-            StudentID=current_student.ID,
-            StudentLogin=current_student.Login,
-            action="UPDATE_SUBTASK",
-            details={
-                "SubTaskID": subtask_id,
-                "DescriptionEvent": f"Пользователь {current_student.Login} полностью обновил задачу ID={subtask_id}"
-            }
-        )
-
-        return {"status": "success", "data": result}
-
-    except Exception as e:
-        logging.exception(f"Ошибка при обновлении задачи ID={subtask_id}")
-        return {"status": "error", "message": str(e)}
-
-@subtask_router.delete(
-    "/delete/{subtask_id}",
-    summary="Удаление подзадачи",
-    description="Удаляет подзадачу, все её файлы и записи из таблиц"
-)
-async def delete_subtask(
-    subtask_id: int,
-    db: Session = Depends(get_db),
-    current_student = Depends(auth.permission_required("edit_tasks"))
-):
-    logging.info(f"[SUBTASKS] === Запрос на удаление подзадачи ID={subtask_id} ===")
-
-    try:
-
-        subtask = await subtasks_crud.view_subtask(db, subtask_id)
-        if not subtask:
-            logging.warning(f"[SUBTASKS_CRUD] Подзадача ID={subtask_id} не найдена в базе")
-            return {"success": False, "message": "Подзадача не найдена"}
-
-        # 1. Удаляем все файлы и записи из вспомогательных таблиц
-        await run_in_threadpool(subtasks_crud.delete_subtask_files, db,subtask_id)
-
-        # 2. Удаляем саму подзадачу
-        subtasks_crud.delete_subtask_record(db, subtask_id)
-
-        logging.info(f"[SUBTASKS] Подзадача ID={subtask_id} успешно удалена")
-        return {"success": True, "message": f"Подзадача {subtask_id} удалена"}
-
-    except Exception as e:
-        logging.exception(f"[SUBTASKS] Ошибка при удалении подзадачи ID={subtask_id}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-
 @subtask_router.post("/create/", summary="Создание задачи с файлами и блоками",
                      description="""Создает задачу с текстовыми, графическими и другими блоками.  
 Поддерживает прикрепление файлов через multipart/form-data.  
@@ -280,6 +154,138 @@ async def create_subtask(
     except Exception as e:
         logging.exception("Не удалось создать задачу")
         return {"status": "error", "message": str(e)}
+
+@subtask_router.put(
+    "/update/{subtask_id}",
+    summary="Полное обновление задачи с блоками и файлами",
+    description="Заменяет старые значения на новые!(старые файлы удаляются и записываются новые)."
+)
+async def full_update_subtask(
+    subtask_id: int,
+    task_id: int = Form(...),
+    subtask_number: int = Form(None, description="Номер задачи в категории"),
+    variant_id: int = Form(None, description="ID варианта (если есть)"),
+    blocks: str = Form(...,description='JSON список блоков: [{"type":"image","content":"image.png"},{"type":"text","content":"Текст"}]'),
+    files_blocks: Optional[List[UploadFile]] = File(None, description="Файлы для блоков"),
+    answer: str = Form("", description="Ответ на задачу"),
+    files_solution: Optional[List[UploadFile]] = File(None, description="Файлы решения"),
+    files_extra: Optional[List[UploadFile]] = File(None, description="Дополнительные файлы"),
+    db: Session = Depends(get_db),
+    current_student=Depends(auth.permission_required("edit_tasks"))
+):
+    logging.info(f"[SUBTASKS] Параметры запроса (пришло с фронта: "
+        f"task_id={task_id}, "
+        f"subtask_number={subtask_number}, "
+        f"variant_id={variant_id}, "
+        f"answer={answer}")
+    logging.info(f"[SUBTASKS] === Запрос на полное обновление задачи ID={subtask_id} ===")
+    subtask = await subtasks_crud.view_subtask(db, subtask_id)
+    logging.info(f"[SUBTASKS] subtask:{subtask} ===")
+    if not subtask:
+        logging.warning(f"[SUBTASKS_CRUD] Подзадача ID={subtask_id} не найдена в базе")
+        return {"success": False, "message": "Подзадача не найдена"}
+    try:
+        # Парсим блоки
+        try:
+            blocks_json = json.loads(blocks)
+            blocks_list = [Block(**b) for b in blocks_json]
+        except Exception as e:
+            logging.error(f"Ошибка с блоками: {e}")
+            return {"status": "error", "message": str(e)}
+
+        # Создаем объект для передачи в crud
+        subtask_data = SubTaskCreate(
+            TaskID=task_id,
+            SubTaskNumber=subtask_number,
+            VariantID=variant_id,
+            Answer=answer,
+            Blocks=blocks_list,
+            Creator=current_student.Login
+        )
+        logging.debug(f"[SUBTASKS] === 0")
+        # Обновляем подзадачу и файлы
+        result = await subtasks_crud.update_subtask(db, subtask_data, files_blocks, files_solution, files_extra, subtask_id)
+        logging.debug(f"[SUBTASKS] === 1")
+        # Загружаем новые файлы решения через Celery
+        if files_solution:
+            solution_files_data = await subtasks_crud.prepare_files_data(files_solution, "решение")
+            celery_app.send_task(
+                "save_subtask_files",
+                kwargs={
+                    "subtask_id": subtask_id,
+                    "files_data": solution_files_data,
+                    "folder": str(settings.UPLOAD_SOLUTION_DIR),
+                    "table": "SubTaskSolutions",
+                    "prefix": "sol_subtask"
+                }
+            )
+        logging.debug(f"[SUBTASKS] === 2")
+        # Загружаем новые дополнительные файлы через Celery
+        if files_extra:
+            extra_files_data = await subtasks_crud.prepare_files_data(files_extra, "дополнительный")
+            celery_app.send_task(
+                "save_subtask_files",
+                kwargs={
+                    "subtask_id": subtask_id,
+                    "files_data": extra_files_data,
+                    "folder": str(settings.UPLOAD_FILES_DIR),
+                    "table": "SubTaskFiles",
+                    "prefix": "f_subtask"
+                }
+            )
+        logging.debug(f"[SUBTASKS] === 3")
+        # Логирование в Kafka
+        await run_in_threadpool(
+            send_log,
+            StudentID=current_student.ID,
+            StudentLogin=current_student.Login,
+            action="UPDATE_SUBTASK",
+            details={
+                "SubTaskID": subtask_id,
+                "DescriptionEvent": f"Пользователь {current_student.Login} полностью обновил задачу ID={subtask_id}"
+            }
+        )
+
+        return {"status": "success", "data": result}
+
+    except Exception as e:
+        logging.exception(f"Ошибка при обновлении задачи ID={subtask_id}")
+        return {"status": "error", "message": str(e)}
+
+@subtask_router.delete(
+    "/delete/{subtask_id}",
+    summary="Удаление подзадачи",
+    description="Удаляет подзадачу, все её файлы и записи из таблиц"
+)
+async def delete_subtask(
+    subtask_id: int,
+    db: Session = Depends(get_db),
+    current_student = Depends(auth.permission_required("edit_tasks"))
+):
+    logging.info(f"[SUBTASKS] === Запрос на удаление подзадачи ID={subtask_id} ===")
+
+    try:
+
+        subtask = await subtasks_crud.view_subtask(db, subtask_id)
+        if not subtask:
+            logging.warning(f"[SUBTASKS_CRUD] Подзадача ID={subtask_id} не найдена в базе")
+            return {"success": False, "message": "Подзадача не найдена"}
+
+        # 1. Удаляем все файлы и записи из вспомогательных таблиц
+        await run_in_threadpool(subtasks_crud.delete_subtask_files, db,subtask_id)
+
+        # 2. Удаляем саму подзадачу
+        subtasks_crud.delete_subtask_record(db, subtask_id)
+
+        logging.info(f"[SUBTASKS] Подзадача ID={subtask_id} успешно удалена")
+        return {"success": True, "message": f"Подзадача {subtask_id} удалена"}
+
+    except Exception as e:
+        logging.exception(f"[SUBTASKS] Ошибка при удалении подзадачи ID={subtask_id}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+
 
 @subtask_router.get(
     "",
