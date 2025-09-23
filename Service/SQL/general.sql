@@ -1,10 +1,10 @@
---Общий скрипт
+п»ї--РћР±С‰РёР№ СЃРєСЂРёРїС‚
 /*
 
 */
 CREATE TABLE Students (
-			ID bigint IDENTITY(1,1) PRIMARY KEY, -- id пользователя (первичный ключ)
-			Login nvarchar(50) UNIQUE, -- логин пользователя (уникальный)
+			ID bigint IDENTITY(1,1) PRIMARY KEY, -- id РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ (РїРµСЂРІРёС‡РЅС‹Р№ РєР»СЋС‡)
+			Login nvarchar(50) UNIQUE, -- Р»РѕРіРёРЅ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ (СѓРЅРёРєР°Р»СЊРЅС‹Р№)
 			Last_Name nvarchar(50),
 			First_Name nvarchar(50),
 			Middle_Name nvarchar(50),
@@ -12,38 +12,38 @@ CREATE TABLE Students (
 			Sex nvarchar(2),
 			BirthDate datetime,
 			Comment nvarchar(MAX),
-			Password VARCHAR(255),  -- Хеш пароля
+			Password VARCHAR(255),  -- РҐРµС€ РїР°СЂРѕР»СЏ
 			Role nvarchar(15) 
 		);
 
 CREATE TABLE Tasks (
-			TaskID INT IDENTITY(1,1) PRIMARY KEY, -- id задачи (первичный ключ)
-			TaskNumber INT NOT NULL UNIQUE,  -- Номер задачи (1, 2, 3... 27) не должен быть нулевым и уникальным
-			TaskTitle NVARCHAR(255) NOT NULL -- Название задачи
+			TaskID INT IDENTITY(1,1) PRIMARY KEY, -- id Р·Р°РґР°С‡Рё (РїРµСЂРІРёС‡РЅС‹Р№ РєР»СЋС‡)
+			TaskNumber INT NOT NULL UNIQUE,  -- РќРѕРјРµСЂ Р·Р°РґР°С‡Рё (1, 2, 3... 27) РЅРµ РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ РЅСѓР»РµРІС‹Рј Рё СѓРЅРёРєР°Р»СЊРЅС‹Рј
+			TaskTitle NVARCHAR(255) NOT NULL -- РќР°Р·РІР°РЅРёРµ Р·Р°РґР°С‡Рё
 		);
 
 CREATE TABLE SubTasks (
-		SubTaskID INT IDENTITY(1,1) PRIMARY KEY, --id подзадачи (первичный ключ)
-		TaskID INT NOT NULL,  -- Связь с задачей
-		SubTaskNumber INT NOT NULL,  -- Номер подзадачи (1.1, 1.2, ...)
-		ImagePath NVARCHAR(255), --фото задачи
-		Description NVARCHAR(MAX),  -- Описание подзадачи
-		Answer NVARCHAR(32), --Ответ задачи
-		SolutionPath NVARCHAR(255), --Решение задачи
-		FOREIGN KEY (TaskID) REFERENCES Tasks(TaskID) ON UPDATE CASCADE -- Внешний ключ
+		SubTaskID INT IDENTITY(1,1) PRIMARY KEY, --id РїРѕРґР·Р°РґР°С‡Рё (РїРµСЂРІРёС‡РЅС‹Р№ РєР»СЋС‡)
+		TaskID INT NOT NULL,  -- РЎРІСЏР·СЊ СЃ Р·Р°РґР°С‡РµР№
+		SubTaskNumber INT NOT NULL,  -- РќРѕРјРµСЂ РїРѕРґР·Р°РґР°С‡Рё (1.1, 1.2, ...)
+		ImagePath NVARCHAR(255), --С„РѕС‚Рѕ Р·Р°РґР°С‡Рё
+		Description NVARCHAR(MAX),  -- РћРїРёСЃР°РЅРёРµ РїРѕРґР·Р°РґР°С‡Рё
+		Answer NVARCHAR(32), --РћС‚РІРµС‚ Р·Р°РґР°С‡Рё
+		SolutionPath NVARCHAR(255), --Р РµС€РµРЅРёРµ Р·Р°РґР°С‡Рё
+		FOREIGN KEY (TaskID) REFERENCES Tasks(TaskID) ON UPDATE CASCADE -- Р’РЅРµС€РЅРёР№ РєР»СЋС‡
 		);
 
 CREATE TABLE StudentTasks (
 		StudentTaskID INT IDENTITY(1,1) PRIMARY KEY,
-		StudentID bigint NOT NULL,  -- Ученик
-		SubTaskID INT NOT NULL,  -- Подзадача
-		StudentAnswer NVARCHAR(32), --Ответ ученика
+		StudentID bigint NOT NULL,  -- РЈС‡РµРЅРёРє
+		SubTaskID INT NOT NULL,  -- РџРѕРґР·Р°РґР°С‡Р°
+		StudentAnswer NVARCHAR(32), --РћС‚РІРµС‚ СѓС‡РµРЅРёРєР°
 		CompletionStatus NVARCHAR(20) CHECK (CompletionStatus IN ('Not Started', 'In Progress', 'Completed')),
-		Score DECIMAL(5,2) NULL,  -- Баллы за подзадачу
-		SolutionStudentPath NVARCHAR(255), --Решение задачи Студента
-		StartDate DATETIME NULL, -- Дата начала выполнения задания
-		ModifiedDate DATETIME NULL, -- Дата зименения 
-		CompletionDate DATETIME NULL, -- Дата когда был получен правильный ответ
+		Score DECIMAL(5,2) NULL,  -- Р‘Р°Р»Р»С‹ Р·Р° РїРѕРґР·Р°РґР°С‡Сѓ
+		SolutionStudentPath NVARCHAR(255), --Р РµС€РµРЅРёРµ Р·Р°РґР°С‡Рё РЎС‚СѓРґРµРЅС‚Р°
+		StartDate DATETIME NULL, -- Р”Р°С‚Р° РЅР°С‡Р°Р»Р° РІС‹РїРѕР»РЅРµРЅРёСЏ Р·Р°РґР°РЅРёСЏ
+		ModifiedDate DATETIME NULL, -- Р”Р°С‚Р° Р·РёРјРµРЅРµРЅРёСЏ 
+		CompletionDate DATETIME NULL, -- Р”Р°С‚Р° РєРѕРіРґР° Р±С‹Р» РїРѕР»СѓС‡РµРЅ РїСЂР°РІРёР»СЊРЅС‹Р№ РѕС‚РІРµС‚
 		FOREIGN KEY (StudentID) REFERENCES Students(ID),
 		FOREIGN KEY (SubTaskID) REFERENCES SubTasks(SubTaskID)
 		);
@@ -56,44 +56,44 @@ CREATE TABLE ActionLogs (
 );
 /*
 INSERT INTO Students (Login, Last_Name, First_Name, Middle_Name, Email, Sex, BirthDate, Comment)
-	VALUES ('ivanov', 'Иванов', 'Иван', 'Иванович', 'ivanov@example.com', 'M', '1990-06-01 00:00:00.000', 'Комментарий'),
-		('petrov', 'Петров', 'Петр', 'Петрович', 'petrov@example.com', 'M', '1990-07-21 00:00:00.000', 'Комментарий'),
-		('sidorov', 'Сидорова', 'Сидора', 'Сидоровна', 'sidorova@example.com', 'Ж', '1992-01-30 00:00:00.000', 'Комментарий'),
-		('smirnov', 'Смирнов', 'Смир', 'Смирович', 'smirnov@example.com', 'M', '1988-09-09 00:00:00.000', 'Комментарий'),
-		('andreev', 'Андреев', 'Андрей', 'Андреевич', 'andreev@example.com', 'M', '1995-11-10 00:00:00.000', 'Комментарий'),
-		('volkov', 'Волков', 'Володи', 'Володимирович', 'volkov@example.com', 'M', '1993-05-25 00:00:00.000', 'Комментарий');
-INSERT INTO Tasks (TaskNumber, TaskTitle) VALUES (1,'первое задание'),(2,'второе задание'),(3,'третье задание'),(4,'четвертое задание');
-INSERT INTO Tasks (TaskNumber, TaskTitle) VALUES (1,'первое задание'),(2,'второе задание'),(3,'третье задание'),(4,'четвертое задание');
-INSERT INTO SubTasks (TaskID, SubTaskNumber, Description) VALUES (1,'1.1','1 задача'),(1,'1.2','2 задача'),(1,'1.3','3 задача'),(2,'2.1','1 задача'),(2,'2.2','2 задача');
+	VALUES ('ivanov', 'РРІР°РЅРѕРІ', 'РРІР°РЅ', 'РРІР°РЅРѕРІРёС‡', 'ivanov@example.com', 'M', '1990-06-01 00:00:00.000', 'РљРѕРјРјРµРЅС‚Р°СЂРёР№'),
+		('petrov', 'РџРµС‚СЂРѕРІ', 'РџРµС‚СЂ', 'РџРµС‚СЂРѕРІРёС‡', 'petrov@example.com', 'M', '1990-07-21 00:00:00.000', 'РљРѕРјРјРµРЅС‚Р°СЂРёР№'),
+		('sidorov', 'РЎРёРґРѕСЂРѕРІР°', 'РЎРёРґРѕСЂР°', 'РЎРёРґРѕСЂРѕРІРЅР°', 'sidorova@example.com', 'Р–', '1992-01-30 00:00:00.000', 'РљРѕРјРјРµРЅС‚Р°СЂРёР№'),
+		('smirnov', 'РЎРјРёСЂРЅРѕРІ', 'РЎРјРёСЂ', 'РЎРјРёСЂРѕРІРёС‡', 'smirnov@example.com', 'M', '1988-09-09 00:00:00.000', 'РљРѕРјРјРµРЅС‚Р°СЂРёР№'),
+		('andreev', 'РђРЅРґСЂРµРµРІ', 'РђРЅРґСЂРµР№', 'РђРЅРґСЂРµРµРІРёС‡', 'andreev@example.com', 'M', '1995-11-10 00:00:00.000', 'РљРѕРјРјРµРЅС‚Р°СЂРёР№'),
+		('volkov', 'Р’РѕР»РєРѕРІ', 'Р’РѕР»РѕРґРё', 'Р’РѕР»РѕРґРёРјРёСЂРѕРІРёС‡', 'volkov@example.com', 'M', '1993-05-25 00:00:00.000', 'РљРѕРјРјРµРЅС‚Р°СЂРёР№');
+INSERT INTO Tasks (TaskNumber, TaskTitle) VALUES (1,'РїРµСЂРІРѕРµ Р·Р°РґР°РЅРёРµ'),(2,'РІС‚РѕСЂРѕРµ Р·Р°РґР°РЅРёРµ'),(3,'С‚СЂРµС‚СЊРµ Р·Р°РґР°РЅРёРµ'),(4,'С‡РµС‚РІРµСЂС‚РѕРµ Р·Р°РґР°РЅРёРµ');
+INSERT INTO Tasks (TaskNumber, TaskTitle) VALUES (1,'РїРµСЂРІРѕРµ Р·Р°РґР°РЅРёРµ'),(2,'РІС‚РѕСЂРѕРµ Р·Р°РґР°РЅРёРµ'),(3,'С‚СЂРµС‚СЊРµ Р·Р°РґР°РЅРёРµ'),(4,'С‡РµС‚РІРµСЂС‚РѕРµ Р·Р°РґР°РЅРёРµ');
+INSERT INTO SubTasks (TaskID, SubTaskNumber, Description) VALUES (1,'1.1','1 Р·Р°РґР°С‡Р°'),(1,'1.2','2 Р·Р°РґР°С‡Р°'),(1,'1.3','3 Р·Р°РґР°С‡Р°'),(2,'2.1','1 Р·Р°РґР°С‡Р°'),(2,'2.2','2 Р·Р°РґР°С‡Р°');
 
 delete Students where id=219359
 */
 
 INSERT INTO Students (Login, Last_Name, First_Name, Middle_Name, Email, Sex, BirthDate, Comment,Password,Role)
-	VALUES ('obeginin', 'Бегинин', 'Олег', 'Вячеславович', 'lezhik.from@gmail.com', 'M', '', 'Комментарий','$pbkdf2-sha256$29000$3zunFMK4955zjpEyxngPYQ$nECQLRTK9OFP8I6QErp5iVHRy6D4j4/mC7IgkxDGTEY','admin'),
-	('jkochetova', 'Кочетова', 'Юлия', 'Вячеславовна', 'petrov@example.com', 'Ж', '', 'Комментарий','$pbkdf2-sha256$29000$3zunFMK4955zjpEyxngPYQ$nECQLRTK9OFP8I6QErp5iVHRy6D4j4/mC7IgkxDGTEY','admin'),
-		('petr', 'Петров', 'Петр', 'Петрович', 'petrov@example.com', 'M', '', 'Комментарий','$pbkdf2-sha256$29000$N4bwvvceQ2gtBaD03htDyA$BLHTA0T4Q.f1kZMSLoQjTm1.Pr7hUMpK/dFKMtDdAkk','student'),
-		('stepa', 'Степанов', 'Степан', 'Степанович', 'sidorova@example.com', 'М', '', 'Комментарий','$pbkdf2-sha256$29000$N4bwvvceQ2gtBaD03htDyA$BLHTA0T4Q.f1kZMSLoQjTm1.Pr7hUMpK/dFKMtDdAkk','student'),
-		('ivan', 'Иванов', 'Иван', 'Иванович', 'smirnov@example.com', 'M', '', 'Комментарий','$pbkdf2-sha256$29000$N4bwvvceQ2gtBaD03htDyA$BLHTA0T4Q.f1kZMSLoQjTm1.Pr7hUMpK/dFKMtDdAkk','student'),
-		('rustam', 'Рустамов', 'Рустам', 'Рустамович', 'andreev@example.com', 'M', '', 'Комментарий','$pbkdf2-sha256$29000$N4bwvvceQ2gtBaD03htDyA$BLHTA0T4Q.f1kZMSLoQjTm1.Pr7hUMpK/dFKMtDdAkk','student');
+	VALUES ('obeginin', 'Р‘РµРіРёРЅРёРЅ', 'РћР»РµРі', 'Р’СЏС‡РµСЃР»Р°РІРѕРІРёС‡', 'lezhik.from@gmail.com', 'M', '', 'РљРѕРјРјРµРЅС‚Р°СЂРёР№','$pbkdf2-sha256$29000$3zunFMK4955zjpEyxngPYQ$nECQLRTK9OFP8I6QErp5iVHRy6D4j4/mC7IgkxDGTEY','admin'),
+	('jkochetova', 'РљРѕС‡РµС‚РѕРІР°', 'Р®Р»РёСЏ', 'Р’СЏС‡РµСЃР»Р°РІРѕРІРЅР°', 'petrov@example.com', 'Р–', '', 'РљРѕРјРјРµРЅС‚Р°СЂРёР№','$pbkdf2-sha256$29000$3zunFMK4955zjpEyxngPYQ$nECQLRTK9OFP8I6QErp5iVHRy6D4j4/mC7IgkxDGTEY','admin'),
+		('petr', 'РџРµС‚СЂРѕРІ', 'РџРµС‚СЂ', 'РџРµС‚СЂРѕРІРёС‡', 'petrov@example.com', 'M', '', 'РљРѕРјРјРµРЅС‚Р°СЂРёР№','$pbkdf2-sha256$29000$N4bwvvceQ2gtBaD03htDyA$BLHTA0T4Q.f1kZMSLoQjTm1.Pr7hUMpK/dFKMtDdAkk','student'),
+		('stepa', 'РЎС‚РµРїР°РЅРѕРІ', 'РЎС‚РµРїР°РЅ', 'РЎС‚РµРїР°РЅРѕРІРёС‡', 'sidorova@example.com', 'Рњ', '', 'РљРѕРјРјРµРЅС‚Р°СЂРёР№','$pbkdf2-sha256$29000$N4bwvvceQ2gtBaD03htDyA$BLHTA0T4Q.f1kZMSLoQjTm1.Pr7hUMpK/dFKMtDdAkk','student'),
+		('ivan', 'РРІР°РЅРѕРІ', 'РРІР°РЅ', 'РРІР°РЅРѕРІРёС‡', 'smirnov@example.com', 'M', '', 'РљРѕРјРјРµРЅС‚Р°СЂРёР№','$pbkdf2-sha256$29000$N4bwvvceQ2gtBaD03htDyA$BLHTA0T4Q.f1kZMSLoQjTm1.Pr7hUMpK/dFKMtDdAkk','student'),
+		('rustam', 'Р СѓСЃС‚Р°РјРѕРІ', 'Р СѓСЃС‚Р°Рј', 'Р СѓСЃС‚Р°РјРѕРІРёС‡', 'andreev@example.com', 'M', '', 'РљРѕРјРјРµРЅС‚Р°СЂРёР№','$pbkdf2-sha256$29000$N4bwvvceQ2gtBaD03htDyA$BLHTA0T4Q.f1kZMSLoQjTm1.Pr7hUMpK/dFKMtDdAkk','student');
 
 INSERT INTO Students (Login, Last_Name, First_Name, Middle_Name, Email, Sex, BirthDate, Comment,Password,Role)
 	VALUES 
     
-    ('alekseev','Алексеев', 'Алексей',  'Владимирович','alekseev@example.com','M', '1989-09-12 00:00:00.000', 'Комментарий','$pbkdf2-sha256$29000$HWPMube2tnYuZYwRwngPQQ$eSDzbZ3puIYCkdzcU94.2a5.ZvXUWXlIGjuSuM4ij/Y','admin'),
-    ('kozlova', 'Козлова',  'Екатерина','Андреевна', 'kozlova@example.com',  'F', '1995-06-23 00:00:00.000', 'Комментарий'),
-    ('morozov', 'Морозов',  'Дмитрий',  'Станиславович','morozov@example.com','M', '1990-12-30 00:00:00.000', 'Комментарий'),
-	('novikova','Новикова', 'Мария',    'Сергеевна', 'novikova@example.com', 'F', '1994-11-05 00:00:00.000', 'Комментарий'),
-	('fedorova','Федорова', 'Анна',     'Игоревна',  'fedorova@example.com', 'F', '1993-01-10 00:00:00.000', 'Комментарий');
+    ('alekseev','РђР»РµРєСЃРµРµРІ', 'РђР»РµРєСЃРµР№',  'Р’Р»Р°РґРёРјРёСЂРѕРІРёС‡','alekseev@example.com','M', '1989-09-12 00:00:00.000', 'РљРѕРјРјРµРЅС‚Р°СЂРёР№','$pbkdf2-sha256$29000$HWPMube2tnYuZYwRwngPQQ$eSDzbZ3puIYCkdzcU94.2a5.ZvXUWXlIGjuSuM4ij/Y','admin'),
+    ('kozlova', 'РљРѕР·Р»РѕРІР°',  'Р•РєР°С‚РµСЂРёРЅР°','РђРЅРґСЂРµРµРІРЅР°', 'kozlova@example.com',  'F', '1995-06-23 00:00:00.000', 'РљРѕРјРјРµРЅС‚Р°СЂРёР№'),
+    ('morozov', 'РњРѕСЂРѕР·РѕРІ',  'Р”РјРёС‚СЂРёР№',  'РЎС‚Р°РЅРёСЃР»Р°РІРѕРІРёС‡','morozov@example.com','M', '1990-12-30 00:00:00.000', 'РљРѕРјРјРµРЅС‚Р°СЂРёР№'),
+	('novikova','РќРѕРІРёРєРѕРІР°', 'РњР°СЂРёСЏ',    'РЎРµСЂРіРµРµРІРЅР°', 'novikova@example.com', 'F', '1994-11-05 00:00:00.000', 'РљРѕРјРјРµРЅС‚Р°СЂРёР№'),
+	('fedorova','Р¤РµРґРѕСЂРѕРІР°', 'РђРЅРЅР°',     'РРіРѕСЂРµРІРЅР°',  'fedorova@example.com', 'F', '1993-01-10 00:00:00.000', 'РљРѕРјРјРµРЅС‚Р°СЂРёР№');
 
-INSERT INTO Tasks (TaskNumber, TaskTitle) VALUES (1,'первое задание'),(2,'второе задание'),(3,'третье задание'),(4,'четвертое задание');
-INSERT INTO Tasks (TaskNumber, TaskTitle) VALUES (5,'ЕГЭ_5'),(6,'ЕГЭ_6'),(7,'ЕГЭ_7'),(8,'ЕГЭ_8');
-/*update Tasks set TaskTitle='четвертое задание' where TaskID=4
-delete Tasks where TaskID in (1,2,3,4) --удаляем строки
+INSERT INTO Tasks (TaskNumber, TaskTitle) VALUES (1,'РїРµСЂРІРѕРµ Р·Р°РґР°РЅРёРµ'),(2,'РІС‚РѕСЂРѕРµ Р·Р°РґР°РЅРёРµ'),(3,'С‚СЂРµС‚СЊРµ Р·Р°РґР°РЅРёРµ'),(4,'С‡РµС‚РІРµСЂС‚РѕРµ Р·Р°РґР°РЅРёРµ');
+INSERT INTO Tasks (TaskNumber, TaskTitle) VALUES (5,'Р•Р“Р­_5'),(6,'Р•Р“Р­_6'),(7,'Р•Р“Р­_7'),(8,'Р•Р“Р­_8');
+/*update Tasks set TaskTitle='С‡РµС‚РІРµСЂС‚РѕРµ Р·Р°РґР°РЅРёРµ' where TaskID=4
+delete Tasks where TaskID in (1,2,3,4) --СѓРґР°Р»СЏРµРј СЃС‚СЂРѕРєРё
 */
 
 INSERT INTO SubTasks (TaskID, SubTaskNumber, Description) 
-	VALUES (1,'1.1','1 задача'),(1,'1.2','2 задача'),(1,'1.3','3 задача'),(2,'2.1','1 задача'),(2,'2.2','2 задача'),(2,'2.3','3 задача');
+	VALUES (1,'1.1','1 Р·Р°РґР°С‡Р°'),(1,'1.2','2 Р·Р°РґР°С‡Р°'),(1,'1.3','3 Р·Р°РґР°С‡Р°'),(2,'2.1','1 Р·Р°РґР°С‡Р°'),(2,'2.2','2 Р·Р°РґР°С‡Р°'),(2,'2.3','3 Р·Р°РґР°С‡Р°');
 
 /*exec dbo.Create_Table_SubTasks
 select * from SubTasks
@@ -101,7 +101,7 @@ drop table SubTasks
 */
 
 
-/*Добавление столбцов в таблицу*/
+/*Р”РѕР±Р°РІР»РµРЅРёРµ СЃС‚РѕР»Р±С†РѕРІ РІ С‚Р°Р±Р»РёС†Сѓ*/
 Alter TABLE StudentTasks 
 ADD
 		Attempts INT DEFAULT 0
@@ -109,25 +109,25 @@ GO
 
 Alter TABLE Students 
 ADD
-		Role NVARCHAR(15) --фото задачи
+		Role NVARCHAR(15) --С„РѕС‚Рѕ Р·Р°РґР°С‡Рё
 
 GO
 
---изменение имени столбца
+--РёР·РјРµРЅРµРЅРёРµ РёРјРµРЅРё СЃС‚РѕР»Р±С†Р°
 EXEC sp_rename 'Students.HashedPassword', 'Password', 'COLUMN';
 EXEC sp_rename 'Users', 'Students';
 SELECT name FROM sys.tables;
---изменение типа столбца 
+--РёР·РјРµРЅРµРЅРёРµ С‚РёРїР° СЃС‚РѕР»Р±С†Р° 
 ALTER TABLE Students
 ALTER COLUMN Password VARCHAR(255);
 
 
-/*создание индексов*/
+/*СЃРѕР·РґР°РЅРёРµ РёРЅРґРµРєСЃРѕРІ*/
 CREATE NONCLUSTERED INDEX IX_StudentTasks_Student_SubTask
 ON dbo.StudentTasks (StudentID, SubTaskID);
 GO
 
---Обновление адреса файла
+--РћР±РЅРѕРІР»РµРЅРёРµ Р°РґСЂРµСЃР° С„Р°Р№Р»Р°
 select * from SubTasks where SubTaskID =180
 update  SubTasks set ImagePath='Uploads/images/task_57_sub_3.png' where SubTaskID =57
 
@@ -153,7 +153,7 @@ SELECT * FROM StudentTasks
 join Students on ID=StudentID
 where studentID=2
 
-/*изменяем путь для файла*/
+/*РёР·РјРµРЅСЏРµРј РїСѓС‚СЊ РґР»СЏ С„Р°Р№Р»Р°*/
 update SubTasks set ImagePath='Uploads\images\task_1_sub_1.png' where SubTaskID=5   
 select * from SubTasks  where SubTaskID=5
 
@@ -177,12 +177,12 @@ BULK INSERT Users
 FROM 'C:\t.csv'
 WITH (
     FIELDTERMINATOR = ';',
-    ROWTERMINATOR = '\r\n',  -- может быть \n в зависимости от системы
-    FIRSTROW = 1, -- если нет заголовков 1, иначе 2
+    ROWTERMINATOR = '\r\n',  -- РјРѕР¶РµС‚ Р±С‹С‚СЊ \n РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ СЃРёСЃС‚РµРјС‹
+    FIRSTROW = 1, -- РµСЃР»Рё РЅРµС‚ Р·Р°РіРѕР»РѕРІРєРѕРІ 1, РёРЅР°С‡Рµ 2
 	CODEPAGE = '65001'
 );
-/*Задать значение нумераци id*/
-DBCC CHECKIDENT ('StudentTasks', RESEED, 0); --8-это id последней записи
+/*Р—Р°РґР°С‚СЊ Р·РЅР°С‡РµРЅРёРµ РЅСѓРјРµСЂР°С†Рё id*/
+DBCC CHECKIDENT ('StudentTasks', RESEED, 0); --8-СЌС‚Рѕ id РїРѕСЃР»РµРґРЅРµР№ Р·Р°РїРёСЃРё
 
 
 
@@ -194,7 +194,7 @@ SELECT StudentTaskID,StudentID, Login, SubTaskID,CompletionStatus,Score,Completi
                  FROM StudentTasks 
                  JOIN Students ON Students.ID = StudentTasks.StudentID 
                  WHERE StudentTasks.StudentID = 1
---запрос на получения задачи студента
+--Р·Р°РїСЂРѕСЃ РЅР° РїРѕР»СѓС‡РµРЅРёСЏ Р·Р°РґР°С‡Рё СЃС‚СѓРґРµРЅС‚Р°
 select 
 	st.StudentTaskID, 
 	st.StudentID,

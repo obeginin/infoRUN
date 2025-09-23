@@ -199,6 +199,24 @@ def admin_required(student: StudentOut = Depends(get_current_student)):
         raise errors.access_denied(message="Только для администраторов")
     return student
 
+'''проверка на суперадмина'''
+def superadmin_required(current_user=Depends(get_current_student)):
+    if "SuperAdmin" not in current_user.Roles:  # предполагаем, что current_user.Roles — список ролей
+        raise errors.access_denied(message="Только для Супер Админа")
+    return current_user
+
+def can_edit_admin(target_role_id: int, db: Session = Depends(get_db), current_student=Depends(get_current_student)):
+    target_role = get_role_id(db, target_role_id)  # возвращает объект роли с Name
+
+    # Проверяем, если цель — Админ, а текущий не СуперАдмин
+    if target_role.Name == "Админ" and current_student.RoleName != "SuperAdmin":
+        raise errors.access_denied(message="Вы не можете изменять админов")
+
+    # Проверяем, если цель — SuperAdmin, а текущий не СуперАдмин
+    if target_role.Name == "SuperAdmin" and current_student.RoleName != "SuperAdmin":
+        raise errors.access_denied(message="Вы не можете изменять супер-админов")
+
+    return True
 
 '''Функция для проверки разрешения у авторизованного студента'''
 def permission_required(permission_name: str):

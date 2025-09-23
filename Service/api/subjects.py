@@ -1,6 +1,6 @@
 from utils import errors,general
 from Service.dependencies import get_db
-from Service.Models import Student, SubTaskFiles
+from Service.Models import Student
 from Service.Crud.auth import get_current_student, permission_required
 from Service.producer import send_log
 from Service.Crud import subjects as subjects_crud
@@ -22,7 +22,7 @@ from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 import logging
 
-# Routers\subjects.py
+# api\subjects.py
 
 
 load_dotenv()
