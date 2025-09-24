@@ -25,7 +25,6 @@ export const TaskConstructor = () => {
     setError,
   } = useConstructorStore();
   const ref = useRef<Toast>(null);
-  const constructorStorage = localStorage.getItem("constructor-storage");
   const [subject, setSubject] = useState("");
   const [task, setTask] = useState("");
 

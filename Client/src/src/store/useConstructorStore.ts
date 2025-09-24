@@ -38,6 +38,7 @@ interface ConstructorStore {
   loading: boolean;
   error: string | null;
   setError: (error: string | null) => void;
+  endDialog: boolean;
   success: string | null;
   subjects: Subject[];
   subject: Subject | null;
@@ -89,6 +90,7 @@ export const useConstructorStore = create<ConstructorStore>()(
       elements: [],
       initialAnswerFiles: [],
       initialDescriptionFiles: [],
+      endDialog: false,
 
       getSubjects: async () => {
         set({ loading: true });
@@ -125,7 +127,7 @@ export const useConstructorStore = create<ConstructorStore>()(
         const token = localStorage.getItem("token") || "";
         try {
           const response = await FiltersAPI.getVariants(token);
-          set({ variants: response, loading: false });
+          set({ variants: response.variants, loading: false });
         } catch (error) {
           set({ error: "Ошибка получения данных" + error, loading: false });
         }
@@ -261,97 +263,110 @@ export const useConstructorStore = create<ConstructorStore>()(
       handleSave: async () => {
         set({ loading: true, success: null, error: null });
         const token = localStorage.getItem("token") || "";
-        const constructorStorage = localStorage.getItem("constructor-storage");
-        const data = JSON.parse(constructorStorage || "");
 
-        if (!data.state.subject || !data.state.task || !data.state.variant_id) {
-          set({ error: "Заполните все поля", loading: false });
-          return;
-        } else {
-          const task = data.state.task.TaskID;
-          const subject = data.state.subject.ID;
-          const variant = data.state.variant.VariantID;
-
-          try {
-            const data = new FormData();
-
-            if (get().task?.TaskID) {
-              data.append("subtask_number", subject);
-            }
-            if (get().variant?.VariantID) {
-              data.append("variant_id", variant);
-            }
-            if (get().subject?.ID) {
-              data.append("task_id", task);
-            }
-            if (get().answer) {
-              data.append("answer", get().answer);
-            }
-            if (get().initialAnswerFiles) {
-              get().initialAnswerFiles.forEach((file) => {
-                if (file.file) {
-                  data.append(`files_solution`, file.file);
-                }
-              });
-            }
-            if (get().initialDescriptionFiles) {
-              get().initialDescriptionFiles.forEach((file) => {
-                if (file.file) {
-                  data.append(`files`, file.file);
-                }
-              });
-            }
-
-            const blocks: Blocks[] = [];
-            get().elements.forEach((element, index) => {
-              if (element.type === "text") {
-                blocks.push({
-                  type: "text",
-                  content: element.content || "",
-                });
-              } else if (element.type === "image" && element.file) {
-                // Добавляем файл в FormData
-                data.append(`file_${index}`, element.file);
-
-                blocks.push({
-                  type: "image",
-                  file_index: index,
-                  content: element.content || "",
-                });
-              }
-            });
-
-            // Добавляем blocks как JSON строку
-            data.append("blocks", JSON.stringify(blocks));
-
-            console.log(data);
-            if (
-              get().task === null ||
-              get().subject === null ||
-              blocks.length === 0
-            ) {
-              set({
-                error: "Задание не было сохранено. Проверьте введенные данные",
-                loading: false,
-              });
-            } else {
-              await ConstructorAPI.create(token, data);
-              set({
-                success: "Задание успешно сохранено: ",
-                loading: false,
-                elements: [],
-                subject: null,
-                task: null,
-                variant: null,
-                answer: "",
-                initialAnswerFiles: [],
-                initialDescriptionFiles: [],
-              });
-              localStorage.removeItem("constructor-storage");
-            }
-          } catch (error) {
-            set({ error: "Failed to save task" + error, loading: false });
+        try {
+          const constructorStorage = localStorage.getItem(
+            "constructor-storage"
+          );
+          if (!constructorStorage) {
+            set({ error: "Данные не найдены", loading: false });
+            return;
           }
+
+          const storageData = JSON.parse(constructorStorage);
+
+          // ПРАВИЛЬНАЯ ПРОВЕРКА ПОЛЕЙ
+          if (!storageData.state.subject || !storageData.state.task) {
+            set({ error: "Заполните все поля", loading: false });
+            return;
+          }
+
+          const task = storageData.state.task.TaskID;
+          const subject = storageData.state.subject.ID;
+          const variant = storageData.state.variant?.VariantID; // вариант может быть опциональным
+
+          const formData = new FormData();
+
+          // Добавляем обязательные поля
+          formData.append("task_id", task.toString());
+          formData.append("subtask_number", subject.toString());
+
+          // Добавляем вариант если есть
+          if (variant) {
+            formData.append("variant_id", variant.toString());
+          }
+
+          // Добавляем ответ если есть
+          if (get().answer) {
+            formData.append("answer", get().answer);
+          }
+
+          // Добавляем файлы решения
+          get().initialAnswerFiles?.forEach((file) => {
+            if (file?.file) {
+              formData.append("files_solution", file.file);
+            }
+          });
+
+          // Добавляем файлы описания
+          get().initialDescriptionFiles?.forEach((file) => {
+            if (file?.file) {
+              formData.append("files_extra", file.file);
+            }
+          });
+
+          // Создаем blocks и добавляем файлы элементов
+          const blocks: Blocks[] = [];
+          get().elements.forEach((element, index) => {
+            if (element.type === "text") {
+              blocks.push({
+                type: "text",
+                content: element.content || "",
+              });
+            } else if (element.type === "image" && element.file) {
+              formData.append(`files_blocks`, element.file);
+              blocks.push({
+                type: "image",
+                file_index: index,
+                content: element.file.name || "",
+              });
+            }
+          });
+
+          // Проверяем что есть хотя бы один блок
+          if (blocks.length === 0) {
+            set({
+              error: "Добавьте хотя бы один элемент задания",
+              loading: false,
+            });
+            return;
+          }
+
+          formData.append("blocks", JSON.stringify(blocks));
+
+          // Отправляем на сервер
+          await ConstructorAPI.create(token, formData);
+
+          // Очищаем состояние после успешного сохранения
+          set({
+            success: "Задание успешно сохранено",
+            loading: false,
+            elements: [],
+            subject: null,
+            task: null,
+            variant: null,
+            answer: "",
+            initialAnswerFiles: [],
+            initialDescriptionFiles: [],
+            endDialog: true,
+          });
+
+          localStorage.removeItem("constructor-storage");
+        } catch (error) {
+          set({
+            error: "Ошибка при сохранении задания: " + error,
+            loading: false,
+          });
         }
       },
 
