@@ -75,7 +75,7 @@ async def create_subtask(
         if not blocks_list:
             raise ValueError("Список блоков не может быть пустым")
     except (json.JSONDecodeError, ValueError) as e:
-        logging.error(f"Ошибка с блоками: {e}")
+        logging.error(f"Ошибка с блоками: {str(e)}")
         return {"status": "error", "message": str(e)}
 
     # дополнительная проверка файлов
@@ -100,8 +100,8 @@ async def create_subtask(
     try:
         subtask_obj = SubTaskCreate(**subtask_data)  # **kwargs распаковка словаря
     except Exception as e:
-        logging.error(f"[SUBTASKS] Ошибка при создании SubTaskCreate: {e}")
-        return {"status": "error", "message": f"Ошибка создания задачи: {e}"}
+        logging.error(f"[SUBTASKS] Ошибка при создании SubTaskCreate: {str(e)}")
+        return {"status": "error", "message": f"Ошибка создания задачи: {str(e)}"}
 
     # 4 Создаем новую задачу
     try:
@@ -151,6 +151,7 @@ async def create_subtask(
         )
 
         return {"status": "success", "data": result}
+
     except Exception as e:
         logging.exception("Не удалось создать задачу")
         return {"status": "error", "message": str(e)}
