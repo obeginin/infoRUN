@@ -51,10 +51,10 @@ export const CreateForm = () => {
   }, [subject]);
 
   useEffect(() => {
-    if (subject && task && variant) {
+    if (subject && task) {
       setStep1Valid(true);
     }
-  }, [task, variant, subject]);
+  }, [task, subject]);
 
   return (
     <section>
@@ -64,7 +64,7 @@ export const CreateForm = () => {
         <Spinner />
       ) : (
         <Stepper
-          linkEndButton="/profile/create-task/constructor"
+          linkEndButton="/profile/create-task/builder"
           endButtonChildren="Перейти в конструктор"
           initialStep={1}
           disabledNextButton={!step1Valid}

@@ -8,4 +8,5 @@ export interface Subject {
   ID: number
   Name: string
   Description: string
+  EnglishName: string
 }

@@ -15,13 +15,18 @@ export const ProfileCreateTask = () => {
       {user?.RoleName !== "Ученик" && (
         <ProfileContentContainer>
           <div className={styles.container}>
-            <TextContainer >Создать задачу</TextContainer>
+            <TextContainer>Создать задачу</TextContainer>
             <Paragraph size="base">
               Создавайте задачи для своих учеников в нашем конструкторе заданий!
             </Paragraph>
             <Link href="/profile/create-task">
               <Button width="auto" color="white" border="white" filled>
                 Перейти в конструктор
+              </Button>
+            </Link>
+            <Link href="/profile/subjects">
+              <Button width="auto" color="white" border="white" filled>
+                Созданные задания
               </Button>
             </Link>
           </div>

@@ -1,12 +1,15 @@
 export default class AdminAPI {
   static async getUsers(token: string) {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/students`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/students`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     return response.json();
   }
 
@@ -56,6 +59,48 @@ export default class AdminAPI {
   }
 
   static async getStudentLogs(token: string, studentID: number) {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/students/${studentID}/logs`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.json();
+  }
+
+  static async getLogs(token: string, limit: number, offset: number) {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/logs?limit=${limit}&offset=${offset}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.json();
+  }
+
+  static async getUserLogs(token: string, studentID: number) {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/students/${studentID}/logs`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.json();
+  }
+
+  static async getLogsStudent(token: string, studentID: number) {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/students/${studentID}/logs`,
       {
