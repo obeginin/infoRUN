@@ -4,6 +4,7 @@ import { Paragraph } from "@/src/ui/p/Paragraph";
 import styles from "./News.module.scss";
 import laptop from "@public/assets/laptop.svg";
 import Image from "next/image";
+import { TextContainer } from "@/src/ui/textContainer/TextContainer";
 export const News = () => {
   return (
     <section>
@@ -16,9 +17,9 @@ export const News = () => {
             <ProfileContentContainer>
               <div className={styles.card}>
                 <div className={styles.buttons}>
-                  <Button disabled outlined>
+                  <TextContainer>
                     Скоро 1 сентября — начни подготовку уже сейчас!
-                  </Button>
+                  </TextContainer>
                   <Button color="white" filled>смотреть все</Button>
                 </div>
                 <div className={styles.text}>

@@ -13,10 +13,10 @@ export const AnimationLink = ({
   ...props
 }: LinkProps) => {
   return (
-    <>
+    <span className={styles.container}>
       <li {...props} className={styles.link} style={{ fontSize: `var(--${size})` }}>
         <Link href={href ? href : "/"}>{children}</Link>
       </li>
-    </>
+    </span>
   );
 };

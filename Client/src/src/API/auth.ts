@@ -35,7 +35,7 @@ export default class AuthAPI {
 
   static async logout(token: string) {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/logout/`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/logout`,
       {
         method: "POST",
         headers: {
@@ -71,7 +71,7 @@ export default class AuthAPI {
   ) {
     // ДЕЛАЕМ ЗАПРОС КОГДА ОТКРЫТА СТАРНИЦА ИЗ ПИСЬМА
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/password_reset`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/password_reset_with_token`,
       {
         method: "POST",
         headers: {

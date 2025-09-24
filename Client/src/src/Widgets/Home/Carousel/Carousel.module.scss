@@ -1,119 +1,319 @@
+// .carousel {
+//   position: relative;
+//   // width: fit-content;
+//   // width: 100%;
+//   overflow: hidden;
+//   margin: 0 auto;
+//   padding: 20px;
+//   background: var(--bg);
+//   border-radius: 32px;
+//   box-shadow: var(--box-shadow);
+//   // filter: hue-rotate(0.5turn) invert(0.9);
+//   box-sizing: border-box;
+
+//   &Inner {
+//     display: flex;
+//     transition: transform 0.5s ease;
+//     will-change: transform;
+//     height: 560px;
+//     // margin: 0 auto;
+//     align-items: stretch;
+//     width: 100%;
+//     aspect-ratio: 16 / 9;
+//   }
+
+//     &Slide {
+//     width: 100%;
+//     flex-shrink: 0;
+//     position: relative;
+//     border-radius: 32px;
+//     display: flex;
+//     flex-direction: column;
+//     gap: 20px;
+//     overflow: hidden;
+//     padding: 20px;
+//     box-sizing: border-box;
+//     min-height: 0;
+
+//     img {
+//       flex: 1 1 auto;
+//       min-height: 0;
+//       width: 100%;
+//       height: auto;
+//       max-height: 100%;
+//       object-fit: contain;
+//       display: block;
+//       border-radius: 16px;
+//       object-position: center;
+//     }
+//   }
+
+//   &Indicators {
+//     position: absolute;
+//     top: 40px;
+//     right: 0px;
+//     transform: translateX(-50%);
+//     display: flex;
+//     gap: 10px;
+//     z-index: 10;
+//   }
+// }
+
+// .indicator {
+//   width: 20px;
+//   height: 20px;
+//   border-radius: 50%;
+//   background: transparent;
+//   border: 2px solid var(--primary);
+//   cursor: pointer;
+//   padding: 0;
+//   transition: all 0.3s ease;
+
+//   &.active {
+//     background: var(--primary);
+//     transform: scale(1.2);
+//   }
+// }
+
+// // @media screen and (max-width: 600px) {
+// //   .carousel {
+// //     padding: 5px;
+// //     &Slide {
+// //       height: 300px;
+// //       border-radius: 0px;
+// //     }
+
+// //     &Inner {
+// //       height: 400px;
+// //     }
+
+// //     &Indicators {
+// //       top: 20px;
+// //     }
+// //   }
+
+// //   .indicator {
+// //     width: 10px;
+// //     height: 10px;
+// //   }
+// // }
+
+// // @media screen and (max-width: 500px) {
+// //   .carousel {
+// //     // max-width: 375px;
+// //     &Slide {
+// //       height: 250px;
+// //     }
+
+// //     &Inner {
+// //       height: 250px;
+// //     }
+
+// //     &Indicators {
+// //       top: 10px;
+// //     }
+// //   }
+
+// //   .carouselInner {
+// //     width: 375px;
+// //   }
+// // }
+
+
+// @media screen and (max-width: 600px) {
+//   .carousel {
+//     padding: 10px; // Уменьшить отступы
+//     border-radius: 16px; // Уменьшить скругления
+    
+//     &Inner {
+//       height: 400px;
+//     }
+
+//     &Slide {
+//       padding: 15px;
+//       border-radius: 12px;
+      
+//       img {
+//         border-radius: 8px;
+//       }
+//     }
+
+//     &Indicators {
+//       top: 15px;
+//       right: 15px;
+//     }
+//   }
+
+//   .indicator {
+//     width: 12px;
+//     height: 12px;
+//   }
+// }
+
+// @media screen and (max-width: 500px) {
+//   .carousel {
+//     padding: 8px;
+    
+//     &Inner {
+//       height: 300px;
+//     }
+
+//     &Slide {
+//       padding: 10px;
+//       gap: 10px;
+//     }
+
+//     &Indicators {
+//       top: 10px;
+//       right: 10px;
+//       gap: 8px;
+//     }
+//   }
+
+//   .indicator {
+//     width: 10px;
+//     height: 10px;
+//   }
+// }
+
+// @media screen and (max-width: 375px) {
+//   .carousel {
+//     &Inner {
+//       height: 250px;
+//     }
+    
+//     &Slide {
+//       padding: 8px;
+//     }
+//   }
+// }
+
+
+
+
+
+
 .carousel {
   position: relative;
-  width: fit-content;
+  width: 100%;
   max-width: 100%;
   overflow: hidden;
   margin: 0 auto;
-  padding: 20px;
+  padding: 0;
   background: var(--bg);
-  border-radius: 32px;
+  border-radius: 16px;
   box-shadow: var(--box-shadow);
-  // filter: hue-rotate(0.5turn) invert(0.9);
+}
 
-  &Inner {
-    display: flex;
-    transition: transform 0.5s ease;
-    will-change: transform;
-    height: 560px;
-    margin: 0 auto;
-    align-items: stretch;
-    max-width: 100%;
-    aspect-ratio: 16 / 9;
-  }
+.carouselInner {
+  display: flex;
+  width: 100%;
+  height: 650px;
+}
 
-    &Slide {
-    width: 100%;
-    flex-shrink: 0;
-    position: relative;
-    border-radius: 32px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    overflow: hidden;
-    padding: 20px;
-    box-sizing: border-box;
-    min-height: 0;
+.carouselSlide {
+  flex: 0 0 100%;
+  width: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
 
-    img {
-      flex: 1 1 auto;
-      min-height: 0;
-      width: 100%;
-      height: auto;
-      max-height: 100%;
-      object-fit: contain;
-      display: block;
-      border-radius: 16px;
-      object-position: center;
-    }
-  }
+  display: flex;
+  flex-direction: column;
+  gap: 30px
+}
 
-  &Indicators {
-    position: absolute;
-    top: 40px;
-    right: 0px;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 10px;
-    z-index: 10;
-  }
+.carouselSlide img {
+  width: 100%;
+  height: auto;
+  max-height: 500px;
+  object-fit: contain;
+}
+
+.carouselIndicators {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  z-index: 10;
 }
 
 .indicator {
-  width: 20px;
-  height: 20px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
-  background: transparent;
-  border: 2px solid var(--primary);
+  background-color: rgba(255, 255, 255, 0.5);
+  border: 1px solid var(--primary);
   cursor: pointer;
-  padding: 0;
-  transition: all 0.3s ease;
-
-  &.active {
-    background: var(--primary);
-    transform: scale(1.2);
-  }
+  transition: background-color 0.3s ease;
 }
 
-@media screen and (max-width: 600px) {
+.indicator.active {
+  background: var(--primary);
+}
+
+/* Мобильные стили */
+@media screen and (max-width: 768px) {
   .carousel {
-    padding: 5px;
-    &Slide {
-      height: 300px;
-      border-radius: 0px;
-    }
-
-    &Inner {
-      height: 400px;
-    }
-
-    &Indicators {
-      top: 20px;
-    }
+    border-radius: 12px;
+    margin: 0 10px;
+    width: calc(100% - 20px);
   }
-
+  
+  .carouselInner {
+    height: 300px;
+  }
+  
+  .carouselSlide {
+    padding: 15px;
+    gap: 10px;
+  }
+  
+  .carouselSlide img {
+    max-height: 200px;
+  }
+  
+  .carouselIndicators {
+    bottom: 15px;
+  }
+  
   .indicator {
     width: 10px;
     height: 10px;
   }
 }
 
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 480px) {
   .carousel {
-    max-width: 375px;
-    &Slide {
-      height: 250px;
-    }
-
-    &Inner {
-      height: 250px;
-    }
-
-    &Indicators {
-      top: 10px;
-    }
+    margin: 0 5px;
+    width: calc(100% - 10px);
+    border-radius: 8px;
   }
-
+  
   .carouselInner {
-    width: 375px;
+    height: 250px;
+  }
+  
+  .carouselSlide {
+    padding: 10px;
+  }
+  
+  .carouselSlide img {
+    max-height: 150px;
+  }
+  
+  .carouselIndicators {
+    bottom: 10px;
+  }
+  
+  .indicator {
+    width: 8px;
+    height: 8px;
   }
 }

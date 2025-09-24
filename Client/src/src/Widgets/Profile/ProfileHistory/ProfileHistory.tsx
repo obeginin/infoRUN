@@ -8,9 +8,9 @@ import AdminAPI from "@/src/API/admin";
 import { useUserStore } from "@/src/store/userStore";
 import type { ILog } from "@/src/interface/logs.interface";
 import { Task } from "@/src/ui/taskContainer/Task";
-import { Button } from "@/src/ui/buttonDeafault/Button";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
+import { TextContainer } from "@/src/ui/textContainer/TextContainer";
 
 export const ProfileHistory = () => {
   const [data, setData] = useState<ILog[]>([]);
@@ -26,9 +26,9 @@ export const ProfileHistory = () => {
     <>
       <ProfileContentContainer>
         <div className={styles.container}>
-          <Button disabled filled color="white">
+          <TextContainer>
             История действий
-          </Button>
+          </TextContainer>
           <div className={styles.content}>
             {data.slice(0, 10).map((item) => (
               <div key={item.LogID} className={styles.card}>

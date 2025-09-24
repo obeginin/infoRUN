@@ -8,8 +8,13 @@ import { Header } from "@/src/Widgets/Header/Header";
 import styles from "./confirm-email.module.scss";
 import { useEffect, useState } from "react";
 import AuthAPI from "@/src/API/registration";
+import { BreadCrumb } from "@/src/ui/breadCrumb/BreadCrumb";
 
 export default function ConfirmEmail() {
+  const items = [
+    { id: 1, label: "Регистрация", link: "/registration" },
+    { id: 2, label: "Подтверждение", link: "/registration/confirm-email" },
+  ];
   const [data, setData] = useState({
     email: "",
     login: "",
@@ -42,6 +47,7 @@ export default function ConfirmEmail() {
     <>
       <div className="app">
         <Header />
+        <BreadCrumb items={items} />
         <div className={styles.container}>
           <ProfileContentContainer>
             <div className={styles.content}>

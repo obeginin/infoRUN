@@ -1,0 +1,22 @@
+.breadCrumb {
+  display: flex;
+  align-items: center;
+  gap: 0; // Убираем gap, используем margins
+  flex-wrap: wrap; // Перенос на маленьких экранах
+
+  .breadCrumbItem {
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
+
+  .separator {
+    margin: 0 8px;
+    color: #666;
+  }
+
+  .current {
+    color: #333;
+    font-weight: 500;
+  }
+}

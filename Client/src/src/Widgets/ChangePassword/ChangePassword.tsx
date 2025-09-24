@@ -26,19 +26,19 @@ export const ChangePassword = () => {
         <Input
           value={oldPass}
           onChange={(e) => setOldPass(e.target.value)}
-          type="text"
+          type="password"
           label="Старый пароль"
         />
         <Input
           value={newPass}
           onChange={(e) => setNewPass(e.target.value)}
-          type="text"
+          type="password"
           label="Новый пароль"
         />
         <Input
           value={repeat_new_password}
           onChange={(e) => setRepeat_new_password(e.target.value)}
-          type="text"
+          type="password"
           label="Повторите пароль"
         />
         <Button onClick={handleClick}>Сохранить</Button>

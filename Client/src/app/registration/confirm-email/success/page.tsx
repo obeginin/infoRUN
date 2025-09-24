@@ -10,12 +10,19 @@ import { useRouter } from "next/navigation";
 import { Suspense, useEffect } from "react";
 import AuthAPI from "@/src/API/registration";
 import { useSearchParams } from "next/navigation";
+import { BreadCrumb } from "@/src/ui/breadCrumb/BreadCrumb";
 
 export default function Success() {
+  const items = [
+    { id: 1, label: "Регистрация", link: "/registration" },
+    { id: 2, label: "Подтверждение", link: "/registration/confirm-email" },
+    { id: 3, label: "Успех", link: "/registration/confirm-email/success" },
+  ];
   return (
     <>
       <div className="app">
         <Header />
+        <BreadCrumb items={items} />
         <div className={styles.container}>
           <ProfileContentContainer>
             <Suspense fallback={<div>Loading...</div>}>
@@ -41,13 +48,15 @@ function Form() {
   });
 
   return (
-    <div className={styles.content}>
-      <Paragraph size="large" f_weight="extra_bold">
-        Поздравляем! Ваш аккаунт зарегистрирован
-      </Paragraph>
-      <Button color="white" filled onClick={() => router.push("/auth")}>
-        Войти
-      </Button>
-    </div>
+    <>
+      <div className={styles.content}>
+        <Paragraph size="large" f_weight="extra_bold">
+          Поздравляем! Ваш аккаунт зарегистрирован
+        </Paragraph>
+        <Button color="white" filled onClick={() => router.push("/auth")}>
+          Войти
+        </Button>
+      </div>
+    </>
   );
 }
