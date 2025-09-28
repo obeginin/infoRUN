@@ -25,50 +25,50 @@ CREATE TABLE "Permissions" (
 INSERT INTO "Permissions" ("Name", "Description", "Category") values
 
 	('admin_panel', 'Админская панель', 'Админы'),
-	
+
     ('view_students', 'Просмотр студентов', 'Студенты'),
 	('create_students', 'Добавление студентов', 'Студенты'),
     ('edit_students', 'Изменение студентов', 'Студенты'),
     ('delete_students', 'Удаление студентов', 'Студенты'),
-    
+
     ('view_roles', 'Просмотр ролей', 'Роли'),
     ('create_roles', 'Создание ролей', 'Роли'),
     ('edit_roles', 'Редактирование ролей', 'Роли'),
     ('delete_roles', 'Удаление ролей', 'Роли'),
     ('assign_roles', 'Назначение ролей', 'Роли'),
-    
+
     ('views_permissions', 'Просмотр разрешений', 'Разрешения'),
     ('create_permissions', 'Создание разрешений', 'Разрешения'),
     ('edit_permissions', 'Редактирование разрешений', 'Разрешения'),
     ('delete_permissions', 'Удаление разрешений', 'Разрешения'),
     ('assign_permissions', 'Назначение разрешений', 'Разрешения'),
-    
+
     ('views_subjects', 'Просмотр предметов', 'Предметы'),
     ('create_subjects', 'Создание предметов', 'Предметы'),
     ('edit_subjects', 'Редактирование предметов', 'Предметы'),
     ('delete_subjects', 'Удаление предметов', 'Предметы'),
-    
+
     ('view__category', 'Просмотр категорий', 'Категории'),
     ('create_category', 'Создание категорий', 'Категории'),
     ('edit_category', 'Редактирование категорий', 'Категории'),
     ('delete_category', 'Удаление категорий', 'Категории'),
-    
+
     ('view_tasks', 'Просмотр задач', 'Задачи'),
     ('create_tasks', 'Создание задач', 'Задачи'),
     ('edit_tasks', 'Редактирование задач', 'Задачи'),
     ('delete_tasks', 'Удаление задач', 'Задачи'),
     ('assign_tasks', 'Назначение задач', 'Задачи'),
-    
+
     ('view_variants', 'Просмотр вариантов', 'Варианты'),
     ('create_variants', 'Создание вариантов', 'Варианты'),
     ('edit_variants', 'Редактирование вариантов', 'Варианты'),
     ('delete_variants', 'Удаление вариантов', 'Варианты'),
-    
+
     ('view_tags', 'Просмотр тегов', 'Теги'),
     ('create_tags', 'Создание тегов', 'Теги'),
     ('edit_tags', 'Редактирование тегов', 'Теги'),
     ('delete_tags', 'Удаление тегов', 'Теги'),
-    
+
     ('view_history', 'Просмотр истории', 'История');
 
 -- таблица связи ролей и разрешений
@@ -84,9 +84,9 @@ CREATE TABLE "RolePermissions" (
 INSERT INTO "RolePermissions" ("RoleID", "PermissionID")
 SELECT 2, "PermissionID" FROM "Permissions";
 
---drop table "RolePermissions" 
+--drop table "RolePermissions"
 
---drop table "Permissions" 
+--drop table "Permissions"
 -- Таблица со студентами (пользователями)
 CREATE TABLE "Students" (
     "ID" BIGSERIAL PRIMARY KEY,                       		-- автоинкрементный id
@@ -122,9 +122,9 @@ VALUES ('obeginin', 'Бегинин', 'Олег', 'Вячеславович','le
 CREATE TABLE "PasswordResetTokens" (
     "ID" BIGSERIAL PRIMARY KEY,                 -- автоинкрементный id токена
     "StudentID" BIGINT NOT NULL,                -- id студента (ссылка на Students.ID)
-    "Token" VARCHAR(255) NOT NULL UNIQUE,      
-    "ExpiresAt" TIMESTAMP NOT NULL,            
-    "Used" BOOLEAN NOT NULL DEFAULT FALSE,     
+    "Token" VARCHAR(255) NOT NULL UNIQUE,
+    "ExpiresAt" TIMESTAMP NOT NULL,
+    "Used" BOOLEAN NOT NULL DEFAULT FALSE,
     "CreatedAt" TIMESTAMP NOT NULL DEFAULT NOW(),
 
     CONSTRAINT "FK_PasswordResetTokens_Students" FOREIGN KEY ("StudentID")
@@ -229,7 +229,7 @@ CREATE TABLE "SubTasks" (
     "Creator" VARCHAR(255) NOT NULL,					-- пользователь создавший задачу
     "CreatedDate" TIMESTAMP NOT NULL DEFAULT now(),   	-- дата создания (заполняется автоматически)
     "Editor" VARCHAR(255),								-- пользователь создавший задачу
-	"EditedDate" TIMESTAMP,								-- время изменения	
+	"EditedDate" TIMESTAMP,								-- время изменения
     CONSTRAINT "fk_task" FOREIGN KEY ("TaskID") REFERENCES "Tasks"("TaskID") ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT "fk_variant" FOREIGN KEY ("VariantID") REFERENCES "Variants"("VariantID") ON UPDATE CASCADE ON DELETE SET NULL
 );
@@ -347,7 +347,7 @@ ALTER TABLE "SubTasks"
 ADD COLUMN "Blocs" TEXT
 
 
--- изименить тип столбца 
+-- изименить тип столбца
 ALTER TABLE "SubTasks"
 ALTER COLUMN "Blocks" TYPE JSON
 USING "Blocks"::TEXT;
