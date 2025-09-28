@@ -40,14 +40,14 @@ async def get_swagger_user(
     db = Depends(get_db),
 ):
     """функция для проверки пароля в swagger"""
-    logger.info(f"Вход в Swagger : username={credentials.username}")
+    logging.info(f"Вход в Swagger : username={credentials.username}")
     student = await get_student_by_login(db=db, login=credentials.username)
-    logger.info(f"student={student}")
+    logging.info(f"student={student}")
     if not student or not verify_password(credentials.password, student["Password"]):
-        logger.warning(f"User {credentials.username} not found or invalid password")
+        logging.warning(f"User {credentials.username} not found or invalid password")
         raise errors.unauthorized(message="Неверные учётные данные")
 
-    logger.info(f"User {credentials.username} authenticated successfully")
+    logging.info(f"User {credentials.username} authenticated successfully")
     return student
 
 
@@ -56,12 +56,12 @@ async def get_swagger_user(
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 # Функция для хеширования пароля (принимает обычный и возвращает хэшированный)
 def hash_password(password: str) -> str:
-    logger.info(f"Хэшируем пароль")
+    logging.info(f"Хэшируем пароль")
     return pwd_context.hash(password)
 
 # Функция для проверки пароля (сравнивает введённый пользователем пароль и хеш из базы,)
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    logger.info(f"Проверяем хэш пароля")
+    logging.info(f"Проверяем хэш пароля")
     return pwd_context.verify(plain_password, hashed_password)
 
 # Создание пароля вручную:
@@ -78,7 +78,7 @@ $pbkdf2-sha256$29000$dm7NmZNSqpWyVmqNEYJQyg$Z6gDFsYkqd5xLDxIytx2n5C9moMIc4voTVKq
 
 async def get_hash_password(db: AsyncSession, student_id: int):
     """Получение хэш пароля из базы"""
-    logger.info(f"Проверяем хэш пароля")
+    logging.info(f"Проверяем хэш пароля")
 
     return await general.run_query_select(
         db,
@@ -101,7 +101,7 @@ async def get_current_student(request: Request, db = Depends(get_db)) -> Student
     ip = request.headers.get("X-Forwarded-For") or request.client.host
     user_agent = request.headers.get("User-Agent")
     if not token:
-        logger.warning(f"[AUTH] Отсутствует токен. IP: {ip}, UA: {user_agent}")
+        logging.warning(f"[AUTH] Отсутствует токен. IP: {ip}, UA: {user_agent}")
         send_log(
             StudentID=0,  # Или 0
             StudentLogin="Unknown",
@@ -118,7 +118,7 @@ async def get_current_student(request: Request, db = Depends(get_db)) -> Student
     # Проверка и парсинг схемы: "Bearer <token>"
     scheme, _, param = token.partition(" ")
     if scheme.lower() != "bearer" or not param:
-        logger.warning(f"[AUTH] Неверная схема токена. IP: {ip}, UA: {user_agent}, TOKEN: {token}")
+        logging.warning(f"[AUTH] Неверная схема токена. IP: {ip}, UA: {user_agent}, TOKEN: {token}")
         send_log(
             StudentID=0,
             StudentLogin="Unknown",
@@ -138,7 +138,7 @@ async def get_current_student(request: Request, db = Depends(get_db)) -> Student
         payload = jwt.decode(param, settings.SECRET_KEY, algorithms=[settings.ALGORITHM], options={"verify_exp": True})
         login: str = payload.get("sub")
         if login is None:
-            logger.warning(f"[AUTH] Токен не содержит логин. IP: {ip}, UA: {user_agent}")
+            logging.warning(f"[AUTH] Токен не содержит логин. IP: {ip}, UA: {user_agent}")
             send_log(
                 StudentID=0,
                 StudentLogin="Unknown",
@@ -154,7 +154,7 @@ async def get_current_student(request: Request, db = Depends(get_db)) -> Student
             raise errors.unauthorized(error="TokenInvalidPayload", message="Некорректный токен")
 
     except ExpiredSignatureError:
-        logger.warning(f"[AUTH] Срок действия токена истёк. IP: {ip}, UA: {user_agent}")
+        logging.warning(f"[AUTH] Срок действия токена истёк. IP: {ip}, UA: {user_agent}")
         send_log(
             StudentID=0,
             StudentLogin="Unknown",
@@ -170,7 +170,7 @@ async def get_current_student(request: Request, db = Depends(get_db)) -> Student
         raise errors.unauthorized(error="TokenExpired", message="Срок действия токена истёк")
 
     except JWTError as e:
-        logger.warning(f"[AUTH] JWT ошибка. IP: {ip}, UA: {user_agent}, Ошибка: {e}")
+        logging.warning(f"[AUTH] JWT ошибка. IP: {ip}, UA: {user_agent}, Ошибка: {e}")
         send_log(
             StudentID=0,
             StudentLogin="Unknown",
@@ -188,7 +188,7 @@ async def get_current_student(request: Request, db = Depends(get_db)) -> Student
     student = await get_student_by_login(db=db, login=login)
     #print(student)
     if student is None:
-        logger.warning(f"Извлеченный из токена логин не найден в бд: {login}")
+        logging.warning(f"Извлеченный из токена логин не найден в бд: {login}")
         send_log(
             StudentID= None,  # Или 0
             StudentLogin=login,
@@ -207,7 +207,7 @@ async def get_current_student(request: Request, db = Depends(get_db)) -> Student
     student = dict(student)
     student["permissions"] = [row["PermissionName"] for row in permissions]
     # student["BirthDate"] = student["BirthDate"].isoformat()
-    logger.info(f"Получение текущего студента: {student}") # TODO может бть ошибка!
+    logging.info(f"Получение текущего студента: {student}") # TODO может бть ошибка!
     '''if isinstance(student["BirthDate"], datetime):
         student["BirthDate"] = student["BirthDate"].date()'''
     return StudentOut(**dict(student))
@@ -318,7 +318,7 @@ async def get_student_by_field(db: AsyncSession, field_name: str, value: str):
         try:
             value = int(value)
         except ValueError:
-            logger.warning(f"Некорректный ID: {value}")
+            logger.exception(f"Некорректный ID: {value}")
             raise errors.bad_request(message=f"Некорректный ID: {value}")
     logger.info(f"Поиск студента: field={field_name}, value={value}")
     return await general.run_query_select(

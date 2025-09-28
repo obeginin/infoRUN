@@ -1,3 +1,5 @@
+
+
 CREATE OR REPLACE FUNCTION get_students_tasks(
     student_task_id INT DEFAULT NULL,
     student_id INT DEFAULT NULL,
@@ -15,32 +17,32 @@ CREATE OR REPLACE FUNCTION get_students_tasks(
     p_limit INT DEFAULT 500000
 )
 RETURNS TABLE(
-    StudentTaskID INT,
-    StudentID BIGINT,
-    SubTaskID INT,
-    StudentAnswer VARCHAR,
-    CompletionStatus VARCHAR,
-    Score NUMERIC,
-    StartDate TIMESTAMP,
-    ModifiedDate TIMESTAMP,
-    CompletionDate TIMESTAMP,
-    DeadlineDate TIMESTAMP,
-    Attempts INT,
-    Login VARCHAR,
-    SubjectID INT,
-    SubjectName VARCHAR,
-    TaskID INT,
-    TaskTitle VARCHAR,
-    SubTaskNumber INT,
-    ImagePath VARCHAR,
-    Description TEXT,
-    VariantID INT,
-    VariantName VARCHAR,
-    TypeVariant VARCHAR,
-    YearVariant VARCHAR,
-    NumberVarinat INT,
-    DifficultyLevel INT,
-    Comment VARCHAR
+    "StudentTaskID" INT,
+    "StudentID" BIGINT,
+    "SubTaskID" INT,
+    "StudentAnswer" VARCHAR,
+    "CompletionStatus" VARCHAR,
+    "Score" NUMERIC,
+    "StartDate" TIMESTAMP,
+    "ModifiedDate" TIMESTAMP,
+    "CompletionDate" TIMESTAMP,
+    "DeadlineDate" TIMESTAMP,
+    "Attempts" INT,
+    "Login" VARCHAR,
+    "SubjectID" INT,
+    "SubjectName" VARCHAR,
+    "TaskID" INT,
+    "TaskTitle" VARCHAR,
+    "SubTaskNumber" TEXT,
+    "ImagePath" VARCHAR,
+    "Description" TEXT,
+    "VariantID" INT,
+    "VariantName" VARCHAR,
+    "TypeVariant" VARCHAR,
+    "YearVariant" VARCHAR,
+    "NumberVarinat" INT,
+    "DifficultyLevel" INT,
+    "Comment" VARCHAR
 ) AS $$
 BEGIN
     RETURN QUERY
@@ -107,9 +109,11 @@ BEGIN
         CASE WHEN sort_column1 = 'Attempts' AND sort_direction1 = 'ASC' THEN st."Attempts" END ASC,
         CASE WHEN sort_column1 = 'TypeVariant' AND sort_direction1 = 'ASC' THEN v."Type" END ASC,
         CASE WHEN sort_column1 = 'YearVariant' AND sort_direction1 = 'ASC' THEN v."Year" END ASC,
-        CASE WHEN sort_column1 = 'NumberVarinat' AND sort_direction1 = 'ASC' THEN v."Number" END ASC,
+        CASE WHEN sort_column1 = 'NumberVarinat' AND sort_direction1 = 'ASC' THEN v."Number"::INTEGER ELSE NULL::INTEGER END ASC,
         CASE WHEN sort_column1 = 'DifficultyLevel' AND sort_direction1 = 'ASC' THEN v."DifficultyLevel" END ASC,
         -- DESC CASEs
+
+
         CASE WHEN sort_column1 = 'StudentTaskID' AND sort_direction1 = 'DESC' THEN st."StudentTaskID" END DESC,
         CASE WHEN sort_column1 = 'StudentID' AND sort_direction1 = 'DESC' THEN st."StudentID" END DESC,
         CASE WHEN sort_column1 = 'SubTaskID' AND sort_direction1 = 'DESC' THEN st."SubTaskID" END DESC,
@@ -123,9 +127,11 @@ BEGIN
         CASE WHEN sort_column1 = 'Attempts' AND sort_direction1 = 'DESC' THEN st."Attempts" END DESC,
         CASE WHEN sort_column1 = 'TypeVariant' AND sort_direction1 = 'DESC' THEN v."Type" END DESC,
         CASE WHEN sort_column1 = 'YearVariant' AND sort_direction1 = 'DESC' THEN v."Year" END DESC,
-        CASE WHEN sort_column1 = 'NumberVarinat' AND sort_direction1 = 'DESC' THEN v."Number" END DESC,
+		CASE WHEN sort_column1 = 'NumberVarinat' AND sort_direction1 = 'DESC' THEN v."Number"::INTEGER ELSE NULL::INTEGER END DESC,        
         CASE WHEN sort_column1 = 'DifficultyLevel' AND sort_direction1 = 'DESC' THEN v."DifficultyLevel" END DESC
     OFFSET COALESCE(p_offset, 0)
     LIMIT COALESCE(p_limit, 500000);
 END;
 $$ LANGUAGE plpgsql;
+--drop function get_students_tasks
+--select * from get_students_tasks()

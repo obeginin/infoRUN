@@ -42,7 +42,7 @@ logger = logging.getLogger(__name__) # создание логгера для т
 subtask_router  = APIRouter(prefix="/api/subtasks", tags=["subtasks"])
 
 
-from sqlalchemy.orm import Session
+# TODO переведен на асинхронный postgres
 
 @subtask_router.post("/create/", summary="Создание задачи с файлами и блоками",
                      description="""Создает задачу с текстовыми, графическими и другими блоками.  
@@ -51,21 +51,20 @@ from sqlalchemy.orm import Session
 `files_solution` - количество вставленных файлов с решением задачи  
 `files` - количество вставленных дополнительных файлов к задачи""")
 async def create_subtask(
-        task_id: int = Form(..., description="ID категории"),
-        subtask_number: int = Form(None, description="Номер задачи в категории"),
+        task_id: int = Form(None, description="Task_id категории"),
+        subtask_number: str = Form(None, description="Номер задачи в категории"),
         variant_id: int = Form(None, description="ID варианта (если есть)"),
         blocks: str = Form(...,description='JSON список блоков: [{"type":"text","content":"Текст"},{"type":"image","content":"image.png"}]'),
         files_blocks: List[UploadFile] = File([], description="Список файлов для блоков"),
-        answer: str = Form("", description="Ответ на задачу"),
+        answer: str = Form(None, description="Ответ на задачу"),
         files_solution: List[UploadFile] = File([], description="Список файлов для решения"),
         files_extra: List[UploadFile] = File([], description="Список дополнительных файлов к задаче"),
         db: AsyncSession = Depends(get_db),
         current_student=Depends(auth.permission_required("create_tasks"))
 ):
-    logging.info(f"[SUBTASKS] === Поступил запрос на создание задачи ===")
-    logging.info(
-        f"[SUBTASKS] TaskID={task_id}, SubTaskNumber={subtask_number}, VariantID={variant_id}, Answer={answer}")
-    logging.info(f"[SUBTASKS] Blocks (raw)={blocks}")
+    logger.debug(f"Пользователь {current_student.Login} отправил запрос на создание новой задачи")
+    logging.debug(f"Параметры: TaskID={task_id}, SubTaskNumber={subtask_number}, VariantID={variant_id}, Answer={answer}")
+    logging.debug(f"[SUBTASKS] Blocks (raw)={blocks}")
 
     # парсим строку JSON
     try:
@@ -76,17 +75,17 @@ async def create_subtask(
         if not blocks_list:
             raise ValueError("Список блоков не может быть пустым")
     except (json.JSONDecodeError, ValueError) as e:
-        logging.error(f"Ошибка с блоками: {e}")
-        return {"status": "error", "message": str(e)}
+        logging.exception(f"Ошибка с блоками: {str(e)}")
+        raise errors.bad_request(message="Ошибка с блоками")
 
     # дополнительная проверка файлов
 
     logger.info(f"FILES BLOCKS: {[file.filename for file in files_blocks]}")
-    subtasks_crud.log_and_validate_files(files_blocks, 'с изображением')
+    await subtasks_crud.log_and_validate_files(files_blocks, 'с изображением')
     logger.info(f"FILES SOLUTION: {[file.filename for file in files_solution]}")
-    subtasks_crud.log_and_validate_files(files_extra, 'с решением')
+    await subtasks_crud.log_and_validate_files(files_extra, 'с решением')
     logger.info(f"FILES EXTRA: {[file.filename for file in files_extra]}")
-    subtasks_crud.log_and_validate_files(files_extra, 'дополнительные')
+    await subtasks_crud.log_and_validate_files(files_extra, 'дополнительные')
 
 
     subtask_data = {
@@ -101,25 +100,26 @@ async def create_subtask(
     try:
         subtask_obj = SubTaskCreate(**subtask_data)  # **kwargs распаковка словаря
     except Exception as e:
-        logging.error(f"[SUBTASKS] Ошибка при создании SubTaskCreate: {e}")
-        return {"status": "error", "message": f"Ошибка создания задачи: {e}"}
+        logging.exception(f"Ошибка при создании задачи: {str(e)}")
+        raise errors.bad_request(message=f"Ошибка при создании задачи")
+
 
     # 4 Создаем новую задачу
     try:
-        result = await subtasks_crud.save_subtask(db, subtask_obj, files_blocks)
+        result = await subtasks_crud.create_subtask(db, subtask_obj, files_blocks)
         subtask_id = result["SubTaskID"]
         logging.info(f"[SUBTASKS] Пользователь {current_student.Login} успешно создал задачу id={subtask_id}")
 
         # логируем в Kafka
-        await run_in_threadpool(
-            send_log,
-            StudentID=current_student.ID,
-            StudentLogin=current_student.Login,
-            action="CREATE_SUBTASK",
-            details={
-                "SubTaskID": subtask_id,
-                "DescriptionEvent": f"Пользователь {current_student.Login} успешно создал задачу id={subtask_id})"
-            }
+
+        send_log(
+        StudentID=current_student.ID,
+        StudentLogin=current_student.Login,
+        action="CREATE_SUBTASK",
+        details={
+            "SubTaskID": subtask_id,
+            "DescriptionEvent": f"Пользователь {current_student.Login} успешно создал задачу id={subtask_id})"
+        }
         )
         # 3. Читаем файлы в байты и формируем список для Celery
         solution_files_data = await subtasks_crud.prepare_files_data(files_solution, "решение")
@@ -150,11 +150,217 @@ async def create_subtask(
                 "prefix": "f_subtask"
             }
         )
-
+        logger.info(f"Пользователь {current_student.Login} создал новую задачу с subtask_id={subtask_id}")
         return {"status": "success", "data": result}
+
     except Exception as e:
-        logging.exception("Не удалось создать задачу")
-        return {"status": "error", "message": str(e)}
+        logging.exception(f"Не удалось создать задачу: {str(e)}")
+        raise errors.internal_server(message="Не удалось создать задачу")
+
+
+
+
+@subtask_router.put(
+    "/update/{subtask_id}",
+    summary="Полное обновление задачи с блоками и файлами",
+    description="Заменяет старые значения на новые!(старые файлы удаляются и записываются новые)."
+)
+async def full_update_subtask(
+    subtask_id: int,
+    task_id: int = Form(None, description="Task_id категории"),
+    subtask_number: str = Form(None, description="Номер задачи в категории"),
+    variant_id: int = Form(None, description="ID варианта (если есть)"),
+    blocks: str = Form(...,description='JSON список блоков: [{"type":"image","content":"image.png"},{"type":"text","content":"Текст"}]'),
+    files_blocks: Optional[List[UploadFile]] = File(None, description="Файлы для блоков"),
+    answer: str = Form(None, description="Ответ на задачу"),
+    files_solution: Optional[List[UploadFile]] = File(None, description="Файлы решения"),
+    files_extra: Optional[List[UploadFile]] = File(None, description="Дополнительные файлы"),
+    db: AsyncSession = Depends(get_db),
+    current_student=Depends(auth.permission_required("edit_tasks"))
+):
+    logger.debug(f"Пользователь {current_student.Login} отправил запрос на изменение задачи с subtask_id={subtask_id}")
+    logger.debug(f"Параметры запроса (пришло с фронта): "
+        f"task_id={task_id}, "
+        f"subtask_number={subtask_number}, "
+        f"variant_id={variant_id}, "
+        f"answer={answer}")
+
+    subtask = await subtasks_crud.view_all_subtasks(db, params={"subtask_id": subtask_id}, mode='mappings_first')
+    logger.debug(f"subtask:{subtask} ===")
+    if not subtask:
+        logger.warning(f"Подзадача ID={subtask_id} не найдена в базе")
+        return {"success": False, "message": "Подзадача не найдена"}
+    # TODO избавиться от try except  нормально обрабатывать ошибки
+    try:
+        # Парсим блоки
+        try:
+            blocks_json = json.loads(blocks)
+            blocks_list = [Block(**b) for b in blocks_json]
+        except Exception as e:
+            logging.exception(f"Ошибка с блоками: {str(e)}")
+            raise errors.bad_request(message="Ошибка с блоками")
+
+
+
+        # Создаем объект для передачи в crud
+        subtask_data = SubTaskCreate(
+            TaskID=task_id,
+            SubTaskNumber=subtask_number,
+            VariantID=variant_id,
+            Answer=answer,
+            Blocks=blocks_list,
+            Creator=current_student.Login
+        )
+        logger.debug(f"[SUBTASKS] === 0")
+        # Обновляем подзадачу и файлы
+        result = await subtasks_crud.update_subtask(db, subtask_data, files_blocks, files_solution, files_extra, subtask_id)
+        logger.debug(f"[SUBTASKS] === 1")
+        # Загружаем новые файлы решения через Celery
+        if files_solution:
+            solution_files_data = await subtasks_crud.prepare_files_data(files_solution, "решение")
+            celery_app.send_task(
+                "save_subtask_files",
+                kwargs={
+                    "subtask_id": subtask_id,
+                    "files_data": solution_files_data,
+                    "folder": str(settings.UPLOAD_SOLUTION_DIR),
+                    "table": "SubTaskSolutions",
+                    "prefix": "sol_subtask"
+                }
+            )
+        logger.debug(f"[SUBTASKS] === 2")
+        # Загружаем новые дополнительные файлы через Celery
+        if files_extra:
+            extra_files_data = await subtasks_crud.prepare_files_data(files_extra, "дополнительный")
+            celery_app.send_task(
+                "save_subtask_files",
+                kwargs={
+                    "subtask_id": subtask_id,
+                    "files_data": extra_files_data,
+                    "folder": str(settings.UPLOAD_FILES_DIR),
+                    "table": "SubTaskFiles",
+                    "prefix": "f_subtask"
+                }
+            )
+        logger.debug(f"[SUBTASKS] === 3")
+        # Логирование в Kafka
+
+        send_log(
+        StudentID=current_student.ID,
+        StudentLogin=current_student.Login,
+        action="UPDATE_SUBTASK",
+        details={
+            "SubTaskID": subtask_id,
+            "DescriptionEvent": f"Пользователь {current_student.Login} полностью обновил задачу ID={subtask_id}"
+        }
+        )
+        logger.info(f"Пользователь {current_student.Login} обновил задачу с subtask_id={subtask_id}")
+        return {"status": "success", "data": result}
+
+    except Exception as e:
+        logging.exception(f"Ошибка при обновлении задачи ID={subtask_id} {str(e)}")
+        raise errors.internal_server(message=f"Ошибка при обновлении задачи ID={subtask_id}")
+
+
+
+@subtask_router.delete(
+    "/delete/{subtask_id}",
+    summary="Удаление подзадачи",
+    description="Удаляет подзадачу, все её файлы и записи из таблиц"
+)
+async def delete_subtask(
+    subtask_id: int,
+    db: AsyncSession = Depends(get_db),
+    current_student = Depends(auth.permission_required("delete_tasks"))
+):
+    logger.debug(f"Пользователь {current_student.Login} отправил запрос на удаление задачи с subtask_id={subtask_id}")
+
+    try:
+
+        subtask = await subtasks_crud.view_all_subtasks(db, params={"subtask_id": subtask_id}, mode='mappings_first')
+        if not subtask:
+            logger.warning(f"[SUBTASKS_CRUD] Подзадача ID={subtask_id} не найдена в базе")
+            return {"success": False, "message": "Подзадача не найдена"}
+
+# TODO надо переделать! чтобы сначала удалялась задача из БД, а потом только файлы!
+        # 1. Удаляем все файлы и записи из вспомогательных таблиц
+        await subtasks_crud.delete_subtask_files(db,subtask_id)
+
+        # 2. Удаляем саму подзадачу
+        await subtasks_crud.delete_subtask_record(db, subtask_id)
+
+        logger.debug(f"Пользователь {current_student.Login} удалил задачу с subtask_id={subtask_id}")
+        return {"success": True, "message": f"Подзадача {subtask_id} удалена"}
+
+    except Exception as e:
+        logging.exception(f"Ошибка при удалении подзадачи ID={subtask_id} {str(e)}")
+        raise errors.internal_server(message=f"Ошибка при удалении подзадачи ID={subtask_id}")
+
+
+
+
+
+@subtask_router.get(
+    "",
+    summary="Получение всех задач с блоками и дополнительными файлами",
+    description="""Возвращает список всех подзадач с их блоками и прикрепленными файлами.  
+        Подзадачи могут фильтроваться по параметрам: SubTaskID, TaskID, SubjectID, VariantID,   
+        Search, UploadDate, Creator, сортироваться по любым колонкам и ограничиваться диапазоном   
+        через Offset и Limit."""
+)
+async def get_all_subtasks(
+    filters: subtasks_schema.SubTaskQueryParams = Depends(),
+    db: AsyncSession = Depends(get_db),
+    current_student=Depends(auth.permission_required("view_tasks"))
+):
+    logger.debug(f"Пользователь {current_student.Login} отправил запрос на получение всех задачи")
+    try:
+        # 1. Получаем задачу из базы
+        subtasks = await subtasks_crud.view_all_subtasks(db, params=filters.dict())
+        logger.debug(f"subtasks {subtasks}")
+        if not subtasks:
+            logger.warning("Задачи не найдены")
+            return {"status": "success", "data": []}
+
+        all_data = []
+        for subtask in subtasks:
+            # 2. Парсим блоки
+            try:
+                blocks_list = json.loads(subtask["Blocks"]) if subtask.get("Blocks") else []
+            except json.JSONDecodeError as e:
+                logger.error(f"Ошибка парсинга блоков у задачи ID={subtask.SubTaskID}: {e}")
+                blocks_list = []
+
+            # 3. Получаем прикрепленные файлы
+            files = await subtasks_crud.view_files(db, subtask.SubTaskID)
+            file_list = [
+                {"FileID": f["ID"], "FileName": f["FileName"], "FilePath": f["FilePath"]}
+                for f in files
+            ]
+            logger.debug(f"subtasks {subtasks}")
+
+        # 4.Формируем ответ, копируя все поля и заменяя Blocks и Files
+            result = dict(subtask)  # копируем весь словарь
+            result["Blocks"] = blocks_list
+            result["Files"] = file_list
+
+            all_data.append(result)
+
+        send_log(
+            StudentID=current_student.ID,
+            StudentLogin=current_student.Login,
+            action="VIEW_ALL_SUBTASKS",
+            details={ "DescriptionEvent": f"Пользователь {current_student.Login} просмотрел все задачи"}
+        )
+        logger.info(f"Пользователь {current_student.Login} получил {len(all_data)} задач")
+        return {"status": "success", "data": all_data}
+
+    except Exception as e:
+        logging.exception(f"Ошибка при получении всех задач {str(e)}")
+        raise errors.internal_server(message=f"Ошибка при получении всех задач")
+
+
+
 
 @subtask_router.get(
     "/{subtask_id}",
@@ -163,23 +369,24 @@ async def create_subtask(
 )
 async def get_subtask(
     subtask_id: int,
-    db: Session = Depends(get_db),
+    db: AsyncSession = Depends(get_db),
     current_student=Depends(auth.permission_required("view_tasks"))
 ):
-    logging.info(f"[SUBTASKS] === Поступил запрос на получение задачи ID={subtask_id} ===")
+    logger.debug(f"Пользователь {current_student.Login} отправил запрос на получение задачи c subtask_id={subtask_id}")
+
     try:
         # 1. Получаем задачу из базы
-        subtask = await subtasks_crud.view_subtask(db,subtask_id)
+        subtask = await subtasks_crud.view_all_subtasks(db, params={"subtask_id": subtask_id}, mode='mappings_first')
 
         if not subtask:
-            logging.warning(f"Задача с ID={subtask_id} не найдена")
+            logger.warning(f"Задача с ID={subtask_id} не найдена")
             return {"status": "error", "message": "задача не найдена"}
 
         # 2. Преобразуем блоки из строки JSON, если они в базе хранятся в JSON-формате
         try:
             blocks_list = json.loads(subtask["Blocks"]) if subtask.get("Blocks") else []
         except json.JSONDecodeError as e:
-            logging.error(f"Ошибка парсинга блоков у задачи ID={subtask_id}: {e}")
+            logger.exception(f"Ошибка парсинга блоков у задачи ID={subtask_id}: {e}")
             blocks_list = []
 
         # 3. Получаем прикрепленные файлы (если они хранятся в отдельной таблице)
@@ -190,34 +397,13 @@ async def get_subtask(
             for f in files
         ]
 
+        # 4.Формируем ответ, копируя все поля и заменяя Blocks и Files
+        result = dict(subtask)  # копируем весь словарь
+        result["Blocks"] = blocks_list
+        result["Files"] = file_list
 
-        # 4. Формируем ответ
-        response_data = {
-            "SubTaskID": subtask.SubTaskID,
-            "SubjectID": subtask.SubjectID,
-            "SubjectName": subtask.SubjectName,
-            "Description": subtask.Description,
-            "TaskID": subtask.TaskID,
-            "TaskTitle": subtask.TaskTitle,
-            "SubTaskNumber": subtask.SubTaskNumber,
-            "VariantID": subtask.VariantID,
-            "VariantName": subtask.VariantName,
-            "TypeVariant": subtask.TypeVariant,
-            "YearVariant": subtask.YearVariant,
-            "NumberVarinat": subtask.NumberVarinat,
-            "DifficultyLevel": subtask.DifficultyLevel,
-            "Comment": subtask.Comment,
-            "Creator": subtask.Creator,
-            "UploadDate": subtask.UploadDate,
-            "Blocks": blocks_list,
-            "Files": file_list,
-            #"SolutionPath": subtask.SolutionPath,
-        }
 
-        logging.info(f"[SUBTASKS] Задача ID={subtask_id} успешно получена")
-
-        await run_in_threadpool(
-            send_log,
+        send_log(
             StudentID=current_student.ID,
             StudentLogin=current_student.Login,
             action="VIEW_SUBTASK",
@@ -226,18 +412,21 @@ async def get_subtask(
                 "DescriptionEvent": f"Пользователь {current_student.Login} просмотрел задачу ID={subtask_id}"
             }
         )
-        return {"status": "success", "data": response_data}
+        logger.info(f"Пользователь {current_student.Login} получил задачу с subtask_id={subtask_id}")
+        logger.debug(f"Данные задачи: {result}")
+        return {"status": "success", "data": result}
 
     except Exception as e:
-        logging.exception("Ошибка при получении задачи")
-        return {"status": "error", "message": str(e)}
+        logger.exception(f"Ошибка при получении задачи subtask_id={subtask_id} {str(e)}")
+        raise errors.internal_server(message=f"Ошибка при получении задачи c subtask_id={subtask_id}")
 
 
 
-@subtask_router.get("/{subtask_id}/solution", summary="Получение файлов с решением")
+
+#@subtask_router.get("/{subtask_id}/solution", summary="Получение файлов с решением")
 async def get_solution_files(
     subtask_id: int,
-    db: Session = Depends(get_db),
+    db: AsyncSession = Depends(get_db),
     current_student=Depends(auth.permission_required("view_solutions"))
 ):
 
@@ -259,10 +448,10 @@ async def get_solution_files(
         ]
     }
 
-@subtask_router.get("/{subtask_id}/extra_files", summary="Получение дополнительных файлов для задачи")
+#@subtask_router.get("/{subtask_id}/extra_files", summary="Получение дополнительных файлов для задачи")
 async def get_solution_files(
     subtask_id: int,
-    db: Session = Depends(get_db),
+    db: AsyncSession = Depends(get_db),
     current_student=Depends(auth.permission_required("view_tasks"))
 ):
 

@@ -21,7 +21,9 @@ services:
 
   # FastAPI
   fastapi:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: fastapi
     env_file:
       - .env

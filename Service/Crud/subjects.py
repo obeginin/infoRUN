@@ -7,13 +7,13 @@ from typing import List
 
 
 logger = logging.getLogger(__name__) # создание логгера для текущего модуля
-
 # TODO переведен на асинхронный postgres
+
 
 
 ''' функция-SQL запрос к БД для вывода всех предметов'''
 async def get_all_subjects(db: AsyncSession):
-    logger.debug(f"Запуск функции get_all_subjects")
+    logging.debug(f"Запуск функции get_all_subjects")
     return await general.run_query_select(
         db,
         query= '''SELECT * FROM "Subjects"''',
@@ -24,7 +24,7 @@ async def get_all_subjects(db: AsyncSession):
 
 ''' функция-SQL запрос к БД для вывода определенного предмета'''
 async def get_subject_by_id(db: AsyncSession, subjectID: int):
-    logger.debug(f"Запуск функции get_subject_by_id с subjectID={subjectID}")
+    logging.debug(f"Запуск функции get_subject_by_id с subjectID={subjectID}")
     return await general.run_query_select(
         db,
         query= '''SELECT * FROM "Subjects" WHERE "ID" = :subjectID''',

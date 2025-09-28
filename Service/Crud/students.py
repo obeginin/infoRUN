@@ -1,11 +1,8 @@
-from Service.Models import Student
-from Service.Schemas.students import StudentTaskRead
 from Service.Schemas import auth
 from utils import errors,general
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from sqlalchemy import text
-from fastapi import HTTPException
+
 from sqlalchemy.exc import SQLAlchemyError
 import logging
 logger = logging.getLogger(__name__) # создание логгера для текущего модуля
@@ -22,7 +19,7 @@ CRUD - основная логика работы запроса
 ''' Получение всех студентов'''
 ''' функция-SQL запрос к БД для вывода всех студентов'''
 async def get_all_students(db: AsyncSession):
-
+    logger.debug(f"Запуск функции get_all_students")
     return await general.run_query_select(
         db,
         query= '''SELECT s.*, r."Name" as "RoleName" FROM "Students" s LEFT JOIN "Roles" r ON s."RoleID" = r."RoleID"''',
@@ -33,6 +30,7 @@ async def get_all_students(db: AsyncSession):
 
 ''' функция-SQL запрос к БД для вывода определенного студента'''
 async def get_student_id(db: AsyncSession, Student_id: int):
+    logger.debug(f"Запуск функции get_student_id с student_ID={Student_id}")
     return await general.run_query_select(
         db,
         query= """SELECT s.*, r."Name" as "RoleName" FROM "Students" s
@@ -110,7 +108,7 @@ async def activate_student_id(db: AsyncSession, student_ID: int, flag: bool):
 '''функция удаление студента по id'''
 async def del_student_id(db: AsyncSession, id: int):
     try:
-        logger.info(f"Удаляем задачи студента с id: {id}")
+        logger.debug(f"Удаляем задачи студента с id: {id}")
         await general.run_query_delete(
             db,
             query="""
@@ -141,97 +139,9 @@ async def del_student_id(db: AsyncSession, id: int):
 
 
 
-async def get_students_all_tasks(db, **params):
-    '''функция которая работает по хранимке'''
-    # params = {'student_id': 2, 'task_id': 5, ...}
-    args_sql = []
 
-    for k, v in params.items():
-        if v is not None:
-            args_sql.append(f'"{k}" := :{k}')
 
-    query = f"""
-            SELECT * FROM get_students_tasks(
-                {', '.join(args_sql)}
-            )
-        """
-    return await general.run_query_select(
-        db=db,
-        query=query,
-        params=params,
-        mode="mappings_all",  # Возвращаем список словарей
-        required=False,
-        error_message="[F_GET] Не удалось получить список задач студента"
-    )
 
-async def __get_students_all_tasks(
-    db,
-    student_task_id=None,
-    student_id=None,
-    sub_task_id=None,
-    task_id=None,
-    subject_id=None,
-    variant_id=None,
-    completion_status=None,
-    search=None,
-    sort_column1=None,
-    sort_column2=None,
-    sort_direction1=None,
-    sort_direction2=None,
-    limit=None,
-    offset=None
-):
-    logger.debug(
-        f"""[EXEC] Вызов хранимки get_students_tasks с параметрами:
-        student_task_id: {student_task_id}, student_id: {student_id}, sub_task_id: {sub_task_id}, task_id: {task_id}, subject_id: {subject_id}, variant_id: {variant_id},
-        completion_status: {completion_status}, search: {search}, sort_column1: {sort_column1}, sort_direction1: {sort_direction1}, sort_column2: {sort_column2},
-        sort_direction2: {sort_direction2}, offset: {offset}, limit: {limit}
-        """
-    )
-
-    query = """
-        SELECT * FROM get_students_tasks(
-        p_StudentTaskID := :student_task_id::int,
-        p_StudentID := :student_id::int,
-        p_SubTaskID := :sub_task_id::int,
-        p_TaskID := :task_id::int,
-        p_SubjectID := :subject_id::int,
-        p_VariantID := :variant_id::int,
-        p_CompletionStatus := :completion_status::varchar,
-        p_Search := :search::varchar,
-        p_SortColumn1 := :sort_column1::varchar,
-        p_SortColumn2 := :sort_column2::varchar,
-        p_SortDirection1 := :sort_direction1::varchar,
-        p_SortDirection2 := :sort_direction2::varchar,
-        p_Offset := :offset::int,
-        p_Limit := :limit::int
-    )
-    """
-
-    params = {
-        "student_task_id": student_task_id,
-        "student_id": student_id,
-        "sub_task_id": sub_task_id,
-        "task_id": task_id,
-        "subject_id": subject_id,
-        "variant_id": variant_id,
-        "completion_status": completion_status,
-        "search": search,
-        "sort_column1": sort_column1.value if sort_column1 else None,
-        "sort_column2": sort_column2.value if sort_column2 else None,
-        "sort_direction1": sort_direction1.value if sort_direction1 else None,
-        "sort_direction2": sort_direction2.value if sort_direction2 else None,
-        "offset": offset,
-        "limit": limit,
-    }
-    return await general.run_query_select(
-        db=db,
-        query=query,
-        params=params,
-        mode="mappings_all",  # Возвращаем список словарей
-        required=False,
-        error_message="[F_GET] Не удалось получить список задач студента"
-    )
 
 
 ''' Получения студента по заданному полю(id, логин)'''

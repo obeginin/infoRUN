@@ -111,17 +111,16 @@ async def run_query_insert(
     try:
         logger.debug(f"SQL: {query} | params={params} | commit={commit} | return_id={return_id}")
         result = await db.execute(text(query), params or {})
-        if return_id:
-            inserted_id = result.fetchone()[0]  # только для INSERT с OUTPUT
-            if commit:
-                await db.commit()
-                logger.debug("Коммит выполнен успешно")
-            return inserted_id
-
-        # если return_id=False — просто возвращаем количество строк
         if commit:
             await db.commit()
             logger.debug("Коммит выполнен успешно")
+
+        if return_id:
+            # для PostgreSQL с RETURNING
+            inserted_id = result.scalar()  # вернёт первый столбец первой строки
+            return inserted_id
+
+            # если return_id=False — возвращаем количество строк
         return result.rowcount
         #inserted_id = result.scalar()  # Получаем ID из OUTPUT
         #return inserted_id

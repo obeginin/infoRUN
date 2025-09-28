@@ -23,6 +23,7 @@ CREATE TABLE "Permissions" (
 
 -- Пример вставки разрешений
 INSERT INTO "Permissions" ("Name", "Description", "Category") values
+
 	('admin_panel', 'Админская панель', 'Админы'),
 	
     ('view_students', 'Просмотр студентов', 'Студенты'),
@@ -56,6 +57,7 @@ INSERT INTO "Permissions" ("Name", "Description", "Category") values
     ('create_tasks', 'Создание задач', 'Задачи'),
     ('edit_tasks', 'Редактирование задач', 'Задачи'),
     ('delete_tasks', 'Удаление задач', 'Задачи'),
+    ('assign_tasks', 'Назначение задач', 'Задачи'),
     
     ('view_variants', 'Просмотр вариантов', 'Варианты'),
     ('create_variants', 'Создание вариантов', 'Варианты'),
@@ -80,7 +82,7 @@ CREATE TABLE "RolePermissions" (
 
 -- Пример присвоения разрешений супер-админу (RoleID = 1)
 INSERT INTO "RolePermissions" ("RoleID", "PermissionID")
-SELECT 1, "PermissionID" FROM "Permissions";
+SELECT 2, "PermissionID" FROM "Permissions";
 
 --drop table "RolePermissions" 
 
@@ -215,14 +217,19 @@ VALUES
 
 -- Таблица подзадач
 CREATE TABLE "SubTasks" (
-    "SubTaskID" SERIAL PRIMARY KEY,                    -- автоинкрементный id
-    "TaskID" INT NOT NULL,                             -- id категории
-    "SubTaskNumber" INT,		                         -- номер подзадачи
-    "VariantID" INT,                                   -- id варианта
-    "ImagePath" VARCHAR(255),                          -- путь к изображению
-    "Description" TEXT,                                -- описание задачи
+    "SubTaskID" SERIAL PRIMARY KEY,                     -- автоинкрементный id
+    "TaskID" INT NOT NULL,                              -- id категории
+    "SubTaskNumber" TEXT,		                        -- номер подзадачи
+    "VariantID" INT,                                    -- id варианта
+    "ImagePath" VARCHAR(255),                           -- путь к изображению
+    "Description" TEXT,                                 -- описание задачи
     "DifficultyLevel" VARCHAR(10) CHECK ("DifficultyLevel" IN ('легко', 'норма', 'сложно', 'гроб')), -- уровень сложности
-    "SolutionPath" VARCHAR(255),                       -- путь к решению
+    "SolutionPath" VARCHAR(255),                        -- путь к решению
+    "Blocs" TEXT,										-- для json блоков
+    "Creator" VARCHAR(255) NOT NULL,					-- пользователь создавший задачу
+    "CreatedDate" TIMESTAMP NOT NULL DEFAULT now(),   	-- дата создания (заполняется автоматически)
+    "Editor" VARCHAR(255),								-- пользователь создавший задачу
+	"EditedDate" TIMESTAMP,								-- время изменения	
     CONSTRAINT "fk_task" FOREIGN KEY ("TaskID") REFERENCES "Tasks"("TaskID") ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT "fk_variant" FOREIGN KEY ("VariantID") REFERENCES "Variants"("VariantID") ON UPDATE CASCADE ON DELETE SET NULL
 );
@@ -240,10 +247,10 @@ CREATE TABLE "SubTaskTags" (
 CREATE TABLE "SubTaskAnswers" (
     "AnswerID" SERIAL PRIMARY KEY,
     "SubTaskID" INT NOT NULL,                  -- id задачи
-    "AnswerText" TEXT NOT NULL,                -- правильный ответ (текст, число, вариант и т.д.)
+    "AnswerText" TEXT,      		           -- правильный ответ (текст, число, вариант и т.д.)
     "AnswerOrder" INT DEFAULT 0,               -- порядок (для тестов с несколькими вариантами)
     "AnswerType" VARCHAR(20) DEFAULT 'text',   -- тип ответа: text, number, choice
-    "Score" DECIMAL(5,2) DEFAULT 1.0,         -- баллы за этот ответ
+    "Score" DECIMAL(5,2) DEFAULT 1.0,          -- баллы за этот ответ
     CONSTRAINT "fk_subtask" FOREIGN KEY ("SubTaskID")
         REFERENCES "SubTasks"("SubTaskID")
         ON DELETE CASCADE
@@ -266,7 +273,7 @@ CREATE TABLE "StudentSubTaskAnswers" (
         ON DELETE CASCADE
 );
 
--- Таблица изображений подзадач
+-- Таблица изображений подзадач (ПОД ВОПРОСОМ НУЖНА ЛИ??? потому что сохраняются то в блоки)
 CREATE TABLE "SubTasksImages" (
     "ID" SERIAL PRIMARY KEY,
     "SubTaskID" INT NOT NULL REFERENCES "SubTasks"("SubTaskID") ON DELETE CASCADE,
@@ -335,6 +342,22 @@ CREATE TABLE "StudentActionLogs" (
     "Metadata" JSONB                                      -- специфичные поля в формате JSON
 );
 
+-- Доабвить новый столбец в таблицу
+ALTER TABLE "SubTasks"
+ADD COLUMN "Blocs" TEXT
 
 
+-- изименить тип столбца 
+ALTER TABLE "SubTasks"
+ALTER COLUMN "Blocks" TYPE JSON
+USING "Blocks"::TEXT;
 
+
+-- переименовать колонку
+ALTER TABLE "SubTasks"
+RENAME COLUMN "CreatedAt" TO "CreatedDate";
+
+
+--убрать обязательное  ограничение NOT NULL
+ALTER TABLE "SubTaskAnswers"
+ALTER COLUMN "AnswerText" DROP NOT NULL;
