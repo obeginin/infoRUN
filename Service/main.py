@@ -2,6 +2,7 @@
 import os
 import logging
 import uvicorn
+import asyncio
 import time
 from sqlalchemy import text
 from fastapi import FastAPI, Depends, Request, HTTPException

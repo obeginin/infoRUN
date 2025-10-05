@@ -37,6 +37,46 @@ services:
      - ./Service:/infoRUN_Postgres/Service
     restart: unless-stopped
 
+  # Celery worker
+  celery:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: celery
+    command: sh -c "celery -A Celery_worker.worker worker --loglevel=${CELERY_LOG_LEVEL} --concurrency=${CELERY_CONCURRENCY}"
+    env_file:
+      - .env
+    volumes:
+      - ./Service:/infoRUN_Postgres/Service
+    depends_on:
+      - fastapi
+      - redis
+    restart: unless-stopped
+
+  # Flower (мониторинг Celery)
+  flower:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: flower
+    command: sh -c "celery -A Celery_worker.worker flower --port=5555"
+    env_file:
+      - .env
+    ports:
+      - "5555:5555"
+    depends_on:
+      - celery
+      - redis
+    restart: unless-stopped
+
+  # Redis (брокер для Celery)
+  redis:
+    image: redis:7
+    container_name: redis
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+
   nextjs:
     build:
       context: ./Client
