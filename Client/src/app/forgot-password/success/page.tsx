@@ -11,28 +11,23 @@ import { Footer } from "@/src/Widgets/Footer/Footer";
 import group from "@public/alphabet/group.svg";
 import group_black from "@public/alphabet/group_black.svg";
 import male from "@public/subjects/male1.svg";
+import wave from "@public/assets/wave.svg";
 import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useResetPasswordStore } from "@/src/store/resetPasswordStore";
-import { BreadCrumb } from "@/src/ui/breadCrumb/BreadCrumb";
 export default function Success() {
-  const items = [
-    { id: 1, label: "Восстановление пароля", link: "/forgot-password" },
-    { id: 2, label: "Сброс пароля", link: "/forgot-password/success" },
-  ];
   return (
     <>
-      <Header />
       <div className="app" style={{ position: "relative", overflow: "hidden" }}>
-        <BreadCrumb items={items} />
+        <Header />
         <Suspense fallback={<div>Loading...</div>}>
-          <FormContent />
+        <FormContent />
         </Suspense>
-      </div>
+        </div>
       <Footer />
     </>
   );
-}
+};
 
 function FormContent() {
   const searchParams = useSearchParams();
@@ -49,13 +44,10 @@ function FormContent() {
 
   return (
     <>
-      <div className={styles.container}>
-        <Image src={group} alt="" className={styles.group} />
-        <div className={styles.form}>
-          <ProfileContentContainer>
-            <div
-              style={{ display: "flex", flexDirection: "column", gap: "10px" }}
-            >
+    <div className={styles.container}>
+          <Image src={group} alt="" className={styles.group} />
+          <div className={styles.form}>
+            <ProfileContentContainer>
               <Paragraph>Восстановление пароля</Paragraph>
               <Input
                 radius="16px"
@@ -84,14 +76,14 @@ function FormContent() {
               >
                 Восстановить
               </Button>
-            </div>
-          </ProfileContentContainer>
+            </ProfileContentContainer>
+          </div>
+          <div className={styles.right}>
+            <Image src={group_black} alt="" className={styles.group__black} />
+            <Image src={male} alt="" className={styles.male} />
+          </div>
         </div>
-        <div className={styles.right}>
-          <Image src={group_black} alt="" className={styles.group__black} />
-          <Image src={male} alt="" className={styles.male} />
-        </div>
-      </div>
+        <Image src={wave} alt="" className={styles.wave} />
     </>
   );
 }

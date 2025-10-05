@@ -2,6 +2,7 @@
 
 import TasksAPI from "../../../API/tasks";
 import { ProfileContentContainer } from "../../../Features/ProfileContentContainer/ProfileContentContainer";
+import { Button } from "../../../ui/buttonDeafault/Button";
 import { Paragraph } from "../../../ui/p/Paragraph";
 import styles from "./ProfileProgress.module.scss";
 import { useState, useEffect } from "react";
@@ -10,7 +11,6 @@ import type { IProfileProgress } from "./ProfileProgress.interface";
 import { CircualProgress } from "../../../Features/CircualProgress/CircualProgress";
 import { Task } from "../../../ui/taskContainer/Task";
 import { useRouter } from "next/navigation";
-import { TextContainer } from "@/src/ui/textContainer/TextContainer";
 export const ProfileProgress = () => {
   const router = useRouter();
   const user = useUserStore((state) => state.user);
@@ -34,9 +34,9 @@ export const ProfileProgress = () => {
   return (
     <>
       <ProfileContentContainer>
-        <TextContainer>
+        <Button disabled outlined>
           Прогресс
-        </TextContainer>
+        </Button>
         <div className={styles.progress__item}>
           <CircualProgress completed={complitedTasks} total={progress.length} />
           <Paragraph>Информатика</Paragraph>

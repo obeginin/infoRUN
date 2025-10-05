@@ -1,0 +1,15 @@
+.task {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+
+  border: 1px solid var(--text);
+  border-radius: 16px;
+  padding: 10px 20px;
+  width: 100%;
+  box-sizing: border-box;
+
+  flex-wrap: wrap;
+}

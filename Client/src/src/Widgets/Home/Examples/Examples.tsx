@@ -4,7 +4,6 @@ import task from "@public/assets/task_ex.svg";
 import { Button } from "@/src/ui/buttonDeafault/Button";
 import { ProfileContentContainer } from "@/src/Features/ProfileContentContainer/ProfileContentContainer";
 import Image from "next/image";
-import { TextContainer } from "@/src/ui/textContainer/TextContainer";
 export const Examples = () => {
   return (
     <section>
@@ -17,7 +16,7 @@ export const Examples = () => {
           <ProfileContentContainer>
             <div className={styles.content}>
               <div className={styles.counter__exam}>
-                <TextContainer color="white" filled>Информатика</TextContainer>
+                <Button color="white" filled disabled>Информатика</Button>
                 <Button outlined>смотреть все</Button>
               </div>
               <Image src={task} alt="" />

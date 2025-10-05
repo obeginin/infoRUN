@@ -45,12 +45,9 @@ export const useResetPasswordStore = create<ResetPasswordStore>((set) => ({
         new_password,
         repeat_new_password
       );
-      set({
-        success: "Успешное сброса пароля" + response.message,
-        loading: false,
-      });
+      set({ success: response.message, loading: false });
     } catch (error) {
-      set({ error: "Ошибка сброса пароля" + error, loading: false });
+      set({ error: "Failed to reset password" + error, loading: false });
     }
   },
   reset: () => {

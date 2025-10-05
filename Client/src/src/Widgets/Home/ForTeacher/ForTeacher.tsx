@@ -1,7 +1,6 @@
 import { Button } from "@/src/ui/buttonDeafault/Button";
 import { Paragraph } from "@/src/ui/p/Paragraph";
 import styles from "./ForTeacher.module.scss";
-import Link from "next/link";
 
 export const ForTeacher = () => {
   return (
@@ -22,11 +21,7 @@ export const ForTeacher = () => {
           </div>
 
           <div style={{ textAlign: "center" }}>
-            <Link href="/registration">
-              <Button color="white" filled>
-                Зарегистрироваться
-              </Button>
-            </Link>
+            <Button color="white" filled>Зарегистрироваться</Button>
           </div>
         </div>
       </div>

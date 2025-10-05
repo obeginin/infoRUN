@@ -8,12 +8,11 @@ interface ButtonProps {
   filled?: boolean;
   outlined?: boolean;
   border?: "primary" | "white";
-  color?: "primary" | "secondary" | "white" | "text" | "error";
+  color?: "primary" | "secondary" | "white" | "text";
   style?: React.CSSProperties;
   type?: "button" | "submit" | "reset";
   width?: "full" | "auto";
   size?: "small" | "base";
-  fontSize?: "tiny" | "small" | "base" | "medium" | "large";
   loading?: boolean;
 }
 
@@ -31,12 +30,10 @@ export const Button = ({
   width = "auto",
   loading = false,
   size = "base",
-  fontSize = "base",
 }: ButtonProps) => {
   const baseStyles = {
     zIndex: 10,
     width: width === "full" ? "100%" : "auto",
-    fontSize: `var(--${fontSize})`,
     borderRadius: radius,
     padding: size === "base" ? "10px 25px" : "5px 10px",
     backgroundColor: filled ? "var(--primary)" : "transparent",

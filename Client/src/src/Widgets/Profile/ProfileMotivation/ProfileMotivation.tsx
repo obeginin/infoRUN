@@ -2,16 +2,16 @@ import { ProfileContentContainer } from "@/src/Features/ProfileContentContainer/
 import { Paragraph } from "@/src/ui/p/Paragraph";
 import styles from "./ProfileMotivation.module.scss";
 import blackboard from "@public/assets/blackboard.svg";
+import { Button } from "@/src/ui/buttonDeafault/Button";
 import Image from "next/image";
-import { TextContainer } from "@/src/ui/textContainer/TextContainer";
 export const ProfileMotivation = () => {
   return (
     <>
       <ProfileContentContainer borderColor="purple" color="purple">
         <div className={styles.motivation__exam}>
-          <TextContainer borderColor="bg" color="white">
+          <Button border="white" color="white" outlined>
             Цитата дня
-          </TextContainer>
+          </Button>
           <Image
             src={blackboard}
             alt=""
