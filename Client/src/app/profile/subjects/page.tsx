@@ -6,10 +6,10 @@ import { Header } from "@/src/Widgets/Header/Header";
 import { useEffect, useMemo } from "react";
 import type { Subject } from "@/src/interface/subject.interface";
 import styles from "./subjects.module.scss";
-import { useMyTaskStore } from "@/src/store/myTaskStore";
+import { useMyTaskStore } from "@/src/store/task/myTaskStore";
 import { Spinner } from "@/src/ui/LoadingSpinner/LoadingSpinner";
 import { ProfileContentContainer } from "@/src/Features/ProfileContentContainer/ProfileContentContainer";
-import { useUserStore } from "@/src/store/userStore";
+import { useUserStore } from "@/src/store/user/userStore";
 import { Paragraph } from "@/src/ui/p/Paragraph";
 import Link from "next/link";
 export default function Subjects() {

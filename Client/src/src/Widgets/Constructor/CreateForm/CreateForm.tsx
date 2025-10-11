@@ -1,6 +1,6 @@
 "use client";
 
-import { useConstructorStore } from "@/src/store/useConstructorStore";
+import { useConstructorStore } from "@/src/store/constructor/useConstructorStore";
 import { Spinner } from "@/src/ui/LoadingSpinner/LoadingSpinner";
 import { TextArea } from "@/src/ui/textArea/TextArea";
 import { useEffect, useState } from "react";

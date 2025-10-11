@@ -1,6 +1,6 @@
 "use client";
 
-import { useUserStore } from "@/src/store/userStore";
+import { useUserStore } from "@/src/store/user/userStore";
 import styles from "./ProfileCreateTask.module.scss";
 import { ProfileContentContainer } from "@/src/Features/ProfileContentContainer/ProfileContentContainer";
 import { Button } from "@/src/ui/buttonDeafault/Button";
