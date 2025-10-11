@@ -6,7 +6,7 @@ import { Paragraph } from "@/src/ui/p/Paragraph";
 import { TaskElement } from "@/src/Features/TaskConstructor/TaskElement/TaskElement";
 import styles from "./TaskConstructor.module.scss";
 import { Button } from "@/src/ui/buttonDeafault/Button";
-import { useConstructorStore } from "@/src/store/useConstructorStore";
+import { useConstructorStore } from "@/src/store/constructor/useConstructorStore";
 import { useEffect, useRef, useState } from "react";
 import { Toast, ToastMessage } from "primereact/toast";
 import "primereact/resources/themes/lara-light-cyan/theme.css";

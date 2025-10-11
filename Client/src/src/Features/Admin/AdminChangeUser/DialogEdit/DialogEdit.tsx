@@ -1,5 +1,5 @@
 import { IDialog } from "@/src/ui/IDialog/IDialog";
-import { useAdminStore } from "@/src/store/adminStore";
+import { useAdminStore } from "@/src/store/admin/adminStore";
 import { Paragraph } from "@/src/ui/p/Paragraph";
 import { useState, useEffect } from "react";
 import { Input } from "@/src/ui/input/Input";

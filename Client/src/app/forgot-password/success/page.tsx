@@ -13,7 +13,7 @@ import group_black from "@public/alphabet/group_black.svg";
 import male from "@public/subjects/male1.svg";
 import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { useResetPasswordStore } from "@/src/store/resetPasswordStore";
+import { useResetPasswordStore } from "@/src/store/password/resetPasswordStore";
 import { BreadCrumb } from "@/src/ui/breadCrumb/BreadCrumb";
 export default function Success() {
   const items = [

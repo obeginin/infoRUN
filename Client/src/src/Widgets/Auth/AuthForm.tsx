@@ -1,6 +1,6 @@
 "use client";
 
-import { useUserStore } from "@/src/store/userStore";
+import { useUserStore } from "@/src/store/user/userStore";
 import { Button } from "@/src/ui/buttonDeafault/Button";
 import { Input } from "@/src/ui/input/Input";
 import { Paragraph } from "@/src/ui/p/Paragraph";

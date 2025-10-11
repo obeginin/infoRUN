@@ -1,20 +1,7 @@
 import { create } from "zustand";
 import { combine, persist } from "zustand/middleware";
-import AuthAPI from "../API/auth";
-
-interface User {
-  ID: number;
-  Login: string;
-  Email: string;
-  First_Name: string;
-  Last_name: string;
-  RoleName: string;
-}
-
-interface ErrorDetail {
-  error: string;
-  message: string;
-}
+import AuthAPI from "@/src/API/auth";
+import type { User, ErrorDetail } from "./user.interface";
 
 export const useUserStore = create(
   persist(

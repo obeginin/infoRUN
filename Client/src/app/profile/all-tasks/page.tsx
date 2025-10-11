@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import styles from "./allTasks.module.scss";
-import { useUserStore } from "@/src/store/userStore";
+import { useUserStore } from "@/src/store/user/userStore";
 import type { ITask } from "@/src/interface/subtask.interface";
 import TasksAPI from "@/src/API/tasks";
 import { useIntersectionObserver, useQuery } from "@siberiacancode/reactuse";
@@ -32,6 +32,7 @@ export default function AllTasks() {
   const [tabFilters, setTabFilters] = useState<string>("Все");
   const filters = ["Все", "Выполненные", "В процессе", "Не приступал"];
   const [allTasksCache, setAllTasksCache] = useState<ITask[] | null>(null);
+  // const [allTaskLoading, setAllTaskLoading] = useState(false);
 
   const limit = 10;
 
