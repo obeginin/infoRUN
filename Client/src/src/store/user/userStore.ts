@@ -16,7 +16,7 @@ export const useUserStore = create(
         login: async (login: string, password: string) => {
           set({ loading: true });
           try {
-            const data = await AuthAPI.loginV2(login, password);
+            const data = await AuthAPI.login(login, password);
             if (data.detail) {
               set({
                 error: {

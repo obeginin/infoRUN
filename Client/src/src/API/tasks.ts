@@ -6,7 +6,7 @@ export default class TasksAPI {
     offset: number
   ) {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/students_subtasks/${id}?limit=${limit}&offset=${offset}`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/students_subtasks?student_id=${id}&p_limit=${limit}&p_offset=${offset}`,
       {
         method: "GET",
         headers: {
@@ -20,7 +20,7 @@ export default class TasksAPI {
 
   static async getAllTasks(id: number, token: string) {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/students_subtasks/${id}`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/students_subtasks?student_id=${id}`,
       {
         method: "GET",
         headers: {
