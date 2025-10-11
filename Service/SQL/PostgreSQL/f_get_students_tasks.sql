@@ -1,5 +1,5 @@
 
-
+--DROP FUNCTION get_students_tasks
 CREATE OR REPLACE FUNCTION get_students_tasks(
     student_task_id INT DEFAULT NULL,
     student_id INT DEFAULT NULL,
@@ -34,7 +34,7 @@ RETURNS TABLE(
     "TaskID" INT,
     "TaskTitle" VARCHAR,
     "SubTaskNumber" TEXT,
-    "ImagePath" VARCHAR,
+    "Blocks" TEXT,
     "Description" TEXT,
     "VariantID" INT,
     "VariantName" VARCHAR,
@@ -64,7 +64,7 @@ BEGIN
         t."TaskID",
         t."TaskTitle",
         s."SubTaskNumber",
-        s."ImagePath",
+        s."Blocks",
         s."Description",
         v."VariantID",
         v."VariantName",
