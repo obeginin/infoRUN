@@ -3,11 +3,7 @@
 import { useEffect, useState } from "react";
 import styles from "./allTasks.module.scss";
 import { useUserStore } from "@/src/store/user/userStore";
-<<<<<<< Updated upstream
-import type { ITask, IBlock } from "@/src/interface/subtask.interface";
-=======
 import type { ITask, IBlock, IData } from "@/src/interface/subtask.interface";
->>>>>>> Stashed changes
 import TasksAPI from "@/src/API/tasks";
 import { useIntersectionObserver, useQuery } from "@siberiacancode/reactuse";
 import { Header } from "@/src/Widgets/Header/Header";
@@ -67,11 +63,11 @@ export default function AllTasks() {
     setIsFetchingMore(false);
     setHasMore(false);
 
-    const applyFilter = (list: IData[]) => {
-      let filtered: IData[] = list;
+    const applyFilter = (list: ITask[]) => {
+      let filtered: ITask[] = list;
       switch (tabFilters) {
         case "Выполненные":
-          filtered = list.filter((t) => t. === "Выполнено");
+          filtered = list.filter((t) => t.CompletionStatus === "Выполнено");
           break;
         case "В процессе":
           filtered = list.filter((t) => t.CompletionStatus === "В процессе");
@@ -126,6 +122,8 @@ export default function AllTasks() {
       .catch((err) => console.log(err));
   };
 
+  console.log(data);
+
   return (
     <>
       <Header />
@@ -153,13 +151,13 @@ export default function AllTasks() {
                 data.map((item, index) => (
                   <Task
                     key={index}
-                    // border={`${
-                    //   item.CompletionStatus === "В процессе"
-                    //     ? "warning"
-                    //     : item.CompletionStatus === "Выполнено"
-                    //     ? "success"
-                    //     : "primary"
-                    // }`}
+                    border={`${
+                      item.CompletionStatus === "В процессе"
+                        ? "warning"
+                        : item.CompletionStatus === "Выполнено"
+                        ? "success"
+                        : "primary"
+                    }`}
                   >
                     <Paragraph>
                       {item.SubTaskID}: {item.TaskTitle} {item.VariantName}
@@ -179,7 +177,6 @@ export default function AllTasks() {
                     >
                       <div className={styles.collapsibleInner}>
                         <ProfileContentContainer>
-<<<<<<< Updated upstream
                           {item.Blocks && typeof item.Blocks === "string"
                             ? JSON.parse(item.Blocks).map(
                                 (block: IBlock, index: number) => (
@@ -198,26 +195,7 @@ export default function AllTasks() {
                                   </div>
                                 )
                               )
-                            : null}
-=======
-                          {item.Blocks
-                            ? item.Blocks.map((block: IBlock, index) => (
-                                <div key={index}>
-                                  {block.type === "text" && (
-                                    <Paragraph>{block.content}</Paragraph>
-                                  )}
-                                  {block.type === "image" && (
-                                    <img
-                                      loading="lazy"
-                                      className={styles.image}
-                                      src={`${process.env.NEXT_PUBLIC_BASE_URL}/${block.content}`}
-                                      alt={block.content ? block.content : ""}
-                                    />
-                                  )}
-                                </div>
-                              ))
                             : ""}
->>>>>>> Stashed changes
                           <div className={styles.image}>
                             <div className={styles.answer}>
                               <Input
