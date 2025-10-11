@@ -2,6 +2,7 @@
 _notGit/
 Uploads/
 logs/
+configs/
 
 # Исключить файл логов
 logs/app.log
@@ -53,3 +54,4 @@ Thumbs.db
 
 # IDE configs
 .vscode/
+

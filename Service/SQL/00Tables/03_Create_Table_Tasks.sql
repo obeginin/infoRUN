@@ -86,15 +86,62 @@ OPTION (MAXRECURSION 0);
 update Tasks set TaskTitle='четвертое задание' where TaskID=4
 delete Tasks where TaskID in (1,2,3,4) --удаляем строки
 
+ALTER TABLE Variants
+ALTER TABLE Variants
+ADD CONSTRAINT fk_yourtable_subjects
+FOREIGN KEY (SubjectID) REFERENCES Subjects(ID)
 
-ALTER TABLE Tasks
-ALTER COLUMN TaskNumber INT NOT NULL ;
+ALTER TABLE Variants
+ADD CONSTRAINT fk_variants_subjects
+FOREIGN KEY (SubjectID) REFERENCES Subjects(id);
 
-select * from users
+SubjectID INT NOT NULL
+select * from Subjects
 select * from Tasks
-select * from SubTasks
+select * from SubTasks order by subtaskid desc
 select * from StudentTasks
+select * from Variants where VariantID = 2
+update
 
+ALTER TABLE Variants
+ADD CONSTRAINT fk_variants_subjects
+FOREIGN KEY (SubjectID) REFERENCES Subjects(ID);
 
-
+update Subjects set EnglishName='RusskiyYazyk' where id = 2
+update Subjects set EnglishName='Fizika' where id = 3
+update Subjects set EnglishName='Khimiya' where id = 4
+update Subjects set EnglishName='Biologiya' where id = 5
+update Subjects set EnglishName='Istoriya' where id = 6
+update Subjects set EnglishName='Obshchestvoznaniye' where id = 7
+update Subjects set EnglishName='Literatura' where id = 8
+update Subjects set EnglishName='AngliyskiyYazyk' where id = 9
+update Subjects set EnglishName='Informatika' where id = 10
 */
+
+-- добавление столбца, котоырй явялется внешним ключем на значение из другой таблицы
+-- 1. Добавляем столбец, пока разрешаем NULL
+ALTER TABLE Variants
+ADD SubjectID INT NULL;
+
+-- 2. Проставляем значения по умолчанию для существующих записей
+-- Например, все ставим на существующий Subject с id = 1
+UPDATE Variants
+SET SubjectID = 1
+WHERE SubjectID IS NULL;
+
+-- 3. Делаем столбец обязательным
+ALTER TABLE Variants
+ALTER COLUMN SubjectID INT NOT NULL;
+
+-- 4. Добавляем внешний ключ
+ALTER TABLE Variants
+ADD CONSTRAINT fk_variants_subjects
+FOREIGN KEY (SubjectID) REFERENCES Subjects(id);
+
+DELETE FROM SubTasks WHERE SubTaskID =1362
+select * from SubTasks order by subtaskid desc;
+select * from SubTaskFiles stf order by subtaskid desc;
+select * from SubTasksImages sti  order by subtaskid desc; 
+select * from SubTaskSolutions sts 	 order by subtaskid desc; 
+select * from SubTasks where Blocks like '%"type":"image","content":"task_1_sub_3.png"%' order by subtaskid desc; 
+SELECT FilePath FROM SubTaskFiles WHERE SubTaskID = 1429

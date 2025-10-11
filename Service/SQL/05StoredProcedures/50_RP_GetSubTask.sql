@@ -56,6 +56,7 @@ BEGIN
 		AND (@TaskID IS NULL OR s.TaskID = @TaskID) 
 		AND (@SubjectID IS NULL OR sb.ID = @SubjectID)
 		AND (@VariantID IS NULL OR v.VariantID = @VariantID)
+		AND (@Creator IS NULL OR s.Creator = @Creator)
 		AND (
 			@Search IS NULL
 			OR s.Blocks LIKE '%' + @Search + '%'	
