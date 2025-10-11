@@ -8,8 +8,8 @@ export default class AuthAPI {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          Login: login,
-          Password: password,
+          identifier: login,
+          password: password,
         }),
       }
     );
