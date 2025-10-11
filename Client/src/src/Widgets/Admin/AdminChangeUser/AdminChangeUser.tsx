@@ -7,7 +7,7 @@ import { ProfileContentContainer } from "../../../Features/ProfileContentContain
 import styles from "./AdminChangeUser.module.scss";
 import { DialogDelete } from "@/src/Features/Admin/AdminChangeUser/DialogDelete/DialogDelete";
 import { DialogPassword } from "@/src/Features/Admin/AdminChangeUser/DialogPassword/DialogPassword";
-import { useAdminStore } from "@/src/store/adminStore";
+import { useAdminStore } from "@/src/store/admin/adminStore";
 import type { ToastMessage } from "primereact/toast";
 import { Toast } from "primereact/toast";
 

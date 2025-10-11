@@ -5,7 +5,7 @@ import { ProfileContentContainer } from "@/src/Features/ProfileContentContainer/
 import { Paragraph } from "@/src/ui/p/Paragraph";
 import { useEffect, useState } from "react";
 import AdminAPI from "@/src/API/admin";
-import { useUserStore } from "@/src/store/userStore";
+import { useUserStore } from "@/src/store/user/userStore";
 import type { ILog } from "@/src/interface/logs.interface";
 import { Task } from "@/src/ui/taskContainer/Task";
 import { format } from "date-fns";
