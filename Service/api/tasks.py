@@ -2,15 +2,14 @@ from utils.config import settings
 from Service.Schemas import tasks
 from Service.Crud import tasks as task_crud
 from utils import errors,general
-from Service.Database import get_db
+from Service.dependencies import get_db
 from Service.Models import Student
 from Service.Crud.auth import get_current_student, permission_required
 from Service.producer import send_log
 
 from fastapi import APIRouter, Depends, Request, Form, UploadFile, File, Query, HTTPException
 from sqlalchemy import text
-from sqlalchemy.ext.asyncio import AsyncSession
-
+from sqlalchemy.orm import Session
 from fastapi.responses import HTMLResponse
 from starlette.responses import FileResponse
 from typing import List
@@ -33,7 +32,6 @@ logger = logging.getLogger(__name__) # создание логгера для т
 task_router  = APIRouter(prefix="/api/tasks", tags=["tasks"])
 
 
-# TODO переведен на асинхронный postgres
 
 # /api/tasks/   (GET) @
 ''' Эндпоинт: Получить список КАТЕГОРИЙ'''
@@ -50,14 +48,23 @@ task_router  = APIRouter(prefix="/api/tasks", tags=["tasks"])
                 так же необходимо передавать в заголовке **токен** пользователя
         """
 )
-async def read_all_tasks(
-        subjectID: int | None = Query(None, description="ID предмета для фильтрации"),
-        db: AsyncSession = Depends(get_db),
-        current_student=Depends(permission_required("view_category"))):     # получаем текущего студента по токену
-    tasks = await task_crud.get_tasks(db, subjectID=subjectID)
+def read_all_tasks(
+        db: Session = Depends(get_db),
+        subjectID: int | None = Query(default=None),         # передаем id предмета (не обязательно, тогда выйдут категории всех предметов)
+        current_student = Depends(get_current_student)):     # получаем текущего студента по токену
+
+    if subjectID is None:
+        tasks = task_crud.get_all_tasks(db)  # функция без фильтрации
+    else:
+        tasks = task_crud.get_all_tasks(db, subjectID)
+    logger.warning(f"tasks:{tasks}")
+
     if not tasks:
-        logger.warning(f"Не найдено категорий")
-        raise errors.not_found(message=f"Не найдено категорий")
+        logger.warning(f"Для предмета с id={subjectID} категорий не найдено")
+        return {
+            "message": f"Для предмета с id={subjectID} категорий не найдено",
+            "tasks": []
+        }
 
     count = len(tasks)
     send_log(
@@ -77,40 +84,13 @@ async def read_all_tasks(
         "tasks": tasks
     }
 
-@task_router.get("/{task_id}", summary="Получить категорию по его task_id")
-async def read_task_by_id(
-    task_id: int,
-    db: AsyncSession = Depends(get_db),
-    current_student=Depends(permission_required("view_category"))
-):
-    logger.info(f"Пользователь {current_student.Login} запросил категорию с task_id={task_id}")
-    task = await task_crud.get_tasks(db, task_id=task_id)
-    if not task:
-        logger.warning(f"Категория с task_id={task_id} не найдена")
-        raise errors.not_found(message=f"Категория с task_id={task_id} не найдено")
-    return task[0]
 
-
-# TODO удалить после полного перехода
-# /api/tasks/{id}?subject_id=    (GET) @
-#@task_router.get("/{id}", response_model=list[tasks.SubTaskRead],summary="Получить список категорией по выбранному предмету")
-async def read_subtasks_TaskID(id: int, subject_id: int = None, db: AsyncSession = Depends(get_db),
-                         current_student=Depends(permission_required("view__category"))):
-    result = db.execute(text(f"""SELECT * FROM Tasks where SubjectID={subject_id}"""),
-                        {subject_id: subject_id}).fetchall()
-    subtasks = [dict(row._mapping) for row in result]
-    return subtasks
-
-
-# TODO удалить после полного перехода
 # /api/tasks/{task_id}  (GET) @
 ''' Эндпоинт: Получить категорию по id'''
-#@task_router.get("/{task_id}", response_model=list[tasks.TaskRead],summary="Получить задачу по id")
-async def read_tasks_id(task_id: int, db: AsyncSession = Depends(get_db),current_student=Depends(permission_required("view__category"))):
-    print(type(task_id))
-    result = db.execute(text(f"SELECT TaskID, TaskNumber, TaskTitle FROM Tasks where TaskID = :task_id"),{"task_id": task_id}).fetchall()
-    subtasks = [dict(row._mapping) for row in result]
-    return subtasks
+@task_router.get("/{task_id}", response_model=tasks.TaskRead,summary="Получить категорию по Task id")
+def read_tasks_id(task_id: int, db: Session = Depends(get_db), current_student = Depends(get_current_student)):
+    task = task_crud.get_task_id(db, task_id)
+    return task
 
 
 
