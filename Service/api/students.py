@@ -212,7 +212,7 @@ async def activate_student(id: int, flag: bool, db: AsyncSession = Depends(get_d
 
 
 # /api/students/delete_student/v2
-@students_router.post("/delete_student/v2", summary="Удаление студента выбранному полю ")
+@students_router.post("/delete_student", summary="Удаление студента выбранному полю ")
 async def delete_student_v2(request: SearchStudentQuery = Depends(), db: AsyncSession = Depends(get_db), current_student=Depends(permission_required("delete_students"))):
     logger.info(f"Пользователь {current_student.Login} отправил запрос на удаление студента студента request={request}")
 

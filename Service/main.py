@@ -38,12 +38,19 @@ app = FastAPI(debug=settings.LOG_LEVEL, docs_url=None, redoc_url=None)
 
 # CORS (для запросов с фронта)
 origins = [
+    "http://localhost:3000",       # локальный фронт (Vite)
+    "http://10.0.2.5:3000",
+    "http://127.0.0.1:5173",       # иногда нужен этот
+    "http://localhost:3000",       # локальный фронт (Vite)
+    "http://127.0.0.1:3000",
+    "http://10.8.0.8:3000",
     "https://info-run.ru",         # если фронт будет на проде
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,                   # ✅ разрешаешь запросы с фронта
+    allow_origins=["*"],
+    #allow_origins=origins,                   # ✅ разрешаешь запросы с фронта
     allow_credentials=True,                  # ✅ разрешаешь куки / авторизацию
     allow_methods=["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"],                     # ✅ разрешаешь любые HTTP-методы (GET, POST, PUT и т.д.)
     allow_headers=["*"],                     # ✅ разрешаешь любые заголовки (например, Authorization)

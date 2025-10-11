@@ -25,7 +25,7 @@ class StudentTaskRead(BaseModel):
     TaskID: Optional[int] = None
     TaskTitle: Optional[str] = None
     SubTaskNumber: Optional[int] = None
-    ImagePath: Optional[str] = None
+    blocks: Optional[str] = None
     SolutionStudentPath: Optional[str] = None
     Description: Optional[str] = None
     VariantID: Optional[int] = None

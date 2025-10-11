@@ -134,7 +134,7 @@ async def login(
 
 
 # /api/auth/login
-@auth_router.post("/login/v2", response_model=auth.TokenWithStudent,
+@auth_router.post("/login", response_model=auth.TokenWithStudent,
                   summary="Аутентификация (запрос токена для пользователя (логин / email / телефон))",
                   description="Возвращает токен, тип заголовка и небольшую информацию о пользователе, если (логин / email / телефон) и пароль корректны и пользователь активен.")
 async def login(
@@ -296,7 +296,7 @@ async def register_user(user_data: auth.UserCreate, db: AsyncSession = Depends(g
 
 # /api/auth/register
 '''Регистрация'''
-@auth_router.post("/register/v2", summary="Регистрация пользователя",
+@auth_router.post("/register", summary="Регистрация пользователя",
                  description="после ввода данных на указанный email отправляется письмо с подтверждением почты")
 async def register_user(user_data: auth.UserCreate, db: AsyncSession = Depends(get_db)):
     logger.info(f"Запрос на регистрацию пользователя: {user_data}")

@@ -21,8 +21,8 @@ logger = logging.getLogger(__name__) # создание логгера для т
 students_subtasks_router = APIRouter(prefix="/api/students_subtasks", tags=["students_subtasks"])
 
 
-# /api/students_subtasks/{StudentID}
-@students_subtasks_router.get("/v2", response_model=list[students_subtasks_schemas.StudentTaskRead],
+# /api/students_subtasks/
+@students_subtasks_router.get("", response_model=list[students_subtasks_schemas.StudentTaskRead],
                               summary="ГЛАВНЫЙ РОУТ с получением списка задач студента по фильтрам",
                               description="""В качестве фильтров передаются параметры    
                                             `StudentTaskID` - по Номеру задачи Студента  
@@ -78,9 +78,9 @@ async def read_tasks_student(
 # TODO надо убирать
 # /api/students_subtasks
 '''Эндпоинт для получения всех подзадач всех студентов'''
-@students_subtasks_router.get("", response_model=list[students_subtasks_schemas.StudentTaskRead],
-                              summary="ГЛАВНЫЙ РОУТ с получением списка задач всех студентов (без фильтров)",
-                              description="Возвращает список всех задач студентов без применения фильтров.")
+#@students_subtasks_router.get("", response_model=list[students_subtasks_schemas.StudentTaskRead],
+#                              summary="ГЛАВНЫЙ РОУТ с получением списка задач всех студентов (без фильтров)",
+#                              description="Возвращает список всех задач студентов без применения фильтров.")
 async def read_all_students_subtasks(db: AsyncSession = Depends(get_db), current_student=Depends(permission_required("view_tasks"))):
     logger.info(f"Пользователь '{current_student.Login}' запросил задачи всех студентов. ")
 
@@ -117,7 +117,7 @@ async def assign_task_for_student(
 
 # /api/students_subtasks/{StudentID}/StudentTask/{StudentTaskID}
 '''Эндпоинт для получения задачи студента по его student_id и номеру SubTasksID'''
-@students_subtasks_router.get("/{student_id}/StudentTask/{student_task_id}", response_model=list[students_subtasks_schemas.StudentTaskRead], summary="роут с получением данных о задаче студента по StudentTaskID")
+#@students_subtasks_router.get("/{student_id}/StudentTask/{student_task_id}", response_model=list[students_subtasks_schemas.StudentTaskRead], summary="роут с получением данных о задаче студента по StudentTaskID")
 async def read_task_student(student_task_id: int, db: AsyncSession = Depends(get_db), current_student=Depends(permission_required("view_tasks"))):
     logger.info(f"Пользователь '{current_student.Login}' запросил данные задачи с ID={student_task_id}. ")
 
