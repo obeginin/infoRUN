@@ -2,7 +2,7 @@
 
 import { ProfileContentContainer } from "@/src/Features/ProfileContentContainer/ProfileContentContainer";
 import edit from "@public/assets/edit_white.svg";
-import { useUserStore } from "@/src/store/userStore";
+import { useUserStore } from "@/src/store/user/userStore";
 import { Button } from "@/src/ui/buttonDeafault/Button";
 import { Paragraph } from "@/src/ui/p/Paragraph";
 import { ChangePassword } from "../../ChangePassword/ChangePassword";

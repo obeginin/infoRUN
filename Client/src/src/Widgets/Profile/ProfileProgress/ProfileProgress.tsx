@@ -6,7 +6,7 @@ import { Button } from "../../../ui/buttonDeafault/Button";
 import { Paragraph } from "../../../ui/p/Paragraph";
 import styles from "./ProfileProgress.module.scss";
 import { useState, useEffect } from "react";
-import { useUserStore } from "../../../store/userStore";
+import { useUserStore } from "../../../store/user/userStore";
 import type { IProfileProgress } from "./ProfileProgress.interface";
 import { CircualProgress } from "../../../Features/CircualProgress/CircualProgress";
 import { Task } from "../../../ui/taskContainer/Task";

@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import AdminAPI from "../../../API/admin";
 import { Input } from "../../../ui/input/Input";
 import styles from "./AdminNewUser.module.scss";
-import { useAdminStore } from "@/src/store/adminStore";
+import { useAdminStore } from "@/src/store/admin/adminStore";
 interface IData {
   RoleID: number;
   Name: string;

@@ -1,7 +1,7 @@
 'use client'
 
 import styles from "./Popup.module.scss";
-import { useAdminStore } from "@/src/store/adminStore";
+import { useAdminStore } from "@/src/store/admin/adminStore";
 
 export const Popup = () => {
   const {

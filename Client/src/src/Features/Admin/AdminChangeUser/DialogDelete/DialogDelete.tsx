@@ -3,7 +3,7 @@
 import { Button } from "../../../../ui/buttonDeafault/Button";
 import { Paragraph } from "../../../../ui/p/Paragraph";
 import styles from "./DialogDelete.module.scss";
-import { useAdminStore } from "@/src/store/adminStore";
+import { useAdminStore } from "@/src/store/admin/adminStore";
 import { IDialog } from "../../../../ui/IDialog/IDialog";
 export const DialogDelete = () => {
   const token = localStorage.getItem("token") || "";

@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { Subject } from "@/src/interface/subject.interface";
-import FiltersAPI from "../API/filters";
-import SubtaskAPI from "../API/subtask";
+import FiltersAPI from "@/src/API/filters";
+import SubtaskAPI from "@/src/API/subtask";
 
 export type EditBlock =
   | { type: "text"; content: string }

@@ -3,7 +3,7 @@
 import type { IUser } from "@/src/interface/user.interface";
 import styles from "./TableUsers.module.scss";
 import { Popup } from "../Popup/Popup";
-import { useAdminStore } from "@/src/store/adminStore";
+import { useAdminStore } from "@/src/store/admin/adminStore";
 export const TableUsers = () => {
   const { isVisiblePopup, setVisiblePopup, currentUser, filteredUsers } =
     useAdminStore();

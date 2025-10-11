@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from "react";
 import styles from "./allTasks.module.scss";
-import { useUserStore } from "@/src/store/userStore";
-import type { ITask } from "@/src/interface/task.interface";
+import { useUserStore } from "@/src/store/user/userStore";
+import type { ITask } from "@/src/interface/subtask.interface";
 import TasksAPI from "@/src/API/tasks";
 import { useIntersectionObserver, useQuery } from "@siberiacancode/reactuse";
 import { Header } from "@/src/Widgets/Header/Header";
-import { BreadCrumb } from "@/src/Features/BreadCrumb/BreadCrumb";
+import { BreadCrumb } from "@/src/ui/breadCrumb/BreadCrumb";
 import { ProfileContentContainer } from "@/src/Features/ProfileContentContainer/ProfileContentContainer";
 import { Button } from "@/src/ui/buttonDeafault/Button";
 import { Task } from "@/src/ui/taskContainer/Task";
@@ -15,8 +15,12 @@ import { Paragraph } from "@/src/ui/p/Paragraph";
 import { Footer } from "@/src/Widgets/Footer/Footer";
 import { Spinner } from "@/src/ui/LoadingSpinner/LoadingSpinner";
 import { Input } from "@/src/ui/input/Input";
-import Image from "next/image";
+
 export default function AllTasks() {
+  const items = [
+    { id: 1, label: "Личный кабинет", link: "/profile" },
+    { id: 2, label: "Все задачи", link: "/profile/all-tasks" },
+  ]
   const token = localStorage.getItem("token");
   const user = useUserStore((state) => state.user);
   const [data, setData] = useState<ITask[]>([]);
@@ -28,6 +32,7 @@ export default function AllTasks() {
   const [tabFilters, setTabFilters] = useState<string>("Все");
   const filters = ["Все", "Выполненные", "В процессе", "Не приступал"];
   const [allTasksCache, setAllTasksCache] = useState<ITask[] | null>(null);
+  // const [allTaskLoading, setAllTaskLoading] = useState(false);
 
   const limit = 10;
 
@@ -119,9 +124,9 @@ export default function AllTasks() {
 
   return (
     <>
-      <div className="app">
         <Header />
-        <BreadCrumb currentPage="Мои задачи" prevPage="Личный кабинет" />
+      <div className="app">
+        <BreadCrumb items={items} />
 
         <section>
           <ProfileContentContainer>
@@ -171,7 +176,7 @@ export default function AllTasks() {
                       <div className={styles.collapsibleInner}>
                         <ProfileContentContainer>
                           <div className={styles.image}>
-                            <Image
+                            <img
                               loading="lazy"
                               className={styles.image}
                               src={`${process.env.NEXT_PUBLIC_BASE_URL}/${item.ImagePath}`}
