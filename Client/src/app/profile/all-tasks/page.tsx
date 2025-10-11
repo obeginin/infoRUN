@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import styles from "./allTasks.module.scss";
 import { useUserStore } from "@/src/store/user/userStore";
-import type { ITask, IBlock } from "@/src/interface/subtask.interface";
+import type { ITask, IBlock, IData } from "@/src/interface/subtask.interface";
 import TasksAPI from "@/src/API/tasks";
 import { useIntersectionObserver, useQuery } from "@siberiacancode/reactuse";
 import { Header } from "@/src/Widgets/Header/Header";
@@ -122,6 +122,8 @@ export default function AllTasks() {
       .catch((err) => console.log(err));
   };
 
+  console.log(data);
+
   return (
     <>
       <Header />
@@ -193,7 +195,7 @@ export default function AllTasks() {
                                   </div>
                                 )
                               )
-                            : null}
+                            : ""}
                           <div className={styles.image}>
                             <div className={styles.answer}>
                               <Input

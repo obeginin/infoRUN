@@ -1,36 +1,27 @@
 export interface ITask {
-  Attempts: number;
-  Blocks: IBlock[] | [];
-  Comment: null | string;
-  CompletionDate: null | string;
-  CompletionStatus: null | string;
-  DeadlineDate: null | string;
-  Description: null | string;
-  DifficultyLevel: null | number;
-  ID: null | number;
-  Login: string;
-  ModifiedDate: null | string;
-  Name: null | string;
-  NumberVarinat: null | number;
-  Score: null | number;
-  SolutionStudentPath: null | string;
-  StartDate: null | string;
-  StudentAnswer: null | string;
-  StudentID: number;
-  StudentTaskID: number;
   SubTaskID: number;
-  SubTaskNumber: number;
+  SubTaskNumber: string;
+  SubjectID: number;
+  SubjectName: string;
+  EnglishName: string;
   TaskID: number;
   TaskTitle: string;
+  VariantID: null | number;
+  VariantName: null | string;
   TypeVariant: null | string;
-  VariantID: number;
-  VariantName: string;
   YearVariant: null | number;
-}
-
-export interface IBlock {
-  type: string;
-  content: string;
+  NumberVariant: null | number;
+  DifficultyLevel: null | number;
+  Description: null | string;
+  Blocks: [] | IBlock[];
+  Comment: null | string;
+  Creator: string;
+  CreatedDate: string;
+  Editor: null | string;
+  EditedDate: null | string;
+  Files: [] | string[];
+  CompletionStatus: null | string;
+  Score: null | number;
 }
 
 export interface IData {
@@ -52,6 +43,7 @@ export interface IData {
   VariantID: number;
   VariantName: string;
   YearVariant: number | null;
+  CompletionStatus: string | null;
 }
 
 export interface IBlock {
