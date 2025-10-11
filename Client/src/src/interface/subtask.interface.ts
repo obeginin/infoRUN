@@ -1,4 +1,5 @@
 export interface ITask {
+<<<<<<< Updated upstream
   Attempts: number;
   Blocks: IBlock[] | [];
   Comment: null | string;
@@ -33,6 +34,31 @@ export interface IBlock {
   content: string;
 }
 
+=======
+  SubTaskID: number;
+  SubTaskNumber: string;
+  SubjectID: number;
+  SubjectName: string;
+  EnglishName: string;
+  TaskID: number;
+  TaskTitle: string;
+  VariantID: null | number;
+  VariantName: null | string;
+  TypeVariant: null | string;
+  YearVariant: null | number;
+  NumberVariant: null | number;
+  DifficultyLevel: null | number;
+  Description: null | string;
+  Blocks: [] | IBlock[];
+  Comment: null | string;
+  Creator: string;
+  CreatedDate: string;
+  Editor: null | string;
+  EditedDate: null | string;
+  Files: [] | string[];
+}
+
+>>>>>>> Stashed changes
 export interface IData {
   Blocks: IBlock[];
   Comment: string | null;
