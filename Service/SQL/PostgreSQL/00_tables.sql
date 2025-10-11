@@ -48,7 +48,7 @@ INSERT INTO "Permissions" ("Name", "Description", "Category") values
     ('edit_subjects', 'Редактирование предметов', 'Предметы'),
     ('delete_subjects', 'Удаление предметов', 'Предметы'),
 
-    ('view__category', 'Просмотр категорий', 'Категории'),
+    ('view_category', 'Просмотр категорий', 'Категории'),
     ('create_category', 'Создание категорий', 'Категории'),
     ('edit_category', 'Редактирование категорий', 'Категории'),
     ('delete_category', 'Удаление категорий', 'Категории'),

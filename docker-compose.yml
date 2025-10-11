@@ -27,6 +27,8 @@ services:
     container_name: fastapi
     env_file:
       - .env
+    environment:
+      TZ: Europe/Riga
     command: sh -c "uvicorn Service.main:app --host 0.0.0.0 --port 9000 ${DEBUG:+--reload}"
     ports:
       - "9000:9000"
@@ -35,6 +37,8 @@ services:
         condition: service_healthy
     volumes:
      - ./Service:/infoRUN_Postgres/Service
+     - ./logs:/infoRUN_Postgres/logs
+     - ./Uploads:/infoRUN_Postgres/Uploads
     restart: unless-stopped
 
   # Celery worker
@@ -43,11 +47,15 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: celery
-    command: sh -c "celery -A Celery_worker.worker worker --loglevel=${CELERY_LOG_LEVEL} --concurrency=${CELERY_CONCURRENCY}"
+    command: sh -c "celery -A Celery_worker.worker worker --loglevel=${CELERY_LOG_LEVEL} --concurrency=${CELERY_CONCURRENCY} --pool=prefork"
     env_file:
       - .env
+    environment:
+      TZ: Europe/Riga
     volumes:
       - ./Service:/infoRUN_Postgres/Service
+      - ./logs:/infoRUN_Postgres/logs
+      - ./Uploads:/infoRUN_Postgres/Uploads
     depends_on:
       - fastapi
       - redis
@@ -62,6 +70,8 @@ services:
     command: sh -c "celery -A Celery_worker.worker flower --port=5555"
     env_file:
       - .env
+    environment:
+      TZ: Europe/Riga
     ports:
       - "5555:5555"
     depends_on:

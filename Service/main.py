@@ -31,7 +31,8 @@ from Service.producer import get_kafka_producer
 # Настроим логирование при успешном запуске основного приложения FastAPI
 setup_logging(log_file=settings.LOG_FILE)
 logger = logging.getLogger(__name__)
-
+os.environ["TZ"] = "Europe/Riga"
+time.tzset()
 # Инициализация FastAPI
 app = FastAPI(debug=settings.LOG_LEVEL, docs_url=None, redoc_url=None)
 
