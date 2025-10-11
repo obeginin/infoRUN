@@ -1,0 +1,43 @@
+.progress__item {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-top: 40px;
+}
+
+.progress__item__content {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+
+  border: 1px solid var(--text);
+  border-radius: 16px;
+  padding: 10px 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.arrow {
+  font-size: 2rem;
+  text-align: center;
+  border-radius: 16px;
+  width: 100%;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+
+  & i {
+    transform: rotate(180deg);
+    transition: all 0.2s ease-in-out;
+    &:hover {
+      transform: rotate(0deg);
+    }
+  }
+  &:hover {
+    background-color: var(--primary);
+  }
+}

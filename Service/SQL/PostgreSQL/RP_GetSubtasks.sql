@@ -44,7 +44,7 @@ BEGIN
     RETURN QUERY
     EXECUTE format(
         $f$
-        SELECT 
+        SELECT
             s.subtaskid,
             s.subtasknumber,
             sb.id AS subjectid,
@@ -66,7 +66,7 @@ BEGIN
         JOIN tasks t ON t.taskid = s.taskid
         JOIN variants v ON v.variantid = s.variantid
         JOIN subjects sb ON sb.id = t.subjectid
-        WHERE 
+        WHERE
             ($1 IS NULL OR s.subtaskid = $1)
             AND ($2 IS NULL OR s.taskid = $2)
             AND ($3 IS NULL OR sb.id = $3)

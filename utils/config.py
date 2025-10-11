@@ -17,8 +17,8 @@ class Settings(BaseSettings):
     # -----------------------
     # Application
     # -----------------------
-    APP_NAME: str = "infoRUN project"
-    ENVIRONMENT: str = "production"
+    APP_NAME: str = os.getenv("APP_NAME")
+    ENVIRONMENT: str = os.getenv("ENVIRONMENT")
     DEBUG: bool = False
     SECRET_KEY: str = Field(..., min_length=16)
     ALGORITHM: str = "HS256"
