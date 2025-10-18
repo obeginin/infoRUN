@@ -72,7 +72,7 @@ export const Header = () => {
               <AnimationLink href="/profile/all-tasks" size="base">
                 Мои задачи
               </AnimationLink>
-              <AnimationLink href="/" size="base">
+              <AnimationLink href="/profile/categories" size="base">
                 Категории заданий
               </AnimationLink>
             </ul>

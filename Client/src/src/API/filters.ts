@@ -15,7 +15,7 @@ export default class FiltersAPI {
 
   static async getTaskNumber(token: string, subject_id: number) {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/tasks?subject_id=${subject_id}`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/tasks?subjectID${subject_id}`,
       {
         method: "GET",
         headers: {

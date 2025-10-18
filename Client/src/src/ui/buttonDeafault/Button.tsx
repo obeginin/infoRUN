@@ -35,7 +35,7 @@ export const Button = ({
 }: ButtonProps) => {
   const baseStyles = {
     zIndex: 10,
-    width: width === "full" ? "100%" : "auto",
+    width: width === "full" ? "100%" :  "fit-content",
     fontSize: `var(--${fontSize})`,
     borderRadius: radius,
     padding: size === "base" ? "10px 25px" : "5px 10px",
