@@ -1,0 +1,34 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.content {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+
+.item {
+    border: 1px solid var(--primary);
+    border-radius: 16px;
+    box-shadow: var(--box-shadow);
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    &:hover {
+        transform: scale(1.05);
+        box-shadow: var(--box-shadow-hover);
+    }
+
+    &.active {
+        border: 2px solid var(--primary);
+    }
+}

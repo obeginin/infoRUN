@@ -47,6 +47,24 @@ export default class TasksAPI {
     return response.json();
   }
 
+  static async getSelectedTask(
+    subject_id: number,
+    task_id: number,
+    token: string
+  ) {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/subtasks?subject_id=${subject_id}&task_id=${task_id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.json();
+  }
+
   static async checkAnswer(
     subtaskId: number,
     studentId: number,
