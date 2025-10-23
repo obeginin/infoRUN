@@ -21,7 +21,7 @@ export const Button = ({
   children,
   disabled = false,
   onClick,
-  radius = "32px",
+  radius = "16px",
   filled = false,
   border,
   outlined = false,

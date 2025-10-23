@@ -32,7 +32,7 @@ export default function Categories() {
         .then((res) => setTaskNumber(res.tasks))
         .catch((err) => console.log(err));
     }
-  });
+  }, [subjectSelect]);
   return (
     <div>
       <Header />

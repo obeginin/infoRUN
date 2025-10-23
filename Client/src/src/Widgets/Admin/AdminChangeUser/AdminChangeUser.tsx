@@ -1,7 +1,6 @@
-'use client';
+"use client";
 
 import { lazy, Suspense, useEffect, useRef } from "react";
-import { Button } from "@/src/ui/buttonDeafault/Button";
 import { Input } from "@/src/ui/input/Input";
 import { ProfileContentContainer } from "../../../Features/ProfileContentContainer/ProfileContentContainer";
 import styles from "./AdminChangeUser.module.scss";
@@ -17,6 +16,7 @@ const TableUsers = lazy(
 import "primereact/resources/themes/lara-light-cyan/theme.css";
 import { Spinner } from "../../../ui/LoadingSpinner/LoadingSpinner";
 import { DialogEdit } from "../../../Features/Admin/AdminChangeUser/DialogEdit/DialogEdit";
+import { TextContainer } from "@/src/ui/textContainer/TextContainer";
 
 export const AdminChangeUser = () => {
   const toast = useRef<Toast>(null);
@@ -56,21 +56,23 @@ export const AdminChangeUser = () => {
     <>
       <Toast ref={toast} position="bottom-left" />
       <ProfileContentContainer>
-        <Button disabled filled color="white">
-          Назначение ролей
-        </Button>
-        <Input
-          radius="16px"
-          type="text"
-          label="Поиск по id, email, логину"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-        <div>
-          <div className={styles.user__item}>
-            <Suspense fallback={<Spinner />}>
-              <TableUsers />
-            </Suspense>
+        <div className={styles.container}>
+          <TextContainer>
+            Назначение ролей
+          </TextContainer>
+          <Input
+            radius="16px"
+            type="text"
+            label="Поиск по id, email, логину"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          <div>
+            <div className={styles.user__item}>
+              <Suspense fallback={<Spinner />}>
+                <TableUsers />
+              </Suspense>
+            </div>
           </div>
         </div>
       </ProfileContentContainer>
