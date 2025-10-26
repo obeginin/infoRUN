@@ -26,13 +26,11 @@ class LoggingMiddleware(BaseHTTPMiddleware):
             response = await call_next(request)
         except Exception as e:
             duration = time.perf_counter() - start
-            logger.exception(
-                f"[ОШИБКА] {request.method} {request.url.path} от {client_ip} - исключение: {e} - время: {duration:.3f} сек")
+            logger.exception(f"[ОШИБКА] {request.method} {request.url.path} от {client_ip} - исключение: {e} - время: {duration:.3f} сек")
             raise  # обязательно пробрасываем ошибку дальше, чтобы FastAPI мог её корректно обработать
         else:
             duration = time.perf_counter() - start
-            logger.info(
-                f"[ЗАВЕРШЕНО] {request.method} {request.url.path} - статус {response.status_code} - время: {duration:.3f} сек")
+            logger.info(f"[ЗАВЕРШЕНО] {request.method} {request.url.path} - статус {response.status_code} - время: {duration:.3f} сек")
             return response
 
 def setup_logging(log_file: str = "app.log", archive_dir: Path = None):

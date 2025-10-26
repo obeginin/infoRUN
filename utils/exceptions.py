@@ -10,9 +10,10 @@ logger = logging.getLogger(__name__)
 
 async def app_exception_handler(request: Request, exc: HTTPException):
     '''обработчик исключений (приложение)'''
-    if exc.status_code == 401:
+    if exc.status_code == 401 and request.url.path in ["/api/docs", "/api/redoc"]:
         # Отдать стандартный ответ для BasicAuth
         return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail}, headers={"WWW-Authenticate": "Basic"})
+        # Для всех остальных 401 и других ошибок
     logger.warning(f"{exc.detail} (Request: {request.url})")
     return JSONResponse(status_code=exc.status_code, content={"success": False, "detail": exc.detail})
 
