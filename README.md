@@ -7,9 +7,9 @@
 
 ## Технологический стек
 
-- **Backend:** Python, FastAPI, Asyncio, SQLAlchemy,Celery, Kafka, Redis  
-- **Database:** Postres (переведен с SQL Server)  
-- **Frontend:** React (планируется переход на Next.js)  
+- **Backend:** Python, FastAPI, Asyncio, SQLAlchemy, Celery, Kafka, Redis  
+- **Database:** PostreSQL (переведен с SQL Server)  
+- **Frontend:** Next.js (переведен с react)  
 - **DevOps:** Docker, Docker Compose, Nginx  
 - **Version Control:** Git  
 - **Тестирование:** Pytest  
