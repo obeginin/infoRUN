@@ -1,20 +1,7 @@
 import { create } from "zustand";
 import { combine, persist } from "zustand/middleware";
-import AuthAPI from "../API/auth";
-
-interface User {
-  ID: number;
-  Login: string;
-  Email: string;
-  First_Name: string;
-  Last_name: string;
-  RoleName: string;
-}
-
-interface ErrorDetail {
-  error: string;
-  message: string;
-}
+import AuthAPI from "@/src/API/auth";
+import type { User, ErrorDetail } from "./user.interface";
 
 export const useUserStore = create(
   persist(
@@ -29,7 +16,7 @@ export const useUserStore = create(
         login: async (login: string, password: string) => {
           set({ loading: true });
           try {
-            const data = await AuthAPI.loginV2(login, password);
+            const data = await AuthAPI.login(login, password);
             if (data.detail) {
               set({
                 error: {

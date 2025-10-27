@@ -30,8 +30,8 @@ def save_files_celery(subtask_id: int, files_data: list, folder: str, table: str
     Returns:
         file_map: словарь {index: путь к файлу}
     """
-    logging.info(f"[CELERY WORKER]: запуск функции save_files_celery")
-    logging.info(f"[CELERY WORKER]: subtask_id:{subtask_id}, folder:{folder}, table:{table}, prefix:{prefix}")
+    logger.info(f"[CELERY WORKER]: запуск функции save_files_celery")
+    logger.info(f"[CELERY WORKER]: subtask_id:{subtask_id}, folder:{folder}, table:{table}, prefix:{prefix}")
     file_map = {}
 
     for idx, f in enumerate(files_data, start=1):
@@ -44,9 +44,9 @@ def save_files_celery(subtask_id: int, files_data: list, folder: str, table: str
             content_bytes = base64.b64decode(f['data'])
             with open(full_path, "wb") as file_out:
                 file_out.write(content_bytes)
-            logging.info(f"[CELERY] Файл сохранен: {filename}, size={len(content_bytes)} bytes")
+            logger.info(f"[CELERY] Файл сохранен: {filename}, size={len(content_bytes)} bytes")
         except Exception:
-            logging.exception(f"[CELERY] Ошибка при сохранении файла {f['filename']}")
+            logger.exception(f"[CELERY] Ошибка при сохранении файла {f['filename']}")
             continue
 
         # формируем URL для фронта

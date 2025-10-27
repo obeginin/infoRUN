@@ -2,6 +2,7 @@
 import os
 import logging
 import uvicorn
+import asyncio
 import time
 from sqlalchemy import text
 from fastapi import FastAPI, Depends, Request, HTTPException
@@ -13,45 +14,47 @@ from fastapi.exceptions import RequestValidationError
 from starlette.status import HTTP_400_BAD_REQUEST
 
 from utils.config import settings
-from utils.log import setup_logging
+from utils.log import setup_logging, LoggingMiddleware
 from utils.exceptions import app_exception_handler, validation_exception_handler, general_exception_handler
 from fastapi.openapi.docs import get_swagger_ui_html, get_redoc_html
 from fastapi.openapi.utils import get_openapi
-from Service.api import tasks, subtasks,students,auth,subjects, variants  # Импортируем роутер задач
-from Service.api.swagger import swagger_router
+from Service.api import tasks, subtasks,students,auth,subjects, variants, students_subtasks  # Импортируем роутер задач
+#from Service.api.swagger import swagger_router
 from Service.Crud.auth import get_swagger_user
-from Service.Database import engine, log_engine
+from Service.Database import engine
 from Service.producer import get_kafka_producer
-from Service.middlewares import LoggingMiddleware
 
 # main.py
 '''главный файл проекта'''
+# TODO переведен на асинхронный postgres
 
 # Настроим логирование при успешном запуске основного приложения FastAPI
 setup_logging(log_file=settings.LOG_FILE)
 logger = logging.getLogger(__name__)
-
+os.environ["TZ"] = "Europe/Riga"
+time.tzset()
 # Инициализация FastAPI
 app = FastAPI(debug=settings.LOG_LEVEL, docs_url=None, redoc_url=None)
 
 # CORS (для запросов с фронта)
-app.add_middleware(
-    CORSMiddleware,
-    allow_origin_regex=".*",   # разрешить любой Origin по regex
-    allow_credentials=False,    # можно оставить True
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-'''origins = [
-    "http://localhost:5173",       # локальный фронт (Vite)
+origins = [
+    "http://localhost:3000",       # локальный фронт (Vite)
+    "http://10.0.2.5:3000",
     "http://127.0.0.1:5173",       # иногда нужен этот
     "http://localhost:3000",       # локальный фронт (Vite)
     "http://127.0.0.1:3000",
-    "http://10.8.0.9:3000",
+    "http://10.8.0.8:3000",
     "https://info-run.ru",         # если фронт будет на проде
-]'''
+]
 
-
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    #allow_origins=origins,                   # ✅ разрешаешь запросы с фронта
+    allow_credentials=True,                  # ✅ разрешаешь куки / авторизацию
+    allow_methods=["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"],                     # ✅ разрешаешь любые HTTP-методы (GET, POST, PUT и т.д.)
+    allow_headers=["*"],                     # ✅ разрешаешь любые заголовки (например, Authorization)
+)
 app.add_middleware(LoggingMiddleware) # Middleware для логов всех запросов
 
 # Путь до билд-фронта
@@ -82,8 +85,8 @@ app.include_router(tasks.task_router) # подключает маршруты и
 app.include_router(subtasks.subtask_router)  # Регистрируем роутер для подзадач
 app.include_router(variants.variant_router)
 app.include_router(students.students_router)  # Регистрируем роутер для студентов
-app.include_router(students.students_subtasks_router) # Регистрируем роутер для задач студентов
-app.include_router(swagger_router)
+app.include_router(students_subtasks.students_subtasks_router) # Регистрируем роутер для задач студентов
+#app.include_router(swagger_router)
 
 
 # Подключаем статику
@@ -94,25 +97,25 @@ app.mount("/Uploads", StaticFiles(directory=settings.UPLOADS_DIR), name="uploads
 
 
 
-def check_db_connection(engine, name: str, retries: int = 5, delay: int = 3):
+async def check_db_connection(engine, name: str, retries: int = 5, delay: int = 3):
     for attempt in range(1, retries + 1):
         try:
-            with engine.connect() as conn:
-                conn.execute(text("SELECT 1"))
+            async with engine.connect() as conn:
+                await conn.execute(text("SELECT 1"))
             logger.info(f"✅ Подключение к базе данных '{name}' установлено.")
             return
         except Exception as e:
-            logger.error(f"❌ Ошибка подключения к базе '{name}' (Попытка {attempt}/{retries}): {e}")
+            logger.exception(f"❌ Ошибка подключения к базе '{name}' (Попытка {attempt}/{retries}): {e}")
             if attempt < retries:
-                time.sleep(delay)
+                await asyncio.sleep(delay)
             else:
                 logger.critical(f"Не удалось подключиться к базе '{name}' после {retries} попыток.")
                 raise
 
 @app.on_event("startup")
-def startup_event():
-    logging.info("🚀 Проверка подключений к базам данных...")
-    check_db_connection(engine, "infoDB")
+async def startup_event():
+    logger.info("🚀 Проверка подключений к базам данных...")
+    await check_db_connection(engine=engine, name=settings.DB_NAME)
     #check_db_connection(log_engine, "LogDB") # для использования второй базы логов
 
 
@@ -174,7 +177,7 @@ def custom_openapi():
     # Добавим схему по умолчанию ко всем методам (можно кастомизировать при необходимости)
     for path in openapi_schema["paths"].values():
         for method in path.values():
-            method.setdefault("security", [{"BearerAuth": []}])
+            method["security"] = [{"BearerAuth": []}]
 
     app.openapi_schema = openapi_schema
     return app.openapi_schema
@@ -183,4 +186,4 @@ app.openapi = custom_openapi
 
 """запуск сервера"""
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="localhost", port=9000)
+    uvicorn.run("Service.main:app", host="0.0.0.0", port=8000, reload=True)

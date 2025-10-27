@@ -1,6 +1,6 @@
 "use client";
 
-import { useConstructorStore } from "@/src/store/useConstructorStore";
+import { useConstructorStore } from "@/src/store/constructor/useConstructorStore";
 import { Button } from "@/src/ui/buttonDeafault/Button";
 import { IDialog } from "@/src/ui/IDialog/IDialog";
 import { Paragraph } from "@/src/ui/p/Paragraph";

@@ -3,7 +3,7 @@
 import burger from "@public/assets/burger-menu.svg";
 import { Button } from "@/src/ui/buttonDeafault/Button";
 import styles from "./Header.module.scss";
-import { useUserStore } from "../../store/userStore";
+import { useUserStore } from "@/src/store/user/userStore";
 // import { useNavigate } from "react-router-dom";
 // import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -72,7 +72,7 @@ export const Header = () => {
               <AnimationLink href="/profile/all-tasks" size="base">
                 Мои задачи
               </AnimationLink>
-              <AnimationLink href="/" size="base">
+              <AnimationLink href="/profile/categories" size="base">
                 Категории заданий
               </AnimationLink>
             </ul>

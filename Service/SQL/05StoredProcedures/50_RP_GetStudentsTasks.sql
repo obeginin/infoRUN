@@ -63,7 +63,7 @@ BEGIN
 		t.TaskID,							-- id категории 
 		t.TaskTitle,						-- категория (ЕГЭ_1, ЕГЭ_2)
         s.SubTaskNumber,					-- типы задач в данной категории (1.1, 1.2, ...)
-        s.ImagePath,						-- адрес с изображением задачи
+        s.blocks,							-- адрес с изображением задачи
         s.Description,						-- описание задачи
 		v.VariantID,						-- id варианта
 		v.VariantName,						-- Вариант

@@ -6,29 +6,25 @@ from sqlalchemy.orm import sessionmaker
 import redis
 import os
 import logging
-
-
+import time
 
 load_dotenv()
-
 logger = logging.getLogger(__name__)
+
 
 # Database.py
 '''файл с настройкой подключения к основной базе'''
 DB_NAME = os.getenv("DB_NAME")
 DB_HOST = os.getenv("DB_HOST")
+DB_PORT = os.getenv("DB_PORT")
 DB_USER = os.getenv("DB_USER")
 DB_PASS = os.getenv("DB_PASS")
 # Строка подключения для pymssql
-DATABASE_URL = (
-    f"mssql+pyodbc://{DB_USER}:{DB_PASS}@{DB_HOST}/{DB_NAME}"
-    #f"mssql+pyodbc://{DB_HOST}/{DB_NAME}"
-    "?driver=ODBC+Driver+18+for+SQL+Server"
-    #"&trusted_connection=yes"
-    "&TrustServerCertificate=yes")
+DATABASE_URL = f"postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
-engine = create_engine(DATABASE_URL)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+engine = create_engine(DATABASE_URL, echo=True)
+SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
 # SMTP-параметры
 SMTP_HOST = os.getenv("SMTP_HOST")
 SMTP_PORT = int(os.getenv("SMTP_PORT", 587))
@@ -44,7 +40,7 @@ REDIS_RESULT_BACKEND = os.getenv("REDIS_RESULT_BACKEND")
 # Настроим логирование Celery
 CELERY_LOG_FILE=os.getenv("CELERY_LOG_FILE")
 setup_logging(log_file=CELERY_LOG_FILE)
-logging.info(f"[CELERY] Запускаем логирование с файлом: {CELERY_LOG_FILE}")
+logger.info(f"[CELERY] Запускаем логирование с файлом: {CELERY_LOG_FILE}")
 
 # Создаём celery app
 celery_app = Celery(
@@ -72,15 +68,24 @@ celery_app.conf.update(
         "schedule": crontab(minute="*/1"),  # каждую минуту
     },
 }'''
+
 # Проверка подключения к Redis
-try:
-    redis_client = redis.Redis.from_url(REDIS_BROKER_URL)
-    redis_client.ping()
-    #print("✅ Подключение к Redis успешно установлено.")
-    logging.info("[CELERY]✅ Подключение к Redis успешно установлено.")
-except redis.exceptions.ConnectionError as e:
-    print(f"[CELERY]❌ Ошибка подключения к Redis: {e}")
-    raise SystemExit("Не удалось подключиться к Redis — проверь docker-compose, порты и настройки.")
+def wait_for_redis(url: str, retries: int = 5, delay: int = 3):
+    for attempt in range(1, retries + 1):
+        try:
+            redis_client = redis.Redis.from_url(url)
+            redis_client.ping()
+            logger.info(f"[CELERY] ✅ Подключение к Redis успешно установлено.")
+            return redis_client
+        except redis.exceptions.ConnectionError as e:
+            logger.warning(f"[CELERY] ❌ Ошибка подключения к Redis (Попытка {attempt}/{retries}): {e}")
+            if attempt < retries:
+                time.sleep(delay)
+            else:
+                logger.critical(f"[CELERY] Не удалось подключиться к Redis после {retries} попыток.")
+                raise SystemExit("Redis недоступен. Проверь docker-compose и настройки.")
+
+redis_client = wait_for_redis(REDIS_BROKER_URL)
 
 # celery_app.autodiscover_tasks(['Service.celery_tasks'])
 # celery_app.conf.task_routes = {

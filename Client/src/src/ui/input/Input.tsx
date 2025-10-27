@@ -16,7 +16,7 @@ export const Input = ({
   label,
   value,
   onChange,
-  radius = "32px",
+  radius = "16px",
   error_text,
   required = false,
 }: InputProps) => {

@@ -1,5 +1,5 @@
 from utils import errors,general
-from Service.dependencies import get_db
+from Service.Database import get_db
 from Service.Models import Student
 from Service.Crud.auth import get_current_student, permission_required
 from Service.producer import send_log
@@ -8,7 +8,7 @@ from Service.Schemas import subjects as subjects_schema
 
 from fastapi import APIRouter, Depends, Request, Form, UploadFile, File, Query, HTTPException
 from sqlalchemy import text
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from starlette.responses import FileResponse
@@ -24,11 +24,14 @@ import logging
 
 # api\subjects.py
 
-
+# TODO переведен на асинхронный postgres
 load_dotenv()
 logger = logging.getLogger(__name__)
 
+
+
 subject_router  = APIRouter(prefix="/api/subjects", tags=["subjects"])
+
 
 
 # /api/subjects   (GET) @
@@ -38,11 +41,11 @@ subject_router  = APIRouter(prefix="/api/subjects", tags=["subjects"])
     summary="Получить список всех предметов (Информатика, Математика)",
     description="""так же необходимо передавать в заголовке **токен** пользователя"""
 )
-def read_all_subject(
-        db: Session = Depends(get_db),
-        current_student = Depends(get_current_student)):     # получаем текущего студента по токену
-
-    subjects = subjects_crud.get_all_subjects(db)  # функция без фильтрации
+async def read_all_subject(
+        db: AsyncSession = Depends(get_db),
+        current_student=Depends(permission_required("views_subjects"))):     # получаем текущего студента по токену
+    logger.info(f"Пользователь {current_student.Login} запросил список всех предметов")
+    subjects = await subjects_crud.get_all_subjects(db)  # функция без фильтрации
     logger.warning(f"subjects:{subjects}")
 
     if not subjects:
@@ -77,13 +80,13 @@ def read_all_subject(
     summary="Получить предмет по его subjectID ",
     description="""так же необходимо передавать в заголовке **токен** пользователя"""
 )
-def read_all_subject(
+async def read_all_subject(
         subjectID: int,
-        db: Session = Depends(get_db),
-        current_student = Depends(get_current_student)):     # получаем текущего студента по токену
-
+        db: AsyncSession = Depends(get_db),
+        current_student=Depends(permission_required("views_subjects"))):     # получаем текущего студента по токену
+    logger.info(f"Пользователь {current_student.Login} запросил предмет с subjectID={subjectID}")
     # ищем предмет по id
-    subject = subjects_crud.get_subject_by_id(db, subjectID)
+    subject = await subjects_crud.get_subject_by_id(db, subjectID)
     logger.warning(f"subjects:{subject}")
 
     if not subject:

@@ -1,0 +1,45 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.item {
+  width: 32%;
+  border: 1px solid var(--primary);
+  border-radius: 16px;
+  box-shadow: var(--box-shadow);
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: var(--box-shadow-hover);
+  }
+  @media screen and (max-width: 600px) {
+    width: 100%;
+  }
+
+  &:first-child {
+    width: calc(32% * 3 + 15px * 2);
+
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px;
+}
+
+.selected {
+  border: 2px solid var(--primary);
+  border-radius: 15px;
+  box-shadow: var(--box-shadow-hover);
+}

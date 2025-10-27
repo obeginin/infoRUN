@@ -1,5 +1,16 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
 .select {
-    margin-bottom: 15px;
     width: 100%;
     padding: 15px 25px;
     border-radius: 16px;
@@ -25,16 +36,16 @@
 
 .icon {
     position: absolute;
-    top: 40%;
+    top: 50%;
     right: 20px;
     transform: translateY(-50%);
     pointer-events: none;
 }
 
 .error {
-    text-align: center;
-    color: red;
-    font-family: "Lato";
-    font-size: var(--base);
+    color: red; 
+    font-family: var(--jost);
+    font-size: var(--tiny);
     text-decoration: none;
+    margin-left: 10px;
 }

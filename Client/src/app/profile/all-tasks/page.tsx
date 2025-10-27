@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import styles from "./allTasks.module.scss";
-import { useUserStore } from "@/src/store/userStore";
-import type { ITask } from "@/src/interface/subtask.interface";
+import { useUserStore } from "@/src/store/user/userStore";
+import type { ITask, IBlock, IData } from "@/src/interface/subtask.interface";
 import TasksAPI from "@/src/API/tasks";
 import { useIntersectionObserver, useQuery } from "@siberiacancode/reactuse";
 import { Header } from "@/src/Widgets/Header/Header";
@@ -20,7 +20,7 @@ export default function AllTasks() {
   const items = [
     { id: 1, label: "Личный кабинет", link: "/profile" },
     { id: 2, label: "Все задачи", link: "/profile/all-tasks" },
-  ]
+  ];
   const token = localStorage.getItem("token");
   const user = useUserStore((state) => state.user);
   const [data, setData] = useState<ITask[]>([]);
@@ -32,6 +32,7 @@ export default function AllTasks() {
   const [tabFilters, setTabFilters] = useState<string>("Все");
   const filters = ["Все", "Выполненные", "В процессе", "Не приступал"];
   const [allTasksCache, setAllTasksCache] = useState<ITask[] | null>(null);
+  // const [allTaskLoading, setAllTaskLoading] = useState(false);
 
   const limit = 10;
 
@@ -121,9 +122,11 @@ export default function AllTasks() {
       .catch((err) => console.log(err));
   };
 
+  console.log(data);
+
   return (
     <>
-        <Header />
+      <Header />
       <div className="app">
         <BreadCrumb items={items} />
 
@@ -174,13 +177,26 @@ export default function AllTasks() {
                     >
                       <div className={styles.collapsibleInner}>
                         <ProfileContentContainer>
+                          {item.Blocks && typeof item.Blocks === "string"
+                            ? JSON.parse(item.Blocks).map(
+                                (block: IBlock, index: number) => (
+                                  <div key={index}>
+                                    {block.type === "text" && (
+                                      <Paragraph>{block.content}</Paragraph>
+                                    )}
+                                    {block.type === "image" && (
+                                      <img
+                                        loading="lazy"
+                                        className={styles.image}
+                                        src={`${process.env.NEXT_PUBLIC_BASE_URL}/${block.content}`}
+                                        alt={block.content ? block.content : ""}
+                                      />
+                                    )}
+                                  </div>
+                                )
+                              )
+                            : ""}
                           <div className={styles.image}>
-                            <img
-                              loading="lazy"
-                              className={styles.image}
-                              src={`${process.env.NEXT_PUBLIC_BASE_URL}/${item.ImagePath}`}
-                              alt={item.ImagePath ? item.ImagePath : ""}
-                            />
                             <div className={styles.answer}>
                               <Input
                                 label="Ответ"

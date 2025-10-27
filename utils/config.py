@@ -3,7 +3,7 @@ from pathlib import Path
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import Field
 
-
+# TODO то что требовалось перевел на асинхронный postgres, остальное не обязательно так как используется только при стратре приложения ( не критично)
 class Settings(BaseSettings):
     """Application settings loaded from environment variables."""
 
@@ -17,8 +17,8 @@ class Settings(BaseSettings):
     # -----------------------
     # Application
     # -----------------------
-    APP_NAME: str = "infoRUN project"
-    ENVIRONMENT: str = "production"
+    APP_NAME: str = os.getenv("APP_NAME")
+    ENVIRONMENT: str = os.getenv("ENVIRONMENT")
     DEBUG: bool = False
     SECRET_KEY: str = Field(..., min_length=16)
     ALGORITHM: str = "HS256"
@@ -33,9 +33,17 @@ class Settings(BaseSettings):
     DB_USER: str
     DB_PASS: str
 
+
+    @property
+    def ASYNC_DB_URL(self) -> str:
+        'Ассинхронное подключение'
+        return f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASS}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+
+    '''
+    Синхронное подключение
     @property
     def DB_URL(self) -> str:
-        return f"postgresql+psycopg2://{self.DB_USER}:{self.DB_PASS}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+        return f"postgresql+psycopg2://{self.DB_USER}:{self.DB_PASS}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"'''
 
     DB_POOL_SIZE: int = 10
     DB_MAX_OVERFLOW: int = 20
@@ -121,4 +129,4 @@ class Settings(BaseSettings):
 # -----------------------
 settings = Settings()
 # создаем все папки при старте
-settings.create_dirs()
+# settings.create_dirs() создаются при инициализации init

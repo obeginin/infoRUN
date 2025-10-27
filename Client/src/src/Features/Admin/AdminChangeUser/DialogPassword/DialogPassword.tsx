@@ -4,7 +4,7 @@ import { Button } from "@/src/ui/buttonDeafault/Button";
 import { Paragraph } from "@/src/ui/p/Paragraph";
 import styles from "../DialogDelete/DialogDelete.module.scss";
 import { Input } from "@/src/ui/input/Input";
-import { useAdminStore } from "@/src/store/adminStore";
+import { useAdminStore } from "@/src/store/admin/adminStore";
 import { useEffect, useState } from "react";
 import { IDialog } from "../../../../ui/IDialog/IDialog";
 export const DialogPassword = () => {

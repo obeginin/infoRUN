@@ -1,9 +1,35 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import styles from "./Footer.module.scss";
 import { AnimationLink } from "@/src/ui/AnimationLink/AnimationLink";
+import HaelthAPI from "@/src/API/healthDEV";
+import { Paragraph } from "@/src/ui/p/Paragraph";
+import { useUserStore } from "@/src/store/user/userStore";
+
+interface IHealth {
+  status: string;
+  service: string;
+  version: string;
+  environment: string;
+}
+
 export const Footer = () => {
+  const user = useUserStore((state) => state.user);
+  const [healthData, setHealthData] = useState<IHealth>({
+    status: "",
+    service: "",
+    version: "",
+    environment: "",
+  });
+  useEffect(() => {
+    HaelthAPI.health().then((res) => {
+      setHealthData(res);
+    });
+  }, []);
   return (
     // <div className={styles["footer-sticky"]}>
-    <footer style={{ }}>
+    <footer style={{}}>
       <div className={styles.line}></div>
       <div style={{ maxWidth: "1400px", margin: "0 auto" }}>
         <div className={styles.container}>
@@ -43,6 +69,22 @@ export const Footer = () => {
             ux/ui-design: @savorovskaya_v
           </AnimationLink>
         </ul>
+
+        <div></div>
+        {user?.RoleName === "Админ" || user?.RoleName === "SuperAdmin" ? (
+          <div
+            style={{
+              display: "flex",
+              gap: "30px",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Paragraph size="tiny">{healthData.service}</Paragraph>
+            <Paragraph size="tiny">{healthData.version}</Paragraph>
+            <Paragraph size="tiny">{healthData.environment}</Paragraph>
+          </div>
+        ): null}
 
         <div className={styles.mobile}>
           <div className={styles.content}>

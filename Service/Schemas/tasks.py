@@ -11,9 +11,9 @@ from datetime import datetime
 # для задач
 class TaskRead(BaseModel):
     TaskID: int
-    TaskNumber: int
-    TaskTitle: str
     SubjectID: int
+    TaskNumber: Optional[int] = None
+    TaskTitle: Optional[str] = None
 
     class Config:
         from_attributes = True

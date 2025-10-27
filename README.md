@@ -7,8 +7,8 @@
 
 ## Технологический стек
 
-- **Backend:** Python, FastAPI, SQLAlchemyCelery, Kafka, Redis  
-- **Database:** SQL Server (планируется переход на Postgres)  
+- **Backend:** Python, FastAPI, Asyncio, SQLAlchemy,Celery, Kafka, Redis  
+- **Database:** Postres (переведен с SQL Server)  
 - **Frontend:** React (планируется переход на Next.js)  
 - **DevOps:** Docker, Docker Compose, Nginx  
 - **Version Control:** Git  
@@ -63,3 +63,7 @@
 
 
 ---
+frontend:        http://ip:3000
+backend:         http://ip:9000
+flower:          http://ip:5555
+kafka:        

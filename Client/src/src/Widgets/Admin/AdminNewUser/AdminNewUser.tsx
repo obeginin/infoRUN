@@ -1,34 +1,47 @@
-'use client'
+"use client";
 
 import { Button } from "../../../ui/buttonDeafault/Button";
 import { ProfileContentContainer } from "../../../Features/ProfileContentContainer/ProfileContentContainer";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import AdminAPI from "../../../API/admin";
 import { Input } from "../../../ui/input/Input";
 import styles from "./AdminNewUser.module.scss";
-import { useAdminStore } from "@/src/store/adminStore";
+import { useAdminStore } from "@/src/store/admin/adminStore";
+import { TextContainer } from "@/src/ui/textContainer/TextContainer";
+
 interface IData {
   RoleID: number;
   Name: string;
 }
+
 export const AdminNewUser = () => {
-  const [user, setUser] = useState<string>("");
-  const [telephone, setTelephone] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const [formData, setFormData] = useState({
+    user: "",
+    telephone: "",
+    email: "",
+    password: "",
+    name: "",
+    surname: "",
+  });
+
   const [selectedRoleId, setSelectedRoleId] = useState<number | null>(null);
   const [sex, setSex] = useState<"М" | "Ж">("М");
-  const [name, setName] = useState<string>("");
-  const [surname, setSurname] = useState<string>("");
-
-  const token = localStorage.getItem("token");
   const [data, setData] = useState<IData[]>([]);
 
-  const [loginError, setLoginError] = useState(false);
-  const [emailError, setEmailError] = useState(false);
-  const [phoneError, setPhoneError] = useState(false);
-  const [passwordError, setPasswordError] = useState(false);
+  const [errors, setErrors] = useState({
+    user: "",
+    email: "",
+    password: "",
+    role: "",
+  });
 
+  const [touched, setTouched] = useState({
+    user: false,
+    email: false,
+    password: false,
+  });
+
+  const token = localStorage.getItem("token");
   const addNewUser = useAdminStore((state) => state.addNewUser);
 
   useEffect(() => {
@@ -37,138 +50,206 @@ export const AdminNewUser = () => {
       .catch((error) => console.log(error));
   }, [token]);
 
+  // Валидация отдельных полей
+  const validateField = useCallback((name: string, value: string) => {
+    switch (name) {
+      case "user":
+        if (!value.trim()) return "Логин обязателен";
+        if (/[А-Яа-яЁё]/.test(value))
+          return "Логин должен содержать только латинские буквы";
+        if (value.length < 3) return "Логин должен быть не менее 3 символов";
+        return "";
+
+      case "password":
+        if (!value) return "Пароль обязателен";
+        if (value.length < 6) return "Пароль должен быть не менее 6 символов";
+        return "";
+
+      case "email":
+        if (!value) return "Email обязателен";
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))
+          return "Введите корректный email";
+        return "";
+
+      default:
+        return "";
+    }
+  }, []);
+
+  const validateForm = useCallback(() => {
+    const newErrors = {
+      user: validateField("user", formData.user),
+      email: validateField("email", formData.email),
+      password: validateField("password", formData.password),
+      role: !selectedRoleId ? "Выберите роль" : "",
+    };
+
+    setErrors(newErrors);
+    return !Object.values(newErrors).some((error) => error !== "");
+  }, [formData, selectedRoleId, sex, validateField]);
+
+  const handleFieldChange = (field: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+
+    // Валидация при изменении (только для touched полей)
+    if (touched[field as keyof typeof touched]) {
+      setErrors((prev) => ({
+        ...prev,
+        [field]: validateField(field, value),
+      }));
+    }
+  };
+
+  const handleBlur = (field: string) => {
+    setTouched((prev) => ({ ...prev, [field]: true }));
+    setErrors((prev) => ({
+      ...prev,
+      [field]: validateField(field, formData[field as keyof typeof formData]),
+    }));
+  };
+
   const handleClick = () => {
-    if (/[А-Яа-яЁё]/.test(user)) {
-      setLoginError(true);
-      return;
-    }
-    if (/[0-9]/.test(telephone) && telephone.length < 10) {
-      setPhoneError(true);
-      return;
-    }
-    if (!email.includes("@") && email.includes(".")) {
-      setEmailError(true);
-      return;
-    }
-    if (password.length <= 6) {
-      setPasswordError(true);
+    // Помечаем все поля как touched для показа всех ошибок
+    const newTouched = {
+      user: true,
+      email: true,
+      password: true,
+    };
+    setTouched(newTouched);
+
+    // Валидируем все поля
+    const newErrors = {
+      user: validateField("user", formData.user),
+      email: validateField("email", formData.email),
+      password: validateField("password", formData.password),
+      role: !selectedRoleId ? "Выберите роль" : "",
+    };
+
+    setErrors(newErrors);
+
+    // Проверяем есть ли ошибки
+    const hasErrors = Object.values(newErrors).some((error) => error !== "");
+    if (hasErrors) {
       return;
     }
 
     addNewUser(
       token ? token : "",
-      user,
-      surname,
-      name,
-      email,
-      telephone,
+      formData.user,
+      formData.surname,
+      formData.name,
+      formData.email,
+      formData.telephone,
       sex,
       selectedRoleId ? selectedRoleId : 1,
-      password
+      formData.password
     );
   };
+
+  // Убрали вызов validateForm() из тела компонента
 
   return (
     <>
       <ProfileContentContainer>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            gap: "10px",
-          }}
-        >
-          <Button disabled filled color="white">
+        <div className={styles.container}>
+          <TextContainer >
             Новый пользователь
-          </Button>
-          <Button outlined onClick={() => handleClick()}>
+          </TextContainer>
+          <div className={styles.form}>
+            <Input
+              radius="16px"
+              value={formData.user}
+              onChange={(e) => handleFieldChange("user", e.target.value)}
+              type="text"
+              label="Логин *"
+              error_text={errors.user}
+            />
+
+            <Input
+              radius="16px"
+              value={formData.name}
+              onChange={(e) => handleFieldChange("name", e.target.value)}
+              type="text"
+              label="Имя"
+            />
+
+            <Input
+              radius="16px"
+              value={formData.surname}
+              onChange={(e) => handleFieldChange("surname", e.target.value)}
+              label="Фамилия"
+            />
+
+            <Input
+              radius="16px"
+              value={formData.telephone}
+              type="tel"
+              onChange={(e) => handleFieldChange("telephone", e.target.value)}
+              label="Телефон"
+            />
+
+            <Input
+              radius="16px"
+              value={formData.email}
+              onChange={(e) => handleFieldChange("email", e.target.value)}
+              type="email"
+              label="Email *"
+              error_text={errors.email}
+            />
+
+            <Input
+              radius="16px"
+              value={formData.password}
+              onChange={(e) => handleFieldChange("password", e.target.value)}
+              type="password"
+              label="Пароль *"
+              error_text={errors.password}
+            />
+
+            <div className={styles.select__container}>
+              <i className={`pi pi-chevron-down ${styles.icon}`} />
+              <select
+                className={styles.select}
+                value={sex}
+                onChange={(e) => setSex(e.target.value as "М" | "Ж")}
+              >
+                <option value="">Выберите пол *</option>
+                <option value="М" className={styles.option}>
+                  Мужской
+                </option>
+                <option value="Ж" className={styles.option}>
+                  Женский
+                </option>
+              </select>
+            </div>
+
+            <div className={styles.select__container}>
+              <i className={`pi pi-chevron-down ${styles.icon}`} />
+              <select
+                className={styles.select}
+                value={selectedRoleId || ""}
+                onChange={(e) => setSelectedRoleId(+e.target.value || null)}
+              >
+                <option value="">Выберите роль *</option>
+                {data?.map((item: IData) => (
+                  <option
+                    key={item.RoleID}
+                    value={item.RoleID}
+                    className={styles.option}
+                  >
+                    {item.Name}
+                  </option>
+                ))}
+              </select>
+            </div>
+              {errors.role && (
+                <span className={styles.error}>{errors.role}</span>
+              )}
+          </div>
+
+          <Button filled color="white" outlined onClick={handleClick}>
             Сохранить
           </Button>
-        </div>
-        <div className={styles.form}>
-          <Input
-            radius="16px"
-            value={user}
-            onChange={(e) => setUser(e.target.value)}
-            type="text"
-            label="Логин"
-            error_text={
-              loginError ? "Логин должен состоять только из букв" : ""
-            }
-          />
-          <Input
-            radius="16px"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            type="text"
-            label="Имя"
-          />
-          <Input
-            radius="16px"
-            value={surname}
-            onChange={(e) => setSurname(e.target.value)}
-            label="Фамилия"
-          />
-          <Input
-            radius="16px"
-            value={telephone}
-            type="text"
-            onChange={(e) => setTelephone(e.target.value)}
-            label="Телефон"
-            error_text={phoneError ? "Введите корректный номер" : ""}
-          />
-          <Input
-            radius="16px"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            type="text"
-            label="Email"
-            error_text={emailError ? "Введите корректную почту" : ""}
-          />
-          <Input
-            radius="16px"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            type="text"
-            label="Пароль"
-            error_text={
-              passwordError ? "Пароль должен быть больше 6 символов" : ""
-            }
-          />
-          <div className={styles.select__container}>
-            <i className={`pi pi-chevron-down ${styles.icon}`} />
-            <select
-              className={styles.select}
-              value={sex}
-              onChange={(e) => setSex(e.target.value as "М" | "Ж")}
-            >
-              <option value="М" className={styles.option}>
-                Мужской
-              </option>
-              <option value="Ж" className={styles.option}>
-                Женский
-              </option>
-            </select>
-          </div>
-          <div className={styles.select__container}>
-            <i className={`pi pi-chevron-down ${styles.icon}`} />
-            <select
-              className={styles.select}
-              value={selectedRoleId || ""}
-              onChange={(e) => setSelectedRoleId(+e.target.value || null)}
-            >
-              {data?.map((item: IData) => (
-                <option
-                  key={item.RoleID}
-                  value={item.RoleID}
-                  className={styles.option}
-                >
-                  {item.Name}
-                </option>
-              ))}
-            </select>
-          </div>
         </div>
       </ProfileContentContainer>
     </>

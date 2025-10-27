@@ -1,0 +1,105 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15
+    container_name: postgres
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # FastAPI
+  fastapi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: fastapi:v1.0.3
+    container_name: fastapi
+    env_file:
+      - .env
+    environment:
+      TZ: Europe/Riga
+    command: sh -c "uvicorn Service.main:app --host 0.0.0.0 --port 9000 ${DEBUG:+--reload}"
+    ports:
+      - "9000:9000"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+     - ./Service:/infoRUN_Postgres/Service
+     - ./logs:/infoRUN_Postgres/logs
+     - ./Uploads:/infoRUN_Postgres/Uploads
+    restart: unless-stopped
+
+  # Celery worker
+  celery:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: celery:v1.0.3
+    container_name: celery
+    command: sh -c "celery -A Celery_worker.worker worker --loglevel=${CELERY_LOG_LEVEL} --concurrency=${CELERY_CONCURRENCY} --pool=prefork"
+    env_file:
+      - .env
+    environment:
+      TZ: Europe/Riga
+    volumes:
+      - ./Service:/infoRUN_Postgres/Service
+      - ./logs:/infoRUN_Postgres/logs
+      - ./Uploads:/infoRUN_Postgres/Uploads
+    depends_on:
+      - fastapi
+      - redis
+    restart: unless-stopped
+
+  # Flower (мониторинг Celery)
+  flower:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: flower:v1.0.3
+    container_name: flower
+    command: sh -c "celery -A Celery_worker.worker flower --port=5555"
+    env_file:
+      - .env
+    environment:
+      TZ: Europe/Riga
+    ports:
+      - "5555:5555"
+    depends_on:
+      - celery
+      - redis
+    restart: unless-stopped
+
+  # Redis (брокер для Celery)
+  redis:
+    image: redis:7
+    container_name: redis
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+
+  nextjs:
+    build:
+      context: ./Client
+      dockerfile: Dockerfile
+    image: nextjs:v1.0.3
+    container_name: nextjs
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    name: postgres_data
