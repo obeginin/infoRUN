@@ -1,0 +1,26 @@
+.group {
+  position: absolute;
+  z-index: -10;
+
+  &:nth-child(1) {
+    top: -20%;
+    right: 0%;
+  }
+
+  &:nth-child(2) {
+    top: 15%;
+    right: 0;
+  }
+
+  &:nth-child(3) {
+    bottom: 25%;
+    right: 0;
+  }
+
+  &:nth-child(4) {
+    bottom: 0;
+    right: 0;
+  }
+}
+
+
