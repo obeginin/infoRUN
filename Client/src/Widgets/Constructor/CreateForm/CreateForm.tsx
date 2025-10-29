@@ -8,7 +8,8 @@ import styles from "./CreateForm.module.scss";
 import { InputImage } from "@/src/ui/InputImage/InputImage";
 import { Paragraph } from "@/src/ui/p/Paragraph";
 import { Button } from "@/src/ui/buttonDeafault/Button";
-import Stepper, { Step } from "@/src/shared/Stepper/Stepper";
+import Stepper from "@/src/shared/Stepper/Stepper";
+import { Step } from "@/src/shared/Stepper/Stepper";
 
 export const CreateForm = () => {
   const [step1Valid, setStep1Valid] = useState(false);
