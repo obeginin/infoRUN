@@ -8,7 +8,7 @@ import React, {
 } from "react";
 import { motion, AnimatePresence, Variants } from "motion/react";
 
-import "./Stepper.css";
+import "./Stepper.scss";
 import { Button } from "@/src/ui/buttonDeafault/Button";
 import Link from "next/link";
 
