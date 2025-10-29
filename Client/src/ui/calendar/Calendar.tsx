@@ -2,7 +2,6 @@ import { Calendar } from "primereact/calendar";
 import "./Calendar.scss";
 import { addLocale } from "primereact/api";
 import { Nullable } from "primereact/ts-helpers";
-i
 
 interface IMyCalendar {
   value: Nullable<Date>;
