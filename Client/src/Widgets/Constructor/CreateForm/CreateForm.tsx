@@ -28,7 +28,6 @@ export const CreateForm = () => {
     setVariant,
     answer,
     setAnswer,
-    setImage,
     initialAnswerFiles,
     initialAnswerFilesAdd,
     initialAnswerFilesRemove,
