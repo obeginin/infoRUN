@@ -6,8 +6,8 @@ import { useEffect, useState, useCallback } from "react";
 import AdminAPI from "../../../API/admin";
 import { Input } from "../../../ui/input/Input";
 import styles from "./AdminNewUser.module.scss";
-import { useAdminStore } from "@/src/store/admin/adminStore";
-import { TextContainer } from "@/src/ui/textContainer/TextContainer";
+import { useAdminStore } from "@/store/admin/adminStore";
+import { TextContainer } from "@/ui/textContainer/TextContainer";
 
 interface IData {
   RoleID: number;

@@ -1,16 +1,16 @@
 "use client";
 
-import { ProfileContentContainer } from "@/src/Features/ProfileContentContainer/ProfileContentContainer";
-import { Button } from "@/src/ui/buttonDeafault/Button";
-import { Paragraph } from "@/src/ui/p/Paragraph";
-import { Footer } from "@/src/Widgets/Footer/Footer";
-import { Header } from "@/src/Widgets/Header/Header";
+import { ProfileContentContainer } from "@/Features/ProfileContentContainer/ProfileContentContainer";
+import { Button } from "@/ui/buttonDeafault/Button";
+import { Paragraph } from "@/ui/p/Paragraph";
+import { Footer } from "@/Widgets/Footer/Footer";
+import { Header } from "@/Widgets/Header/Header";
 import styles from "./success.module.scss";
 import { useRouter } from "next/navigation";
 import { Suspense, useEffect } from "react";
-import AuthAPI from "@/src/API/registration";
+import AuthAPI from "@/API/registration";
 import { useSearchParams } from "next/navigation";
-import { BreadCrumb } from "@/src/ui/breadCrumb/BreadCrumb";
+import { BreadCrumb } from "@/ui/breadCrumb/BreadCrumb";
 
 export default function Success() {
   const items = [

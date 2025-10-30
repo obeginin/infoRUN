@@ -1,9 +1,9 @@
-import { IDialog } from "@/src/ui/IDialog/IDialog";
-import { useAdminStore } from "@/src/store/admin/adminStore";
-import { Paragraph } from "@/src/ui/p/Paragraph";
+import { IDialog } from "@/ui/IDialog/IDialog";
+import { useAdminStore } from "@/store/admin/adminStore";
+import { Paragraph } from "@/ui/p/Paragraph";
 import { useState, useEffect } from "react";
-import { Input } from "@/src/ui/input/Input";
-import { Button } from "@/src/ui/buttonDeafault/Button";
+import { Input } from "@/ui/input/Input";
+import { Button } from "@/ui/buttonDeafault/Button";
 export const DialogEdit = () => {
   const { isVisibleDialogEdit, setVisibleDialogEdit, editUser } =
     useAdminStore();

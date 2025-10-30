@@ -1,15 +1,15 @@
 "use client";
 
-import { useConstructorStore } from "@/src/store/constructor/useConstructorStore";
-import { Spinner } from "@/src/ui/LoadingSpinner/LoadingSpinner";
-import { TextArea } from "@/src/ui/textArea/TextArea";
+import { useConstructorStore } from "@/store/constructor/useConstructorStore";
+import { Spinner } from "@/ui/LoadingSpinner/LoadingSpinner";
+import { TextArea } from "@/ui/textArea/TextArea";
 import { useEffect, useState } from "react";
 import styles from "./CreateForm.module.scss";
-import { InputImage } from "@/src/ui/InputImage/InputImage";
-import { Paragraph } from "@/src/ui/p/Paragraph";
-import { Button } from "@/src/ui/buttonDeafault/Button";
-import Stepper from "@/src/shared/Stepper/Stepper";
-import { Step } from "@/src/shared/Stepper/Stepper";
+import { InputImage } from "@/ui/InputImage/InputImage";
+import { Paragraph } from "@/ui/p/Paragraph";
+import { Button } from "@/ui/buttonDeafault/Button";
+import Stepper from "@/shared/Stepper/Stepper";
+import { Step } from "@/shared/Stepper/Stepper";
 
 export const CreateForm = () => {
   const [step1Valid, setStep1Valid] = useState(false);

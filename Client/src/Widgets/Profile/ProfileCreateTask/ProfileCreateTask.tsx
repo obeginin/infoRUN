@@ -1,12 +1,12 @@
 "use client";
 
-import { useUserStore } from "@/src/store/user/userStore";
+import { useUserStore } from "@/store/user/userStore";
 import styles from "./ProfileCreateTask.module.scss";
-import { ProfileContentContainer } from "@/src/Features/ProfileContentContainer/ProfileContentContainer";
-import { Button } from "@/src/ui/buttonDeafault/Button";
-import { Paragraph } from "@/src/ui/p/Paragraph";
+import { ProfileContentContainer } from "@/Features/ProfileContentContainer/ProfileContentContainer";
+import { Button } from "@/ui/buttonDeafault/Button";
+import { Paragraph } from "@/ui/p/Paragraph";
 import Link from "next/link";
-import { TextContainer } from "@/src/ui/textContainer/TextContainer";
+import { TextContainer } from "@/ui/textContainer/TextContainer";
 
 export const ProfileCreateTask = () => {
   const user = useUserStore((state) => state.user);

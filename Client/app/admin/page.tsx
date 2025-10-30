@@ -1,13 +1,13 @@
 "use client";
 
-import { BreadCrumb } from "@/src/ui/breadCrumb/BreadCrumb";
-import { AdminChangeUser } from "@/src/Widgets/Admin/AdminChangeUser/AdminChangeUser";
-import { AdminNewUser } from "@/src/Widgets/Admin/AdminNewUser/AdminNewUser";
-import { Footer } from "@/src/Widgets/Footer/Footer";
-import { Header } from "@/src/Widgets/Header/Header";
+import { BreadCrumb } from "@/ui/breadCrumb/BreadCrumb";
+import { AdminChangeUser } from "@/Widgets/Admin/AdminChangeUser/AdminChangeUser";
+import { AdminNewUser } from "@/Widgets/Admin/AdminNewUser/AdminNewUser";
+import { Footer } from "@/Widgets/Footer/Footer";
+import { Header } from "@/Widgets/Header/Header";
 import styles from "./admin.module.scss";
-import { useAdminStore } from "@/src/store/admin/adminStore";
-import { AdminLogsCurrentUser } from "@/src/Widgets/Admin/AdminLogsCurrentUser/AdminLogsCurrentUser";
+import { useAdminStore } from "@/store/admin/adminStore";
+import { AdminLogsCurrentUser } from "@/Widgets/Admin/AdminLogsCurrentUser/AdminLogsCurrentUser";
 
 export default function Admin() {
   const items = [{ id: 1, label: "Панель администратора", link: "/admin" }];

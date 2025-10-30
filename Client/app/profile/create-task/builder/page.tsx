@@ -1,9 +1,9 @@
-import { Footer } from "@/src/Widgets/Footer/Footer";
-import { Header } from "@/src/Widgets/Header/Header";
+import { Footer } from "@/Widgets/Footer/Footer";
+import { Header } from "@/Widgets/Header/Header";
 import styles from "./create-task.module.scss";
-import { TaskConstructor } from "@/src/Widgets/Constructor/TaskConstructor/TaskConstructor";
-import { BreadCrumb } from "@/src/ui/breadCrumb/BreadCrumb";
-import { EndDialog } from "@/src/Widgets/Constructor/EndDialog/EndDialog";
+import { TaskConstructor } from "@/Widgets/Constructor/TaskConstructor/TaskConstructor";
+import { BreadCrumb } from "@/ui/breadCrumb/BreadCrumb";
+import { EndDialog } from "@/Widgets/Constructor/EndDialog/EndDialog";
 export default function ConstructorTask () {
   const items = [
     { id: 1, label: "Личный кабинет", link: "/profile" },

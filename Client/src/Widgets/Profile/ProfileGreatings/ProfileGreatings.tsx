@@ -1,13 +1,13 @@
 "use client";
 
-import { ProfileContentContainer } from "@/src/Features/ProfileContentContainer/ProfileContentContainer";
+import { ProfileContentContainer } from "@/Features/ProfileContentContainer/ProfileContentContainer";
 import edit from "@public/assets/edit_white.svg";
-import { useUserStore } from "@/src/store/user/userStore";
-import { Button } from "@/src/ui/buttonDeafault/Button";
-import { Paragraph } from "@/src/ui/p/Paragraph";
+import { useUserStore } from "@/store/user/userStore";
+import { Button } from "@/ui/buttonDeafault/Button";
+import { Paragraph } from "@/ui/p/Paragraph";
 import { ChangePassword } from "../../ChangePassword/ChangePassword";
 import { useState } from "react";
-import { IDialog } from "@/src/ui/IDialog/IDialog";
+import { IDialog } from "@/ui/IDialog/IDialog";
 import Image from "next/image";
 
 import styles from "./ProfileGreatings.module.scss";

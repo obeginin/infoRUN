@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Paragraph } from "@/src/ui/p/Paragraph";
+import { Paragraph } from "@/ui/p/Paragraph";
 import { useTimerStore } from "./store/store";
 
 export const Timer = ({ taskId }: { taskId: number }) => {

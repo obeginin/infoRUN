@@ -1,4 +1,4 @@
-import { ProtectedRoute } from "@/src/Processes/ProtectedRoute/ProtectedRoute";
+import { ProtectedRoute } from "@/Processes/ProtectedRoute/ProtectedRoute";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {

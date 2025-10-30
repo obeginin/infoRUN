@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 import styles from "./Footer.module.scss";
-import { AnimationLink } from "@/src/ui/AnimationLink/AnimationLink";
-import HaelthAPI from "@/src/API/healthDEV";
-import { Paragraph } from "@/src/ui/p/Paragraph";
-import { useUserStore } from "@/src/store/user/userStore";
+import { AnimationLink } from "@/ui/AnimationLink/AnimationLink";
+import HaelthAPI from "@/API/healthDEV";
+import { Paragraph } from "@/ui/p/Paragraph";
+import { useUserStore } from "@/store/user/userStore";
 
 interface IHealth {
   status: string;

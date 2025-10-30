@@ -1,5 +1,5 @@
-import { Button } from "@/src/ui/buttonDeafault/Button";
-import { Paragraph } from "@/src/ui/p/Paragraph";
+import { Button } from "@/ui/buttonDeafault/Button";
+import { Paragraph } from "@/ui/p/Paragraph";
 import styles from "./ForTeacher.module.scss";
 import Link from "next/link";
 

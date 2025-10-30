@@ -1,16 +1,16 @@
 "use client";
 
 import styles from "./ProfileHistory.module.scss";
-import { ProfileContentContainer } from "@/src/Features/ProfileContentContainer/ProfileContentContainer";
-import { Paragraph } from "@/src/ui/p/Paragraph";
+import { ProfileContentContainer } from "@/Features/ProfileContentContainer/ProfileContentContainer";
+import { Paragraph } from "@/ui/p/Paragraph";
 import { useEffect, useState } from "react";
-import AdminAPI from "@/src/API/admin";
-import { useUserStore } from "@/src/store/user/userStore";
-import type { ILog } from "@/src/interface/logs.interface";
-import { Task } from "@/src/ui/taskContainer/Task";
+import AdminAPI from "@/API/admin";
+import { useUserStore } from "@/store/user/userStore";
+import type { ILog } from "@/interface/logs.interface";
+import { Task } from "@/ui/taskContainer/Task";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
-import { TextContainer } from "@/src/ui/textContainer/TextContainer";
+import { TextContainer } from "@/ui/textContainer/TextContainer";
 
 export const ProfileHistory = () => {
   const [data, setData] = useState<ILog[]>([]);

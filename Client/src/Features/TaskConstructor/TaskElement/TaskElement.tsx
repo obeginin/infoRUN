@@ -1,8 +1,8 @@
 "use client";
 
-import { InputImage } from "@/src/ui/InputImage/InputImage";
-import { Paragraph } from "@/src/ui/p/Paragraph";
-import { TextArea } from "@/src/ui/textArea/TextArea";
+import { InputImage } from "@/ui/InputImage/InputImage";
+import { Paragraph } from "@/ui/p/Paragraph";
+import { TextArea } from "@/ui/textArea/TextArea";
 import styles from "./TaskElement.module.scss";
 
 type TaskElementType = "text" | "image";

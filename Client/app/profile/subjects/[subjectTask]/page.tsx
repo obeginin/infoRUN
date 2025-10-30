@@ -1,8 +1,8 @@
-import { Header } from "@/src/Widgets/Header/Header";
-import { Footer } from "@/src/Widgets/Footer/Footer";
-import { BreadCrumb } from "@/src/ui/breadCrumb/BreadCrumb";
-import { ProfileContentContainer } from "@/src/Features/ProfileContentContainer/ProfileContentContainer";
-import { CurrentMyTask } from "@/src/Widgets/Constructor/CurrentMyTask/CurrentMyTask";
+import { Header } from "@/Widgets/Header/Header";
+import { Footer } from "@/Widgets/Footer/Footer";
+import { BreadCrumb } from "@/ui/breadCrumb/BreadCrumb";
+import { ProfileContentContainer } from "@/Features/ProfileContentContainer/ProfileContentContainer";
+import { CurrentMyTask } from "@/Widgets/Constructor/CurrentMyTask/CurrentMyTask";
 
 export default function MyTasks() {
   const items = [

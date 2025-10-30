@@ -1,7 +1,7 @@
 import { create } from "zustand";
-import type { IUser } from "@/src/interface/user.interface";
-import AdminAPI from "@/src/API/admin";
-import StudentsAPI from "@/src/API/students";
+import type { IUser } from "@/interface/user.interface";
+import AdminAPI from "@/API/admin";
+import StudentsAPI from "@/API/students";
 
 interface AdminStore {
   users: IUser[];

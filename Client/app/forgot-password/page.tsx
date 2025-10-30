@@ -1,11 +1,11 @@
 "use client";
 
-import { ProfileContentContainer } from "@/src/Features/ProfileContentContainer/ProfileContentContainer";
-import { Button } from "@/src/ui/buttonDeafault/Button";
-import { Input } from "@/src/ui/input/Input";
-import { Paragraph } from "@/src/ui/p/Paragraph";
-import { Footer } from "@/src/Widgets/Footer/Footer";
-import { Header } from "@/src/Widgets/Header/Header";
+import { ProfileContentContainer } from "@/Features/ProfileContentContainer/ProfileContentContainer";
+import { Button } from "@/ui/buttonDeafault/Button";
+import { Input } from "@/ui/input/Input";
+import { Paragraph } from "@/ui/p/Paragraph";
+import { Footer } from "@/Widgets/Footer/Footer";
+import { Header } from "@/Widgets/Header/Header";
 import Image from "next/image";
 import styles from "./forgotPassword.module.scss";
 import group from "@public/alphabet/group.svg";
@@ -13,8 +13,8 @@ import group_black from "@public/alphabet/group_black.svg";
 import male from "@public/subjects/male1.svg";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useResetPasswordStore } from "@/src/store/password/resetPasswordStore";
-import { BreadCrumb } from "@/src/ui/breadCrumb/BreadCrumb";
+import { useResetPasswordStore } from "@/store/password/resetPasswordStore";
+import { BreadCrumb } from "@/ui/breadCrumb/BreadCrumb";
 
 export default function ForgotPassword() {
   const items = [

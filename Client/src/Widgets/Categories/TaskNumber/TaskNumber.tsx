@@ -1,6 +1,6 @@
-import { ProfileContentContainer } from "@/src/Features/ProfileContentContainer/ProfileContentContainer";
+import { ProfileContentContainer } from "@/Features/ProfileContentContainer/ProfileContentContainer";
 import styles from "./TaskNumber.module.scss";
-import { Paragraph } from "@/src/ui/p/Paragraph";
+import { Paragraph } from "@/ui/p/Paragraph";
 interface TaskNumberProps {
   task: string[];
 }

@@ -1,17 +1,17 @@
 "use client";
 
-import { ProfileContentContainer } from "@/src/Features/ProfileContentContainer/ProfileContentContainer";
+import { ProfileContentContainer } from "@/Features/ProfileContentContainer/ProfileContentContainer";
 import styles from "./AdminLogsCurrentUser.module.scss";
-import { Paragraph } from "@/src/ui/p/Paragraph";
-import { useAdminStore } from "@/src/store/admin/adminStore";
-import { TextContainer } from "@/src/ui/textContainer/TextContainer";
+import { Paragraph } from "@/ui/p/Paragraph";
+import { useAdminStore } from "@/store/admin/adminStore";
+import { TextContainer } from "@/ui/textContainer/TextContainer";
 import { useEffect, useState } from "react";
-import AdminAPI from "@/src/API/admin";
-import { ILog } from "@/src/interface/logs.interface";
-import { Task } from "@/src/ui/taskContainer/Task";
+import AdminAPI from "@/API/admin";
+import { ILog } from "@/interface/logs.interface";
+import { Task } from "@/ui/taskContainer/Task";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
-import { Spinner } from "@/src/ui/LoadingSpinner/LoadingSpinner";
+import { Spinner } from "@/ui/LoadingSpinner/LoadingSpinner";
 
 export const AdminLogsCurrentUser = () => {
   const { currentUser } = useAdminStore();

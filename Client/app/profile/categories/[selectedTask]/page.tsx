@@ -1,21 +1,21 @@
 "use client";
 
-import TasksAPI from "@/src/API/tasks";
-import { ProfileContentContainer } from "@/src/Features/ProfileContentContainer/ProfileContentContainer";
-import { ITask } from "@/src/interface/subtask.interface";
-import { Paragraph } from "@/src/ui/p/Paragraph";
-import { Footer } from "@/src/Widgets/Footer/Footer";
-import { Header } from "@/src/Widgets/Header/Header";
+import TasksAPI from "@/API/tasks";
+import { ProfileContentContainer } from "@/Features/ProfileContentContainer/ProfileContentContainer";
+import { ITask } from "@/interface/subtask.interface";
+import { Paragraph } from "@/ui/p/Paragraph";
+import { Footer } from "@/Widgets/Footer/Footer";
+import { Header } from "@/Widgets/Header/Header";
 import { format } from "date-fns";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState, useCallback } from "react";
 import { useIntersectionObserver } from "@siberiacancode/reactuse";
-import { Spinner } from "@/src/ui/LoadingSpinner/LoadingSpinner";
-import { Task } from "@/src/ui/taskContainer/Task";
+import { Spinner } from "@/ui/LoadingSpinner/LoadingSpinner";
+import { Task } from "@/ui/taskContainer/Task";
 import styles from "./selectedTask.module.scss";
 import { Nullable } from "primereact/ts-helpers";
-import { FiltersForm } from "@/src/Widgets/CatalogSelectedTask/FiltersForm";
-import { ITaskSelected } from "@/src/Widgets/CatalogSelectedTask/Tasks";
+import { FiltersForm } from "@/Widgets/CatalogSelectedTask/FiltersForm";
+import { ITaskSelected } from "@/Widgets/CatalogSelectedTask/Tasks";
 
 export default function SelectedTask() {
   const searchParams = useSearchParams();

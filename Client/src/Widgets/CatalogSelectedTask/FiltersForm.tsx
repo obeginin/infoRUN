@@ -1,6 +1,6 @@
-import { MyCalendar } from "@/src/ui/calendar/Calendar";
-import { Input } from "@/src/ui/input/Input";
-import { Button } from "@/src/ui/buttonDeafault/Button";
+import { MyCalendar } from "@/ui/calendar/Calendar";
+import { Input } from "@/ui/input/Input";
+import { Button } from "@/ui/buttonDeafault/Button";
 import { Nullable } from "primereact/ts-helpers";
 
 interface IFiltersForm {

@@ -1,10 +1,10 @@
 import { act, renderHook } from '@testing-library/react';
 import { useUserStore } from './userStore';
-import AuthAPI from '@/src/API/auth';
+import AuthAPI from '@/API/auth';
 import { User } from './user.interface';
 
 // Мокируем AuthAPI
-jest.mock('@/src/API/auth');
+jest.mock('@/API/auth');
 const mockedAuthAPI = AuthAPI as jest.Mocked<typeof AuthAPI>;
 
 // Мокируем localStorage

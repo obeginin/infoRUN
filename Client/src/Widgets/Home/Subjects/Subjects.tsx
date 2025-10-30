@@ -1,10 +1,10 @@
 import styles from "./Subjects.module.scss";
-import { Paragraph } from "@/src/ui/p/Paragraph";
+import { Paragraph } from "@/ui/p/Paragraph";
 import male1 from "@public/subjects/male1.webp";
 import male2 from "@public/subjects/male2.webp";
-import { Button } from "@/src/ui/buttonDeafault/Button";
+import { Button } from "@/ui/buttonDeafault/Button";
 import Image from "next/image";
-import { TextContainer } from "@/src/ui/textContainer/TextContainer";
+import { TextContainer } from "@/ui/textContainer/TextContainer";
 
 export const Subjects = () => {
   return (

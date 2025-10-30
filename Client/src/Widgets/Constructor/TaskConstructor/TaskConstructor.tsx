@@ -1,12 +1,12 @@
 "use client";
 
-import { ProfileContentContainer } from "@/src/Features/ProfileContentContainer/ProfileContentContainer";
-import { CreateTaskHeader } from "@/src/Features/TaskConstructor/CreateTaskHeader/CreateTaskHeader";
-import { Paragraph } from "@/src/ui/p/Paragraph";
-import { TaskElement } from "@/src/Features/TaskConstructor/TaskElement/TaskElement";
+import { ProfileContentContainer } from "@/Features/ProfileContentContainer/ProfileContentContainer";
+import { CreateTaskHeader } from "@/Features/TaskConstructor/CreateTaskHeader/CreateTaskHeader";
+import { Paragraph } from "@/ui/p/Paragraph";
+import { TaskElement } from "@/Features/TaskConstructor/TaskElement/TaskElement";
 import styles from "./TaskConstructor.module.scss";
-import { Button } from "@/src/ui/buttonDeafault/Button";
-import { useConstructorStore } from "@/src/store/constructor/useConstructorStore";
+import { Button } from "@/ui/buttonDeafault/Button";
+import { useConstructorStore } from "@/store/constructor/useConstructorStore";
 import { useEffect, useRef, useState } from "react";
 import { Toast, ToastMessage } from "primereact/toast";
 import "primereact/resources/themes/lara-light-cyan/theme.css";

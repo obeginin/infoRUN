@@ -1,10 +1,10 @@
-import { Header } from "@/src/Widgets/Header/Header";
+import { Header } from "@/Widgets/Header/Header";
 import styles from "./createTask.module.scss";
-import { Footer } from "@/src/Widgets/Footer/Footer";
-import { CreateForm } from "@/src/Widgets/Constructor/CreateForm/CreateForm";
+import { Footer } from "@/Widgets/Footer/Footer";
+import { CreateForm } from "@/Widgets/Constructor/CreateForm/CreateForm";
 import group from "@public/alphabet/group.svg";
 import Image from "next/image";
-import { BreadCrumb } from "@/src/ui/breadCrumb/BreadCrumb";
+import { BreadCrumb } from "@/ui/breadCrumb/BreadCrumb";
 export default function CreateTask() {
   const items = [
     { id: 1, label: "Личный кабинет", link: "/profile" },

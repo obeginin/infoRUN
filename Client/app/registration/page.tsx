@@ -1,12 +1,12 @@
-import { Footer } from "@/src/Widgets/Footer/Footer";
-import { Header } from "@/src/Widgets/Header/Header";
-import { RegistrationForm } from "@/src/Widgets/Registration/RegistrationForm";
+import { Footer } from "@/Widgets/Footer/Footer";
+import { Header } from "@/Widgets/Header/Header";
+import { RegistrationForm } from "@/Widgets/Registration/RegistrationForm";
 import Image from "next/image";
 import styles from "./registration.module.scss";
 import group from "@public/alphabet/group.svg";
 import group_black from "@public/alphabet/group_black.svg";
 import male from "@public/subjects/male1.svg";
-import { BreadCrumb } from "@/src/ui/breadCrumb/BreadCrumb";
+import { BreadCrumb } from "@/ui/breadCrumb/BreadCrumb";
 
 export default function Registration() {
   const items = [{ id: 1, label: "Регистрация", link: "/registration" }];

@@ -1,11 +1,11 @@
 'use client'
 
 import { useState } from "react";
-import { Input } from "@/src/ui/input/Input";
-import { Paragraph } from "@/src/ui/p/Paragraph";
+import { Input } from "@/ui/input/Input";
+import { Paragraph } from "@/ui/p/Paragraph";
 import styles from "./ChangePassword.module.scss";
-import { Button } from "@/src/ui/buttonDeafault/Button";
-import UserPassword from "@/src/API/password";
+import { Button } from "@/ui/buttonDeafault/Button";
+import UserPassword from "@/API/password";
 export const ChangePassword = () => {
   const [oldPass, setOldPass] = useState("");
   const [newPass, setNewPass] = useState("");

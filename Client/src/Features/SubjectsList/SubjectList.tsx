@@ -1,13 +1,13 @@
 "use client";
 
-import { Subject } from "@/src/interface/subject.interface";
-import { useMyTaskStore } from "@/src/store/task/myTaskStore";
-import { Spinner } from "@/src/ui/LoadingSpinner/LoadingSpinner";
-import { Paragraph } from "@/src/ui/p/Paragraph";
+import { Subject } from "@/interface/subject.interface";
+import { useMyTaskStore } from "@/store/task/myTaskStore";
+import { Spinner } from "@/ui/LoadingSpinner/LoadingSpinner";
+import { Paragraph } from "@/ui/p/Paragraph";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import styles from "./SubjectList.module.scss";
-import { useUserStore } from "@/src/store/user/userStore";
+import { useUserStore } from "@/store/user/userStore";
 
 interface Props {
   to: string;

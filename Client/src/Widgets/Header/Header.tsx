@@ -1,14 +1,14 @@
 "use client";
 
 import burger from "@public/assets/burger-menu.svg";
-import { Button } from "@/src/ui/buttonDeafault/Button";
+import { Button } from "@/ui/buttonDeafault/Button";
 import styles from "./Header.module.scss";
-import { useUserStore } from "@/src/store/user/userStore";
+import { useUserStore } from "@/store/user/userStore";
 // import { useNavigate } from "react-router-dom";
 // import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { AnimationLink } from "@/src/ui/AnimationLink/AnimationLink";
+import { AnimationLink } from "@/ui/AnimationLink/AnimationLink";
 import { useEffect, useState } from "react";
 
 export const Header = () => {

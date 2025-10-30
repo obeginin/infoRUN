@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { combine, persist } from "zustand/middleware";
-import AuthAPI from "@/src/API/auth";
+import AuthAPI from "@/API/auth";
 import type { User, ErrorDetail } from "./user.interface";
 
 export const useUserStore = create(

@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import AuthAPI from "@/src/API/auth";
+import AuthAPI from "@/API/auth";
 
 interface ResetPasswordStore {
   email: string;

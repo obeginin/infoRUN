@@ -1,7 +1,7 @@
 "use client";
 import { useState, useRef, useEffect, useCallback } from "react";
 import styles from "./InputImage.module.scss";
-import { Paragraph } from "@/src/ui/p/Paragraph";
+import { Paragraph } from "@/ui/p/Paragraph";
 
 interface InputImageProps {
   file?: File | null;

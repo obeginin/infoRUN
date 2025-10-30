@@ -2,19 +2,19 @@
 
 import { useEffect, useState } from "react";
 import styles from "./allTasks.module.scss";
-import { useUserStore } from "@/src/store/user/userStore";
-import type { ITask, IBlock } from "@/src/interface/subtask.interface";
-import TasksAPI from "@/src/API/tasks";
+import { useUserStore } from "@/store/user/userStore";
+import type { ITask, IBlock } from "@/interface/subtask.interface";
+import TasksAPI from "@/API/tasks";
 import { useIntersectionObserver, useQuery } from "@siberiacancode/reactuse";
-import { Header } from "@/src/Widgets/Header/Header";
-import { BreadCrumb } from "@/src/ui/breadCrumb/BreadCrumb";
-import { ProfileContentContainer } from "@/src/Features/ProfileContentContainer/ProfileContentContainer";
-import { Button } from "@/src/ui/buttonDeafault/Button";
-import { Task } from "@/src/ui/taskContainer/Task";
-import { Paragraph } from "@/src/ui/p/Paragraph";
-import { Footer } from "@/src/Widgets/Footer/Footer";
-import { Spinner } from "@/src/ui/LoadingSpinner/LoadingSpinner";
-import { Input } from "@/src/ui/input/Input";
+import { Header } from "@/Widgets/Header/Header";
+import { BreadCrumb } from "@/ui/breadCrumb/BreadCrumb";
+import { ProfileContentContainer } from "@/Features/ProfileContentContainer/ProfileContentContainer";
+import { Button } from "@/ui/buttonDeafault/Button";
+import { Task } from "@/ui/taskContainer/Task";
+import { Paragraph } from "@/ui/p/Paragraph";
+import { Footer } from "@/Widgets/Footer/Footer";
+import { Spinner } from "@/ui/LoadingSpinner/LoadingSpinner";
+import { Input } from "@/ui/input/Input";
 
 export default function AllTasks() {
   const items = [

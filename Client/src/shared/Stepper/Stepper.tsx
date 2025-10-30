@@ -9,7 +9,7 @@ import React, {
 import { motion, AnimatePresence, Variants } from "motion/react";
 
 import "./Stepper.scss";
-import { Button } from "@/src/ui/buttonDeafault/Button";
+import { Button } from "@/ui/buttonDeafault/Button";
 import Link from "next/link";
 
 interface StepperProps extends HTMLAttributes<HTMLDivElement> {

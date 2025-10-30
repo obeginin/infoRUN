@@ -1,14 +1,14 @@
-import { Footer } from "@/src/Widgets/Footer/Footer";
-import { Header } from "@/src/Widgets/Header/Header";
-import { ProfileCounterExam } from "@/src/Widgets/Profile/ProfileCounterExam/ProfileCounterExam";
-import { ProfileGreatings } from "@/src/Widgets/Profile/ProfileGreatings/ProfileGreatings";
-import { ProfileMotivation } from "@/src/Widgets/Profile/ProfileMotivation/ProfileMotivation";
-import { ProfileProgress } from "@/src/Widgets/Profile/ProfileProgress/ProfileProgress";
+import { Footer } from "@/Widgets/Footer/Footer";
+import { Header } from "@/Widgets/Header/Header";
+import { ProfileCounterExam } from "@/Widgets/Profile/ProfileCounterExam/ProfileCounterExam";
+import { ProfileGreatings } from "@/Widgets/Profile/ProfileGreatings/ProfileGreatings";
+import { ProfileMotivation } from "@/Widgets/Profile/ProfileMotivation/ProfileMotivation";
+import { ProfileProgress } from "@/Widgets/Profile/ProfileProgress/ProfileProgress";
 import styles from "./profile.module.scss";
-import { ProfileHistory } from "@/src/Widgets/Profile/ProfileHistory/ProfileHistory";
-import { ProfileCreateTask } from "@/src/Widgets/Profile/ProfileCreateTask/ProfileCreateTask";
-import { BreadCrumb } from "@/src/ui/breadCrumb/BreadCrumb";
-import { BackgroundDefault } from "@/src/ui/backgroundPaper/backgeoundDefault";
+import { ProfileHistory } from "@/Widgets/Profile/ProfileHistory/ProfileHistory";
+import { ProfileCreateTask } from "@/Widgets/Profile/ProfileCreateTask/ProfileCreateTask";
+import { BreadCrumb } from "@/ui/breadCrumb/BreadCrumb";
+import { BackgroundDefault } from "@/ui/backgroundPaper/backgeoundDefault";
 export default function Profile() {
   const items = [{ id: 1, label: "Личный кабинет", link: "/profile" }];
   return (

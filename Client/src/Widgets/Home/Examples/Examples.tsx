@@ -1,10 +1,10 @@
-import { Paragraph } from "@/src/ui/p/Paragraph";
+import { Paragraph } from "@/ui/p/Paragraph";
 import styles from "./Examples.module.scss";
 import task from "@public/assets/task_ex.svg";
-import { Button } from "@/src/ui/buttonDeafault/Button";
-import { ProfileContentContainer } from "@/src/Features/ProfileContentContainer/ProfileContentContainer";
+import { Button } from "@/ui/buttonDeafault/Button";
+import { ProfileContentContainer } from "@/Features/ProfileContentContainer/ProfileContentContainer";
 import Image from "next/image";
-import { TextContainer } from "@/src/ui/textContainer/TextContainer";
+import { TextContainer } from "@/ui/textContainer/TextContainer";
 export const Examples = () => {
   return (
     <section>

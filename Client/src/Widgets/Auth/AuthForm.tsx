@@ -1,13 +1,13 @@
 "use client";
 
-import { useUserStore } from "@/src/store/user/userStore";
-import { Button } from "@/src/ui/buttonDeafault/Button";
-import { Input } from "@/src/ui/input/Input";
-import { Paragraph } from "@/src/ui/p/Paragraph";
+import { useUserStore } from "@/store/user/userStore";
+import { Button } from "@/ui/buttonDeafault/Button";
+import { Input } from "@/ui/input/Input";
+import { Paragraph } from "@/ui/p/Paragraph";
 import styles from "./AuthForm.module.scss";
 import { useEffect, useState } from "react";
-import { ProfileContentContainer } from "@/src/Features/ProfileContentContainer/ProfileContentContainer";
-import { AnimationLink } from "@/src/ui/AnimationLink/AnimationLink";
+import { ProfileContentContainer } from "@/Features/ProfileContentContainer/ProfileContentContainer";
+import { AnimationLink } from "@/ui/AnimationLink/AnimationLink";
 import { useRouter } from "next/navigation";
 export const AuthForm = () => {
   const [login, setLogin] = useState("");

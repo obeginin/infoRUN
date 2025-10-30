@@ -1,15 +1,15 @@
 "use client";
 
-import { Task } from "@/src/ui/taskContainer/Task";
+import { Task } from "@/ui/taskContainer/Task";
 import styles from "./CurrentMyTask.module.scss";
-import { Paragraph } from "@/src/ui/p/Paragraph";
+import { Paragraph } from "@/ui/p/Paragraph";
 import { format } from "date-fns";
 import { useEffect, useRef, useState } from "react";
-import { useMyTaskStore } from "@/src/store/task/myTaskStore";
-import { useUserStore } from "@/src/store/user/userStore";
+import { useMyTaskStore } from "@/store/task/myTaskStore";
+import { useUserStore } from "@/store/user/userStore";
 import { Toast } from "primereact/toast";
 import "primereact/resources/themes/lara-light-cyan/theme.css";
-import { Spinner } from "@/src/ui/LoadingSpinner/LoadingSpinner";
+import { Spinner } from "@/ui/LoadingSpinner/LoadingSpinner";
 import Link from "next/link";
 export const CurrentMyTask = () => {
   const ref = useRef<Toast>(null);

@@ -1,6 +1,6 @@
 "use client";
 
-import { Paragraph } from "@/src/ui/p/Paragraph";
+import { Paragraph } from "@/ui/p/Paragraph";
 import styles from "./Main.module.scss";
 import rocket from "@public/assets/rocket-icon.svg";
 import pencil from "@public/assets/pencil-icon.svg";

@@ -1,7 +1,7 @@
-import { ProfileContentContainer } from "@/src/Features/ProfileContentContainer/ProfileContentContainer";
-import { Paragraph } from "@/src/ui/p/Paragraph";
+import { ProfileContentContainer } from "@/Features/ProfileContentContainer/ProfileContentContainer";
+import { Paragraph } from "@/ui/p/Paragraph";
 import styles from "./ProfileCounterExam.module.scss";
-import { TextContainer } from "@/src/ui/textContainer/TextContainer";
+import { TextContainer } from "@/ui/textContainer/TextContainer";
 export const ProfileCounterExam = () => {
   return (
     <>

@@ -1,17 +1,17 @@
 "use client";
 
-import FiltersAPI from "@/src/API/filters";
-import { ProfileContentContainer } from "@/src/Features/ProfileContentContainer/ProfileContentContainer";
-import { SubjectList } from "@/src/Features/SubjectsList/SubjectList";
-import { Subject } from "@/src/interface/subject.interface";
-import { ITaskNumber } from "@/src/interface/taskNumber.interface";
-import { Footer } from "@/src/Widgets/Footer/Footer";
-import { Header } from "@/src/Widgets/Header/Header";
+import FiltersAPI from "@/API/filters";
+import { ProfileContentContainer } from "@/Features/ProfileContentContainer/ProfileContentContainer";
+import { SubjectList } from "@/Features/SubjectsList/SubjectList";
+import { Subject } from "@/interface/subject.interface";
+import { ITaskNumber } from "@/interface/taskNumber.interface";
+import { Footer } from "@/Widgets/Footer/Footer";
+import { Header } from "@/Widgets/Header/Header";
 import { useEffect, useState } from "react";
 import styles from "./categories.module.scss";
-import { Paragraph } from "@/src/ui/p/Paragraph";
-import { Button } from "@/src/ui/buttonDeafault/Button";
-import { BreadCrumb } from "@/src/ui/breadCrumb/BreadCrumb";
+import { Paragraph } from "@/ui/p/Paragraph";
+import { Button } from "@/ui/buttonDeafault/Button";
+import { BreadCrumb } from "@/ui/breadCrumb/BreadCrumb";
 import Link from "next/link";
 
 export default function Categories() {

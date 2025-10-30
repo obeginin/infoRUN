@@ -1,9 +1,9 @@
 "use client";
 
-import { useConstructorStore } from "@/src/store/constructor/useConstructorStore";
-import { Button } from "@/src/ui/buttonDeafault/Button";
-import { IDialog } from "@/src/ui/IDialog/IDialog";
-import { Paragraph } from "@/src/ui/p/Paragraph";
+import { useConstructorStore } from "@/store/constructor/useConstructorStore";
+import { Button } from "@/ui/buttonDeafault/Button";
+import { IDialog } from "@/ui/IDialog/IDialog";
+import { Paragraph } from "@/ui/p/Paragraph";
 import styles from "./EndDialog.module.scss";
 import Link from "next/link";
 import { useEffect, useState } from "react";

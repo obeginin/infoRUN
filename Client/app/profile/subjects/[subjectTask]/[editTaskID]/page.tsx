@@ -1,17 +1,17 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { ProfileContentContainer } from "@/src/Features/ProfileContentContainer/ProfileContentContainer";
-import { IBlock } from "@/src/interface/subtask.interface";
-import { useMyTaskStore } from "@/src/store/task/myTaskStore";
-import { BreadCrumb } from "@/src/ui/breadCrumb/BreadCrumb";
-import { Footer } from "@/src/Widgets/Footer/Footer";
-import { Header } from "@/src/Widgets/Header/Header";
+import { ProfileContentContainer } from "@/Features/ProfileContentContainer/ProfileContentContainer";
+import { IBlock } from "@/interface/subtask.interface";
+import { useMyTaskStore } from "@/store/task/myTaskStore";
+import { BreadCrumb } from "@/ui/breadCrumb/BreadCrumb";
+import { Footer } from "@/Widgets/Footer/Footer";
+import { Header } from "@/Widgets/Header/Header";
 import styles from "./editTaskID.module.scss";
-import { TextArea } from "@/src/ui/textArea/TextArea";
-import { InputImage } from "@/src/ui/InputImage/InputImage";
-import { Button } from "@/src/ui/buttonDeafault/Button";
-import type { EditBlock } from "@/src/store/task/myTaskStore"; // импортируй тип
+import { TextArea } from "@/ui/textArea/TextArea";
+import { InputImage } from "@/ui/InputImage/InputImage";
+import { Button } from "@/ui/buttonDeafault/Button";
+import type { EditBlock } from "@/store/task/myTaskStore"; // импортируй тип
 
 export default function EditTask() {
   const [filesById, setFilesById] = useState<Record<string, File | null>>({});

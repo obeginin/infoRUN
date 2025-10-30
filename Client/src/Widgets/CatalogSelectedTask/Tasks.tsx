@@ -1,6 +1,6 @@
-import { ProfileContentContainer } from "@/src/Features/ProfileContentContainer/ProfileContentContainer";
-import { IBlock, ITask } from "@/src/interface/subtask.interface";
-import { Paragraph } from "@/src/ui/p/Paragraph";
+import { ProfileContentContainer } from "@/Features/ProfileContentContainer/ProfileContentContainer";
+import { IBlock, ITask } from "@/interface/subtask.interface";
+import { Paragraph } from "@/ui/p/Paragraph";
 import { format } from "date-fns";
 import styles from "./Tasks.module.scss";
 interface ITaskSelected {

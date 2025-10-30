@@ -10,7 +10,7 @@ import type { IProfileProgress } from "./ProfileProgress.interface";
 import { CircualProgress } from "../../../Features/CircualProgress/CircualProgress";
 import { Task } from "../../../ui/taskContainer/Task";
 import { useRouter } from "next/navigation";
-import { TextContainer } from "@/src/ui/textContainer/TextContainer";
+import { TextContainer } from "@/ui/textContainer/TextContainer";
 export const ProfileProgress = () => {
   const router = useRouter();
   const user = useUserStore((state) => state.user);

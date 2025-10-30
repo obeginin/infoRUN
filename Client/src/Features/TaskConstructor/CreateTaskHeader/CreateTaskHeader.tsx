@@ -1,6 +1,6 @@
-import { Paragraph } from "@/src/ui/p/Paragraph";
+import { Paragraph } from "@/ui/p/Paragraph";
 import styles from "./CreateTaskHeader.module.scss";
-import { Button } from "@/src/ui/buttonDeafault/Button";
+import { Button } from "@/ui/buttonDeafault/Button";
 import { ProfileContentContainer } from "../../ProfileContentContainer/ProfileContentContainer";
 
 interface CreateTaskHeaderProps {

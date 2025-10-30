@@ -6,7 +6,7 @@
 // import slide3 from "@public/carousel/slide3.svg";
 // import slide4 from "@public/carousel/slide4.svg";
 // import { useState, useEffect, useRef, useLayoutEffect } from "react";
-// import { Paragraph } from "@/src/ui/p/Paragraph";
+// import { Paragraph } from "@/ui/p/Paragraph";
 // import { gsap } from "gsap";
 // import Image from "next/image";
 // export const Carousel = () => {
@@ -154,7 +154,7 @@ import slide2 from "@public/carousel/slide2.svg";
 import slide3 from "@public/carousel/slide3.svg";
 import slide4 from "@public/carousel/slide4.svg";
 import { useState, useEffect } from "react";
-import { Paragraph } from "@/src/ui/p/Paragraph";
+import { Paragraph } from "@/ui/p/Paragraph";
 import Image from "next/image";
 
 export const Carousel = () => {

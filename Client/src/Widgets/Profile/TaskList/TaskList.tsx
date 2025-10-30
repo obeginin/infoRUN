@@ -1,12 +1,12 @@
-// import { Paragraph } from "@/src/ui/p/Paragraph";
+// import { Paragraph } from "@/ui/p/Paragraph";
 // import styles from "./TaskList.module.scss";
-// import type { ITask } from "@/src/interface/subtask.interface";
-// import { Task } from "@/src/ui/taskContainer/Task";
-// import { ProfileContentContainer } from "@/src/Features/ProfileContentContainer/ProfileContentContainer";
-// import { Input } from "@/src/ui/input/Input";
-// import { Button } from "@/src/ui/buttonDeafault/Button";
-// import { Spinner } from "@/src/ui/LoadingSpinner/LoadingSpinner";
-// import { IBlock } from "@/src/interface/subtask.interface";
+// import type { ITask } from "@/interface/subtask.interface";
+// import { Task } from "@/ui/taskContainer/Task";
+// import { ProfileContentContainer } from "@/Features/ProfileContentContainer/ProfileContentContainer";
+// import { Input } from "@/ui/input/Input";
+// import { Button } from "@/ui/buttonDeafault/Button";
+// import { Spinner } from "@/ui/LoadingSpinner/LoadingSpinner";
+// import { IBlock } from "@/interface/subtask.interface";
 
 // interface ITaskList {
 //   data: ITask[];

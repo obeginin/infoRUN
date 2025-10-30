@@ -1,9 +1,9 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import type { Subject } from "@/src/interface/subject.interface";
-import FiltersAPI from "@/src/API/filters";
-import { Task } from "@/src/interface/taskNumbers.interface";
-import ConstructorAPI from "@/src/API/constructor";
+import type { Subject } from "@/interface/subject.interface";
+import FiltersAPI from "@/API/filters";
+import { Task } from "@/interface/taskNumbers.interface";
+import ConstructorAPI from "@/API/constructor";
 
 export type TaskElementType = "text" | "image";
 

@@ -1,10 +1,10 @@
-import { ProfileContentContainer } from "@/src/Features/ProfileContentContainer/ProfileContentContainer";
-import { Button } from "@/src/ui/buttonDeafault/Button";
-import { Paragraph } from "@/src/ui/p/Paragraph";
+import { ProfileContentContainer } from "@/Features/ProfileContentContainer/ProfileContentContainer";
+import { Button } from "@/ui/buttonDeafault/Button";
+import { Paragraph } from "@/ui/p/Paragraph";
 import styles from "./News.module.scss";
 import laptop from "@public/assets/laptop.svg";
 import Image from "next/image";
-import { TextContainer } from "@/src/ui/textContainer/TextContainer";
+import { TextContainer } from "@/ui/textContainer/TextContainer";
 export const News = () => {
   return (
     <section>

@@ -1,12 +1,12 @@
-import { Header } from "@/src/Widgets/Header/Header";
-import { AuthForm } from "@/src/Widgets/Auth/AuthForm";
+import { Header } from "@/Widgets/Header/Header";
+import { AuthForm } from "@/Widgets/Auth/AuthForm";
 import styles from "./auth.module.scss";
-import { Footer } from "@/src/Widgets/Footer/Footer";
+import { Footer } from "@/Widgets/Footer/Footer";
 import group from "@public/alphabet/group.svg";
 import group_black from "@public/alphabet/group_black.svg";
 import male from "@public/subjects/male1.svg";
 import Image from "next/image";
-import { BreadCrumb } from "@/src/ui/breadCrumb/BreadCrumb";
+import { BreadCrumb } from "@/ui/breadCrumb/BreadCrumb";
 
 export default function Auth() {
   const items = [{ id: 1, label: "Авторизация", link: "/auth" }];

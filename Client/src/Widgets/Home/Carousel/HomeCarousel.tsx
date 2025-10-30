@@ -1,4 +1,4 @@
-import { Paragraph } from "@/src/ui/p/Paragraph";
+import { Paragraph } from "@/ui/p/Paragraph";
 import { Carousel } from "./Carousel";
 import styles from "./HomeCarousel.module.scss";
 export const HomeCarousel = () => {
