@@ -181,7 +181,7 @@ async def edit_student(id: int,
     return {"message": f"Студент с логином: {student_by_id.Login} успешно изменен"}
 
 # /api/students/active (тест ✅)
-@students_router.post("/active",operation_id = 'students', summary="Активация/деакцтивация студента")
+@students_router.post("/active",operation_id = 'StudentsActive', summary="Активация/деакцтивация студента")
 async def activate_student(id: int, flag: bool, db: AsyncSession = Depends(get_db), current_student=Depends(permission_required("edit_students"))):
     logger.info(f"Пользователь {current_student.Login} отправил запрос на активацию/деактивацию студента студента id={id} | flag={flag}")
 
