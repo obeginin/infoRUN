@@ -39,6 +39,7 @@ variant_router = APIRouter(prefix="/api/variants", tags=["variants"])
 # /api/tasks/variants  (GET) @
 ''' Получить список вариантов'''
 @variant_router.get("",
+                    operation_id = 'Variants',
                     summary="Получить список вариантов",
                     description="""Если передан параметр **subject_id**, то возвращаются варианты только для указанного предмета.  
                             Если параметр не передан, возвращаются варианты по всем предметам.  
@@ -56,7 +57,7 @@ async def read_variants(
     variants = await variants_crud.get_variants(db, subject_id=subject_id)
     return {"count": len(variants), "variants": variants}
 
-@variant_router.get("/{variant_id}", summary="Получить вариант по его variant_id")
+@variant_router.get("/{variant_id}",operation_id = 'VariantsVariantID', summary="Получить вариант по его variant_id")
 async def read_variant_by_id(
     variant_id: int,
     db: AsyncSession = Depends(get_db),
@@ -71,9 +72,9 @@ async def read_variant_by_id(
 
 
 # TODO передалать но новое
-# /api/tasks/exec/{VariantID}
+# /api/variants/exec/{VariantID}
 '''вызов хранимки с вариантом'''
-@variant_router.get("/exec/{VariantID}/{StudentID}", summary="роут с вызовом хранимой процедуры")
+@variant_router.get("/exec/{VariantID}/{StudentID}",operation_id = 'VariantsExecVariantIDStudentID', summary="роут с вызовом хранимой процедуры")
 async def read_tasks_of_variant (VariantID: int, StudentID: int, db: AsyncSession = Depends(get_db)):
     query = text("EXEC dbo.GetStudentsTasks @VariantID =:VariantID, @StudentID =:StudentID")
     result = db.execute(query, {"VariantID": VariantID, "StudentID": StudentID}).fetchall()

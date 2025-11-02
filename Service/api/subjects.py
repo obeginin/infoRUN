@@ -37,6 +37,7 @@ subject_router  = APIRouter(prefix="/api/subjects", tags=["subjects"])
 # /api/subjects   (GET) @
 @subject_router.get(
     "",
+    operation_id = 'Subjects',
     response_model=subjects_schema.SubjectListResponse,   # указываем какой схеме должны соответствовать данные
     summary="Получить список всех предметов (Информатика, Математика)",
     description="""так же необходимо передавать в заголовке **токен** пользователя"""
@@ -76,6 +77,7 @@ async def read_all_subject(
 # /api/subjects/{subjectID}   (GET) @
 @subject_router.get(
     "/{subjectID}",
+    operation_id = 'SubjectsSubjectID',
     response_model=subjects_schema.SubjectRead,   # указываем какой схеме должны соответствовать данные
     summary="Получить предмет по его subjectID ",
     description="""так же необходимо передавать в заголовке **токен** пользователя"""

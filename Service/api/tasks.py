@@ -39,7 +39,8 @@ task_router  = APIRouter(prefix="/api/tasks", tags=["tasks"])
 ''' Эндпоинт: Получить список КАТЕГОРИЙ'''
 # через @ указываем какому маршруту принадлежит Эндпоинт
 @task_router.get(
-    "",                    # добавляем префикс к адресу
+    "",
+    operation_id = 'Tasks',                    # добавляем префикс к адресу
     response_model=tasks.TaskListResponse,   # указываем какой схеме должны соответствовать данные
     summary="Получить список категорий (ЕГЭ_1 ЕГЭ_2, и т.д)",
     description="""Если передан параметр **subjectID**, то возвращаются категории только для указанного предмета.  
@@ -77,7 +78,7 @@ async def read_all_tasks(
         "tasks": tasks
     }
 
-@task_router.get("/{task_id}", summary="Получить категорию по его task_id")
+@task_router.get("/{task_id}",operation_id = 'TasksTaskID', summary="Получить категорию по его task_id")
 async def read_task_by_id(
     task_id: int,
     db: AsyncSession = Depends(get_db),

@@ -133,7 +133,8 @@ async def health_check():
 
 """Swagger"""
 
-@app.get("/api/docs", dependencies=[Depends(get_swagger_user)])
+# TODO убрал авторизацию со свагера 02.11.2025
+@app.get("/api/docs")
 async def get_documentation():
     return get_swagger_ui_html(
         openapi_url="/api/openapi.json",  # <- важно

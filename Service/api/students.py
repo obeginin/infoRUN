@@ -24,14 +24,14 @@ students_router = APIRouter(prefix="/api/students", tags=["students"])
 """API"""
 # /api/students
 ''' Эндпоинт: Получить список студентов'''
-@students_router.get("",response_model=list[StudentOut],summary="Получить список студентов в формате JSON")
+@students_router.get("",response_model=list[StudentOut],operation_id = 'Students', summary="Получить список студентов в формате JSON")
 async def read_all_students(db: AsyncSession = Depends(get_db), current_student=Depends(permission_required("view_students"))):
     logger.info(f"Пользователь {current_student.Login} запросил список всех студентов")
     return await students.get_all_students(db)
 
 # /api/students/{student_id}
 ''' Эндпоинт: Получить студента по id (/students/{student_id})'''
-@students_router.get("/api/{student_id}", response_model=StudentAuth, summary="Получить студента по его ID)")
+@students_router.get("/api/{student_id}",operation_id = 'StudentsStudentID', response_model=StudentAuth, summary="Получить студента по его ID)")
 async def read_student_id(student_id: int, db: AsyncSession = Depends(get_db), current_student=Depends(permission_required("view_students"))):
     logger.info(f"Пользователь {current_student.Login} запросил студента с id={student_id}")
     return await students.get_student_id(db, student_id)
@@ -39,7 +39,7 @@ async def read_student_id(student_id: int, db: AsyncSession = Depends(get_db), c
 
 # /api/students/search (тест ✅)
 ''' Поиск студента по выбранному полю(ID, Login, Email, Phone '''
-@students_router.get("/search", summary="Поиск студента по выбранному полю(ID, Login, Email, Phone")
+@students_router.get("/search",operation_id = 'StudentsSearch', summary="Поиск студента по выбранному полю(ID, Login, Email, Phone")
 async def confirm_email(field_name: StudentField = Query(...),
                   value: str = Query(...),
                   db: AsyncSession = Depends(get_db), current_student=Depends(permission_required("admin_panel"))):
@@ -68,6 +68,7 @@ async def confirm_email(field_name: StudentField = Query(...),
 # /api/students/new_student (тест ✅)
 @students_router.post(
     "/new_student",
+    operation_id = 'NewStudent',
     #response_model=list[auth.StudentBase],
     summary="Добавить нового студента",
     description="""
@@ -124,7 +125,7 @@ async def new_student(student_data: StudentCreate,
     return  {"message": "Студент успешно добавлен", "student_id" : f"{new_student_id}"}
 
 # /api/students/edit_student (тест ✅)
-@students_router.patch("/edit_student", summary="Изменение данных студента по id")
+@students_router.patch("/edit_student",operation_id = 'EditStudent', summary="Изменение данных студента по id")
 async def edit_student(id: int,
                  data: StudentEdit,
                  db: AsyncSession = Depends(get_db),
@@ -180,7 +181,7 @@ async def edit_student(id: int,
     return {"message": f"Студент с логином: {student_by_id.Login} успешно изменен"}
 
 # /api/students/active (тест ✅)
-@students_router.post("/active", summary="Активация/деакцтивация студента")
+@students_router.post("/active",operation_id = 'students', summary="Активация/деакцтивация студента")
 async def activate_student(id: int, flag: bool, db: AsyncSession = Depends(get_db), current_student=Depends(permission_required("edit_students"))):
     logger.info(f"Пользователь {current_student.Login} отправил запрос на активацию/деактивацию студента студента id={id} | flag={flag}")
 
@@ -211,8 +212,8 @@ async def activate_student(id: int, flag: bool, db: AsyncSession = Depends(get_d
 
 
 
-# /api/students/delete_student/v2
-@students_router.post("/delete_student", summary="Удаление студента выбранному полю ")
+# /api/students/delete_student
+@students_router.post("/delete_student",operation_id = 'DeleteStudent', summary="Удаление студента выбранному полю ")
 async def delete_student_v2(request: SearchStudentQuery = Depends(), db: AsyncSession = Depends(get_db), current_student=Depends(permission_required("delete_students"))):
     logger.info(f"Пользователь {current_student.Login} отправил запрос на удаление студента студента request={request}")
 

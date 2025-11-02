@@ -44,7 +44,7 @@ subtask_router  = APIRouter(prefix="/api/subtasks", tags=["subtasks"])
 
 # TODO переведен на асинхронный postgres
 
-@subtask_router.post("/create/", summary="Создание задачи с файлами и блоками",
+@subtask_router.post("/create",operation_id = 'SubtasksCreate', summary="Создание задачи с файлами и блоками",
                      description="""Создает задачу с текстовыми, графическими и другими блоками.  
 Поддерживает прикрепление файлов через multipart/form-data.  
 возвращает `files_blocks` - количество вставленных файлов с изображением задачи  
@@ -162,6 +162,7 @@ async def create_subtask(
 
 @subtask_router.put(
     "/update/{subtask_id}",
+    operation_id = 'SubtasksUpdateSubtaskID',
     summary="Полное обновление задачи с блоками и файлами",
     description="Заменяет старые значения на новые!(старые файлы удаляются и записываются новые)."
 )
@@ -265,6 +266,7 @@ async def full_update_subtask(
 
 @subtask_router.delete(
     "/delete/{subtask_id}",
+    operation_id = 'SubtasksDeleteSubtaskID',
     summary="Удаление подзадачи",
     description="Удаляет подзадачу, все её файлы и записи из таблиц"
 )
@@ -302,6 +304,7 @@ async def delete_subtask(
 
 @subtask_router.get(
     "",
+    operation_id = 'Subtasks',
     summary="Получение всех задач с блоками и дополнительными файлами",
     description="""Возвращает список всех подзадач с их блоками и прикрепленными файлами.  
         Подзадачи могут фильтроваться по параметрам: SubTaskID, TaskID, SubjectID, VariantID,   
@@ -364,6 +367,7 @@ async def get_all_subtasks(
 
 @subtask_router.get(
     "/{subtask_id}",
+    operation_id = 'SubtasksSubtaskID',
     summary="Получение задачи с блоками и с дополнительными файлами",
     description="Возвращает задачу с текстовыми, графическими и другими блоками, а также прикрепленные файлы."
 )

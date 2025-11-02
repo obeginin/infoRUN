@@ -134,8 +134,9 @@ async def login(
 
 
 # /api/auth/login
-@auth_router.post("/login", response_model=auth.TokenWithStudent,
+@auth_router.post("/login",operation_id = 'AuthLogin', response_model=auth.TokenWithStudent,
                   summary="Аутентификация (запрос токена для пользователя (логин / email / телефон))",
+
                   description="Возвращает токен, тип заголовка и небольшую информацию о пользователе, если (логин / email / телефон) и пароль корректны и пользователь активен.")
 async def login(
     auth_request: auth.AuthRequest,
@@ -242,7 +243,7 @@ async def login(
 получаем информации о пользователе (данный роут нужен для Backend)
 """
 # /api/auth/check-token
-@auth_router.get("/check-token", response_model=auth.StudentOut, summary="Образец получения данных пользователя по токену (с разрешениями)")
+@auth_router.get("/check-token",operation_id = 'AuthCheckToken', response_model=auth.StudentOut, summary="Образец получения данных пользователя по токену (с разрешениями)")
 async def check_token(request: Request, current_student = Depends(get_current_student)):
     logger.info(f"Запрос check-token")
     return current_student
@@ -296,7 +297,7 @@ async def register_user(user_data: auth.UserCreate, db: AsyncSession = Depends(g
 
 # /api/auth/register
 '''Регистрация'''
-@auth_router.post("/register", summary="Регистрация пользователя",
+@auth_router.post("/register",operation_id = 'AuthRegister', summary="Регистрация пользователя",
                  description="после ввода данных на указанный email отправляется письмо с подтверждением почты")
 async def register_user(user_data: auth.UserCreate, db: AsyncSession = Depends(get_db)):
     logger.info(f"Запрос на регистрацию пользователя: {user_data}")
@@ -343,7 +344,7 @@ async def register_user(user_data: auth.UserCreate, db: AsyncSession = Depends(g
 
 
 # /api/auth/password_reset
-@auth_router.post("/password_reset", summary="Запрос на сброс пароля",
+@auth_router.post("/password_reset",operation_id = 'AuthPasswordReset', summary="Запрос на сброс пароля",
                   description="""Высылается письмо с ссылкой для сброса пароля с использованием временного токена, который вшит в ссылку 
                               `https://info-run.ru/auth/reset-password?token={token}`  
                               далее используется роут `/api/auth/password_reset_with_token` непосредственно для изменения пароля""")
@@ -382,7 +383,7 @@ async def password_reset_request(request: auth.PasswordReset, db: AsyncSession =
     return {"message": f"Письмо с инструкцией для сброса пароля отправлено на Email: {request.Email}."}
 
 # TODO остановился здесь
-@auth_router.post("/password_reset_with_token", summary="Сброс пароля по токену",
+@auth_router.post("/password_reset_with_token",operation_id = 'AuthPasswordResetWithToken', summary="Сброс пароля по токену",
                   description="на один токен идет только один сброс пароля, для повторного сброса надо запрашивать новый токен")
 async def reset_password(data: auth.PasswordResetConfirm, db: AsyncSession = Depends(get_db)):
     ''''''
@@ -411,7 +412,7 @@ async def reset_password(data: auth.PasswordResetConfirm, db: AsyncSession = Dep
     return {"message": "Пароль успешно сброшен"}
 
 
-@auth_router.get("/confirm-email", summary="Подтверждение email",
+@auth_router.get("/confirm-email",operation_id = 'authConfirmEmail', summary="Подтверждение email",
                  description="""данный роут вызывается после открытия ссылки из письма с подтверждением email""")
 async def confirm_email(token: str, db: AsyncSession = Depends(get_db)):
     '''Подтверждение email'''
@@ -443,7 +444,7 @@ async def confirm_email(token: str, db: AsyncSession = Depends(get_db)):
 
 # /api/auth/logout
 
-@auth_router.post("/logout", summary="Выход, удаление токена при использовании 'HttpOnly cookie'",
+@auth_router.post("/logout",operation_id = 'AuthLogout', summary="Выход, удаление токена при использовании 'HttpOnly cookie'",
                  description="Необходимо в заголовке отправлять токен (требуется для логироания выхода пользователя")
 async def logout(
         request: Request,
@@ -473,7 +474,7 @@ async def logout(
     return {"detail": "LOGOUT"}
 
 # /api/auth/change-password
-@auth_router.post("/change-password", summary = "Сменить пароль текущего пользователя (меняет сам пользователь)",
+@auth_router.post("/change-password",operation_id = 'AuthChangePassword', summary = "Сменить пароль текущего пользователя (меняет сам пользователь)",
                   description="пользователя получаем по токену, который передается из заголовка с frontend. Требуется проверка студента.")
 async def student_change_password(data: auth.ChangePasswordRequest, db: AsyncSession = Depends(get_db), current_student =  Depends(get_current_student)):
     logger.info(f"Запрос а изменение пароля текущего пользователя data={data}")

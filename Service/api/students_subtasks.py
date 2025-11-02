@@ -23,6 +23,7 @@ students_subtasks_router = APIRouter(prefix="/api/students_subtasks", tags=["stu
 
 # /api/students_subtasks/
 @students_subtasks_router.get("", response_model=list[students_subtasks_schemas.StudentTaskRead],
+                              operation_id = 'StudentsSubtasks',
                               summary="ГЛАВНЫЙ РОУТ с получением списка задач студента по фильтрам",
                               description="""В качестве фильтров передаются параметры    
                                             `StudentTaskID` - по Номеру задачи Студента  
@@ -93,7 +94,7 @@ async def read_all_students_subtasks(db: AsyncSession = Depends(get_db), current
     return await students_subtasks_crud.get_students_all_tasks(db)
 
 # /api/students_subtasks_router/assign_subtasks
-@students_subtasks_router.get("/assign_subtasks",
+@students_subtasks_router.get("/assign_subtasks",operation_id = 'StudentsSubtasksAssignSubtasks',
                               summary="назначение задач студенту",
                               description="Для выбранного студента с (student_id)  назначиться задача сsubtask_id со статусом 'не начата'")
 async def assign_task_for_student(
